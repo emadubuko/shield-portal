@@ -1,0 +1,23 @@
+﻿.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: #fff;
+    font-weight: bold;
+}
+li.next.disabled{    
+    visibility:hidden
+}
+
+li.removeVisibility {
+    visibility: hidden;
+    display: inline;
+}
+.smallPanelHeader {
+    padding: 5px 20px;
+}
+.commentBox{
+    float:right
+}
+.sub-text {
+    color:#aaa;
+    font-family:verdana;
+    font-size:11px;
+}

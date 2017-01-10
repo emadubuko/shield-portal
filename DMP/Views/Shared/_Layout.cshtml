@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Responsive, Web Application, HTML5, Admin Template, business, professional, Integral, web design, CSS3">
+    <title>DMP | Data Management Plan</title>
+    <!-- Site favicon -->
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="~/Scripts/html5shiv.min.js"></script>
+    <script src="~/Scripts/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+    <!-- Loader Backdrop -->
+    <div class="loader-backdrop">
+        <!-- Loader -->
+        <div class="loader">
+            <div class="bounce-1"></div>
+            <div class="bounce-2"></div>
+        </div>
+        <!-- /loader -->
+    </div>
+
+    <div class="page-container">
+        <div class="page-sidebar">
+            <div class="sidebar-fixed">
+                <!-- Site header  -->
+                <header class="site-header">
+                    <div class="site-logo">
+                        <a href="index.html"><img src="~/images/logo.jpg" alt="DMP" title="DMP" /></a>
+                    </div>
+                    <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i class="icon-menu"></i></a></div>
+                    <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse" class="mobile-menu-icon" href="#"><i class="icon-menu"></i></a></div>
+                </header>
+                <!-- /site header -->
+                <!-- Main navigation -->
+                <ul id="side-nav" class="main-menu navbar-collapse collapse">
+                    <li class="navigation-header">Main</li>
+                    <li><a href=@Url.Action("index","Home")><i class="icon-gauge"></i><span class="title">Dashboard</span></a></li>
+                    <li class="has-sub">
+                        <a href=@Url.Action("index","Organization")><i class="icon-layout"></i><span class="title">Implementing partners</span></a>
+                        <ul class="nav collapse">
+                            <li><a href=@Url.Action("Create","Organization")><span class="title">Create new Organization </span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- /main navigation -->
+            </div>
+        </div>
+        <div class="main-container">
+            <!-- Main header -->
+            <div class="main-header row">
+                <div class="pull-left">
+                    <a href="#"><img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png">&nbsp;Guest</a>
+                </div>
+
+                <div class="pull-right">
+                    <div style="padding-right: 100px;">
+                        <a href="#"><i class="icon-logout"></i>Logout</a>
+                    </div>
+                </div>
+            </div>
+
+
+            @RenderBody()
+            <hr />
+
+            <!-- Footer -->
+            <footer class="footer-main">
+                &copy; @DateTime.Now.Year <strong>My DMP</strong> by <a target="_blank" href="#/">MGIC</a>
+            </footer>
+            <!-- /footer -->
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+
+    @*
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/dataTables")
+        @Scripts.Render("~/bundles/loader")*@
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,135 @@
+﻿@model  ICollection<DAL.Entities.Organizations> 
+@{
+    ViewBag.Title = "Create DMP";
+}
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+}
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <form id="dmpForm" class="validate">
+                <div class="panel panel-default" id="ProjectDetails">
+                    <div class="panel-heading clearfix">
+                        <h4 class="panel-title">Begin a New  DMP</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="organization">Organization</label>
+                                <div class="col-sm-8">
+                                    <select id="Organization" class="form-control" required title="specify your organization">
+                                        <option value="" disabled selected>Select your Organization</option>
+                                        @foreach (var item in Model)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="DMPTitle">DMP Title</label>
+                                <div class="col-sm-8">
+                                    <input type="text" placeholder="DMP Title" id="DMPTitle" title="title is required" required class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="StartDate">Start Date</label>
+                                <div class="col-sm-8">
+                                    <div id="date-popup" class="input-group date">
+                                        <input id="StartDate" required type="text" placeholder="Start Date" title="select a start date" data-format="D, dd MM yyyy" class="form-control">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">End Date</label>
+                                <div class="col-sm-8">
+                                    <div id="date-popup2" class="input-group date">
+                                        <input type="text" required id="EndDate" placeholder="End Date" title="select an end date" data-format="D, dd MM yyyy" class="form-control">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <a href='@Url.Action("index","Home")' class="btn btn-danger" style="background-color: #d9534f;border-color: #d43f3a;">
+                                        <i class="fa fa-close"></i> Cancel
+                                    </a>
+                                    &nbsp;&nbsp;
+                                    <button type="submit" id="dmpSubmit" class="btn btn-primary">Save and Continue</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+<script>
+        $(document).ready(function () {
+            $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
+                if (key.charCode < 48 || key.charCode > 57)
+                    if (key.charCode != 43) {
+                        $('#my_modal').on('show.bs.modal', function (e) {
+                            $('#warningbox').val('invalid input');
+                        });
+                        $('#myModal').modal('show');
+                        return false;
+                    }
+            });
+
+            $("input").attr("autocomplete", "off");
+
+            $("#dmpSubmit").click(function (e, n) {
+
+                var form = $(e.currentTarget.form);
+                var validator = form.validate();
+                if (form.valid()) {
+                    var formdata = $('#dmpForm')[0].elements;
+                    var viewModel = {};
+                   
+                    
+                    $.each(formdata, function (name, formElements) {
+                        viewModel[formElements.id] = formElements.value;
+                    });
+
+                    var orgs = @Html.Raw(Json.Encode(Model));
+                    var selectedOrg = $.grep(orgs, function(e){ return e.Id === parseInt(viewModel.Organization) })[0]
+                    viewModel.Organization = selectedOrg;
+
+                    var someUrl = '@Url.Action("DocumentWizardPage", "Home")';
+                    $.ajax({
+                        type: "POST",
+                        url: someUrl,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(viewModel),
+                        cache: false,
+                    }).done(function (dmpId) {
+                        console.log(dmpId);
+                        window.location.replace(someUrl+'?dmpId='+dmpId);
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                    });
+                    return false;
+                }
+
+            });
+
+        });
+</script>
+}

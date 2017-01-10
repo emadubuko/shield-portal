@@ -1,0 +1,1007 @@
+﻿@model  DMP.ViewModel.EditDocumentViewModel2
+@{
+    ViewBag.Title = "Edit Documnet";
+}
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                display: none;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+    </style>
+}
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title">Complete the DMP Document</h4>
+                </div>
+                <div class="panel-body">
+                    <form id="rootwizard-2" class="form-wizard validate-form-wizard validate" novalidate="novalidate">
+                        <div class="wizard-navbar">
+                            <ul class="wizard-steps">
+                                <li class="active"><a href="#ProjectProfile" data-toggle="tab" aria-expanded="false"><span>1</span> Project Profile</a></li>
+                                <li><a href="#DocumentRevisions" data-toggle="tab" aria-expanded="true"><span>2</span>Document Revision</a></li>
+                                <li><a href="#Planning" data-toggle="tab"><span>3</span>Planning</a></li>
+                                <li><a href="#DataCollection" data-toggle="tab"><span>4</span>Data Collection</a></li>
+                                <li><a href="#QualityAssurance" data-toggle="tab"><span>5</span>Quality Assurance</a></li>
+                                <li><a href="#DataCollectionProcesses" data-toggle="tab"><span>6</span>Processes</a></li>
+                                <li><a href="#DataStorage" data-toggle="tab"><span>7</span>Data Storage</a></li>
+                                <li><a href="#IntellectualPropertyCopyrightAndOwnership" data-toggle="tab"><span>8</span>Copyright</a></li>
+                                <li><a href="#DataAccessAndSharing" data-toggle="tab"><span>9</span>Data Access</a></li>
+                                <li><a href="#DataDocumentationManagementAndEntry" data-toggle="tab"><span>10</span>Documentation  Management</a></li>
+                                <li><a href="#PostProjectDataRetentionSharingAndDestruction" data-toggle="tab"><span>11</span>Data Retention</a></li>
+                            </ul>
+                        </div>
+                        <hr />
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane active" id="ProjectProfile">
+                                <h4 class="panel-title" style="margin-left: 90px;">
+                                    <b>Project Profile</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-default" id="ProjectDetails">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Project Details</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="ProjectTitle">Project Title</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Project Title" value="@Model.projectDetails.ProjectTitle" id="ProjectTitle" required class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Project Logo</label>
+                                                <div class="col-sm-8">
+                                                    <input type="file" accept="image/*" id="ProjectLogo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="DocumentTitle">Document Title</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Document Title" id="DocumentTitle" value="@Model.projectDetails.DocumentTitle" required class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="organization">Organization</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="organization" disabled value="@Model.projectDetails.NameOfImplementingPartner" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="AddressofAuthor">Address of Author</label>
+                                                <div class="col-sm-8">
+                                                    <textarea id="AddressofAuthor" class="form-control" rows="2">@Model.projectDetails.AddressofAuthor</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="MissionPartner">Mission Partner</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="MissionPartner" disabled value="@Model.projectDetails.NameOfImplementingPartner" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="ProjectStartDate">Project Start Date</label>
+                                                <div class="col-sm-8">
+                                                    <div id="date-popup" class="input-group date">
+                                                        <input id="ProjectStartDate" type="text" placeholder="Project Start Date" value="@Model.projectDetails.ProjectStartDate" data-format="D, dd MM yyyy" class="form-control">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Project End Date</label>
+                                                <div class="col-sm-8">
+                                                    <div id="date-popup2" class="input-group date">
+                                                        <input type="text" id="ProjectEndDate" placeholder="Project End Date" value="@Model.projectDetails.ProjectEndDate" data-format="D, dd MM yyyy" class="form-control">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="GrantReferenceNumber">Grant Reference Number</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Grant Reference Number" id="GrantReferenceNumber" value="@Model.projectDetails.GrantReferenceNumber" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of project details section-->
+
+                                <div class="panel panel-default" id="EthicsApproval">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Ethics Approval</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="EthicalApprovalForTheProject">Ethical Approval For the Project</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Ethical Approval For the Project" id="EthicalApprovalForTheProject" value="@Model.ethicsApproval.EthicalApprovalForTheProject" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="TypeOfEthicalApproval">Type of Ethical Approval</label>
+                                                <div class="col-sm-8">
+                                                    <select id="TypeOfEthicalApproval" class="form-control">
+                                                        <option value="" disabled>Select applicable Ethical approval type</option>
+                                                        @foreach (var item in Model.ethicalApprovalTypes)
+                                                        {
+                                                            if (@item == Model.ethicsApproval.TypeOfEthicalApproval)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of ethic approval section-->
+                            </div>
+                            <!-- end of Project profile page-->
+
+
+                            <div class="tab-pane" id="DocumentRevisions">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Document Revisions</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-default" id="Version">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Version</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="panel panel-default" id="VersionMetaData">
+                                            <div class="panel-heading clearfix">
+                                                <h4 class="panel-title">Version Metadata</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="VersionDate">Version Date</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" id="VersionDate" value="@Model.versionMetadata.VersionDate" disabled class="form-control">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="VersionNumber">Version Number</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" id="VersionNumber" disabled value="@Model.versionMetadata.VersionNumber" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End of Version Metadata section-->
+
+                                        <div class="panel panel-default" id="VersionAuthor">
+                                            <div class="panel-heading clearfix">
+                                                <h4 class="panel-title">Version Author</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="TitleOfAuthor">Title of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Title of Author" value="@Model.versionAuthor.TitleOfAuthor" id="TitleOfAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="SurnameAuthor">Surname of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Surname of Author" value="@Model.versionAuthor.SurnameAuthor" id="SurnameAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="FirstNameOfAuthor">First Name of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="First Name of Author" value="@Model.versionAuthor.FirstNameOfAuthor" id="FirstNameOfAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="OtherNamesOfAuthor">Other Names of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Other Names of Author" value="@Model.versionAuthor.OtherNamesOfAuthor" id="OtherNamesOfAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="JobDesignation">Job Designation</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Job Designation" value="@Model.versionAuthor.JobDesignation" id="JobDesignation" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="SignatureOfAuthor">Signature of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="file" placeholder="Signature of Author" accept="image/*" id="SignatureOfAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="PhoneNumberOfAuthor">Phone number of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Phone number of Author" value="@Model.versionAuthor.PhoneNumberOfAuthor" id="PhoneNumberOfAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="EmailAddressOfAuthor">Email address of Author</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="email" placeholder="Email address of Author" value="@Model.versionAuthor.EmailAddressOfAuthor" id="EmailAddressOfAuthor" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End of Version Author section-->
+
+                                        <div class="panel panel-default" id="Approval">
+                                            <div class="panel-heading clearfix">
+                                                <h4 class="panel-title">Approval</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="TitleofApprover">Title of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Title of Approver" id="TitleofApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="SurnameApprover">Surname of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Surname of Approver" id="SurnameApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="FirstnameofApprover">First Name of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="First Name of Approver" id="FirstnameofApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="OthernamesofApprover">Other Names of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Other Names of Approver" id="OthernamesofApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="JobdesignationApprover">Job Designation of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Job Designation of Approver" id="JobdesignationApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="SignatureofApprover">Signature of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="file" placeholder="Signature of Approver" accept="image/*" id="SignatureofApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="PhonenumberofApprover">Phone number of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Phone number of Approver" id="PhonenumberofApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="EmailaddressofApprover">Email address of Approver</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="email" placeholder="Email address of Approver" id="EmailaddressofApprover" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End of Approval section -->
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of document revision page-->
+
+
+                            <div class="tab-pane" id="Planning">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Planning</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-default" id="Summary">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Summary</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="ProjectSummary" class="control-label">Project Summary</label>
+                                                    <textarea id="ProjectSummary" placeholder="summarize in not more than 1000 words" class="form-control" rows="3">@Model.summary.ProjectSummary</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of Summary section-->
+                            </div>
+                            <!-- end of Planning page-->
+
+
+                            <div class="tab-pane" id="DataCollection">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Data Collection</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-default" id="Report">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Report</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="panel panel-default" id="ReportData">
+                                            <div class="panel-heading clearfix">
+                                                <h4 class="panel-title">Report Data</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="NameOfReport">Name of Report</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Name of Report" value="@Model.reportData.NameOfReport" id="NameOfReport" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="ThematicArea">Thematic Area</label>
+                                                        <div class="col-sm-8">
+                                                            <select id="ThematicArea" class="form-control">
+                                                                <option value="" disabled >Select applicable area</option>
+                                                                @foreach (var item in Model.thematicAreas)
+                                                                {
+                                                                    if (@item == Model.reportData.ThematicArea)
+                                                                    {
+                                                                        <option value="@item" selected>@item</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="FrequencyOfDataCollection">Frequency of Data Collection</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Frequency of Data Collection" value="@Model.reportData.FrequencyOfDataCollection" id="FrequencyOfDataCollection" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="Datatype">Data Type</label>
+                                                        <div class="col-sm-8">
+                                                            <select id="Datatype" class="form-control">
+                                                                <option value="" disabled>Select applicable Data type</option>
+                                                                @foreach (var item in Model.reportDataType)
+                                                                {
+                                                                    if (@item == Model.reportData.Datatype)
+                                                                    {
+                                                                        <option value="@item" selected>@item</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="Dataformat">Data Format</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Data Format" id="Dataformat" value="@Model.reportData.Dataformat" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="DataCollectionAndReportingTools">Data Collection and Reporting Tools</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Data Collection and Reporting Tools" value="@Model.reportData.DataCollectionAndReportingTools" id="DataCollectionAndReportingTools" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="DataFlowChart">Data Flow Chart</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="file" placeholder="Data Flow Chart" accept="image/*" id="DataFlowChart" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End of Report Data section -->
+
+                                        <div class="panel panel-default" id="RoleAndResponsibilities">
+                                            <div class="panel-heading clearfix">
+                                                <h4 class="panel-title">Role And Responsibilities</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="HealthFacility">Health Facility</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Health Facility" id="HealthFacility" value="@Model.roleNresp.HealthFacility" class="form-control">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="ImplementingPartner">Implementing Partner</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="Implementing Partner" id="ImplementingPartner" value="@Model.roleNresp.ImplementingPartner" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="LGA">LGA</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="LGA" id="LGA" value="@Model.roleNresp.LGA" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="StateMoH">State MoH</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="State MoH" id="StateMoH" value="@Model.roleNresp.StateMoH" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="CDC">CDC</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="CDC" id="CDC" value="@Model.roleNresp.CDC" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label" for="FMoH">FMoH</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="FMoH" id="FMoH" value="@Model.roleNresp.FMoH" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End of RoleNResponsibilities section-->
+                                    </div>
+                                </div>
+                                <!--end of Report-->
+                            </div>
+                            <!-- end of Data Collection page-->
+
+
+                            <div class="tab-pane" id="QualityAssurance">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Quality Assurance</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-default" id="DataVerification">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Data Verification</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="FormsOfDataVerification">Forms of Data Verification</label>
+                                                <div class="col-sm-8">
+                                                    <select id="FormsOfDataVerification" class="form-control">
+                                                        <option value="" disabled>Select Forms of Data Verification</option>
+                                                        @foreach (var item in Model.formsOfDataVerification)
+                                                        {
+                                                            if (@item == Model.dataVerification.FormsOfDataVerification)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="TypesOfDataVerification">Types of Data Verification</label>
+                                                <div class="col-sm-8">
+                                                    <select id="TypesOfDataVerification" class="form-control">
+                                                        <option value="" disabled>Select Types of Data Verification</option>
+                                                        @foreach (var item in Model.typesOfDataVerification)
+                                                        {
+                                                            if (@item == Model.dataVerification.TypesOfDataVerification)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of Data verificaton section-->
+                            </div>
+                            <!-- end of Quality Assurance page-->
+
+
+                            <div class="tab-pane" id="DataCollectionProcesses">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Data Collection Processes</b>
+                                </h4>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="DataCollectionProcessess" class="control-label">Data Collection Processes</label>
+                                            <textarea id="DataCollectionProcessess" class="form-control" rows="3">@Model.datacollectionProcesses.DataCollectionProcessess</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of Data Collection Processes page-->
+
+
+                            <div class="tab-pane" id="DataStorage">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Data Storage</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-default" id="Digital">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Digital</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="VolumeOfdigitalData">Volume of Digital Data</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Volume of Digital Data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfdigitalData" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="Storagetype">Storage Type</label>
+                                                <div class="col-sm-8">
+                                                    <select id="Storagetype" class="form-control">
+                                                        <option value="" disabled>Select Storage type</option>
+                                                        @foreach (var item in Model.storagetype)
+                                                        {
+                                                            if (@item == Model.digital.Storagetype)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="Storagelocation">Storage Location</label>
+                                                <div class="col-sm-8">
+                                                    <select id="Storagelocation" class="form-control">
+                                                        <option value="" disabled>Select Storage location</option>
+                                                        @foreach (var item in Model.storageLocation)
+                                                        {
+                                                            if (@item == Model.digital.Storagelocation)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="Backup">Backup?</label>
+                                                <div class="col-sm-8">
+                                                    <label" class="switch">
+                                                        <input type="checkbox" id="Backup">
+                                                        <div class="slider round"></div>
+                                                    </label">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="Datasecurity">Data Security</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Data Security" id="Datasecurity" value="@Model.digital.Datasecurity" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="Patientconfidentialitypolicies">Patient Confidentiality Policies</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Patient confidentiality Policies" value="@Model.digital.Patientconfidentialitypolicies" id="Patientconfidentialitypolicies" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="StorageOfPreExistingData">Storage of Pre-Existing Data</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Storage of Pre-Existing Data" value="@Model.digital.StorageOfPreExistingData" id="StorageOfPreExistingData" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of Digital data section-->
+
+                                <div class="panel panel-default" id="NonDigital">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Non-Digital</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="NonDigitalDataTypes">Non-Digital Data Types</label>
+                                                <div class="col-sm-8">
+                                                    <select id="NonDigitalDataTypes" class="form-control">
+                                                        <option value="" disabled>Select Non-Digital Data Types</option>
+                                                        @foreach (var item in Model.nonDigitalDataTypes)
+                                                        {
+                                                            if (@item == Model.nonDigital.NonDigitalDataTypes)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="NonDigitalStorageLocation">Storage Location</label>
+                                                <div class="col-sm-8">
+                                                    <select id="NonDigitalStorageLocation" class="form-control">
+                                                        <option value="" disabled>Select Non Digital Storage Location</option>
+                                                        @foreach (var item in Model.nonDigitalStorageLocation)
+                                                        {
+                                                            if (@item == Model.nonDigital.StorageLocation)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="SafeguardsAndRequirements">Safeguards and Requirements</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Safeguards and Requirements" value="@Model.nonDigital.SafeguardsAndRequirements" id="SafeguardsAndRequirements" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of non digital data section -->
+                            </div>
+                            <!-- end of Data Storage page-->
+
+
+                            <div class="tab-pane" id="IntellectualPropertyCopyrightAndOwnership">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Intellectual Property Copyright and Ownership</b>
+                                </h4>
+                                <hr />
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="ContractsAndAgreements">Contracts and Agreements</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Contracts and Agreements" value="@Model.intelProp.ContractsAndAgreements" id="ContractsAndAgreements" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="Ownership">Ownership</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Ownership" value="@Model.intelProp.Ownership" id="Ownership" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="UseOfThirdPartyDataSources">Use of Third Party Data Sources</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Use of Third Party Data Sources" value="@Model.intelProp.UseOfThirdPartyDataSources" id="UseOfThirdPartyDataSources" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of Intellectual Property Copyright And Ownership page-->
+
+
+                            <div class="tab-pane" id="DataAccessAndSharing">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Data Access and Sharing</b>
+                                </h4>
+                                <hr />
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="DataAccess">Data Access</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Data Access" value="@Model.dataSharing.DataAccess" id="DataAccess" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="DataSharingPolicies">Data Sharing Policies</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Data Sharing Policies"  value="@Model.dataSharing.DataSharingPolicies" id="DataSharingPolicies" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="DataTransmissionPolicies">Data Transmission Policies</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Data Transmission Policies" value="@Model.dataSharing.DataTransmissionPolicies" id="DataTransmissionPolicies" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="SharingPlatForms">Sharing PlatForms</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Sharing PlatForms" value="@Model.dataSharing.SharingPlatForms" id="SharingPlatForms" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of Data Access and Sharing page-->
+
+
+                            <div class="tab-pane" id="DataDocumentationManagementAndEntry">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Data Documentation Management and Entry</b>
+                                </h4>
+                                <hr />
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="StoredDocumentationAndDataDescriptors">Stored Documentation and Data Descriptors</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Stored Documentation and Data Descriptors" value="@Model.dataDocMgt.StoredDocumentationAndDataDescriptors" id="StoredDocumentationAndDataDescriptors" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="NamingStructureAndFilingStructures">Naming Structure and Filing Structures</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Naming Structure and Filing Structures" id="NamingStructureAndFilingStructures" value="@Model.dataDocMgt.NamingStructureAndFilingStructures" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of Data Documentation Management and Entry page-->
+
+
+                            <div class="tab-pane" id="PostProjectDataRetentionSharingAndDestruction">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Post Project Data Retention Sharing and Destruction</b>
+                                </h4>
+                                <hr />
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="DataToRetain">Data To Retain</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Data To Retain" value="@Model.ppData.DataToRetain" id="DataToRetain" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="PreExistingData">Pre-Existing Data</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Pre-Existing Data" id="PreExistingData" value="@Model.ppData.PreExistingData" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="Duration">Duration</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Duration" id="Duration" value="@Model.ppData.Duration" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="Licensing">Licensing</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="Licensing" id="Licensing" value="@Model.ppData.Licensing" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-default" id="DigitalDataRetention">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Digital Data Retention</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="DataRetention">Data Retention</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Data Retention" value="@Model.ppData.DigitalDataRetention.DataRetention" id="DataRetention" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of digital data retention-->
+
+                                <div class="panel panel-default" id="NonDigitalDataRetention">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Non Digital Data Retention</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="nonDigitalDataRetention">Data Retention</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Data Retention" value="@Model.ppData.NonDigitalRentention.DataRention" id="nonDigitalDataRetention" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of non digital data rentention-->
+                            </div>
+                            <!-- end of Post Project Data Retention Sharing and Destruction page-->
+
+                            <ul class="pager wizard">
+                                <li class="previous"><a href="javascript:void(0)"><i class="icon-left-open"></i>Previous</a></li>
+                                <li id="nextbtn" class="next"><a id="SaveNext" href="javascript:void(0)">Save and Next<i class="icon-right-open"></i></a> </li>
+                                <li id="finish" style="float: right;" class="removeVisibility"><a id="finishbtn" href="javascript:void(0)">Finish and Preview<i class="icon-right-open"></i></a> </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 400px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Message</h4>
+            </div>
+            <div class="modal-body">
+
+                Not allowed
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    <script>
+        $(document).ready(function () {
+            $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
+                if (key.charCode < 48 || key.charCode > 57)
+                    if (key.charCode != 43) {
+                        $('#my_modal').on('show.bs.modal', function (e) {
+                            $('#warningbox').val('invalid input');
+                        });
+                        $('#myModal').modal('show');
+                        return false;
+                    }
+            });
+            $("input").attr("autocomplete", "off");
+
+
+            //var formElements = $('#rootwizard-2')[0].elements;
+            //$.each(formdata, function (index, Elements) {
+            //    $(Elements.id).val('this is hard coded')
+            //});
+
+            function SaveAndContinue(e) {
+                var formdata = $('#rootwizard-2')[0].elements;
+                var viewModel = {};
+                $.each(formdata, function (name, formElements) {
+                    viewModel[formElements.id] = formElements.value;
+                });
+                viewModel["documentID"] = '@Model.documentID';
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("EditDocumentNext", "Home")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(viewModel),
+                    dataType: 'json',
+                    cache: false,
+                }).done(function (result) {
+
+                    if (e.currentTarget.id === "finishbtn") {
+                        window.location.href = "/DocumentViewer/DocumentPreview?documnentId=@Model.documentID";
+                    }
+                    var nxtcss = $("#nextbtn").attr('class');
+                    if (nxtcss === "next disabled") {
+                        $("#finish").removeClass("removeVisibility");
+                    }
+
+
+                }).error(function (xhr, status, err) {
+                    console.log(err);
+                });
+            }
+
+            $("#SaveNext,#finishbtn").click(function (e, n) {
+                SaveAndContinue(e);
+
+            });
+
+        });
+    </script>
+}
