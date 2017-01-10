@@ -273,7 +273,7 @@ namespace DMP.Controllers
             {
                 ProjDetails = projDTF;
                 SaveProject(ProjDetails);
-            }
+            } 
             else
             {
                 ProjDetails.Id = previousDoc.TheDMP.TheProject.Id;
