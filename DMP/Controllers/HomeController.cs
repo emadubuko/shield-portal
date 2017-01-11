@@ -16,7 +16,7 @@ namespace DMP.Controllers
         OrganizationDAO orgDAO = null;
         ProjectDetailsDAO projDAO = null;
 
-        static DAL.Entities.DMP MyDMP = new DAL.Entities.DMP();
+        static DAL.Entities.DMP MyDMP = null;
 
         static Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
         static Profile initiator = new ProfileDAO().Retrieve(guid);
@@ -131,6 +131,12 @@ namespace DMP.Controllers
             }
 
             MyDMP = dmpDAO.Retrieve(dmpId.Value);
+            var previousDoc = dmpDocDAO.SearchByDMP(dmpId.Value);
+            if (previousDoc != null && previousDoc.Count() > 0)
+            {
+                Dictionary<string, object> routeObj = new Dictionary<string, object> { { "dmpId", MyDMP.Id }, { "documnentId", previousDoc.LastOrDefault().Id } };
+                return RedirectToAction("EditDocumentWizardPage", new System.Web.Routing.RouteValueDictionary(routeObj));
+            }
 
             CreateDocumentViewModel docVM = new CreateDocumentViewModel
             {
@@ -141,20 +147,28 @@ namespace DMP.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
-            VersionAuthor versionAuthor, VersionMetadata versionMetadata, Summary summary, RolesAndResponsiblities roleNresp,
+        public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
+            Summary summary, RolesAndResponsiblities roleNresp,
             ReportData reportData, DataVerificaton dataVerification, DigitalData digital, NonDigitalData nonDigital,
             DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
             DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt,
             DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention)
         {
-
+            //incase session has timed out
+            if (MyDMP == null)
+            {
+                var dmpid = Convert.ToInt32(Request.UrlReferrer.Query.Split(new string[] { "?dmpId=" }, StringSplitOptions.RemoveEmptyEntries)[0]);
+                MyDMP = dmpDAO.Retrieve(dmpid);
+                if (MyDMP == null)
+                {
+                    return RedirectToAction("CreateNewDMP");
+                }
+            }
 
             ProjectDetails ProjDetails = projDTF;
             ProjDetails.Organization = MyDMP.Organization;
             ProjDetails.AbreviationOfImplementingPartner = MyDMP.Organization.ShortName;
             ProjDetails.NameOfImplementingPartner = MyDMP.Organization.Name;
-            MyDMP.TheProject = ProjDetails;
 
 
             WizardPage page = new WizardPage
@@ -163,17 +177,6 @@ namespace DMP.Controllers
                 {
                     EthicalApproval = ethicsApproval,
                     ProjectDetails = ProjDetails,
-                },
-                DocumentRevisions = new List<DocumentRevisions>
-                {
-                    new DocumentRevisions{
-                        Version = new DAL.Entities.Version
-                        {
-                            Approval = approval,
-                            VersionAuthor = versionAuthor,
-                            VersionMetadata = versionMetadata,
-                        }
-                    }
                 },
                 Planning = new Planning { Summary = summary },
                 DataCollection = new DataCollection
@@ -206,12 +209,33 @@ namespace DMP.Controllers
             };
 
 
-            SaveProject(ProjDetails);
-            SaveOrUpdateDMP(false);
-            SaveDMPDocument(doc.VersionNumber, page, MyDMP.Id);
-            projDAO.CommitChanges();
+            try
+            {
+                bool saved = SaveProject(ProjDetails);
+                if (saved || MyDMP.TheProject != null)
+                {
+                    projDAO.CommitChanges();
 
-            return Json("ok", JsonRequestBehavior.AllowGet);
+                    MyDMP.TheProject = ProjDetails;
+                    dmpDAO.Update(MyDMP);
+                    //SaveOrUpdateDMP(false);
+                    var theDoc = SaveDMPDocument(page, MyDMP.Id);
+                    dmpDocDAO.CommitChanges();
+                    return Json(theDoc, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json("project with the same name already exist", JsonRequestBehavior.AllowGet);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                projDAO.RollbackChanges();
+                throw ex;
+            }
+
+
         }
 
 
@@ -233,7 +257,7 @@ namespace DMP.Controllers
             var thepageDoc = Doc.Document;
             EditDocumentViewModel2 docVM = new EditDocumentViewModel2
             {
-                versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
+                //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
                 datacollectionProcesses = thepageDoc.DataCollectionProcesses,
                 dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
                 dataSharing = thepageDoc.DataAccessAndSharing,
@@ -247,7 +271,7 @@ namespace DMP.Controllers
                 ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
                 projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                 summary = thepageDoc.Planning.Summary,
-                versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
+                //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
                 reportData = thepageDoc.DataCollection.Report.ReportData,
                 roleNresp = thepageDoc.DataCollection.Report.RoleAndResponsibilities,
                 documentID = Doc.Id.ToString(),
@@ -273,7 +297,7 @@ namespace DMP.Controllers
             {
                 ProjDetails = projDTF;
                 SaveProject(ProjDetails);
-            } 
+            }
             else
             {
                 ProjDetails.Id = previousDoc.TheDMP.TheProject.Id;
@@ -334,14 +358,14 @@ namespace DMP.Controllers
                 }
             };
 
-            SaveDMPDocument(doc.VersionNumber, page, previousDoc.TheDMP.Id);
+            var theDoc = SaveDMPDocument(page, previousDoc.TheDMP.Id);
             projDAO.CommitChanges();
 
-            return Json("ok", JsonRequestBehavior.AllowGet);
+            return Json(theDoc, JsonRequestBehavior.AllowGet);
         }
 
 
-        public void SaveDMPDocument(string VersionNumber, WizardPage documentPages, int dmpId)
+        public DMPDocument SaveDMPDocument(WizardPage documentPages, int dmpId)
         {
             DMPDocument Doc = dmpDocDAO.SearchMostRecentByDMP(dmpId);
             if (Doc == null)
@@ -353,8 +377,8 @@ namespace DMP.Controllers
                     InitiatorUsername = initiator.Username,
                     LastModifiedDate = DateTime.Now,
                     Status = DMPStatus.New,
-                    Version = Convert.ToInt32(VersionNumber.Split('.')[0]),
-                    TempVersion = Convert.ToInt32(VersionNumber.Split('.')[1]),
+                    Version = 0,
+                    TempVersion = 1,
                     TheDMP = MyDMP,
                     ReferralCount = 0,
                     PageNumber = 0,
@@ -369,14 +393,18 @@ namespace DMP.Controllers
                 Doc.Document = documentPages;
                 dmpDocDAO.Update(Doc);
             }
+            return Doc;
         }
 
-        public void SaveProject(ProjectDetails theproject)
+        public bool SaveProject(ProjectDetails theproject)
         {
+            bool saved = false;
             if (projDAO.SearchByName(theproject.ProjectTitle) == null)
             {
                 projDAO.Save(theproject);
+                saved = true;
             }
+            return saved;
         }
 
         public bool SaveOrUpdateDMP(bool save)
@@ -390,12 +418,7 @@ namespace DMP.Controllers
             }
             else if (!save)
             {
-                try
-                {
-                    dmpDAO.Update(MyDMP);
-
-                }
-                catch { }
+                dmpDAO.Update(MyDMP);
                 return true;
             }
             else

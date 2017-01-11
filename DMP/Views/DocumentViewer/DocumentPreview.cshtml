@@ -42,11 +42,11 @@
                                             <a class="btn btn-default commentBox"> comment</a>
                                         </div>
                                         @*<div class="form-group">
-                                <label class="col-sm-3">Project Logo</label>
-                                <div>
-                                    <input type="file" accept="image/*" id="ProjectLogo">
-                                </div>
-                            </div>*@
+                                                <label class="col-sm-3">Project Logo</label>
+                                                <div>
+                                                    <input type="file" accept="image/*" id="ProjectLogo">
+                                                </div>
+                                            </div>*@
                                         <div class="form-group">
                                             <label class="col-sm-3">Document Title</label>
                                             <span id="DocumentTitle">@Model.projectDetails.DocumentTitle </span><a class="btn btn-default commentBox"> comment</a>
@@ -141,14 +141,14 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="VersionDate">Version Date</label>
                                                     <div>
-                                                        <span id="VersionDate">@Model.versionMetadata.VersionDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="VersionDate">@Model.versionMetadata.VersionDate</span> 
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="VersionNumber">Version Number</label>
                                                     <div>
-                                                        <span id="VersionNumber">@Model.versionMetadata.VersionNumber</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="VersionNumber">@Model.versionMetadata.VersionNumber</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -165,49 +165,49 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="TitleOfAuthor">Title of Author</label>
                                                     <div>
-                                                        <span id="TitleOfAuthor">@Model.versionAuthor.TitleOfAuthor</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="TitleOfAuthor">@Model.versionAuthor.TitleOfAuthor</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="SurnameAuthor">Surname of Author</label>
                                                     <div>
-                                                        <span id="SurnameAuthor">@Model.versionAuthor.SurnameAuthor</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="SurnameAuthor">@Model.versionAuthor.SurnameAuthor</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="FirstNameOfAuthor">First Name of Author</label>
                                                     <div>
-                                                        <span id="FirstNameOfAuthor">@Model.versionAuthor.FirstNameOfAuthor</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="FirstNameOfAuthor">@Model.versionAuthor.FirstNameOfAuthor</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="OtherNamesOfAuthor">Other Names of Author</label>
                                                     <div>
-                                                        <span id="OtherNamesOfAuthor">@Model.versionAuthor.OtherNamesOfAuthor</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="OtherNamesOfAuthor">@Model.versionAuthor.OtherNamesOfAuthor</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="JobDesignation">Job Designation</label>
                                                     <div>
-                                                        <span id="JobDesignation">@Model.versionAuthor.JobDesignation</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="JobDesignation">@Model.versionAuthor.JobDesignation</span>
                                                     </div>
                                                 </div>
                                                 @*<div class="form-group">
-                                        <label class="col-sm-3" for="SignatureOfAuthor">Signature of Author</label>
-                                        <div>
-                                            <input type="file" placeholder="Signature of Author" accept="image/*" id="SignatureOfAuthor">
-                                        </div>
-                                    </div>*@
+                                                        <label class="col-sm-3" for="SignatureOfAuthor">Signature of Author</label>
+                                                        <div>
+                                                            <input type="file" placeholder="Signature of Author" accept="image/*" id="SignatureOfAuthor">
+                                                        </div>
+                                                    </div>*@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="PhoneNumberOfAuthor">Phone number of Author</label>
                                                     <div>
-                                                        <span id="PhoneNumberOfAuthor">@Model.versionAuthor.PhoneNumberOfAuthor</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="PhoneNumberOfAuthor">@Model.versionAuthor.PhoneNumberOfAuthor</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="EmailAddressOfAuthor">Email address of Author</label>
                                                     <div>
-                                                        <span id="EmailAddressOfAuthor">@Model.versionAuthor.EmailAddressOfAuthor</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="EmailAddressOfAuthor">@Model.versionAuthor.EmailAddressOfAuthor</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,43 +230,43 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="SurnameApprover">Surname of Approver</label>
                                                     <div>
-                                                        <label placeholder="Surname of Approver" id="SurnameApprover"></label>
+                                                        <label placeholder="Surname of Approver" id="SurnameApprover">@Model.approval.SurnameApprover</label>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="FirstnameofApprover">First Name of Approver</label>
                                                     <div>
-                                                        <label placeholder="First Name of Approver" id="FirstnameofApprover"></label>
+                                                        <label placeholder="First Name of Approver" id="FirstnameofApprover">@Model.approval.FirstnameofApprover</label>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="OthernamesofApprover">Other Names of Approver</label>
                                                     <div>
-                                                        <label placeholder="Other Names of Approver" id="OthernamesofApprover"></label>
+                                                        <label placeholder="Other Names of Approver" id="OthernamesofApprover">@Model.approval.OthernamesofApprover</label>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="JobdesignationApprover">Job Designation of Approver</label>
                                                     <div>
-                                                        <label placeholder="Job Designation of Approver" id="JobdesignationApprover"></label>
+                                                        <label placeholder="Job Designation of Approver" id="JobdesignationApprover">@Model.approval.JobdesignationApprover</label>
                                                     </div>
                                                 </div>
                                                 @*<div class="form-group">
-                                        <label class="col-sm-3" for="SignatureofApprover">Signature of Approver</label>
-                                        <div>
-                                            <input type="file" placeholder="Signature of Approver" accept="image/*" id="SignatureofApprover">
-                                        </div>
-                                    </div>*@
+                                                        <label class="col-sm-3" for="SignatureofApprover">Signature of Approver</label>
+                                                        <div>
+                                                            <input type="file" placeholder="Signature of Approver" accept="image/*" id="SignatureofApprover">
+                                                        </div>
+                                                    </div>*@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="PhonenumberofApprover">Phone number of Approver</label>
                                                     <div>
-                                                        <label placeholder="Phone number of Approver" id="PhonenumberofApprover"></label>
+                                                        <label placeholder="Phone number of Approver" id="PhonenumberofApprover">@Model.approval.PhonenumberofApprover</label>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="EmailaddressofApprover">Email address of Approver</label>
                                                     <div>
-                                                        <label placeholder="Email address of Approver" id="EmailaddressofApprover"></label>
+                                                        <label placeholder="Email address of Approver" id="EmailaddressofApprover">@Model.approval.EmailaddressofApprover</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -358,11 +358,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="form-group">
-                                        <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
-                                        <div>
-                                            <input type="file" placeholder="Data Flow Chart" accept="image/*" id="DataFlowChart">
-                                        </div>
-                                    </div>*@
+                                                        <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
+                                                        <div>
+                                                            <input type="file" placeholder="Data Flow Chart" accept="image/*" id="DataFlowChart">
+                                                        </div>
+                                                    </div>*@
                                             </div>
                                         </div>
                                     </div>
@@ -726,13 +726,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">comments</h4>
+                <h4 class="modal-title">comments</h4>
             </div>
             <div class="modal-body">
                 <div class="panel-body" style="display: block;">
                     <div id="UlInModal">
 
-                    </div>                     
+                    </div>
                     <div class="form-group">
                         <input class="form-control" id="newCC" type="text" placeholder="Your comments" />
                     </div>
@@ -752,11 +752,27 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">Please confirm action</h4>
+                <h4 class="modal-title">Please confirm action</h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button id="approveConfirm" type="button" class="btn btn-success">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ApprovalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 400px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div id="approvedmsg" class="modal-title"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
@@ -768,12 +784,56 @@
     @Scripts.Render("~/bundles/CreateDMPJs")
     <script>
         $(document).ready(function () {
-                       
+
+            $("#downloadbtn").click(function (e, n) {
+                 
+                $.ajax({
+                    type: "POST",
+                    url: "/DocumentViewer/DownloadDocument?documnentId=@Model.documentID",
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (response) {                    
+
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
+            });
+
+
+
+            if('@Model.status' == "Approved"){
+                $("#approvebtn").hide();
+            }
+
+
             $("#approvebtn").click(function (e, n) {
                 $('#ApprovalModal1').modal('show');
             });
             $("#approveConfirm").click(function (e, n) {
-                $('#ApprovalModal1').modal('dismiss');
+
+                $('#ApprovalModal1').modal('hide');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/DocumentViewer/ApproveDocument?documnentId=@Model.documentID",
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (response) {
+                    var $msg = $("<span><b>"+ response +"</b></span>");
+                    $("#approvedmsg").append($msg);
+                    $('#ApprovalMessage').modal('show');
+
+                    if(response == "Approved"){
+                        $("#approvebtn").hide();
+                    }
+
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
             });
 
 
@@ -816,8 +876,10 @@
                     data: data,
                     cache: false,
                 }).done(function (response) {
-                    GnerateListElement(response);
-                    $('#newCC').val('')
+                    if(response.Id != undefined){
+                        GnerateListElement(response);
+                        $('#newCC').val('')
+                    }
                 }).error(function (xhr, status, err) {
                     alert(err);
                     console.log(err);
@@ -825,11 +887,11 @@
                 return false;
             });
 
-           '<div class="form-group">'+
-	        '<span style="display: block;">Email address</span>'+
-            '<span style=" display: block;margin-left: 25px;">commment here </span>'+
-             '<span class="sub-text" style="float: right;">on March 5th, 2014</span>' +
-              '</div>'
+            '<div class="form-group">'+
+             '<span style="display: block;">Email address</span>'+
+             '<span style=" display: block;margin-left: 25px;">commment here </span>'+
+              '<span class="sub-text" style="float: right;">on March 5th, 2014</span>' +
+               '</div>'
 
 
         });

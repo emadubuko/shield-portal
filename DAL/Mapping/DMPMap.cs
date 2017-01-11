@@ -12,13 +12,15 @@ namespace DAL.Mapping
     {
         public DMPMap()
         {
+            Table("dmps");
+
             Id(x => x.Id);
             Map(x => x.DMPTitle);
-            References(x => x.TheProject).Column("TheProjectId");
+            References(x => x.TheProject).Column("TheProjectId").Not.LazyLoad();
             References(x => x.Organization).Column("OrganizationId");
             Map(x => x.StartDate);
             Map(x => x.EndDate);
-            References(x => x.CreatedBy);
+            References(x => x.CreatedBy).Not.LazyLoad();
             Map(x => x.DateCreated);
         }
     }

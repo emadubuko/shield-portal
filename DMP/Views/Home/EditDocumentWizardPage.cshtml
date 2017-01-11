@@ -76,16 +76,16 @@
                         <div class="wizard-navbar">
                             <ul class="wizard-steps">
                                 <li class="active"><a href="#ProjectProfile" data-toggle="tab" aria-expanded="false"><span>1</span> Project Profile</a></li>
-                                <li><a href="#DocumentRevisions" data-toggle="tab" aria-expanded="true"><span>2</span>Document Revision</a></li>
-                                <li><a href="#Planning" data-toggle="tab"><span>3</span>Planning</a></li>
-                                <li><a href="#DataCollection" data-toggle="tab"><span>4</span>Data Collection</a></li>
-                                <li><a href="#QualityAssurance" data-toggle="tab"><span>5</span>Quality Assurance</a></li>
-                                <li><a href="#DataCollectionProcesses" data-toggle="tab"><span>6</span>Processes</a></li>
-                                <li><a href="#DataStorage" data-toggle="tab"><span>7</span>Data Storage</a></li>
-                                <li><a href="#IntellectualPropertyCopyrightAndOwnership" data-toggle="tab"><span>8</span>Copyright</a></li>
-                                <li><a href="#DataAccessAndSharing" data-toggle="tab"><span>9</span>Data Access</a></li>
-                                <li><a href="#DataDocumentationManagementAndEntry" data-toggle="tab"><span>10</span>Documentation  Management</a></li>
-                                <li><a href="#PostProjectDataRetentionSharingAndDestruction" data-toggle="tab"><span>11</span>Data Retention</a></li>
+                                @*<li><a href="#DocumentRevisions" data-toggle="tab" aria-expanded="true"><span>2</span>Document Revision</a></li>*@
+                                <li><a href="#Planning" data-toggle="tab"><span>2</span>Planning</a></li>
+                                <li><a href="#DataCollection" data-toggle="tab"><span>3</span>Data Collection</a></li>
+                                <li><a href="#QualityAssurance" data-toggle="tab"><span>4</span>Quality Assurance</a></li>
+                                <li><a href="#DataCollectionProcesses" data-toggle="tab"><span>5</span>Processes</a></li>
+                                <li><a href="#DataStorage" data-toggle="tab"><span>6</span>Data Storage</a></li>
+                                <li><a href="#IntellectualPropertyCopyrightAndOwnership" data-toggle="tab"><span>7</span>Copyright</a></li>
+                                <li><a href="#DataAccessAndSharing" data-toggle="tab"><span>8</span>Data Access</a></li>
+                                <li><a href="#DataDocumentationManagementAndEntry" data-toggle="tab"><span>9</span>Documentation  Management</a></li>
+                                <li><a href="#PostProjectDataRetentionSharingAndDestruction" data-toggle="tab"><span>10</span>Data Retention</a></li>
                             </ul>
                         </div>
                         <hr />
@@ -210,164 +210,6 @@
                                 <!--End of ethic approval section-->
                             </div>
                             <!-- end of Project profile page-->
-
-
-                            <div class="tab-pane" id="DocumentRevisions">
-                                <h4 class="panel-title" style="margin-left: 70px;">
-                                    <b>Document Revisions</b>
-                                </h4>
-                                <hr />
-                                <div class="panel panel-default" id="Version">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Version</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="panel panel-default" id="VersionMetaData">
-                                            <div class="panel-heading clearfix">
-                                                <h4 class="panel-title">Version Metadata</h4>
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="VersionDate">Version Date</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" id="VersionDate" value="@Model.versionMetadata.VersionDate" disabled class="form-control">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="VersionNumber">Version Number</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" id="VersionNumber" disabled value="@Model.versionMetadata.VersionNumber" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--End of Version Metadata section-->
-
-                                        <div class="panel panel-default" id="VersionAuthor">
-                                            <div class="panel-heading clearfix">
-                                                <h4 class="panel-title">Version Author</h4>
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="TitleOfAuthor">Title of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Title of Author" value="@Model.versionAuthor.TitleOfAuthor" id="TitleOfAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="SurnameAuthor">Surname of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Surname of Author" value="@Model.versionAuthor.SurnameAuthor" id="SurnameAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="FirstNameOfAuthor">First Name of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="First Name of Author" value="@Model.versionAuthor.FirstNameOfAuthor" id="FirstNameOfAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="OtherNamesOfAuthor">Other Names of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Other Names of Author" value="@Model.versionAuthor.OtherNamesOfAuthor" id="OtherNamesOfAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="JobDesignation">Job Designation</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Job Designation" value="@Model.versionAuthor.JobDesignation" id="JobDesignation" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="SignatureOfAuthor">Signature of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="file" placeholder="Signature of Author" accept="image/*" id="SignatureOfAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="PhoneNumberOfAuthor">Phone number of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Phone number of Author" value="@Model.versionAuthor.PhoneNumberOfAuthor" id="PhoneNumberOfAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="EmailAddressOfAuthor">Email address of Author</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="email" placeholder="Email address of Author" value="@Model.versionAuthor.EmailAddressOfAuthor" id="EmailAddressOfAuthor" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--End of Version Author section-->
-
-                                        <div class="panel panel-default" id="Approval">
-                                            <div class="panel-heading clearfix">
-                                                <h4 class="panel-title">Approval</h4>
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="TitleofApprover">Title of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Title of Approver" id="TitleofApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="SurnameApprover">Surname of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Surname of Approver" id="SurnameApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="FirstnameofApprover">First Name of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="First Name of Approver" id="FirstnameofApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="OthernamesofApprover">Other Names of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Other Names of Approver" id="OthernamesofApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="JobdesignationApprover">Job Designation of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Job Designation of Approver" id="JobdesignationApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="SignatureofApprover">Signature of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="file" placeholder="Signature of Approver" accept="image/*" id="SignatureofApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="PhonenumberofApprover">Phone number of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Phone number of Approver" id="PhonenumberofApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2 control-label" for="EmailaddressofApprover">Email address of Approver</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="email" placeholder="Email address of Approver" id="EmailaddressofApprover" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--End of Approval section -->
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end of document revision page-->
 
 
                             <div class="tab-pane" id="Planning">

@@ -84,7 +84,6 @@ namespace DMP.ViewModel
 
         public string documentID { get; set; }
 
-
     }
 
     public class EditDocumentViewModel2
@@ -92,12 +91,15 @@ namespace DMP.ViewModel
         public virtual ICollection<Comment> Comments { get; set; }
       
         public string documentID { get; set; }
+        public DMPStatus status { get; set; }
+
         public Organizations Organization { get; internal set; }
         public Profile Initiator { get; internal set; }
 
-        //public Approval approval { get; set; }
+        public Approval approval { get; set; }
         public VersionAuthor versionAuthor { get; set; }
         public VersionMetadata versionMetadata { get; set; }
+
         public Summary summary { get; set; }
         public ReportData reportData { get; set; }
         public RolesAndResponsiblities roleNresp { get; set; }

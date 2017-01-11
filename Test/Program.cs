@@ -84,7 +84,7 @@ namespace Test
         {
             var dmpDao = new DMPDocumentDAO();
             dmpDao.GenericSearch("maryland global");
-            var yy = dmpDao.Retrieve(1);
+            //var yy = dmpDao.Retrieve(1);
 
             Console.ReadLine();
         }

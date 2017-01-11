@@ -20,6 +20,7 @@ namespace DAL.Mapping
             Map(x => x.CreationDate);
             Map(x => x.LastLoginDate);
             Map(x => x.Status);
+            Map(x => x.Title);
         }
     }
 }
