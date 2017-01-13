@@ -62,6 +62,15 @@
             .slider.round:before {
                 border-radius: 50%;
             }
+
+        .panel-default {
+            border-color: #929b17;
+        }
+            .panel-default > .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+            }
     </style>
 }
 <div class="main-content">
@@ -206,7 +215,7 @@
                                                         <option value="" disabled selected>Select applicable Ethical approval type</option>
                                                         @foreach (var item in Model.ethicalApprovalTypes)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -273,7 +282,7 @@
                                                                 <option value="" disabled selected>Select applicable area</option>
                                                                 @foreach (var item in Model.thematicAreas)
                                                                 {
-                                                                <option value="@item">@item</option>
+                                                                    <option value="@item">@item</option>
                                                                 }
                                                             </select>
                                                         </div>
@@ -291,7 +300,7 @@
                                                                 <option value="" disabled selected>Select applicable Data type</option>
                                                                 @foreach (var item in Model.reportDataType)
                                                                 {
-                                                                <option value="@item">@item</option>
+                                                                    <option value="@item">@item</option>
                                                                 }
                                                             </select>
                                                         </div>
@@ -391,7 +400,7 @@
                                                         <option value="" disabled selected>Select Forms of Data Verification</option>
                                                         @foreach (var item in Model.formsOfDataVerification)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -403,7 +412,7 @@
                                                         <option value="" disabled selected>Select Types of Data Verification</option>
                                                         @foreach (var item in Model.typesOfDataVerification)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -457,7 +466,7 @@
                                                         <option value="" disabled selected>Select Storage type</option>
                                                         @foreach (var item in Model.storagetype)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -469,7 +478,7 @@
                                                         <option value="" disabled selected>Select Storage location</option>
                                                         @foreach (var item in Model.storageLocation)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -519,7 +528,7 @@
                                                         <option value="" disabled selected>Select Non-Digital Data Types</option>
                                                         @foreach (var item in Model.nonDigitalDataTypes)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -531,7 +540,7 @@
                                                         <option value="" disabled selected>Select Non Digital Storage Location</option>
                                                         @foreach (var item in Model.nonDigitalStorageLocation)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>

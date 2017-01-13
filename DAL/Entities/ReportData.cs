@@ -11,8 +11,8 @@ namespace DAL.Entities
       public virtual string NameOfReport { get; set; }
         public virtual string ThematicArea { get; set; }
         public virtual string FrequencyOfDataCollection { get; set; }
-        public virtual string Datatype { get; set; }
-        public virtual string Dataformat { get; set; }
+        public virtual string DataType { get; set; }
+        public virtual string DataFormat { get; set; }
 
         //Data collection and reporting tools (Datasources)
         public virtual string DataCollectionAndReportingTools { get; set; }

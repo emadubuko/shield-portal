@@ -96,11 +96,8 @@ namespace DMP.Controllers
         }
 
         public ActionResult CreateNewDMP()
-        {
-            //CreateDMPViewModel _newDmpVM = new CreateDMPViewModel
-            //{
-            //    organizations = OrgsRepo()
-            //};
+        { 
+            //System.Threading.Thread.Sleep(5000);             
 
             return View(OrgsRepo());
         }
@@ -108,6 +105,10 @@ namespace DMP.Controllers
         [HttpPost]
         public ActionResult DocumentWizardPage(DAL.Entities.DMP newDMP)
         {
+            if(newDMP == null || string.IsNullOrEmpty(newDMP.DMPTitle))
+            {
+                return new HttpStatusCodeResult(400, "Please provide a title");
+            }
             MyDMP = newDMP;
             MyDMP.DateCreated = DateTime.Now;
             MyDMP.CreatedBy = initiator;

@@ -144,7 +144,7 @@ namespace Test
                     ReportData = new ReportData
                     {
                         NameOfReport = "Test report",
-                        Datatype = "dont know"
+                        DataType = "dont know"
                     },
                     RoleAndResponsibilities = new RolesAndResponsiblities
                     {
@@ -225,7 +225,7 @@ namespace Test
             JobDesignation = "Software developer",
             Password = "password",
             Surname = "Doe",
-            Username = "johndoe@missingPlace.org"
+            Username = "johndoe@missingPlace.org",  
         };
 
     }

@@ -21,8 +21,10 @@ namespace DAL.Entities
         public virtual string ProjectStartDate { get; set; }
         public virtual string ProjectEndDate { get; set; }
         public virtual string GrantReferenceNumber {get;set;}
+        public virtual string ProjectSummary { get; set; }
+        
 
-        [XmlIgnore]
+[XmlIgnore]
         public virtual Organizations Organization { get; set; }
 
     }

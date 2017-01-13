@@ -2,10 +2,16 @@
 using DAL.Entities;
 using DMP.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+using System.Data;
+using System.Reflection;
+using System.Xml.Serialization;
+using DMP.Services;
+using System.Collections.Generic;
 
 namespace DMP.Controllers
 {
@@ -14,6 +20,9 @@ namespace DMP.Controllers
         static DMPDocument Doc = null;
         CommentDAO commentDAO = null;
         DMPDocumentDAO dmpDocumentDAO = null;
+
+        PDFUtilities pdfUtil = new PDFUtilities();
+
 
         public DocumentViewerController()
         {
@@ -51,7 +60,7 @@ namespace DMP.Controllers
                     VersionDate = string.Format("{0:dd-MMM-yyyy}", Doc.CreationDate),
                     VersionNumber = "0.1"
                 };
-                
+
             }
             else
             {
@@ -92,7 +101,8 @@ namespace DMP.Controllers
                 documentID = Doc.Id.ToString(),
                 Comments = comments,
                 status = Doc.Status,
-                approval = approval
+                approval = approval,
+                ProjectSummary = thepageDoc.ProjectProfile.ProjectDetails.ProjectSummary
             };
 
             return View(docVM);
@@ -101,7 +111,7 @@ namespace DMP.Controllers
         [HttpPost]
         public ActionResult AddComment(Comment comment)
         {
-            if(comment != null && !string.IsNullOrEmpty(comment.Message))
+            if (comment != null && !string.IsNullOrEmpty(comment.Message))
             {
                 comment.DateAdded = string.Format("{0:dd-MMM-yyyy hh:mm:ss}", DateTime.Now);
                 comment.Commenter = "guest";
@@ -123,11 +133,11 @@ namespace DMP.Controllers
             {
                 return Json("empty comment");
             }
-            
+
         }
 
         [HttpPost]
-        public ActionResult DecineDocument(string documnentId = null)
+        public ActionResult DeclineDocument(string documnentId = null)
         {
             if ((documnentId == null))
             {
@@ -250,11 +260,177 @@ namespace DMP.Controllers
         [HttpPost]
         public ActionResult DownloadDocument()
         {
+            string fileName = "dmp_Example1.pdf";
+            string fullFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Downloads/" + fileName);
 
+            FileStream fs = new FileStream(fullFilename, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
 
-            return Json("ok");
+            Document doc = new Document(new Rectangle(PageSize.A4), 10f, 10f, 80f, 50f);
+            PdfWriter writer = PdfWriter.GetInstance(doc, fs);
+            writer.PageEvent = new ITextEvents();
+            doc.Open();
+             
+            pdfUtil.GeneratePDFDocument(dummyData, ref doc);
+
+            doc.Close();
+            return Json(fileName);
         }
 
+
+
+        /// <summary>
+        /// ///////////////this is dummmy data for testing
+        /// </summary>
+
+        WizardPage dummyData = new WizardPage
+        {
+            ProjectProfile = new ProjectProfile
+            {
+                EthicalApproval = new EthicsApproval
+                {
+                    EthicalApprovalForTheProject = @"Program must be of social or scientific value to either participants, the population they represent, the local community, the host country or the world.",
+                    TypeOfEthicalApproval = "General",
+                },
+                ProjectDetails = new ProjectDetails
+                {
+                    ProjectSummary = @"Strengthening HIV Field Epidemiology Infectious Disease Surveillance and Lab Diagnostic Program [SHIELD] is a 5 years Health system strengthening project to be carried out by the University of Maryland Baltimore under the Division of Epidemiology and the Division of Clinical Care and Research",
+                    AbreviationOfImplementingPartner = "CCCRN",
+                    AddressofAuthor = "Jahi district",
+                    NameOfImplementingPartner = "Center for clinical research nigeria",
+                    DocumentTitle = "SEED DMP for CCCRN",
+                    ProjectTitle = "Strengthening HIV Field Epidemiology Infectious Disease Surveillance &Lab Diagnostic Program(SHIELD)",
+                    ProjectEndDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now.AddMonths(7)),
+                    ProjectStartDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now.AddMonths(-2)),
+                    MissionPartner = "University of Maryland Baltimore"
+                },
+            },
+            DocumentRevisions = new List<DocumentRevisions>
+            {
+                new DocumentRevisions{
+                Version = new DAL.Entities.Version
+                {
+                    Approval = new Approval
+                    {
+                        SurnameApprover = "madubuko",
+                        FirstnameofApprover = "Emeka"
+                    },
+                    VersionAuthor = new VersionAuthor
+                    {
+                        SurnameAuthor = "Madubuko",
+                        FirstNameOfAuthor = "Christian"
+                    },
+                    VersionMetadata = new VersionMetadata
+                    {
+                        VersionDate = DateTime.Now.ToShortDateString(),
+                        VersionNumber = "1.0"
+                    },
+                },
+                },
+                new DocumentRevisions{
+                Version = new DAL.Entities.Version
+                {
+                    Approval = new Approval
+                    {
+                        SurnameApprover = "John",
+                        FirstnameofApprover = "Doe"
+                    },
+                    VersionAuthor = new VersionAuthor
+                    {
+                        SurnameAuthor = "Madubuko",
+                        FirstNameOfAuthor = "Christian"
+                    },
+                    VersionMetadata = new VersionMetadata
+                    {
+                        VersionDate = DateTime.Now.ToShortDateString(),
+                        VersionNumber = "2.0"
+                    },
+                },
+                }
+            },
+            Planning = new Planning
+            {
+                Summary = new Summary
+                { ProjectSummary = "TL;DR. Too long dont read" }
+            },
+            DataCollection = new DataCollection
+            {
+                Report = new Report
+                {
+                    ReportData = new ReportData
+                    {
+                        NameOfReport = "Test report",
+                        DataType = "dont know"
+                    },
+                    RoleAndResponsibilities = new RolesAndResponsiblities
+                    {
+                        CDC = "Determines the report",
+                        FMoH = "Archives",
+                        HealthFacility = "Generates the report",
+                        ImplementingPartner = "Mgic",
+                        LGA = "AMAC",
+                        StateMoH = "Non involved"
+                    }
+                },
+            },
+            QualityAssurance = new QualityAssurance
+            {
+                DataVerification = new DataVerificaton
+                {
+                    FormsOfDataVerification = "Manual",
+                    TypesOfDataVerification = "DQA"
+                },
+            },
+            DataCollectionProcesses = new DataCollectionProcesses
+            {
+                DataCollectionProcessess = "Collected by hand"
+            },
+            DataStorage = new DataStorage
+            {
+                Digital = new DigitalData
+                {
+                    Backup = "None",
+                    Storagetype = "DBs"
+                },
+                NonDigital = new NonDigitalData
+                {
+                    NonDigitalDataTypes = "Registers",
+                    StorageLocation = "File Cabinet"
+                }
+            },
+            IntellectualPropertyCopyrightAndOwnership = new IntellectualPropertyCopyrightAndOwnership
+            {
+                ContractsAndAgreements = "None",
+                Ownership = "Fully Us",
+                UseOfThirdPartyDataSources = "None Needed"
+            },
+            DataAccessAndSharing = new DataAccessAndSharing
+            {
+                DataAccess = "Everyone with Login",
+                DataSharingPolicies = "Only staff",
+                DataTransmissionPolicies = "SSL Secured",
+                SharingPlatForms = "Mobile"
+            },
+            DataDocumentationManagementAndEntry = new DataDocumentationManagementAndEntry
+            {
+                NamingStructureAndFilingStructures = "camel Case Name, arranged Alphabetical order",
+                StoredDocumentationAndDataDescriptors = "Dont know"
+            },
+            PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
+            {
+                DataToRetain = "None",
+                DigitalDataRetention = new DigitalDataRetention
+                {
+                    DataRetention = "Yes, anticipated"
+                },
+                Licensing = "MIT",
+                NonDigitalRentention = new NonDigitalDataRetention
+                {
+                    DataRention = "In place"
+                },
+                Duration = "As long as relevant",
+                PreExistingData = "Nope"
+            }
+        };
 
     }
 }

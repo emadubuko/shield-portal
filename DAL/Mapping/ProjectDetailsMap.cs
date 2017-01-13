@@ -18,6 +18,7 @@ namespace DAL.Mapping
             Map(x => x.GrantReferenceNumber);
             Map(x => x.ProjectStartDate);
             Map(x => x.ProjectEndDate);
+            Map(x => x.ProjectSummary);
             References(x => x.Organization).Column("OrganizationId");
         }
     }

@@ -4,33 +4,76 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
+    <style>
+        .Adjusted-header {
+            padding-left: 30%;
+            padding-top: 10px;
+            height: 30px;
+            background-color: #004b17;
+            color: #fff;
+        }
+
+        .panel-success {
+            border-color: #929b17;
+        }
+
+            .panel-success > .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+            }
+
+        .panel-warning {
+            border-color: #929b17;
+        }
+
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+            }
+
+        .commentBox {
+            float: right; 
+            border-color: #929b17;
+        }
+
+        .commentBox:hover {
+    color: #333;
+    background-color: #929b17;
+    border-color: #929b17;
+}
+    </style>
 }
 <div class="main-content">
-    <a href="javascript:history.back()"><i class="icon-left-open"></i><b>Go Back</b></a>
+    <a href="javascript:history.back()" class="btn btn-success btn-outline"><i class="icon-left-open"></i><b>Go Back</b></a>
+    <hr />
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-default">
+            <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
                     <h4 class="panel-title">Preview DMP Document</h4>
 
                     <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
-                        <a href="~/Home/EditDocumentWizardPage?documnentId=@Model.documentID" class="btn btn-info"><i class="fa fa-paste"></i><span>Edit</span></a>
-                        <a id="downloadbtn" class="btn btn-success"><i class="icon-down"></i><span>Download</span></a>
-                        <a id="approvebtn" class="btn btn-warning"><i class="icon-info"></i><span>Approval</span></a>
+                        <a href="~/Home/EditDocumentWizardPage?documnentId=@Model.documentID" class="btn btn-black btn-outline">
+                            <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
+                        </a>
+                        <a id="downloadbtn" class="btn btn-black btn-outline"><i class="icon-down"></i><span>Download</span></a>
+                        <a id="approvebtn" class="btn btn-black btn-outline"><i class="icon-info"></i><span>Approval</span></a>
                     </div>
-
                 </div>
+
                 <div class="panel-body">
                     <form id="previewWizard">
                         <hr />
 
                         <div id="ProjectProfile">
-                            <h4 class="panel-title" style="margin-left: 90px;">
+                            <h4 class="Adjusted-header">
                                 <b>Project Profile</b>
                             </h4>
-                            <hr />
-                            <div class="panel panel-default" id="ProjectDetails">
+
+                            <div class="panel panel-success" id="ProjectDetails">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Project Details</h4>
                                 </div>
@@ -96,7 +139,7 @@
                             </div>
                             <!--end of project details section-->
 
-                            <div class="panel panel-default" id="EthicsApproval">
+                            <div class="panel panel-success" id="EthicsApproval">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Ethics Approval</h4>
                                 </div>
@@ -121,18 +164,18 @@
                         </div>
                         <!-- end of Project profile page-->
 
-
+                        <hr />
                         <div id="DocumentRevisions">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Document Revisions</b>
                             </h4>
                             <hr />
-                            <div class="panel panel-default" id="Version">
+                            <div class="panel panel-success" id="Version">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Version</h4>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="panel panel-default" id="VersionMetaData">
+                                    <div class="panel panel-success" id="VersionMetaData">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Version Metadata</h4>
                                         </div>
@@ -141,7 +184,7 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="VersionDate">Version Date</label>
                                                     <div>
-                                                        <span id="VersionDate">@Model.versionMetadata.VersionDate</span> 
+                                                        <span id="VersionDate">@Model.versionMetadata.VersionDate</span>
                                                     </div>
                                                 </div>
 
@@ -156,7 +199,7 @@
                                     </div>
                                     <!--End of Version Metadata section-->
 
-                                    <div class="panel panel-default" id="VersionAuthor">
+                                    <div class="panel panel-success" id="VersionAuthor">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Version Author</h4>
                                         </div>
@@ -215,7 +258,7 @@
                                     </div>
                                     <!--End of Version Author section-->
 
-                                    <div class="panel panel-default" id="Approval">
+                                    <div class="panel panel-success" id="Approval">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Approval</h4>
                                         </div>
@@ -279,13 +322,13 @@
                         </div>
                         <!-- end of document revision page-->
 
-
+                        <hr />
                         <div id="Planning">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Planning</b>
                             </h4>
                             <hr />
-                            <div class="panel panel-default" id="Summary">
+                            <div class="panel panel-success" id="Summary">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Summary</h4>
                                 </div>
@@ -304,18 +347,18 @@
                         </div>
                         <!-- end of Planning page-->
 
-
+                        <hr />
                         <div id="DataCollection">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Data Collection</b>
                             </h4>
                             <hr />
-                            <div class="panel panel-default" id="Report">
+                            <div class="panel panel-success" id="Report">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Report</h4>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="panel panel-default" id="ReportData">
+                                    <div class="panel panel-success" id="ReportData">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Report Data</h4>
                                         </div>
@@ -342,13 +385,13 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="Datatype">Data Type</label>
                                                     <div>
-                                                        <span id="Datatype">@Model.reportData.Datatype</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="Datatype">@Model.reportData.DataType</span> <a class="btn btn-default commentBox"> comment</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="Dataformat">Data Format</label>
                                                     <div>
-                                                        <span id="Dataformat">@Model.reportData.Dataformat</span> <a class="btn btn-default commentBox"> comment</a>
+                                                        <span id="Dataformat">@Model.reportData.DataFormat</span> <a class="btn btn-default commentBox"> comment</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -368,7 +411,7 @@
                                     </div>
                                     <!--End of Report Data section -->
 
-                                    <div class="panel panel-default" id="RoleAndResponsibilities">
+                                    <div class="panel panel-success" id="RoleAndResponsibilities">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Role And Responsibilities</h4>
                                         </div>
@@ -421,13 +464,13 @@
                         </div>
                         <!-- end of Data Collection page-->
 
-
+                        <hr />
                         <div id="QualityAssurance">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Quality Assurance</b>
                             </h4>
                             <hr />
-                            <div class="panel panel-default" id="DataVerification">
+                            <div class="panel panel-success" id="DataVerification">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Data Verification</h4>
                                 </div>
@@ -454,7 +497,7 @@
 
 
                         <div id="DataCollectionProcesses">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Data Collection Processes</b>
                             </h4>
                             <hr />
@@ -471,11 +514,11 @@
 
 
                         <div id="DataStorage">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Data Storage</b>
                             </h4>
                             <hr />
-                            <div class="panel panel-default" id="Digital">
+                            <div class="panel panel-success" id="Digital">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Digital</h4>
                                 </div>
@@ -526,7 +569,7 @@
                             </div>
                             <!--end of Digital data section-->
 
-                            <div class="panel panel-default" id="NonDigital">
+                            <div class="panel panel-success" id="NonDigital">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Non-Digital</h4>
                                 </div>
@@ -559,7 +602,7 @@
 
 
                         <div id="IntellectualPropertyCopyrightAndOwnership">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Intellectual Property Copyright and Ownership</b>
                             </h4>
                             <hr />
@@ -588,7 +631,7 @@
 
 
                         <div id="DataAccessAndSharing">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Data Access and Sharing</b>
                             </h4>
                             <hr />
@@ -624,7 +667,7 @@
 
 
                         <div id="DataDocumentationManagementAndEntry">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Data Documentation Management and Entry</b>
                             </h4>
                             <hr />
@@ -647,7 +690,7 @@
 
 
                         <div id="PostProjectDataRetentionSharingAndDestruction">
-                            <h4 class="panel-title" style="margin-left: 70px;">
+                            <h4 class="Adjusted-header">
                                 <b>Post Project Data Retention Sharing and Destruction</b>
                             </h4>
                             <hr />
@@ -678,7 +721,7 @@
                                 </div>
                             </div>
 
-                            <div class="panel panel-default" id="DigitalDataRetention">
+                            <div class="panel panel-success" id="DigitalDataRetention">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Digital Data Retention</h4>
                                 </div>
@@ -695,7 +738,7 @@
                             </div>
                             <!--end of digital data retention-->
 
-                            <div class="panel panel-default" id="NonDigitalDataRetention">
+                            <div class="panel panel-success" id="NonDigitalDataRetention">
                                 <div class="panel-heading clearfix">
                                     <h4 class="panel-title">Non Digital Data Retention</h4>
                                 </div>
@@ -786,14 +829,14 @@
         $(document).ready(function () {
 
             $("#downloadbtn").click(function (e, n) {
-                 
+
                 $.ajax({
                     type: "POST",
                     url: "/DocumentViewer/DownloadDocument?documnentId=@Model.documentID",
                     contentType: "application/json; charset=utf-8",
                     cache: false,
-                }).done(function (response) {                    
-
+                }).done(function (filename) {
+                    window.location = '/Downloads/' + filename;
                 }).error(function (xhr, status, err) {
                     alert(err);
                     console.log(err);

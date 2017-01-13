@@ -4,12 +4,24 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
+<style>
+    .panel-warning {
+        border-color: #929b17;
+    }
+
+        .panel-warning > .panel-heading {
+            color: #FFF;
+            background-color: #929b17;
+            border-color: #929b17;
+        }
+</style>
+}
 }
 <div class="main-content">
     <div class="row">
         <div class="col-lg-12">
             <form id="dmpForm" class="validate">
-                <div class="panel panel-default" id="ProjectDetails">
+                <div class="panel panel-warning" id="ProjectDetails">
                     <div class="panel-heading clearfix">
                         <h4 class="panel-title">Begin a New  DMP</h4>
                     </div>
@@ -30,7 +42,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label" for="DMPTitle">DMP Title</label>
                                 <div class="col-sm-8">
-                                    <input type="text" placeholder="DMP Title" id="DMPTitle" title="title is required" required class="form-control">
+                                    <input type="text" placeholder="DMP Title" id="DMPTitle" required title="title is required"  class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -43,7 +55,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">End Date</label>
+                                <label class="col-sm-2 control-label" for="EndDate">End Date</label>
                                 <div class="col-sm-8">
                                     <div id="date-popup2" class="input-group date">
                                         <input type="text" required id="EndDate" placeholder="End Date" title="select an end date" data-format="D, dd MM yyyy" class="form-control">
@@ -58,7 +70,8 @@
                                         <i class="fa fa-close"></i> Cancel
                                     </a>
                                     &nbsp;&nbsp;
-                                    <button type="submit" id="dmpSubmit" class="btn btn-primary">Save and Continue</button>
+                                    <button type="submit" id="dmpSubmit" class="btn btn-success">Save and Continue</button>
+                                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                                 </div>
                             </div>
 
@@ -95,13 +108,15 @@
             $("input").attr("autocomplete", "off");
 
             $("#dmpSubmit").click(function (e, n) {
-
+                
                 var form = $(e.currentTarget.form);
                 var validator = form.validate();
                 if (form.valid()) {
                     var formdata = $('#dmpForm')[0].elements;
                     var viewModel = {};
                    
+                    $("#loadImg").show();
+                    $('dmpSubmit').disabled = true;
                     
                     $.each(formdata, function (name, formElements) {
                         viewModel[formElements.id] = formElements.value;
@@ -121,13 +136,17 @@
                     }).done(function (dmpId) {
                         console.log(dmpId);
                         window.location.replace(someUrl+'?dmpId='+dmpId);
+                        $("#loadImg").hide();
+                        $('dmpSubmit').disabled = false;
                     }).error(function (xhr, status, err) {
                         alert(err);
                         console.log(err);
+                        $("#loadImg").hide();
+                        $('dmpSubmit').disabled = false;
                     });
+                    
                     return false;
                 }
-
             });
 
         });

@@ -62,6 +62,16 @@
             .slider.round:before {
                 border-radius: 50%;
             }
+
+        .panel-default {
+            border-color: #929b17;
+        }
+
+            .panel-default > .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+            }
     </style>
 }
 <div class="main-content">
@@ -194,11 +204,11 @@
                                                         {
                                                             if (@item == Model.ethicsApproval.TypeOfEthicalApproval)
                                                             {
-                                                                <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -263,7 +273,7 @@
                                                         <label class="col-sm-2 control-label" for="ThematicArea">Thematic Area</label>
                                                         <div class="col-sm-8">
                                                             <select id="ThematicArea" class="form-control">
-                                                                <option value="" disabled >Select applicable area</option>
+                                                                <option value="" disabled>Select applicable area</option>
                                                                 @foreach (var item in Model.thematicAreas)
                                                                 {
                                                                     if (@item == Model.reportData.ThematicArea)
@@ -291,7 +301,7 @@
                                                                 <option value="" disabled>Select applicable Data type</option>
                                                                 @foreach (var item in Model.reportDataType)
                                                                 {
-                                                                    if (@item == Model.reportData.Datatype)
+                                                                    if (@item == Model.reportData.DataType)
                                                                     {
                                                                         <option value="@item" selected>@item</option>
                                                                     }
@@ -306,7 +316,7 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-2 control-label" for="Dataformat">Data Format</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" placeholder="Data Format" id="Dataformat" value="@Model.reportData.Dataformat" class="form-control">
+                                                            <input type="text" placeholder="Data Format" id="Dataformat" value="@Model.reportData.DataFormat" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -644,7 +654,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="DataSharingPolicies">Data Sharing Policies</label>
                                         <div class="col-sm-8">
-                                            <input type="text" placeholder="Data Sharing Policies"  value="@Model.dataSharing.DataSharingPolicies" id="DataSharingPolicies" class="form-control">
+                                            <input type="text" placeholder="Data Sharing Policies" value="@Model.dataSharing.DataSharingPolicies" id="DataSharingPolicies" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">

@@ -2,22 +2,34 @@
     background-color: #fff;
     font-weight: bold;
 }
-li.next.disabled{    
-    visibility:hidden
+
+li.next.disabled {
+    visibility: hidden;
 }
 
 li.removeVisibility {
     visibility: hidden;
     display: inline;
 }
+
 .smallPanelHeader {
     padding: 5px 20px;
 }
-.commentBox{
-    float:right
-}
+
+
+
 .sub-text {
-    color:#aaa;
-    font-family:verdana;
-    font-size:11px;
+    color: #aaa;
+    font-family: verdana;
+    font-size: 11px;
 }
+
+.panel-warning {
+    border-color: #929b17;
+}
+
+    .panel-warning > .panel-heading {
+        color: #FFF;
+        background-color: #929b17;
+        border-color: #929b17;
+    }

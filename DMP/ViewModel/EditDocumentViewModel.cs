@@ -96,6 +96,7 @@ namespace DMP.ViewModel
         public Organizations Organization { get; internal set; }
         public Profile Initiator { get; internal set; }
 
+        public string ProjectSummary { get; set; }
         public Approval approval { get; set; }
         public VersionAuthor versionAuthor { get; set; }
         public VersionMetadata versionMetadata { get; set; }
