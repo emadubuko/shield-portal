@@ -11,7 +11,24 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    <style>
+        .page-sidebar {
+            background-color:#fff;
+            border-bottom-color:#929b17;
+            color:#929b17;
+        }
+        ul.main-menu > li:hover > a {
+            color: #929b17;
+            font-weight:bold;
+        }
+         .title:hover{
+             font-weight:bold;
+         }
+        ul.main-menu li a {
+            color: #929b17;
+        }
+         
+    </style>
     @if (IsSectionDefined("AddToHead"))
     {
         @RenderSection("AddToHead", required: false)
@@ -52,12 +69,20 @@
                 <!-- Main navigation -->
                 <ul id="side-nav" class="main-menu navbar-collapse collapse">
                     <li class="navigation-header">Main</li>
-                    <li><a href=@Url.Action("index","Home")><i class="icon-gauge"></i><span class="title">Dashboard</span></a></li>
+                    <li><a href=@Url.Action("index","Home")><i class="icon-gauge">
+                        </i><span class="title">Dashboard</span></a></li>
                     <li class="has-sub">
-                        <a href=@Url.Action("index","Organization")><i class="icon-layout"></i><span class="title">Implementing partners</span></a>
+                        <a style="cursor:pointer"><i class="icon-layout"></i><span class="title">Implementing partners</span></a>
                         <ul class="nav collapse">
-                            <li><a href=@Url.Action("Create","Organization")><span class="title">Create new Organization </span></a></li>
+                            <li><a href=@Url.Action("index","Organization")><span class="title">View IPs</span></a></li>
+                            <li><a href=@Url.Action("CreateOrganization","Organization")><span class="title">Create New IP </span></a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("index", "Profile")>
+                            <i class="icon-gauge">
+                            </i><span class="title">Profile</span>
+                        </a>
                     </li>
                 </ul>
                 <!-- /main navigation -->

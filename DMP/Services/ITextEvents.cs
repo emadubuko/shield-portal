@@ -42,6 +42,7 @@ namespace DMP.Services
             {
                 PrintTime = DateTime.Now;
                 bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+               
                 cb = writer.DirectContent;
                 headerTemplate = cb.CreateTemplate(100, 100);
                 footerTemplate = cb.CreateTemplate(50, 50);
@@ -71,6 +72,7 @@ namespace DMP.Services
             {            
                 cb.BeginText();
                 cb.SetFontAndSize(bf, 18);
+                cb.SetColorFill(new BaseColor(79, 129, 189));
                 cb.SetTextMatrix(document.PageSize.GetRight(300), document.PageSize.GetTop(45));
                 cb.ShowText(text);
                 cb.EndText();

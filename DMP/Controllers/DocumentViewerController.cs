@@ -258,8 +258,20 @@ namespace DMP.Controllers
         }
 
         [HttpPost]
-        public ActionResult DownloadDocument()
+        public ActionResult DownloadDocument(string documnentId)
         {
+            if ((documnentId == null))
+            {
+                return new HttpStatusCodeResult(400, "invalid documnent Id");
+            }
+            Guid dGuid = new Guid(documnentId);
+            Doc = dmpDocumentDAO.Retrieve(dGuid);
+
+            if (Doc == null)
+            {
+                return new HttpStatusCodeResult(400, "invalid documnent Id");
+            }
+
             string fileName = "dmp_Example1.pdf";
             string fullFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Downloads/" + fileName);
 
@@ -270,7 +282,7 @@ namespace DMP.Controllers
             writer.PageEvent = new ITextEvents();
             doc.Open();
              
-            pdfUtil.GeneratePDFDocument(dummyData, ref doc);
+            pdfUtil.GeneratePDFDocument(Doc.Document, ref doc);
 
             doc.Close();
             return Json(fileName);

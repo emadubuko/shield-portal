@@ -4,19 +4,13 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
+    @Styles.Render("~/bundles/mysiteCss");
 <style>
-    .panel-warning {
-        border-color: #929b17;
-    }
+          
 
-        .panel-warning > .panel-heading {
-            color: #FFF;
-            background-color: #929b17;
-            border-color: #929b17;
-        }
 </style>
 }
-}
+
 <div class="main-content">
     <div class="row">
         <div class="col-lg-12">
@@ -28,7 +22,7 @@
                     <div class="panel-body">
                         <div class="form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label" for="organization">Organization</label>
+                                <label class="col-sm-2 control-label" for="Organization">Organization</label>
                                 <div class="col-sm-8">
                                     <select id="Organization" class="form-control" required title="specify your organization">
                                         <option value="" disabled selected>Select your Organization</option>
@@ -66,14 +60,16 @@
 
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <a href='@Url.Action("index","Home")' class="btn btn-danger" style="background-color: #d9534f;border-color: #d43f3a;">
-                                        <i class="fa fa-close"></i> Cancel
-                                    </a>
-                                    &nbsp;&nbsp;
-                                    <button type="submit" id="dmpSubmit" class="btn btn-success">Save and Continue</button>
-                                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                                    </div>
+                                    <div>
+                                        <a href='@Url.Action("index","Home")' class="btn btn-default" style="color:#929b17">
+                                            <i class="fa fa-close"></i> Cancel
+                                        </a>
+                                        &nbsp;&nbsp;
+                                        <button type="submit" id="dmpSubmit" class="btn btn-warning">Save and Continue</button>
+                                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                                    </div>
                                 </div>
-                            </div>
 
 
                         </div>

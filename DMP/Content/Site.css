@@ -16,8 +16,6 @@ li.removeVisibility {
     padding: 5px 20px;
 }
 
-
-
 .sub-text {
     color: #aaa;
     font-family: verdana;
@@ -27,9 +25,27 @@ li.removeVisibility {
 .panel-warning {
     border-color: #929b17;
 }
-
     .panel-warning > .panel-heading {
         color: #FFF;
         background-color: #929b17;
         border-color: #929b17;
     }
+
+     .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+                padding: 5px 50px;
+            }
+
+form{
+    color:#929b17;
+}
+.form-control{
+    border-color:#929b17;
+}
+ .btn-warning{
+  background-color: #929b17;
+   border-color: #929b17;
+        }  
+ 

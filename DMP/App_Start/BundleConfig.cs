@@ -80,6 +80,8 @@ namespace DMP
                          "~/plugins/select2/css/select2.css",
                          "~/css/integral-forms.css"
                          ));
+            bundles.Add(new StyleBundle("~/bundles/mysiteCss").Include(
+                "~/Content/Site.css"));
         }
     }
 }

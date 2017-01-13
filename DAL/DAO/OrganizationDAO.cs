@@ -9,5 +9,6 @@ namespace DAL.DAO
 {
     public class OrganizationDAO : BaseDAO<Organizations, int>
     {
+
     }
 }

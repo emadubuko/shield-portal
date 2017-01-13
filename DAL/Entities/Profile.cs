@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace DAL.Entities
 {
@@ -26,10 +27,15 @@ namespace DAL.Entities
             }
         }
 
+        [XmlIgnore]
         public virtual DateTime CreationDate { get; set; }
+        [XmlIgnore]
         public virtual DateTime LastLoginDate { get; set; }
+
+        [XmlIgnore]
         public virtual ProfileStatus Status { get; set; }
 
+        [XmlIgnore]
         public virtual IList<DMPDocument> DMPDocuments { get; set; }
     }
 

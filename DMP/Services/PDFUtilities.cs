@@ -549,7 +549,7 @@ namespace DMP.Services
 
             foreach (var info in infos)
             {
-                pp = new Paragraph(new Chunk(PasCaseConversion(info.Name), font8));
+                pp = new Paragraph(new Chunk(DAL.Utilities.Utilities.PasCaseConversion(info.Name), font8));
                 pp.IndentationLeft = 20;
                 pp.PaddingTop = 10f;
                 pp.SpacingAfter = 5f;
@@ -631,12 +631,7 @@ namespace DMP.Services
             return hd;
         }
 
-        public string PasCaseConversion(string PascalWord)
-        {
-            System.Text.RegularExpressions.Regex _regex = new System.Text.RegularExpressions.Regex("([A-Z]+[a-z]+)");
-            string result = _regex.Replace(PascalWord, m => (m.Value.Length > 3 ? m.Value : m.Value.ToLower()) + " ");
-            return result;
-        }
+        
 
         /// <summary>
         /// not yet working
