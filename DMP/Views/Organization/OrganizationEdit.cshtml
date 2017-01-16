@@ -1,0 +1,127 @@
+﻿@model  DAL.Entities.Organizations
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    @Styles.Render("~/bundles/mysiteCss")
+     
+<script src="~/Scripts/Ultilities.js"></script>
+}
+
+<div class="main-content">
+    <a href="javascript:history.back()" class="btn btn-default" style="color:#929b17"><i class="icon-left-open"></i><b>Go Back</b></a>
+    <hr />
+
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-8">
+           
+                <div class="panel panel-warning">
+                    <div class="panel-heading clearfix">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-8">
+                            <h4 class="panel-title">Edit IP Details</h4>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form id="mainform" class="validate">
+                            <div class="form-horizontal">
+                                @foreach (var field in typeof(DAL.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                {
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <div class="col-sm-9">
+                                            @if (field.Name == "OrganizationType")
+                                            {
+                                                <select id="@field.Name" class="form-control" required>
+                                                    @foreach (var orgType in Enum.GetValues(typeof(DAL.Entities.OrganizationType)))
+                                                    {
+                                                        if (Convert.ToString(orgType) == Convert.ToString(field.GetValue(Model)))
+                                                        {
+                                                            <option value="@orgType" selected>@DAL.Utilities.Utilities.PasCaseConversion(orgType)</option>
+                                                        }
+                                                        <option value="@orgType">@DAL.Utilities.Utilities.PasCaseConversion(orgType)</option>
+                                                    }
+                                                </select>
+                                            }
+                                            else if (field.PropertyType == typeof(byte[]))
+                                            {
+                                                <input type="file" onchange="imagePreview()" id="@field.Name" accept="image/*" class="form-control">
+                                            }
+                                            else
+                                            {
+                                                <input type="text" id="@field.Name" value="@field.GetValue(Model)" required title="required field" class="form-control">
+                                            }
+
+                                        </div>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-8">
+                                        <a href='@Url.Action("index","Organization")' class="btn btn-default">
+                                            <i class="fa fa-close"></i> Cancel
+                                        </a>
+                                        &nbsp;&nbsp;
+                                        <button type="submit" id="dmpSubmit" class="btn btn-warning">Update</button>
+                                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+        </div>
+                </div>
+                          
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/dataTables")
+    @Scripts.Render("~/bundles/loader")
+<script>
+
+    $("#dmpSubmit").click(function (e, n) {
+
+        e.preventDefault();
+
+            var formdata = $('#mainform')[0].elements;
+            var viewModel = {};
+
+            $("#loadImg").show();
+            $('#dmpSubmit').disabled = true;
+
+            $.each(formdata, function (name, formElements) {
+                if(formElements.id == "Logo" && base64Image != undefined){
+                    viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,","");
+                }else{
+                    viewModel[formElements.id] = formElements.value;
+                }
+            });
+            viewModel["Id"] = @Model.Id;
+
+            var someUrl = '@Url.Action("EditOrganization", "Organization")';
+            $.ajax({
+                type: "POST",
+                url: someUrl,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(viewModel),
+                cache: false,
+            }).done(function (dmpId) {
+                console.log(dmpId);
+                window.location.replace('@Url.Action("index", "Organization")');
+                $("#loadImg").hide();
+                $('#dmpSubmit').disabled = false;
+            }).error(function (xhr, status, err) {
+                alert(err);
+                console.log(err);
+                window.location.replace('@Url.Action("index", "Organization")');
+                $("#loadImg").hide();
+                $('#dmpSubmit').disabled = false;
+            });
+
+            return false;
+    });
+    </script>
+}

@@ -146,6 +146,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\DMPController.cs" />
+    <Compile Include="Controllers\DMPDocumentController.cs" />
     <Compile Include="Controllers\DocumentViewerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
@@ -816,6 +818,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\loader.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Ultilities.js" />
     <Content Include="Scripts\_old\bootstrap.js" />
     <Content Include="Scripts\_old\bootstrap.min.js" />
     <Content Include="Content\integral-core.css.map" />
@@ -888,6 +891,8 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
+    <Content Include="Views\DMP\CreateDMP.cshtml" />
+    <Content Include="Views\DMPDocument\WizardPages.cshtml" />
     <None Include="Views\Home\DMPDetails.cshtml" />
     <Content Include="Views\Home\CreateNewDMP.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -899,6 +904,9 @@
     <Content Include="Views\Organization\OrganizationDetail.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\CreateProfile.cshtml" />
+    <Content Include="Views\Profile\ProfileDetail.cshtml" />
+    <Content Include="Views\Organization\OrganizationEdit.cshtml" />
+    <Content Include="Views\Profile\profileEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

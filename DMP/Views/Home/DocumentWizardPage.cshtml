@@ -762,7 +762,7 @@
             });
             $("input").attr("autocomplete", "off");
 
-            var project;
+            var projectId;
             var documentId;
             function SaveAndContinue(e, a) {
 
@@ -783,16 +783,19 @@
                     cache: false,
                 }).done(function (result) {
 
-                    if (result.Id == undefined) {
+                    if (result.documentId == undefined) {
                         alert(result);
                     }
                     else {
                         if (e.currentTarget.id === "finishbtn") {
-                            window.location.href = "/DocumentViewer/DocumentPreview?documnentId=" + result.Id;
+                            window.location.href = "/DocumentViewer/DocumentPreview?documnentId=" + result.documentId;
                         }
 
-                        project = result.TheDMP.TheProject;
-                        documentId = result.Id;
+                        projectId = result.projectId;
+                        documentId = result.documentId;
+
+                        //project = result.TheDMP.TheProject;
+                        //documentId = result.Id;
 
 
                         var nxtcss = $("#nextbtn").attr('class');
@@ -807,7 +810,7 @@
             }
 
             $("#SaveNext,#finishbtn").click(function (e, n) {
-                if (project == undefined) {
+                if (projectId == undefined) {
                     var theUrl = '@Url.Action("SaveNext", "Home")';
                     SaveAndContinue(e, theUrl);
                 }

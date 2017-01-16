@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class RolesAndResponsiblities  
+    public class RolesAndResponsiblities
     {
-        public virtual string HealthFacility { get; set; }
-        public virtual string ImplementingPartner { get; set; }
-        public virtual string LGA { get; set; }
-        public virtual string StateMoH { get; set; }
-        public virtual string CDC { get; set; }
-        public virtual string FMoH { get; set; }
-
+        public virtual string HealthFacilityLevel { get; set; }
+        public virtual string AggregationLevel { get; set; }
+        public virtual string CentralNationalLevel { get; set; }
     }
 }

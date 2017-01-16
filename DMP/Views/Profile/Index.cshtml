@@ -24,7 +24,7 @@
 
                     <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
                         <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-outline">
-                            <i class="fa fa-plus"></i> Create New Profile
+                            <i class="icon-user-add"></i> Create New Profile
                         </a>
                         <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
 
@@ -45,7 +45,7 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr onclick="window.document.location='/Profile/ProfileDetail?OrgId=@item.Id'" style="cursor: pointer;">
+                                    <tr onclick="window.document.location='/Profile/ProfileDetail?profileId=@item.Id'" style="cursor: pointer;">
                                         <td>@item.Id</td>
                                         <td>@item.FullName</td>
                                         <td>@item.ContactEmailAddress</td>

@@ -12,8 +12,10 @@ namespace DMP.Services
     public class PDFUtilities
     {
         BaseColor fadedBlue = new BaseColor(79, 129, 189);
-        public void GeneratePDFDocument(WizardPage pageData, ref Document doc)
+        public void GeneratePDFDocument(DMPDocument  dmpDoc, ref Document doc)
         {
+            WizardPage pageData = dmpDoc.Document;
+
             Font pageFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
             // FontFactory.GetFont("Corbel", 7);
 
@@ -29,22 +31,35 @@ namespace DMP.Services
             istPage.IndentationRight = 55f;
             doc.Add(istPage);
 
-            for(int i=0;i<=25; i++)
+            for(int i=0;i<=8; i++)
             {
                 doc.Add(new Paragraph("\n"));
             }
-            
-            istPage = new Paragraph("IP DATA MANAGEMENT PLAN", istPageFont26);
-            istPage.Alignment = Element.ALIGN_RIGHT;
-            istPage.IndentationRight = 55f;
-            doc.Add(istPage);
 
-            istPage = new Paragraph("PROJECT", istPageFont18);
-            istPage.Alignment = Element.ALIGN_RIGHT;
-            istPage.IndentationRight = 55f;
+            Image docLogo = GeneratePDFImage(dmpDoc.TheDMP.Organization.Logo);
+            doc.Add(docLogo);
+            
+            istPage = new Paragraph(dmpDoc.TheDMP.Organization.Name, istPageFont20);
+            istPage.Alignment = Element.ALIGN_CENTER;
+            //istPage.IndentationRight = 85f;
             doc.Add(istPage);
 
             for (int i = 0; i <= 3; i++)
+            {
+                doc.Add(new Paragraph("\n"));
+            }
+
+            istPage = new Paragraph("DATA MANAGEMENT PLAN", istPageFont20);
+            istPage.Alignment = Element.ALIGN_CENTER;
+            //istPage.IndentationRight = 85f;
+            doc.Add(istPage);
+
+            //istPage = new Paragraph("PROJECT", istPageFont18);
+            //istPage.Alignment = Element.ALIGN_RIGHT;
+            //istPage.IndentationRight = 55f;
+            //doc.Add(istPage);
+
+            for (int i = 0; i <= 6; i++)
             {
                 doc.Add(new Paragraph("\n"));
             }
@@ -63,6 +78,14 @@ namespace DMP.Services
             istPage.IndentationRight = 55f;
             doc.Add(istPage);
 
+            ////////revision
+            doc.NewPage();
+            var revisionTable = CreateDocumentRevisionPage(pageData.DocumentRevisions);
+            foreach (var t in revisionTable)
+            {
+                doc.Add(t);
+            }
+
 
             doc.NewPage();
             Paragraph projectHeader = new Paragraph("PROJECT PROFILE", pageFont);
@@ -71,13 +94,7 @@ namespace DMP.Services
             doc.Add(projectHeader);// add paragraph to the document
 
             doc.Add(CreateProjectProfileTable(pageData.ProjectProfile)); // add pdf table to the document
-
-            doc.NewPage();
-            var revisionTable =CreateDocumentRevisionPage(pageData.DocumentRevisions);
-            foreach (var t in revisionTable)
-            {
-                doc.Add(t);
-            }
+             
 
             doc.NewPage();
             doc.Add(DataCollection(pageData.DataCollectionProcesses, pageData.DataCollection, pageData.QualityAssurance));
@@ -103,6 +120,31 @@ namespace DMP.Services
             //List<dynamic> dataList = new List<dynamic> { postDataPolicy, postDataPolicy.DigitalDataRetention, postDataPolicy.NonDigitalRentention };
             //doc.Add(CreatePageTable(dataList, "Some test"));
 
+        }
+
+        private Image GeneratePDFImage(byte[] imageBytes)
+        {
+            iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(imageBytes, true); // System.Drawing.Imaging.ImageFormat.Jpeg);
+
+            if (pic.Height > pic.Width)
+            {
+                //Maximum height is 800 pixels.
+                float percentage = 0.0f;
+                percentage = 700 / pic.Height;
+                pic.ScalePercent(percentage * 100);
+            }
+            else
+            {
+                //Maximum width is 600 pixels.
+                float percentage = 0.0f;
+                percentage = 540 / pic.Width;
+                pic.ScalePercent(percentage * 100);
+            }
+
+            //pic.Border = iTextSharp.text.Rectangle.BOX;
+            //pic.BorderColor = iTextSharp.text.BaseColor.BLACK;
+            //pic.BorderWidth = 3f;
+            return pic;
         }
 
         private PdfPTable PostDataRetention(PostProjectDataRetentionSharingAndDestruction postDataPolicy)
@@ -207,8 +249,8 @@ namespace DMP.Services
             PdfPTable body = new PdfPTable(2);
 
             GenerateTable(DCP, ref body);
-            GenerateTable(dCollection.Report.ReportData, ref body);
-            GenerateTable(dCollection.Report.RoleAndResponsibilities, ref body);
+            //GenerateTable(dCollection.Report.ReportData, ref body);
+            //GenerateTable(dCollection.Report.RoleAndResponsibilities, ref body);
             GenerateTable(QA, ref body);
 
             PdfPCell bodyCell = new PdfPCell(body);

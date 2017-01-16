@@ -56,10 +56,10 @@
                     <h4 class="panel-title">Preview DMP Document</h4>
 
                     <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
-                        <a href="~/Home/EditDocumentWizardPage?documnentId=@Model.documentID" class="btn btn-black btn-outline">
+                        <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-black btn-outline">
                             <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
                         </a>
-                        <a id="downloadbtn" class="btn btn-black btn-outline"><i class="icon-down"></i><span>Download</span></a>
+                        <a id="downloadbtn" class="btn btn-black btn-outline"><i class="icon-download"></i><span>Download</span></a>
                         <a id="approvebtn" class="btn btn-black btn-outline"><i class="icon-info"></i><span>Approval</span></a>
                     </div>
                 </div>
@@ -68,104 +68,100 @@
                     <form id="previewWizard">
                         <hr />
 
-                        <div id="ProjectProfile">
-                            <h4 class="Adjusted-header">
-                                <b>Project Profile</b>
-                            </h4>
-
-                            <div class="panel panel-success" id="ProjectDetails">
-                                <div class="panel-heading clearfix">
-                                    <h4 class="panel-title">Project Details</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="col-sm-3">Project Title</label>
-                                            <span id="ProjectTitle">@Model.projectDetails.ProjectTitle</span>
-                                            <a class="btn btn-default commentBox"> comment</a>
-                                        </div>
-                                        @*<div class="form-group">
-                                                <label class="col-sm-3">Project Logo</label>
-                                                <div>
-                                                    <input type="file" accept="image/*" id="ProjectLogo">
-                                                </div>
-                                            </div>*@
-                                        <div class="form-group">
-                                            <label class="col-sm-3">Document Title</label>
-                                            <span id="DocumentTitle">@Model.projectDetails.DocumentTitle </span><a class="btn btn-default commentBox"> comment</a>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="organization">Organization</label>
-                                            <span id="organization">@Model.projectDetails.NameOfImplementingPartner </span><a class="btn btn-default commentBox"> comment</a>
-
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="AddressofAuthor">Address of Author</label>
-                                            <div>
-                                                <span id="AddressofAuthor">@Model.projectDetails.AddressofAuthor</span>
+                        <div class="panel panel-success" id="ProjectProfile">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">Project Profile</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel panel-success" id="ProjectDetails">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Project Details</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3">Project Title</label>
+                                                <span id="ProjectTitle">@Model.projectDetails.ProjectTitle</span>
                                                 <a class="btn btn-default commentBox"> comment</a>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="MissionPartner">Mission Partner</label>
-                                            <div>
-                                                <span id="MissionPartner">@Model.projectDetails.NameOfImplementingPartner</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <div class="form-group">
+                                                <label class="col-sm-3">Document Title</label>
+                                                <span id="DocumentTitle">@Model.projectDetails.DocumentTitle </span><a class="btn btn-default commentBox"> comment</a>
                                             </div>
-                                        </div>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="ProjectStartDate">Project Start Date</label>
-                                            <div>
-                                                <span id="ProjectStartDate">@Model.projectDetails.ProjectStartDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="organization">Organization</label>
+                                                <span id="organization">@Model.projectDetails.NameOfImplementingPartner </span>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3">Project End Date</label>
                                             <div>
-                                                <span id="ProjectEndDate">@Model.projectDetails.ProjectEndDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                                <label class="col-sm-3" ></label>
+                                                <img src='@(Model.projectDetails.Organization ==null || Model.projectDetails.Organization.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.projectDetails.Organization.Logo))' height="100">
                                             </div>
-                                        </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="AddressOfOrganization">Address of Organization</label>
+                                                <div>
+                                                    <span id="AddressOfOrganization">@Model.projectDetails.AddressOfOrganization</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="MissionPartner">Mission Partner</label>
+                                                <div>
+                                                    <span id="MissionPartner">@Model.projectDetails.NameOfImplementingPartner</span>
+                                                </div>
+                                            </div>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="GrantReferenceNumber">Grant Reference Number</label>
-                                            <div>
-                                                <span id="GrantReferenceNumber">@Model.projectDetails.GrantReferenceNumber</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="ProjectStartDate">Project Start Date</label>
+                                                <div>
+                                                    <span id="ProjectStartDate">@Model.projectDetails.ProjectStartDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3">Project End Date</label>
+                                                <div>
+                                                    <span id="ProjectEndDate">@Model.projectDetails.ProjectEndDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="GrantReferenceNumber">Grant Reference Number</label>
+                                                <div>
+                                                    <span id="GrantReferenceNumber">@Model.projectDetails.GrantReferenceNumber</span> <a class="btn btn-default commentBox"> comment</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!--end of project details section-->
+                                <!--end of project details section-->
 
-                            <div class="panel panel-success" id="EthicsApproval">
-                                <div class="panel-heading clearfix">
-                                    <h4 class="panel-title">Ethics Approval</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="EthicalApprovalForTheProject">Ethical Approval For the Project</label>
-                                            <div>
-                                                <span id="EthicalApprovalForTheProject">@Model.ethicsApproval.EthicalApprovalForTheProject</span> <a class="btn btn-default commentBox"> comment</a>
+                                <div class="panel panel-success" id="EthicsApproval">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Ethics Approval</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="EthicalApprovalForTheProject">Ethical Approval For the Project</label>
+                                                <div>
+                                                    <span id="EthicalApprovalForTheProject">@Model.ethicsApproval.EthicalApprovalForTheProject</span> <a class="btn btn-default commentBox"> comment</a>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="TypeOfEthicalApproval">Type of Ethical Approval</label>
-                                            <div>
-                                                <span id="TypeOfEthicalApproval">@Model.ethicsApproval.TypeOfEthicalApproval</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="TypeOfEthicalApproval">Type of Ethical Approval</label>
+                                                <div>
+                                                    <span id="TypeOfEthicalApproval">@Model.ethicsApproval.TypeOfEthicalApproval</span> <a class="btn btn-default commentBox"> comment</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!--End of ethic approval section-->
                             </div>
-                            <!--End of ethic approval section-->
-                        </div>
+                            </div>
                         <!-- end of Project profile page-->
 
                         <hr />
-                        <div id="DocumentRevisions">
+                        <div class="panel panel-success" id="DocumentRevisions">
                             <h4 class="Adjusted-header">
                                 <b>Document Revisions</b>
                             </h4>
@@ -236,11 +232,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="form-group">
-                                                        <label class="col-sm-3" for="SignatureOfAuthor">Signature of Author</label>
-                                                        <div>
-                                                            <input type="file" placeholder="Signature of Author" accept="image/*" id="SignatureOfAuthor">
-                                                        </div>
-                                                    </div>*@
+                                        <label class="col-sm-3" for="SignatureOfAuthor">Signature of Author</label>
+                                        <div>
+                                            <input type="file" placeholder="Signature of Author" accept="image/*" id="SignatureOfAuthor">
+                                        </div>
+                                    </div>*@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="PhoneNumberOfAuthor">Phone number of Author</label>
                                                     <div>
@@ -295,11 +291,11 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="form-group">
-                                                        <label class="col-sm-3" for="SignatureofApprover">Signature of Approver</label>
-                                                        <div>
-                                                            <input type="file" placeholder="Signature of Approver" accept="image/*" id="SignatureofApprover">
-                                                        </div>
-                                                    </div>*@
+                                        <label class="col-sm-3" for="SignatureofApprover">Signature of Approver</label>
+                                        <div>
+                                            <input type="file" placeholder="Signature of Approver" accept="image/*" id="SignatureofApprover">
+                                        </div>
+                                    </div>*@
                                                 <div class="form-group">
                                                     <label class="col-sm-3" for="PhonenumberofApprover">Phone number of Approver</label>
                                                     <div>
@@ -323,7 +319,7 @@
                         <!-- end of document revision page-->
 
                         <hr />
-                        <div id="Planning">
+                        <div class="panel panel-success" id="Planning">
                             <h4 class="Adjusted-header">
                                 <b>Planning</b>
                             </h4>
@@ -337,7 +333,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="ProjectSummary">Project Summary</label>
-                                                <span id="ProjectSummary">@Model.summary.ProjectSummary</span> <a class="btn btn-default commentBox"> comment</a>
+                                                <span id="ProjectSummary">@Model.summary.ProjectObjectives</span> <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
                                     </div>
@@ -347,156 +343,7 @@
                         </div>
                         <!-- end of Planning page-->
 
-                        <hr />
-                        <div id="DataCollection">
-                            <h4 class="Adjusted-header">
-                                <b>Data Collection</b>
-                            </h4>
-                            <hr />
-                            <div class="panel panel-success" id="Report">
-                                <div class="panel-heading clearfix">
-                                    <h4 class="panel-title">Report</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="panel panel-success" id="ReportData">
-                                        <div class="panel-heading clearfix">
-                                            <h4 class="panel-title">Report Data</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="NameOfReport">Name of Report</label>
-                                                    <div>
-                                                        <span id="NameOfReport">@Model.reportData.NameOfReport</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="ThematicArea">Thematic Area</label>
-                                                    <div>
-                                                        <span id="ThematicArea">@Model.reportData.ThematicArea</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="FrequencyOfDataCollection">Frequency of Data Collection</label>
-                                                    <div>
-                                                        <span id="FrequencyOfDataCollection">@Model.reportData.FrequencyOfDataCollection</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="Datatype">Data Type</label>
-                                                    <div>
-                                                        <span id="Datatype">@Model.reportData.DataType</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="Dataformat">Data Format</label>
-                                                    <div>
-                                                        <span id="Dataformat">@Model.reportData.DataFormat</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="DataCollectionAndReportingTools">Data Collection and Reporting Tools</label>
-                                                    <div>
-                                                        <span id="DataCollectionAndReportingTools">@Model.reportData.DataCollectionAndReportingTools</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                @*<div class="form-group">
-                                                        <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
-                                                        <div>
-                                                            <input type="file" placeholder="Data Flow Chart" accept="image/*" id="DataFlowChart">
-                                                        </div>
-                                                    </div>*@
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--End of Report Data section -->
-
-                                    <div class="panel panel-success" id="RoleAndResponsibilities">
-                                        <div class="panel-heading clearfix">
-                                            <h4 class="panel-title">Role And Responsibilities</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="HealthFacility">Health Facility</label>
-                                                    <div>
-                                                        <span id="HealthFacility">@Model.roleNresp.HealthFacility</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="ImplementingPartner">Implementing Partner</label>
-                                                    <div>
-                                                        <span placeholder="Implementing Partner" id="ImplementingPartner">@Model.roleNresp.ImplementingPartner</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="LGA">LGA</label>
-                                                    <div>
-                                                        <span id="LGA">@Model.roleNresp.LGA</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="StateMoH">State MoH</label>
-                                                    <div>
-                                                        <span id="StateMoH">@Model.roleNresp.StateMoH</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="CDC">CDC</label>
-                                                    <div>
-                                                        <span id="CDC">@Model.roleNresp.CDC</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="FMoH">FMoH</label>
-                                                    <div>
-                                                        <span id="FMoH">@Model.roleNresp.FMoH</span> <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--End of RoleNResponsibilities section-->
-                                </div>
-                            </div>
-                            <!--end of Report-->
-                        </div>
-                        <!-- end of Data Collection page-->
-
-                        <hr />
-                        <div id="QualityAssurance">
-                            <h4 class="Adjusted-header">
-                                <b>Quality Assurance</b>
-                            </h4>
-                            <hr />
-                            <div class="panel panel-success" id="DataVerification">
-                                <div class="panel-heading clearfix">
-                                    <h4 class="panel-title">Data Verification</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="FormsOfDataVerification">Forms of Data Verification</label>
-                                            <div>
-                                                <span id="FormsOfDataVerification">@Model.dataVerification.FormsOfDataVerification</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="TypesOfDataVerification">Types of Data Verification</label>
-                                            <div>
-                                                <span id="TypesOfDataVerification">@Model.dataVerification.TypesOfDataVerification</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--End of Data verificaton section-->
-                        </div>
-                        <!-- end of Quality Assurance page-->
-
-
-                        <div id="DataCollectionProcesses">
+                        <div class="panel panel-success" id="DataCollectionProcesses">
                             <h4 class="Adjusted-header">
                                 <b>Data Collection Processes</b>
                             </h4>
@@ -512,8 +359,127 @@
                         </div>
                         <!-- end of Data Collection Processes page-->
 
+                        <hr />
+                        <div class="panel panel-success" id="DataCollection">
+                            <h4 class="Adjusted-header">
+                                <b>Data Collection</b>
+                            </h4>
+                            <hr />
+                            <div class="panel-body">
+                                <div class="panel panel-success" id="Data">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Data</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.DataCollection).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                            <div class="form-group">
+                                                <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                <div>
+                                                    <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataCollection))</span>
+                                                    <a class="btn btn-default commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end of Data Collection page-->
 
-                        <div id="DataStorage">
+                        <hr />
+                        <div class="panel panel-success" id="MonitoringAndEvaluation">
+                            <h4 class="Adjusted-header">
+                                <b>Monitorig and Evaluation Systems</b>
+                            </h4>
+                            <hr />
+                            <div class="panel-body">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
+                                        <div>
+                                            <img id="DataFlowChart">
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-success" id="RolesAndResponsiblities">
+                                        <div class="panel-heading clearfix">
+                                            <h4 class="panel-title">Roles And Responsiblities</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="form-horizontal">
+                                                @foreach (var field in typeof(DAL.Entities.RolesAndResponsiblities).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div>
+                                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.roleNresp))</span>
+                                                        <a class="btn btn-default commentBox"> comment</a>
+                                                    </div>
+                                                </div>
+                                            }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--roles and responsibilty-->
+
+                                    <div class="panel panel-success" id="Trainings">
+                                        <div class="panel-heading clearfix">
+                                            <h4 class="panel-title">Trainings</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="form-horizontal">
+                                                @foreach (var field in typeof(DAL.Entities.Trainings).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div>
+                                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.Trainings))</span>
+                                                        <a class="btn btn-default commentBox"> comment</a>
+                                                    </div>
+                                                </div>
+                                            }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Trainings-->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end of M&E page-->
+
+
+                        <hr />
+                        <div class="panel panel-success" id="QualityAssurance">
+                            <h4 class="Adjusted-header">
+                                <b>Quality Assurance</b>
+                            </h4>
+                            <hr />
+                            <div class="panel panel-success" id="DataVerification">
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title">Data Verification</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="form-horizontal">
+                                        @foreach (var field in typeof(DAL.Entities.DataVerificaton).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                        {
+                                        <div class="form-group">
+                                            <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                            <div>
+                                                <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataVerification))</span>
+                                                <a class="btn btn-default commentBox"> comment</a>
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End of Data verificaton section-->
+                        </div>
+                        <!-- end of Quality Assurance page-->
+
+                        <div class="panel panel-success" id="DataStorage">
                             <h4 class="Adjusted-header">
                                 <b>Data Storage</b>
                             </h4>
@@ -524,46 +490,16 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-horizontal">
+                                        @foreach (var field in typeof(DAL.Entities.DigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                        {
                                         <div class="form-group">
-                                            <label class="col-sm-3" for="VolumeOfdigitalData">Volume of Digital Data</label>
+                                            <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div>
-                                                <span id="VolumeOfdigitalData">@Model.digital.VolumeOfdigitalData</span> <a class="btn btn-default commentBox"> comment</a>
+                                                <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.digital))</span>
+                                                <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="Storagetype">Storage Type</label>
-                                            <div>
-                                                <span id="Storagetype"> @Model.digital.Storagetype</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="Storagelocation">Storage Location</label>
-                                            <div>
-                                                <span id="Storagelocation">@Model.digital.Storagelocation</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="Backup">Backup?</label>
-                                            <span id="Backup">@Model.digital.Backup</span> <a class="btn btn-default commentBox"> comment</a>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="Datasecurity">Data Security</label>
-                                            <div>
-                                                <span id="Datasecurity">@Model.digital.Datasecurity</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="Patientconfidentialitypolicies">Patient Confidentiality Policies</label>
-                                            <div>
-                                                <span id="Patientconfidentialitypolicies">@Model.digital.Patientconfidentialitypolicies</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="StorageOfPreExistingData">Storage of Pre-Existing Data</label>
-                                            <div>
-                                                <span id="StorageOfPreExistingData">@Model.digital.StorageOfPreExistingData</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -575,24 +511,16 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-horizontal">
+                                        @foreach (var field in typeof(DAL.Entities.NonDigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                        {
                                         <div class="form-group">
-                                            <label class="col-sm-3" for="NonDigitalDataTypes">Non-Digital Data Types</label>
+                                            <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div>
-                                                <span id="NonDigitalDataTypes">@Model.nonDigital.NonDigitalDataTypes</span> <a class="btn btn-default commentBox"> comment</a>
+                                                <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.nonDigital))</span>
+                                                <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="NonDigitalStorageLocation">Storage Location</label>
-                                            <div>
-                                                <span id="NonDigitalStorageLocation">@Model.nonDigital.StorageLocation</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3" for="SafeguardsAndRequirements">Safeguards and Requirements</label>
-                                            <div>
-                                                <span id="SafeguardsAndRequirements">@Model.nonDigital.SafeguardsAndRequirements</span> <a class="btn btn-default commentBox"> comment</a>
-                                            </div>
-                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -601,95 +529,70 @@
                         <!-- end of Data Storage page-->
 
 
-                        <div id="IntellectualPropertyCopyrightAndOwnership">
+                        <div class="panel panel-success" id="IntellectualPropertyCopyrightAndOwnership">
                             <h4 class="Adjusted-header">
                                 <b>Intellectual Property Copyright and Ownership</b>
                             </h4>
                             <hr />
                             <div class="form-horizontal">
+                                @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                {
                                 <div class="form-group">
-                                    <label class="col-sm-3" for="ContractsAndAgreements">Contracts and Agreements</label>
-                                    <div>
-                                        <span id="ContractsAndAgreements">@Model.intelProp.ContractsAndAgreements</span> <a class="btn btn-default commentBox"> comment</a>
+                                    <label class="col-sm-4">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                    <div class="col-sm-8">
+                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.intelProp))</span>
+                                        <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3" for="Ownership">Ownership</label>
-                                    <div>
-                                        <span id="Ownership">@Model.intelProp.Ownership</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3" for="UseOfThirdPartyDataSources">Use of Third Party Data Sources</label>
-                                    <div>
-                                        <span id="UseOfThirdPartyDataSources">@Model.intelProp.UseOfThirdPartyDataSources</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                         <!-- end of Intellectual Property Copyright And Ownership page-->
 
 
-                        <div id="DataAccessAndSharing">
+                        <div class="panel panel-success" id="DataAccessAndSharing">
                             <h4 class="Adjusted-header">
                                 <b>Data Access and Sharing</b>
                             </h4>
                             <hr />
                             <div class="form-horizontal">
+                                @foreach (var field in typeof(DAL.Entities.DataAccessAndSharing).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                {
                                 <div class="form-group">
-                                    <label class="col-sm-3" for="DataAccess">Data Access</label>
-                                    <div>
-                                        <span id="DataAccess">@Model.dataSharing.DataAccess</span> <a class="btn btn-default commentBox"> comment</a>
+                                    <label class="col-sm-4">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                    <div class="col-sm-8">
+                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataSharing))</span>
+                                        <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-3" for="DataSharingPolicies">Data Sharing Policies</label>
-                                    <div>
-                                        <span id="DataSharingPolicies">@Model.dataSharing.DataSharingPolicies</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3" for="DataTransmissionPolicies">Data Transmission Policies</label>
-                                    <div>
-                                        <span id="DataTransmissionPolicies">@Model.dataSharing.DataTransmissionPolicies</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3" for="SharingPlatForms">Sharing PlatForms</label>
-                                    <div>
-                                        <span id="SharingPlatForms">@Model.dataSharing.SharingPlatForms</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                         <!-- end of Data Access and Sharing page-->
 
 
-                        <div id="DataDocumentationManagementAndEntry">
+                        <div class="panel panel-success" id="DataDocumentationManagementAndEntry">
                             <h4 class="Adjusted-header">
                                 <b>Data Documentation Management and Entry</b>
                             </h4>
                             <hr />
                             <div class="form-horizontal">
+                                @foreach (var field in typeof(DAL.Entities.DataDocumentationManagementAndEntry).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                {
                                 <div class="form-group">
-                                    <label class="col-sm-4" for="StoredDocumentationAndDataDescriptors">Stored Documentation and Data Descriptors</label>
-                                    <div>
-                                        <span id="StoredDocumentationAndDataDescriptors">@Model.dataDocMgt.StoredDocumentationAndDataDescriptors</span> <a class="btn btn-default commentBox"> comment</a>
+                                    <label class="col-sm-4">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                    <div class="col-sm-8">
+                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataDocMgt))</span>
+                                        <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4" for="NamingStructureAndFilingStructures">Naming Structure and Filing Structures</label>
-                                    <div>
-                                        <span id="NamingStructureAndFilingStructures">@Model.dataDocMgt.NamingStructureAndFilingStructures</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                         <!-- end of Data Documentation Management and Entry page-->
 
 
-                        <div id="PostProjectDataRetentionSharingAndDestruction">
+                        <div class="panel panel-success" id="PostProjectDataRetentionSharingAndDestruction">
                             <h4 class="Adjusted-header">
                                 <b>Post Project Data Retention Sharing and Destruction</b>
                             </h4>
@@ -697,25 +600,25 @@
                             <div class="form-horizontal">
                                 <div class="form-group">
                                     <label class="col-sm-3" for="DataToRetain">Data To Retain</label>
-                                    <div>
+                                    <div class="col-sm-9">
                                         <span id="DataToRetain">@Model.ppData.DataToRetain</span> <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3" for="PreExistingData">Pre-Existing Data</label>
-                                    <div>
+                                    <div class="col-sm-9">
                                         <span id="PreExistingData">@Model.ppData.PreExistingData</span> <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3" for="Duration">Duration</label>
-                                    <div>
+                                    <div class="col-sm-9">
                                         <span id="Duration">@Model.ppData.Duration</span> <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3" for="Licensing">Licensing</label>
-                                    <div>
+                                    <div class="col-sm-9">
                                         <span id="Licensing">@Model.ppData.Licensing</span> <a class="btn btn-default commentBox"> comment</a>
                                     </div>
                                 </div>
@@ -729,7 +632,7 @@
                                     <div class="form-horizontal">
                                         <div class="form-group">
                                             <label class="col-sm-3" for="DataRetention">Data Retention</label>
-                                            <div>
+                                            <div class="col-sm-9">
                                                 <span id="DataRetention">@Model.ppData.DigitalDataRetention.DataRetention</span> <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
@@ -746,7 +649,7 @@
                                     <div class="form-horizontal">
                                         <div class="form-group">
                                             <label class="col-sm-3" for="nonDigitalDataRetention">Data Retention</label>
-                                            <div>
+                                            <div class="col-sm-9"> 
                                                 <span id="nonDigitalDataRetention">@Model.ppData.NonDigitalRentention.DataRention</span> <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
@@ -881,11 +784,12 @@
 
 
             var clickedTag;
+            var comments =@Html.Raw(Json.Encode(Model.Comments));
+
             //build the comments, auto retrieve from the DB based on the tag name
             $(".commentBox").click(function (e, n) {
                 clickedTag = $(this).parent().children("span")[0].id;
-
-                var comments =@Html.Raw(Json.Encode(Model.Comments));
+                
                 $("#UlInModal").html('');
                 if(comments.length > 0){
                     var selectedComments = $.grep(comments, function(a){
@@ -920,6 +824,7 @@
                     cache: false,
                 }).done(function (response) {
                     if(response.Id != undefined){
+                        comments.push(response);
                         GnerateListElement(response);
                         $('#newCC').val('')
                     }

@@ -78,7 +78,7 @@ namespace DMP.Services
                 cb.EndText();
                 float len = bf.GetWidthPoint(text, 12);
                 //Adds "12" in Page 1 of 12
-                cb.AddTemplate(headerTemplate, document.PageSize.GetRight(300)+len, document.PageSize.GetTop(45));
+              //  cb.AddTemplate(headerTemplate, document.PageSize.GetRight(300)+len, document.PageSize.GetTop(45));
             }
         }
 

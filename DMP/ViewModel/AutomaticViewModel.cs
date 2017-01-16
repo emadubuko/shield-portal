@@ -28,22 +28,6 @@ namespace DMP.ViewModel
                 }
             }
         }
-
-        private List<string> _organizationType;
-        public List<string> OrganizationType
-        {
-            get
-            {
-                if (_organizationType != null)
-                    return _organizationType;
-
-                _organizationType = new List<string>();
-                foreach (var name in Enum.GetNames(typeof(OrganizationType)))
-                {
-                    _organizationType.Add(DAL.Utilities.Utilities.PasCaseConversion(name));
-                }
-                return _organizationType;
-            }
-        }
+ 
     }
 }

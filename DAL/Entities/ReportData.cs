@@ -8,16 +8,10 @@ namespace DAL.Entities
 {
     public class ReportData  
     {
-      public virtual string NameOfReport { get; set; }
+        public virtual string NameOfReport { get; set; }
         public virtual string ThematicArea { get; set; }
-        public virtual string FrequencyOfDataCollection { get; set; }
-        public virtual string DataType { get; set; }
-        public virtual string DataFormat { get; set; }
-
-        //Data collection and reporting tools (Datasources)
-        public virtual string DataCollectionAndReportingTools { get; set; }
-
-        //Data Flow Chart(Diagram)
-        public virtual string DataFlowChart { get; set; }
+        public virtual string TimelinesForReporting { get; set; }
+        public virtual string FrequencyOfReporting { get; set; }
+        public virtual string DurationOfReporting { get; set; }          
     }
 }

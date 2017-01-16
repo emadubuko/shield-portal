@@ -8,6 +8,6 @@ namespace DAL.Entities
 {
    public class Summary  
     {
-        public virtual string ProjectSummary { get; set; }
+        public virtual string ProjectObjectives { get; set; }
     }
 }

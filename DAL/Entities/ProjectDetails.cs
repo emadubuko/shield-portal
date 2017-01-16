@@ -12,19 +12,21 @@ namespace DAL.Entities
         [XmlIgnore]
         public virtual int Id { get; set; }
         public virtual string ProjectTitle { get; set; }
-        public virtual string ProjectLogo { get; set; }
         public virtual string DocumentTitle { get; set; }
         public virtual string NameOfImplementingPartner { get; set; }
         public virtual string AbreviationOfImplementingPartner { get; set; }
-        public virtual string AddressofAuthor { get; set; }
+        public virtual int OrganizationId { get; set; }
+        public virtual string AddressOfOrganization { get; set; }
         public virtual string MissionPartner { get; set; }
         public virtual string ProjectStartDate { get; set; }
         public virtual string ProjectEndDate { get; set; }
         public virtual string GrantReferenceNumber {get;set;}
         public virtual string ProjectSummary { get; set; }
+
+        public virtual Profile LeadActivityManager { get; set; }
         
 
-[XmlIgnore]
+        [XmlIgnore]
         public virtual Organizations Organization { get; set; }
 
     }

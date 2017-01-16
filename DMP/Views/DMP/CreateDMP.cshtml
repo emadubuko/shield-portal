@@ -1,25 +1,56 @@
-﻿@model  DMP.ViewModel.CreateIPViewModel
+﻿@model  DMP.ViewModel.CreateDMPViewModel
 @{
     ViewBag.Title = "Create New IP";
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
     @Styles.Render("~/bundles/mysiteCss")
-    
-<script src="~/Scripts/Ultilities.js"></script>
+
+    <script src="~/Scripts/Ultilities.js"></script>
+<script type="text/javascript">
+
+       var selectedOrg;
+                   @{
+                       System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                       serializer.MaxJsonLength = Int32.MaxValue;
+                   }
+       var orgs = @Html.Raw(serializer.Serialize(Model.OrganizationList));
+
+       function  BindOrganizationImage(e){
+           console.log(e)
+           if(e !== undefined){
+               for(var i=0; i <orgs.length; i++){
+                   if(parseInt(e.value) === orgs[i].Id){
+                       selectedOrg = orgs[i];
+                       BindImageToControl($('#imageURL'),selectedOrg.Logo );
+                       $("#logoDiv").show()
+                   }
+               }
+           }
+       }
+</script>
 }
 
 <div class="main-content">
+    <a href="javascript:history.back()" class="btn btn-default" style="color:#929b17"><i class="icon-left-open"></i><b>Go Back</b></a>
+    <hr />
     <div class="row">
         <div class="col-lg-12">
-            <form id="mainform" class="validate">
+            <form id="dmpForm" class="validate">
                 <div class="panel panel-warning">
                     <div class="panel-heading clearfix">
-                        <h4 class="panel-title">Create New IP</h4>
+                        <h4 class="panel-title">Begin a New  DMP</h4>
                     </div>
                     <div class="panel-body">
                         <div class="form-horizontal">
 
+                            <div id="logoDiv" style="display:none" class="form-group">
+                                <label class="col-sm-2 control-label">Logo</label>
+                                <div class="col-sm-8">
+                                    <img id="imageURL" height="100">
+                                </div>
+                            </div>
+                            
                             @foreach (var field in Model.FieldCollection)
                             {
                                 <div class="form-group">
@@ -27,21 +58,24 @@
                                     <div class="col-sm-8">
                                         @if ((string)field.Value == "String")
                                         {
-                                            <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                                            <input type="text" placeholder="@Model.ToolTip[field.Key]" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
                                         }
-                                        else if ((string)field.Value == "OrganizationType")
+                                        else if ((string)field.Value == "Organizations")
                                         {
-                                            <select id="@field.Key.Replace(" ","")" class="form-control" required>
-                                                <option value="" disabled selected>select organization type</option>
-                                                @foreach (var item in Model.OrganizationType)
+                                            <select  onchange="BindOrganizationImage(this)"  id="OrganizationId" class="form-control" required>
+                                                <option value="" disabled selected>select organization</option>
+                                                @foreach (var item in Model.OrganizationList)
                                                 {
-                                                    <option value="@item.Replace(" ","")">@item</option>
+                                                    <option value="@item.Id">@item.Name (@item.ShortName)</option>
                                                 }
                                             </select>
                                         }
-                                        else if ((string)field.Value == "Byte[]")
+                                        else if ((string)field.Value == "DateTime")
                                         {
-                                            <input type="file" onchange="imagePreview()" id="@field.Key.Replace(" ","")" accept="image/*" class="form-control">
+                                            <div id="@field.Key.Replace(" ","")" class="input-group date">
+                                                <input type="text" required id="@field.Key.Replace(" ","")" placeholder="@field.Key" title="select a end date" data-format="D, dd MM yyyy" class="form-control">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
                                         }
                                     </div>
                                 </div>
@@ -57,8 +91,6 @@
                                     <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
 
@@ -77,17 +109,7 @@
     @Scripts.Render("~/bundles/CreateDMPJs")
     <script>
         $(document).ready(function () {
-            $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
-                if (key.charCode < 48 || key.charCode > 57)
-                    if (key.charCode != 43) {
-                        $('#my_modal').on('show.bs.modal', function (e) {
-                            $('#warningbox').val('invalid input');
-                        });
-                        $('#myModal').modal('show');
-                        return false;
-                    }
-            });
-
+                       
             $("input").attr("autocomplete", "off");
 
             $("#dmpSubmit").click(function (e, n) {
@@ -95,41 +117,39 @@
                 var form = $(e.currentTarget.form);
                 var validator = form.validate();
                 if (form.valid()) {
-                    var formdata = $('#mainform')[0].elements;
+                    
+                    var formdata = $('#dmpForm')[0].elements;
                     var viewModel = {};
 
                     $("#loadImg").show();
-                    $('dmpSubmit').disabled = true;
+                    $('#dmpSubmit').disabled = true;
 
                     $.each(formdata, function (name, formElements) {
                         viewModel[formElements.id] = formElements.value;
                     });
-                    viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,","");
 
-                    var someUrl = '@Url.Action("CreateNewOrganization", "Organization")';
+                    var redirectUrl = '@Url.Action("WizardPages", "DMPDocument")';
                     $.ajax({
                         type: "POST",
-                        url: someUrl,
+                        url: '@Url.Action("SaveDMP", "DMP")',
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(viewModel),
                         cache: false,
                     }).done(function (dmpId) {
                         console.log(dmpId);
-                        window.location.replace('@Url.Action("index", "Organization")');
+                        window.location.replace(redirectUrl + '?dmpId=' + dmpId);
                         $("#loadImg").hide();
-                        $('dmpSubmit').disabled = false;
+                        $('#dmpSubmit').disabled = false;
                     }).error(function (xhr, status, err) {
                         alert(err);
                         console.log(err);
                         $("#loadImg").hide();
-                        $('dmpSubmit').disabled = false;
+                        $('#dmpSubmit').disabled = false;
                     });
-
                     return false;
-                }
+               }
             });
-               
-             
+
         });
     </script>
 }

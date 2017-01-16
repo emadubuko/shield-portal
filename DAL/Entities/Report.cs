@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class Report  
-    {
+    public class Report
+    { 
         public virtual ReportData ReportData { get; set; }
-        public virtual RolesAndResponsiblities RoleAndResponsibilities { get; set; }
+        
     }
 }

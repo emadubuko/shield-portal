@@ -85,6 +85,7 @@
     <Compile Include="Entities\DocumentRevisions.cs" />
     <Compile Include="Entities\EthicsApproval.cs" />
     <Compile Include="Entities\IntellectualPropertyCopyrightAndOwnership.cs" />
+    <Compile Include="Entities\MonitoringAndEvaluationSystems.cs" />
     <Compile Include="Entities\NonDigitalData.cs" />
     <Compile Include="Entities\NonDigitalDataRetention.cs" />
     <Compile Include="Entities\Organizations.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Entities\ReportData.cs" />
     <Compile Include="Entities\RolesAndResponsiblities.cs" />
     <Compile Include="Entities\Summary.cs" />
+    <Compile Include="Entities\Trainings.cs" />
     <Compile Include="Entities\Version.cs" />
     <Compile Include="Entities\VersionAuthor.cs" />
     <Compile Include="Entities\VersionMetadata.cs" />

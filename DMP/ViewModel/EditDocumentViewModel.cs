@@ -88,8 +88,13 @@ namespace DMP.ViewModel
 
     public class EditDocumentViewModel2
     {
+        public DataCollection dataCollection { get; set; }
+
+        public Trainings Trainings { get; set; }
+
+        public bool EditMode { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-      
+
         public string documentID { get; set; }
         public DMPStatus status { get; set; }
 
@@ -117,57 +122,115 @@ namespace DMP.ViewModel
         public EthicsApproval ethicsApproval { get; set; }
         public ProjectDetails projectDetails { get; set; }
 
+        public IDictionary<Guid, Profile> Profiles { get; set; }
 
+        public List<string> YesNoOption
+        {
+            get
+            {
+                return new List<string> { "No", "Yes" };
+            }
+        }
+
+        public List<string> Duration
+        {
+            get
+            {
+                return new List<string> { "Days", "Weeks", "Months", "Years" };
+            }
+        }
+
+
+        public List<string> reportingTools
+        {
+            get
+            {
+                return new List<string> { "Community enrollment form","Household enumeration forms","Household enumeration sticker",
+"Mobile ART card","Referral forms","HIV request result form","Mobile appointment diary","Others(Please List)"  };
+            }
+        }
         public ICollection<string> ethicalApprovalTypes
         {
             get
             {
-                return new string[] { "Temporary", "Global" };
+                return new string[] { "Research", "Experimental", "Observational", "Simulated" };
             }
         }
         public ICollection<string> thematicAreas
         {
             get
+            { 
+                return new string[] { "Prevention", "Treatment", "Suppression" };
+            }
+        }
+        public ICollection<string> dataSourcesTypes
+        {
+            get
             {
-                return new string[] { "Research", "Data Validation" };
+                return new string[] { "EMR", "Patient registers", "Aggregate data", "Patient line data", "Others(Please List)" };
+            }
+        }
+        public ICollection<string> dataFrequency
+        {
+            get
+            {
+                return new string[] { "Daily", "Weekly", "Bi - Weekly", "Monthly", "Bi - Monthly", "Quarterly", "Bi - Annually", "Annually" };
             }
         }
         public ICollection<string> reportDataType
         {
             get
             {
-                return new string[] { "freeText", "digital" };
+                return new string[] { "Qualitative", "Quantitative" };
             }
         }
-        public ICollection<string> formsOfDataVerification
+
+        public ICollection<string> DataVerificationApproach
         {
             get
-            {
-                return new string[] { "Visual", "others" };
+            { 
+                return new string[] { "Auditing Approach", "Verification Actors", "Others" };
             }
         }
 
         public ICollection<string> typesOfDataVerification
         {
             get
-            {
-                return new string[] { "Manual Comparison", "DQA" };
+            { 
+                return new string[] { "Soft - checks", "Cross - checks of data sources", "Document reviews", "Trace verification",
+                "Rountine Data Quality Assessment","Data Quality Audit","Others" };
             }
         }
-        public ICollection<string> storagetype
+
+        public ICollection<string> storageformats
         {
             get
             {
-                return new string[] { "Database", "others" };
+                return new string[] {
+                "Comma - separated values(CSV) file(.csv)",
+                "Tab - delimited file(.tab)",
+                "SQL data definition",
+                "SPSS portable format (.por)",
+                "eXtensible Mark - up Language(XML)",
+                "Rich Text Format(.rtf)",
+                "plain text data, UTF - 8(Unicode; .txt)",
+                "TIFF version 6 uncompressed(.tif)",
+                "Free Lossless Audio Codec (FLAC)(.flac)",
+                "Waveform Audio Format(WAV)(.wav)",
+                "MPEG - 1 Audio Layer 3(.mp3)",
+                "MPEG - 4 High Profile(.mp4)",
+                "motion JPEG 2000(.jp2)",
+                "Open Document Text(.odt)",
+                "HTML(.htm, .html)" };                 
             }
         }
-        public ICollection<string> storageLocation
-        {
-            get
-            {
-                return new string[] { "On premise", "Cloud store" };
-            }
-        }
+        //public ICollection<string> storageLocation
+        //{
+        //    get
+        //    {
+        //        return new string[] { "On premise", "Cloud store" };
+        //    }
+        //}
         public ICollection<string> nonDigitalDataTypes
         {
             get
@@ -183,5 +246,6 @@ namespace DMP.ViewModel
             }
         }
 
+        public int dmpId { get; set; }
     }
 }

@@ -24,6 +24,36 @@ namespace DMP.Controllers
             return View(orgDetail);
         }
 
+        
+        public ActionResult OrganizationEdit(int OrgId)
+        {
+            Organizations previousData = new OrganizationDAO().Retrieve(OrgId);
+            HttpContext.Session.Add(":previousData:", previousData);
+            return View(previousData);
+        }
+
+        public ActionResult EditOrganization(Organizations org)
+        {
+            if (org == null || org.Id== 0)
+            {
+                return new HttpStatusCodeResult(400, "invalid update");
+            }
+            Organizations previousData = HttpContext.Session[":previousData:"] as Organizations;
+            if (previousData == null || previousData.Id !=org.Id)
+            {
+                return new HttpStatusCodeResult(400, "invalid update");  
+            }
+
+            if (org.Logo == null)
+            {
+                org.Logo = previousData.Logo;
+            }
+            var orgDao = new OrganizationDAO();
+            orgDao.Update(org);
+            orgDao.CommitChanges();
+            return RedirectToAction("Index");
+        }
+
         public ActionResult CreateOrganization()
         {
             var vM = new CreateIPViewModel();
@@ -32,27 +62,14 @@ namespace DMP.Controllers
 
         public ActionResult CreateNewOrganization(Organizations Orgz)
         {
-            if(Orgz != null)
+            if (Orgz == null)
             {
-                SaveOrUpdate(Orgz);
-
-                return RedirectToAction("Index");
+                return Json("invalid update");
             }
-            return Json("Ok");
-        }
-
-        public void SaveOrUpdate(Organizations Orgz)
-        {
             var orgDao = new OrganizationDAO();
-            if(Orgz.Id == 0)
-            {
-                orgDao.Save(Orgz);
-            }else
-            {
-                orgDao.Update(Orgz);
-            }
-            
+            orgDao.Save(Orgz);
             orgDao.CommitChanges();
+            return RedirectToAction("Index");
         }
     }
 }

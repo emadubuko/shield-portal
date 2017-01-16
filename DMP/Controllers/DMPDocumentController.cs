@@ -9,143 +9,104 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
-    public class HomeController : Controller
+    public class DMPDocumentController : Controller
     {
         DMPDAO dmpDAO = null;
+        static DAL.Entities.DMP MyDMP = null;
         DMPDocumentDAO dmpDocDAO = null;
         OrganizationDAO orgDAO = null;
         ProjectDetailsDAO projDAO = null;
-
-        static DAL.Entities.DMP MyDMP = null;
+        ProfileDAO profileDAO = null;
 
         static Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
         static Profile initiator = new ProfileDAO().Retrieve(guid);
 
-        public HomeController()
+        public DMPDocumentController()
         {
             dmpDAO = new DMPDAO();
-            dmpDocDAO = new DMPDocumentDAO();
-            orgDAO = new OrganizationDAO();
             projDAO = new ProjectDetailsDAO();
-
+            orgDAO = new OrganizationDAO();
+            dmpDocDAO = new DMPDocumentDAO();
+            profileDAO = new ProfileDAO();
         }
-
-        private IList<Organizations> OrgsRepo()
-        {
-            if ((HttpContext.Session["OrganizationList"] as List<Organizations>) == null)
-            {
-                HttpContext.Session["OrganizationList"] = orgDAO.RetrieveAll();
-            }
-            return HttpContext.Session["OrganizationList"] as List<Organizations>;
-        }
-
+        // GET: DMPDocument
         public ActionResult Index()
         {
-            var dmps = dmpDAO.RetrieveAll().Where(x => x.TheProject != null).ToList();
-
-            List<DMPViewModel> dmpVM = new List<ViewModel.DMPViewModel>();
-            dmps.ForEach(x =>
-            {
-                dmpVM.Add(new DMPViewModel
-                {
-                    Id = x.Id,
-                    CreatedBy = x.CreatedBy != null ? x.CreatedBy.FullName : "test",
-                    DateCreated = string.Format("{0:dd-MMM-yyy}", x.DateCreated),
-                    ProjectTitle = x.TheProject.ProjectTitle,
-                    Title = x.DMPTitle,
-                    Owner = x.Organization.ShortName,
-                    StartDate = string.Format("{0:dd-MMM-yyy}", x.StartDate),
-                    EndDate = string.Format("{0:dd-MMM-yyy}", x.EndDate)
-                    //Status = ((DMPStatus)x.Status).ToString()
-                });
-            });
-
-            return View(dmpVM);
+            return View();
         }
 
-        public ActionResult DMPDetails(DMPViewModel dmpVM)
-        {
-            List<DMPDocumentDetails> dmpDoc = new List<DMPDocumentDetails>();
 
-            var dmpDocuments = dmpDocDAO.SearchByDMP(dmpVM.Id).ToList();
-            dmpDocuments.ForEach(x =>
-                dmpDoc.Add(
-                    new DMPDocumentDetails
-                    {
-                        ApprovedBy = x.ApprovedBy == null ? "" : x.ApprovedBy.FullName,
-                        ApprovedDate = string.Format("{0:dd-MMM-yyyy}", x.ApprovedDate),
-                        CreationDate = string.Format("{0:dd-MMM-yyyy}", x.CreationDate),
-                        DMPId = dmpVM.Id,
-                        DocumentCreator = x.Initiator.FullName,
-                        DocumentTitle = x.DocumentTitle,
-                        DocumentId = x.Id.ToString(),
-                        LastModifiedDate = string.Format("{0:dd-MMM-yyyy}", x.LastModifiedDate),
-                        ReferralCount = x.ReferralCount,
-                        Status = ((DMPStatus)x.Status).ToString(),
-                        Version = string.Format("{0}.{1}", x.Version, x.TempVersion),
-                        PageNumber = x.PageNumber
-                    })
-                );
-            DMPDocumentViewModel dmpDocVM = new DMPDocumentViewModel
-            {
-                DmpDetails = dmpVM,
-                Documents = dmpDoc
-            };
 
-            return View(dmpDocVM);
-        }
-
-        public ActionResult CreateNewDMP()
-        { 
-            //System.Threading.Thread.Sleep(5000);             
-
-            return View(OrgsRepo());
-        }
-
-        [HttpPost]
-        public ActionResult DocumentWizardPage(DAL.Entities.DMP newDMP)
-        {
-            if(newDMP == null || string.IsNullOrEmpty(newDMP.DMPTitle))
-            {
-                return new HttpStatusCodeResult(400, "Please provide a title");
-            }
-            MyDMP = newDMP;
-            MyDMP.DateCreated = DateTime.Now;
-            MyDMP.CreatedBy = initiator;
-
-            bool result = SaveOrUpdateDMP(true);
-            if (result)
-            {
-                return Json(MyDMP.Id);
-            }
-            else
-            {
-                return new HttpStatusCodeResult(400, "DMP with this title already exists");
-            }
-        }
-
-        public ActionResult DocumentWizardPage(int? dmpId)
+        public ActionResult WizardPages(int? dmpId, string documnentId = null)
         {
             if ((!dmpId.HasValue || dmpId.Value == 0))
             {
-                return RedirectToAction("CreateNewDMP");
+                return RedirectToAction("CreateDMP", "DMP");
             }
-
             MyDMP = dmpDAO.Retrieve(dmpId.Value);
-            var previousDoc = dmpDocDAO.SearchByDMP(dmpId.Value);
-            if (previousDoc != null && previousDoc.Count() > 0)
+            DMPDocument dmpDoc = null;
+            if (!string.IsNullOrEmpty(documnentId))
             {
-                Dictionary<string, object> routeObj = new Dictionary<string, object> { { "dmpId", MyDMP.Id }, { "documnentId", previousDoc.LastOrDefault().Id } };
-                return RedirectToAction("EditDocumentWizardPage", new System.Web.Routing.RouteValueDictionary(routeObj));
+                Guid dGuid = new Guid(documnentId);
+                dmpDoc = new DMPDocumentDAO().Retrieve(dGuid);
             }
-
-            CreateDocumentViewModel docVM = new CreateDocumentViewModel
+            if (dmpDoc == null && MyDMP.DMPDocuments !=null && MyDMP.DMPDocuments.Count() > 0)
             {
-                Organization = MyDMP.Organization,
-                Initiator = initiator,
-            };
-            return View(docVM);
+                dmpDoc = MyDMP.DMPDocuments.LastOrDefault();
+            }
+                      
+            if (dmpDoc != null)
+            {                
+                var thepageDoc = dmpDoc.Document;
+                EditDocumentViewModel2 docVM = new EditDocumentViewModel2
+                {
+                    //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
+                    datacollectionProcesses = thepageDoc.DataCollectionProcesses,
+                    dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
+                    dataSharing = thepageDoc.DataAccessAndSharing,
+                    dataVerification = thepageDoc.QualityAssurance.DataVerification,
+                    digital = thepageDoc.DataStorage.Digital,
+                    nonDigital = thepageDoc.DataStorage.NonDigital,
+                    digitalDataRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention,
+                    nonDigitalRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention,
+                    ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
+                    intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
+                    ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
+                    projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
+                    summary = thepageDoc.Planning.Summary,
+                    //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
+                    reportData = thepageDoc.Reports.ReportData,
+                    roleNresp = thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities,
+                    Trainings = thepageDoc.MonitoringAndEvaluationSystems.Trainings,
+                    documentID = dmpDoc.Id.ToString(),
+                    EditMode = true,
+                    Profiles = profileDAO.RetrieveAll().ToDictionary(x => x.Id),
+                    Organization = MyDMP.Organization,
+                    dataCollection = thepageDoc.DataCollection,
+                   
+                };
+                return View(docVM);
+            }
+            else
+            {
+                CreateDocumentViewModel vm = new CreateDocumentViewModel();
+
+                EditDocumentViewModel2 docVM = new EditDocumentViewModel2
+                {
+                    Organization = MyDMP.Organization,
+                    Initiator = initiator,
+                    EditMode = false,
+                    projectDetails = new ProjectDetails
+                    {
+                        Organization = MyDMP.Organization,
+                        DocumentTitle = MyDMP.DMPTitle, 
+                    },
+                     Profiles = profileDAO.RetrieveAll().ToDictionary(x=>x.Id), 
+                };
+                return View(docVM);
+            }
         }
+
 
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
@@ -170,7 +131,7 @@ namespace DMP.Controllers
             ProjDetails.Organization = MyDMP.Organization;
             ProjDetails.AbreviationOfImplementingPartner = MyDMP.Organization.ShortName;
             ProjDetails.NameOfImplementingPartner = MyDMP.Organization.Name;
-
+            ProjDetails.AddressOfOrganization = MyDMP.Organization.Address;
 
             WizardPage page = new WizardPage
             {
@@ -191,14 +152,6 @@ namespace DMP.Controllers
                 {
                     ReportData = reportData
                 },
-                //DataCollection = new DataCollection
-                //{
-                //    Report = new Report
-                //    {
-                //        ReportData = reportData,
-                //        RoleAndResponsibilities = roleNresp
-                //    },
-                //},
                 QualityAssurance = new QualityAssurance { DataVerification = dataVerification },
                 DataCollectionProcesses = datacollectionProcesses,
                 DataStorage = new DataStorage
@@ -234,7 +187,7 @@ namespace DMP.Controllers
                     var theDoc = SaveDMPDocument(page, MyDMP.Id);
                     dmpDocDAO.CommitChanges();
 
-                  var data=   new { documentId = theDoc.Id, projectId = ProjDetails.Id };
+                    var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
 
                     return Json(data, JsonRequestBehavior.AllowGet);
                     //return Json(theDoc, JsonRequestBehavior.AllowGet);
@@ -250,59 +203,15 @@ namespace DMP.Controllers
                 projDAO.RollbackChanges();
                 throw ex;
             }
-
-
-        }
-
-
-        public ActionResult EditDocumentWizardPage(int? dmpId, string documnentId = null)
-        {
-            if ((documnentId == null))
-            {
-                return RedirectToAction("CreateNewDMP", "Home");
-            }
-            Guid dGuid = new Guid(documnentId);
-            DMPDocument Doc = new DMPDocumentDAO().Retrieve(dGuid);
-
-            if (Doc == null)
-            {
-                return new HttpStatusCodeResult(400, "Bad request");
-            }
-            MyDMP = Doc.TheDMP;
-
-            var thepageDoc = Doc.Document;
-            EditDocumentViewModel2 docVM = new EditDocumentViewModel2
-            {
-                //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
-                datacollectionProcesses = thepageDoc.DataCollectionProcesses,
-                dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
-                dataSharing = thepageDoc.DataAccessAndSharing,
-                dataVerification = thepageDoc.QualityAssurance.DataVerification,
-                digital = thepageDoc.DataStorage.Digital,
-                nonDigital = thepageDoc.DataStorage.NonDigital,
-                digitalDataRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention,
-                nonDigitalRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention,
-                ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
-                intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
-                ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
-                projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
-                summary = thepageDoc.Planning.Summary,
-                reportData = thepageDoc.Reports.ReportData,
-                 Trainings = thepageDoc.MonitoringAndEvaluationSystems.Trainings,
-                roleNresp = thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities,
-                documentID = Doc.Id.ToString(),
-            };
-
-            return View(docVM);
         }
 
         [HttpPost]
         public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
-            VersionAuthor versionAuthor, VersionMetadata versionMetadata, Summary summary, RolesAndResponsiblities roleNresp,
-            ReportData reportData, DataVerificaton dataVerification, DigitalData digital, NonDigitalData nonDigital,
-            DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
-            DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
-            DigitalDataRetention digitalDataRetention, Trainings Trainings)
+           VersionAuthor versionAuthor, VersionMetadata versionMetadata, Summary summary, RolesAndResponsiblities roleNresp,
+           ReportData reportData, DataVerificaton dataVerification, DigitalData digital, NonDigitalData nonDigital,
+           DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
+           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
+           DigitalDataRetention digitalDataRetention, Trainings Trainings)
         {
 
             ProjectDetails ProjDetails = projDTF; ;
@@ -319,10 +228,7 @@ namespace DMP.Controllers
                 ProjDetails.Id = previousDoc.TheDMP.TheProject.Id;
                 projDAO.Update(ProjDetails);
             }
-
-
-
-
+            
             WizardPage page = new WizardPage
             {
                 ProjectProfile = new ProjectProfile
@@ -345,14 +251,14 @@ namespace DMP.Controllers
                 DataCollection = DataCollection,
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
                 {
-                    DataFlowChart = doc.DataFlowChart,
-                    RoleAndResponsibilities = roleNresp,
+                     DataFlowChart = doc.DataFlowChart,
+                      RoleAndResponsibilities = roleNresp,
                     Trainings = Trainings,
                 },
-                Reports = new Report
-                {
-                    ReportData = reportData
-                },
+                 Reports = new Report
+                 {
+                      ReportData = reportData
+                 },
                 QualityAssurance = new QualityAssurance { DataVerification = dataVerification },
                 DataCollectionProcesses = datacollectionProcesses,
                 DataStorage = new DataStorage
@@ -381,11 +287,8 @@ namespace DMP.Controllers
             projDAO.CommitChanges();
 
             var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
-            return Json(data, JsonRequestBehavior.AllowGet);
-
-            //return Json(theDoc, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet); 
         }
-
 
         public DMPDocument SaveDMPDocument(WizardPage documentPages, int dmpId)
         {
@@ -429,25 +332,47 @@ namespace DMP.Controllers
             return saved;
         }
 
-        public bool SaveOrUpdateDMP(bool save)
-        {
-            var tmpDMP = dmpDAO.SearchByName(MyDMP.DMPTitle);
-            if (save && tmpDMP == null)
-            {
-                dmpDAO.Save(MyDMP);
-                dmpDAO.CommitChanges();
-                return true;
-            }
-            else if (!save)
-            {
-                dmpDAO.Update(MyDMP);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
     }
 }
+
+//public ActionResult EditDocumentWizardPage(int? dmpId, string documnentId = null)
+//{
+//    if ((documnentId == null))
+//    {
+//        return RedirectToAction("CreateNewDMP", "Home");
+//    }
+//    Guid dGuid = new Guid(documnentId);
+//    DMPDocument Doc = new DMPDocumentDAO().Retrieve(dGuid);
+
+//    if (Doc == null)
+//    {
+//        return new HttpStatusCodeResult(400, "Bad request");
+//    }
+//    MyDMP = Doc.TheDMP;
+
+//    var thepageDoc = Doc.Document;
+//    EditDocumentViewModel2 docVM = new EditDocumentViewModel2
+//    {
+//        //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
+//        datacollectionProcesses = thepageDoc.DataCollectionProcesses,
+//        dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
+//        dataSharing = thepageDoc.DataAccessAndSharing,
+//        dataVerification = thepageDoc.QualityAssurance.DataVerification,
+//        digital = thepageDoc.DataStorage.Digital,
+//        nonDigital = thepageDoc.DataStorage.NonDigital,
+//        digitalDataRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention,
+//        nonDigitalRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention,
+//        ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
+//        intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
+//        ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
+//        projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
+//        summary = thepageDoc.Planning.Summary,
+//        //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
+//        reportData = thepageDoc.DataCollection.Report.ReportData,
+//        roleNresp = thepageDoc.DataCollection.Report.RoleAndResponsibilities,
+//        documentID = Doc.Id.ToString(),
+//    };
+
+//    return View(docVM);
+//}

@@ -101,7 +101,7 @@ namespace Test
                 ProjectDetails = new ProjectDetails
                 {
                     AbreviationOfImplementingPartner = "CCCRN",
-                    AddressofAuthor = "Jahi district",
+                    AddressOfOrganization = "Jahi district",
                     NameOfImplementingPartner = "Center for clinical research nigeria",
                     DocumentTitle = "SEED DMP for CCCRN",
                     ProjectTitle = "SEEDS Evaluation",
@@ -135,28 +135,28 @@ namespace Test
             Planning = new Planning
             {
                 Summary = new Summary
-                { ProjectSummary = "TL;DR. Too long dont read" }
+                { ProjectObjectives = "TL;DR. Too long dont read" }
             },
-            DataCollection = new DataCollection
-            {
-                Report = new Report
-                {
-                    ReportData = new ReportData
-                    {
-                        NameOfReport = "Test report",
-                        DataType = "dont know"
-                    },
-                    RoleAndResponsibilities = new RolesAndResponsiblities
-                    {
-                        CDC = "Determines the report",
-                        FMoH = "Archives",
-                        HealthFacility = "Generates the report",
-                        ImplementingPartner = "Mgic",
-                        LGA = "AMAC",
-                        StateMoH = "Non involved"
-                    }
-                },
-            },
+            //DataCollection = new DataCollection
+            //{
+            //    Report = new Report
+            //    {
+            //        ReportData = new ReportData
+            //        {
+            //            NameOfReport = "Test report",
+            //            DataType = "dont know"
+            //        },
+            //        RoleAndResponsibilities = new RolesAndResponsiblities
+            //        {
+            //            CDC = "Determines the report",
+            //            FMoH = "Archives",
+            //            HealthFacility = "Generates the report",
+            //            ImplementingPartner = "Mgic",
+            //            LGA = "AMAC",
+            //            StateMoH = "Non involved"
+            //        }
+            //    },
+            //},
             QualityAssurance = new QualityAssurance
             {
                 DataVerification = new DataVerificaton

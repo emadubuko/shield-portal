@@ -47,6 +47,7 @@ namespace DMP.Controllers
 
             var thepageDoc = Doc.Document;
             var comments = commentDAO.SearchByDocumentId(Doc.Id);
+ 
 
             VersionAuthor versionAuthor = null;
             VersionMetadata versionMetadata = null;
@@ -83,6 +84,7 @@ namespace DMP.Controllers
             {
                 versionAuthor = versionAuthor,
                 datacollectionProcesses = thepageDoc.DataCollectionProcesses,
+                dataCollection = thepageDoc.DataCollection,
                 dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
                 dataSharing = thepageDoc.DataAccessAndSharing,
                 dataVerification = thepageDoc.QualityAssurance.DataVerification,
@@ -96,9 +98,11 @@ namespace DMP.Controllers
                 projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                 summary = thepageDoc.Planning.Summary,
                 versionMetadata = versionMetadata,
-                reportData = thepageDoc.DataCollection.Report.ReportData,
-                roleNresp = thepageDoc.DataCollection.Report.RoleAndResponsibilities,
+                reportData = thepageDoc.Reports !=null ? thepageDoc.Reports.ReportData : new ReportData(),
+                roleNresp = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities: new RolesAndResponsiblities(),
+                Trainings = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings: new Trainings(),
                 documentID = Doc.Id.ToString(),
+                dmpId = Doc.TheDMP.Id,
                 Comments = comments,
                 status = Doc.Status,
                 approval = approval,
@@ -282,7 +286,7 @@ namespace DMP.Controllers
             writer.PageEvent = new ITextEvents();
             doc.Open();
              
-            pdfUtil.GeneratePDFDocument(Doc.Document, ref doc);
+            pdfUtil.GeneratePDFDocument(Doc, ref doc);
 
             doc.Close();
             return Json(fileName);
@@ -307,7 +311,7 @@ namespace DMP.Controllers
                 {
                     ProjectSummary = @"Strengthening HIV Field Epidemiology Infectious Disease Surveillance and Lab Diagnostic Program [SHIELD] is a 5 years Health system strengthening project to be carried out by the University of Maryland Baltimore under the Division of Epidemiology and the Division of Clinical Care and Research",
                     AbreviationOfImplementingPartner = "CCCRN",
-                    AddressofAuthor = "Jahi district",
+                    AddressOfOrganization = "Jahi district",
                     NameOfImplementingPartner = "Center for clinical research nigeria",
                     DocumentTitle = "SEED DMP for CCCRN",
                     ProjectTitle = "Strengthening HIV Field Epidemiology Infectious Disease Surveillance &Lab Diagnostic Program(SHIELD)",
@@ -362,28 +366,31 @@ namespace DMP.Controllers
             Planning = new Planning
             {
                 Summary = new Summary
-                { ProjectSummary = "TL;DR. Too long dont read" }
+                { ProjectObjectives = "TL;DR. Too long dont read" }
             },
             DataCollection = new DataCollection
             {
-                Report = new Report
-                {
-                    ReportData = new ReportData
-                    {
-                        NameOfReport = "Test report",
-                        DataType = "dont know"
-                    },
-                    RoleAndResponsibilities = new RolesAndResponsiblities
-                    {
-                        CDC = "Determines the report",
-                        FMoH = "Archives",
-                        HealthFacility = "Generates the report",
-                        ImplementingPartner = "Mgic",
-                        LGA = "AMAC",
-                        StateMoH = "Non involved"
-                    }
-                },
+                 DataSources = "Unknown"
             },
+             MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
+             {
+                  Trainings = new Trainings(),
+                   DataFlowChart = "",
+                 RoleAndResponsibilities = new RolesAndResponsiblities
+                 {
+                      AggregationLevel = "Determines the report",
+                      CentralNationalLevel = "Archives",
+                      HealthFacilityLevel = "Generates the report",                      
+                 }
+             },
+            Reports = new Report
+             {
+                  ReportData = new ReportData
+                  { 
+                      NameOfReport = "Test report",
+                      DurationOfReporting = "steady",
+                  }
+             },
             QualityAssurance = new QualityAssurance
             {
                 DataVerification = new DataVerificaton

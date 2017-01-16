@@ -4,15 +4,14 @@ using System.Collections.Generic;
 
 namespace DMP.ViewModel
 {
-    public class CreateDMPViewModel
-    {
-        public Organizations Organization { get; set; }
-        public string DMPTitle { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime DateCreated { get; set; }
-        public Profile CreatedBy { get; set; }
-        public ICollection<Organizations> organizations { get; set; }
+    public class CreateDMPViewModel : AutomaticViewModel<DAL.Entities.DMP>
+    {       
+        public ICollection<Organizations> OrganizationList { get; set; }
+
+        public Dictionary<string, string> ToolTip = new Dictionary<string, string>
+        {
+            { "DMPTitle", "Provide a title for the DMP" },
+        };
     }
-     
+            
 }

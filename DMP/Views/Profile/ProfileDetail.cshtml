@@ -1,4 +1,4 @@
-﻿@model  DAL.Entities.Organizations
+﻿@model  DAL.Entities.Profile
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
@@ -10,17 +10,18 @@
 <div class="main-content">
     <a href="javascript:history.back()" class="btn btn-default" style="color:#929b17"><i class="icon-left-open"></i><b>Go Back</b></a>
     <hr />
+
     <div class="row">
         <div class="col-lg-1"></div>
-        <div class="col-lg-8">
+        <div class="col-lg-10">
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">
-                        <h4 class="panel-title">IP Details</h4>
+                        <h4 class="panel-title">Profile Details</h4>
                     </div>
                     <div class="col-lg-2">
-                        <a href="~/Organization/OrganizationEdit?orgId=@Model.Id" class="btn btn-black btn-outline" style="line-height:10px;">
+                        <a href="~/profile/profileEdit?profileId=@Model.Id" class="btn btn-black btn-outline" style="line-height:10px;">
                             <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
                         </a>
                     </div>
@@ -28,19 +29,12 @@
                 <div class="panel-body">
                     <div class="form-horizontal">
 
-                        @foreach (var field in typeof(DAL.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                        @foreach (var field in typeof(DAL.Entities.Profile).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                         {
                             <div class="form-group">
                                 <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                 <div>
-                                    @if (@field.PropertyType == typeof(byte[]))
-                                    {
-                                        <img src='@( Model.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.Logo))' height="100">
-                                    }
-                                    else
-                                    {
                                     <span>@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
-                                    }
                                 </div>
                             </div>
                         }

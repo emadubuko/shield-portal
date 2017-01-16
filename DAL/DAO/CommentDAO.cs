@@ -14,10 +14,20 @@ namespace DAL.DAO
         public IList<Comment> SearchByDocumentId (Guid DocumentId)
         {
             var session = BuildSession();
-            ICriteria criteria = session.CreateCriteria<Comment>()
+            ICriteria criteria = session.CreateCriteria<Comment>("c")
             .Add(Restrictions.Eq("DMPDocument.Id", DocumentId));
 
-            var result = criteria.List<Comment>();
+            criteria.SetProjection(
+                Projections.Alias(Projections.Property("c.Message"), "Message"),
+                Projections.Alias(Projections.Property("c.Id"), "Id"),
+                Projections.Alias(Projections.Property("c.Commenter"), "Commenter"),
+                Projections.Alias(Projections.Property("c.TagName"), "TagName"),
+                Projections.Alias(Projections.Property("c.DateAdded"), "DateAdded")
+                );
+
+            var result = criteria.SetResultTransformer(new NHibernate.Transform.AliasToBeanResultTransformer(typeof(Comment))).List<Comment>();
+
+           // var result = criteria.List<Comment>();
             return result;
         }
     }
