@@ -41,7 +41,7 @@
                                         }
                                         else if ((string)field.Value == "Byte[]")
                                         {
-                                            <input type="file" onchange="imagePreview()" id="@field.Key.Replace(" ","")" accept="image/*" class="form-control">
+                                            <input type="file" onchange="imagePreview(this)" id="@field.Key.Replace(" ","")" accept="image/*" class="form-control">
                                         }
                                     </div>
                                 </div>

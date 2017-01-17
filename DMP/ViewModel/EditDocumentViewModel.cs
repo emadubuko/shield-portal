@@ -83,13 +83,13 @@ namespace DMP.ViewModel
         public string VersionNumber { get; set; }
 
         public string documentID { get; set; }
-
+        public Guid leadactivitymanagerId { get; set; }
     }
 
     public class EditDocumentViewModel2
     {
         public DataCollection dataCollection { get; set; }
-
+        public string DataFlowChart { get; set; }
         public Trainings Trainings { get; set; }
 
         public bool EditMode { get; set; }

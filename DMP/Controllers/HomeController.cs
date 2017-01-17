@@ -16,7 +16,7 @@ namespace DMP.Controllers
         OrganizationDAO orgDAO = null;
         ProjectDetailsDAO projDAO = null;
 
-        static DAL.Entities.DMP MyDMP = null;
+        //static DAL.Entities.DMP MyDMP = null;
 
         static Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
         static Profile initiator = new ProfileDAO().Retrieve(guid);
@@ -28,15 +28,6 @@ namespace DMP.Controllers
             orgDAO = new OrganizationDAO();
             projDAO = new ProjectDetailsDAO();
 
-        }
-
-        private IList<Organizations> OrgsRepo()
-        {
-            if ((HttpContext.Session["OrganizationList"] as List<Organizations>) == null)
-            {
-                HttpContext.Session["OrganizationList"] = orgDAO.RetrieveAll();
-            }
-            return HttpContext.Session["OrganizationList"] as List<Organizations>;
         }
 
         public ActionResult Index()
@@ -62,39 +53,10 @@ namespace DMP.Controllers
 
             return View(dmpVM);
         }
+         
 
-        public ActionResult DMPDetails(DMPViewModel dmpVM)
-        {
-            List<DMPDocumentDetails> dmpDoc = new List<DMPDocumentDetails>();
-
-            var dmpDocuments = dmpDocDAO.SearchByDMP(dmpVM.Id).ToList();
-            dmpDocuments.ForEach(x =>
-                dmpDoc.Add(
-                    new DMPDocumentDetails
-                    {
-                        ApprovedBy = x.ApprovedBy == null ? "" : x.ApprovedBy.FullName,
-                        ApprovedDate = string.Format("{0:dd-MMM-yyyy}", x.ApprovedDate),
-                        CreationDate = string.Format("{0:dd-MMM-yyyy}", x.CreationDate),
-                        DMPId = dmpVM.Id,
-                        DocumentCreator = x.Initiator.FullName,
-                        DocumentTitle = x.DocumentTitle,
-                        DocumentId = x.Id.ToString(),
-                        LastModifiedDate = string.Format("{0:dd-MMM-yyyy}", x.LastModifiedDate),
-                        ReferralCount = x.ReferralCount,
-                        Status = ((DMPStatus)x.Status).ToString(),
-                        Version = string.Format("{0}.{1}", x.Version, x.TempVersion),
-                        PageNumber = x.PageNumber
-                    })
-                );
-            DMPDocumentViewModel dmpDocVM = new DMPDocumentViewModel
-            {
-                DmpDetails = dmpVM,
-                Documents = dmpDoc
-            };
-
-            return View(dmpDocVM);
-        }
-
+        #region - obsolete
+        /*
         public ActionResult CreateNewDMP()
         { 
             //System.Threading.Thread.Sleep(5000);             
@@ -449,5 +411,8 @@ namespace DMP.Controllers
             }
         }
 
+    
+        */
+        #endregion
     }
 }

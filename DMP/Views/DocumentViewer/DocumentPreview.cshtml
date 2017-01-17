@@ -4,6 +4,7 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
+
     <style>
         .Adjusted-header {
             padding-left: 30%;
@@ -44,6 +45,8 @@
     border-color: #929b17;
 }
     </style>
+
+<script src="~/Scripts/Ultilities.js"></script>
 }
 <div class="main-content">
     <a href="javascript:history.back()" class="btn btn-success btn-outline"><i class="icon-left-open"></i><b>Go Back</b></a>
@@ -79,6 +82,11 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
+                                            <div>
+                                                <label class="col-sm-3"></label>
+                                                <img src='@(Model.Organization ==null || Model.Organization.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.Organization.Logo))' height="100">
+                                            </div>
+
                                             <div class="form-group">
                                                 <label class="col-sm-3">Project Title</label>
                                                 <span id="ProjectTitle">@Model.projectDetails.ProjectTitle</span>
@@ -93,16 +101,21 @@
                                                 <label class="col-sm-3" for="organization">Organization</label>
                                                 <span id="organization">@Model.projectDetails.NameOfImplementingPartner </span>
                                             </div>
-                                            <div>
-                                                <label class="col-sm-3" ></label>
-                                                <img src='@(Model.projectDetails.Organization ==null || Model.projectDetails.Organization.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.projectDetails.Organization.Logo))' height="100">
+                                            
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="leadActivityMgr">Lead Activity Manager</label>
+                                                <div>
+                                                    <span id="leadActivityMgr">@(Model.projectDetails.LeadActivityManager!=null? Model.projectDetails.LeadActivityManager.FullName : "")</span>
+                                                </div>
                                             </div>
+
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="AddressOfOrganization">Address of Organization</label>
                                                 <div>
                                                     <span id="AddressOfOrganization">@Model.projectDetails.AddressOfOrganization</span>
                                                 </div>
                                             </div>
+
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="MissionPartner">Mission Partner</label>
                                                 <div>
@@ -731,6 +744,11 @@
     <script>
         $(document).ready(function () {
 
+            base64Image = '@Model.DataFlowChart';
+            if(base64Image !=undefined){
+                BindPureBase64StringToControl($('#DataFlowChart'), base64Image)
+            }
+
             $("#downloadbtn").click(function (e, n) {
 
                 $.ajax({
@@ -789,7 +807,7 @@
             //build the comments, auto retrieve from the DB based on the tag name
             $(".commentBox").click(function (e, n) {
                 clickedTag = $(this).parent().children("span")[0].id;
-                
+
                 $("#UlInModal").html('');
                 if(comments.length > 0){
                     var selectedComments = $.grep(comments, function(a){

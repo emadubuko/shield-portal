@@ -7,9 +7,6 @@ using System.Web.Mvc;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
-using System.Data;
-using System.Reflection;
-using System.Xml.Serialization;
 using DMP.Services;
 using System.Collections.Generic;
 
@@ -106,7 +103,9 @@ namespace DMP.Controllers
                 Comments = comments,
                 status = Doc.Status,
                 approval = approval,
-                ProjectSummary = thepageDoc.ProjectProfile.ProjectDetails.ProjectSummary
+                ProjectSummary = thepageDoc.ProjectProfile.ProjectDetails.ProjectSummary,
+                Organization = Doc.TheDMP.Organization,
+                DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.DataFlowChart : null,
             };
 
             return View(docVM);

@@ -867,6 +867,7 @@
     <Content Include="plugins\summernote\font\summernote.eot" />
     <Content Include="plugins\summernote\font\summernote.ttf" />
     <Content Include="plugins\summernote\font\summernote.woff" />
+    <None Include="Properties\PublishProfiles\dmpPub.pubxml" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -893,12 +894,10 @@
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
     <Content Include="Views\DMP\CreateDMP.cshtml" />
     <Content Include="Views\DMPDocument\WizardPages.cshtml" />
-    <None Include="Views\Home\DMPDetails.cshtml" />
-    <Content Include="Views\Home\CreateNewDMP.cshtml" />
+    <Content Include="Views\DMP\DMPDetails.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\dummy.cshtml" />
-    <Content Include="Views\Home\DocumentWizardPage.cshtml" />
-    <Content Include="Views\Home\EditDocumentWizardPage.cshtml" />
+    <None Include="Views\Home\deleted.DocumentWizardPage.cshtml" />
+    <Content Include="Views\Home\deleted.EditDocumentWizardPage.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
     <Content Include="Views\Organization\CreateOrganization.cshtml" />
     <Content Include="Views\Organization\OrganizationDetail.cshtml" />

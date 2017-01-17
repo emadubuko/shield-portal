@@ -50,7 +50,7 @@
                             <tbody>
                                 @foreach (DMP.ViewModel.DMPViewModel item in Model)
                                 {
-                                    <tr onclick="window.document.location='@Url.Action("DMPDetails","Home", new RouteValueDictionary(item))';" style="cursor: pointer;">
+                                    <tr onclick="window.document.location='@Url.Action("DMPDetails","DMP", new RouteValueDictionary(item))';" style="cursor: pointer;">
                                         <td>@item.Title</td>
                                         <td>@item.ProjectTitle</td>
                                         <td>@item.Owner</td>

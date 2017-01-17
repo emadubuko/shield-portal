@@ -19,10 +19,11 @@
                 font-weight:bold;
             }
     </style>
+    <script src="~/Scripts/Ultilities.js"></script>
     <script type="text/javascript">
-        $(function () {
-            $("[rel='tooltip']").tooltip();
-        });
+        //$(function () {
+        //    $("[rel='tooltip']").tooltip();
+        //});
 
         function EnableDisableEthicalApproval(e) {
             if (e.value == "Yes") {
@@ -30,9 +31,14 @@
             }
             else {
                 $("#EthicalApprovalDiv").hide();
-            }
+            }            
+        }
+
+        function imageSelected(e) {
+            imagePreview(e, $('#FlowChartimageURL'));
         }
     </script>
+
 }
 <div class="main-content">
     <div class="row">
@@ -108,9 +114,9 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="LeadActivityManager">Lead Activity Manager</label>
+                                                <label class="col-sm-3 control-label" for="leadactivitymanagerId">Lead Activity Manager</label>
                                                 <div class="col-sm-9">
-                                                    <select id="LeadActivityManager" class="form-control">
+                                                    <select id="leadactivitymanagerId" class="form-control">
                                                         <option value="" disabled selected>Select Lead activity manager</option>
                                                         @foreach (var item in Model.Profiles)
                                                         {
@@ -314,7 +320,7 @@
                                         <div class="form-horizontal">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="Datatype">Data Type</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="Datatype" class="form-control">
                                                         <option value="" disabled selected>What types of data are collected ?</option>
                                                         @foreach (var item in Model.reportDataType)
@@ -341,7 +347,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="Datatype">Data Sources</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="DataSources" class="form-control">
                                                         <option value="" disabled selected>What are the sources of your of data?</option>
                                                         @foreach (var item in Model.dataSourcesTypes)
@@ -361,14 +367,13 @@
                                                             {
                                                                 <option value="@item"> @item </option>
                                                             }
-
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataCollectionAndReportingTools">Data Collection and Reporting Tools</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="DataCollectionAndReportingTools" class="form-control">
                                                         <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
                                                         @foreach (var item in Model.reportingTools)
@@ -394,14 +399,15 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="DataCollectionTimelines">Data collection timelines</label>
-                                                <div class="col-sm-9">
+                                                <label class="col-sm-3 control-label" for="DataCollectionTimelines">Data Collection Timelines</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What are the timelines attached to data collection. Describe using dates"><i class="icon-help"></i></button>
+                                                <div class="col-sm-8">
                                                     <input type="text" placeholder="What are the timelines attached to data collection. Describe using dates" id="DataCollectionTimelines" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="FrequencyOfDataCollection">Frequency of Data Collection</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="FrequencyOfDataCollection" class="form-control">
                                                         <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
                                                         @foreach (var item in Model.dataFrequency)
@@ -427,7 +433,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="Durationofdatacollection">Duration of data collection</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="Durationofdatacollection" class="form-control">
                                                         <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
                                                         @foreach (var item in Model.Duration)
@@ -468,8 +474,10 @@
                                         <div class="form-horizontal">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataFlowChart">Data Flow Chart</label>
-                                                <div class="col-sm-9">
-                                                    <input type="file" placeholder="Describe the levels of data flow using a Flow Chart diagram  e.g Facility--LGA--State--National " accept="image/*" id="DataFlowChart" class="form-control">
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe the levels of data flow using a Flow Chart diagram  e.g Facility--LGA--State--National"><i class="icon-help"></i></button>
+                                                <div class="col-sm-5">
+                                                    <input type="file" onchange="imageSelected(this)" accept="image/*" id="DataFlowChart" class="form-control">
+                                                    <img id="FlowChartimageURL" height="100">
                                                 </div>
                                             </div>
                                         </div>
@@ -482,7 +490,8 @@
                                                 <div class="form-horizontal">
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="HealthFacilityLevel">Health Facility level</label>
-                                                        <div class="col-sm-9">
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe roles and responsibilities of stakeholders at this level"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-8">
                                                             @if (Model.roleNresp != null)
                                                             {
                                                             <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" value="@Model.roleNresp.HealthFacilityLevel" id="HealthFacilityLevel" class="form-control">
@@ -496,7 +505,8 @@
 
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="AggregationLevel">Aggregation Level</label>
-                                                        <div class="col-sm-9">
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe roles and responsibilities of stakeholders at this level"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-8">
                                                             @if (Model.roleNresp != null)
                                                             {
                                                             <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="AggregationLevel" value="@Model.roleNresp.AggregationLevel" class="form-control">
@@ -509,7 +519,8 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="CentralNationalLevel">Central/National Level</label>
-                                                        <div class="col-sm-9">
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe roles and responsibilities of stakeholders at this level"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-8">
                                                             @if (Model.roleNresp != null)
                                                             {
                                                             <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="CentralNationalLevel" value="@Model.roleNresp.CentralNationalLevel" class="form-control">
@@ -534,7 +545,7 @@
                                                 <div class="form-horizontal">
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="DataHandlingAndEntry">Data handling & entry</label>
-                                                        <div class="col-sm-9">
+                                                        <div class="col-sm-8">
                                                             <select id="DataHandlingAndEntry" class="form-control">
                                                                 <option value="" selected disabled>Do you have trained personnels for data handling and entry? </option>
                                                                 @foreach (var item in Model.YesNoOption)
@@ -561,13 +572,14 @@
 
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="TimelinesForTrainings">Timelines for Trainings</label>
-                                                        <div class="col-sm-9">
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state timelines for trainings using dates"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-8">
                                                             <input type="text" placeholder="Clearly state timelines for trainings using dates" id="TimelinesForTrainings" value="" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="FequencyOfTrainings">Frequency of trainings</label>
-                                                        <div class="col-sm-9">
+                                                        <div class="col-sm-8">
                                                             <select id="FequencyOfTrainings" class="form-control">
                                                                 <option value="" disabled selected>How frequent will these trainings occur?</option>
                                                                 @foreach (var item in Model.dataFrequency)
@@ -593,7 +605,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="DurationOfTrainings">Duration of trainings</label>
-                                                        <div class="col-sm-9">
+                                                        <div class="col-sm-8">
                                                             <select id="DurationOfTrainings" class="form-control">
                                                                 <option value="" disabled selected>What is the duration assigned for trainings?</option>
                                                                 @foreach (var item in Model.Duration)
@@ -692,6 +704,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="TimelinesForDataVerification">Timelines for data verification</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What are the timelines for these data verification? Clearly describe using dates"><i class="icon-help"></i></button>
                                                 <div class="col-sm-6">
                                                     <input type="text" placeholder="What are the timelines for these data verification? Clearly describe using dates" id="TimelinesForDataVerification" value="" class="form-control">
                                                 </div>
@@ -768,7 +781,8 @@
                                         <div class="form-horizontal">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="NameOfReport">Name of Report</label>
-                                                <div class="col-sm-9">
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of reports are collated from data?"><i class="icon-help"></i></button>
+                                                <div class="col-sm-8">
                                                     @if (Model.reportData != null)
                                                     {
                                                         <input type="text" placeholder="What types of reports are collated from data?" value="@Model.reportData.NameOfReport" id="NameOfReport" class="form-control">
@@ -782,7 +796,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="ThematicArea">Thematic Area</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="ThematicArea" class="form-control">
                                                         <option value="" disabled selected>What thematic areas are reported on?</option>
                                                         @foreach (var item in Model.thematicAreas)
@@ -808,13 +822,14 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="TimelinesforReporting">Timelines for reporting</label>
-                                                <div class="col-sm-9">
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state the timelines for these reporting"><i class="icon-help"></i></button>
+                                                <div class="col-sm-8">
                                                     <input type="text" placeholder="Clearly state the timelines for these reporting" id="TimelinesforReporting" value="" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="FrequencyOfReporting">Frequency of reporting</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="FrequencyOfReporting" class="form-control">
                                                         <option value="" disabled selected>State the frquency of reporting</option>
                                                         @foreach (var item in Model.dataFrequency)
@@ -840,7 +855,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DurationOfReporting">Duration of reporting</label>
-                                                <div class="col-sm-9">
+                                                <div class="col-sm-8">
                                                     <select id="DurationOfReporting" class="form-control">
                                                         <option value="" disabled selected>Clearly state the duration of time assigned for reporting</option>
                                                         @foreach (var item in Model.Duration)
@@ -1407,6 +1422,11 @@
     <script>
         $(document).ready(function () {
 
+            base64Image = '@Model.DataFlowChart';
+            if(base64Image !=undefined){
+                BindPureBase64StringToControl($('#FlowChartimageURL'), base64Image)
+            }
+
             var EthicalApprovalForTheProject = $("#EthicalApprovalForTheProject")[0].value
             if (EthicalApprovalForTheProject == "No") {
                 $("#EthicalApprovalDiv").hide()
@@ -1442,6 +1462,9 @@
                     viewModel[formElements.id] = formElements.value;
                 });
                 viewModel["documentID"] = documentID;
+                if (base64Image != undefined) {
+                    viewModel["DataFlowChart"] = base64Image;
+                }
 
                 $.ajax({
                     type: "POST",

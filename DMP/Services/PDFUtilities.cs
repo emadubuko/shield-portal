@@ -31,11 +31,8 @@ namespace DMP.Services
             istPage.IndentationRight = 55f;
             doc.Add(istPage);
 
-            for(int i=0;i<=8; i++)
-            {
-                doc.Add(new Paragraph("\n"));
-            }
-
+            WriteLines(8, ref doc);
+            
             Image docLogo = GeneratePDFImage(dmpDoc.TheDMP.Organization.Logo);
             doc.Add(docLogo);
             
@@ -44,10 +41,7 @@ namespace DMP.Services
             //istPage.IndentationRight = 85f;
             doc.Add(istPage);
 
-            for (int i = 0; i <= 3; i++)
-            {
-                doc.Add(new Paragraph("\n"));
-            }
+            WriteLines(3, ref doc); 
 
             istPage = new Paragraph("DATA MANAGEMENT PLAN", istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
@@ -59,10 +53,8 @@ namespace DMP.Services
             //istPage.IndentationRight = 55f;
             //doc.Add(istPage);
 
-            for (int i = 0; i <= 6; i++)
-            {
-                doc.Add(new Paragraph("\n"));
-            }
+            WriteLines(6, ref doc); 
+
             istPage = new Paragraph("SI LEAD", istPageFont14);
             istPage.Alignment = Element.ALIGN_RIGHT;
             istPage.IndentationRight = 55f;
@@ -88,40 +80,135 @@ namespace DMP.Services
 
 
             doc.NewPage();
-            Paragraph projectHeader = new Paragraph("PROJECT PROFILE", pageFont);
-            projectHeader.Alignment = Element.BODY;
-            projectHeader.IndentationLeft = 55f;
-            doc.Add(projectHeader);// add paragraph to the document
-
+            Paragraph header = new Paragraph("PROJECT PROFILE", pageFont);
+            header.Alignment = Element.BODY;
+            header.IndentationLeft = 55f;
+            doc.Add(header);// add paragraph to the document
             doc.Add(CreateProjectProfileTable(pageData.ProjectProfile)); // add pdf table to the document
-             
 
-            doc.NewPage();
-            doc.Add(DataCollection(pageData.DataCollectionProcesses, pageData.DataCollection, pageData.QualityAssurance));
 
-            doc.NewPage();
+
+            doc.NewPage();//Planning
+            header = new Paragraph("PLANNING", istPageFont14);
+            header.IndentationLeft = 55;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.Planning.Summary, "Project Objectives"));
+            
+
+            doc.NewPage(); //DataCollectionProcesses
+            header = new Paragraph("DATA COLLECTION PROCESS", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.DataCollectionProcesses, "Data Collection Processes"));
+
+            doc.NewPage();//DataCollection
+            header = new Paragraph("DATA COLLECTION", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.DataCollection, "Data Collection"));
+
+
+            doc.NewPage();// MonitoringAndEvaluationSystems
+             header = new Paragraph("MONITORING AND EVALUATION SYSTEMS", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            WriteLines(1, ref doc);           
+
+            header = new Paragraph("Data Flow Chart", pageFont);
+            header.Alignment = Element.ALIGN_LEFT;
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+
+            string dataflowchart = !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.DataFlowChart.Split(',')[1] : null;
+            if(dataflowchart != null)
+            {
+                byte[] imageByte = Convert.FromBase64String(dataflowchart);
+                docLogo = GeneratePDFImage(imageByte);
+                doc.Add(docLogo);
+            }          
+            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.RoleAndResponsibilities, "Role and responsibilities"));
+            WriteLines(1, ref doc);
+            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Trainings, "Trainings"));
+
+
+            doc.NewPage();// QualityAssurance
+            header = new Paragraph("Quality Assurance", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.QualityAssurance.DataVerification, "Data Verification"));
+
+
+            doc.NewPage();// Report
+            header = new Paragraph("REPORTS", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.Reports.ReportData, "Data Report"));
+
+            doc.NewPage(); // DataStorage
+            header = new Paragraph("Data Storage", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.DataStorage.Digital, "Data Storage - Digital Data"));
+            doc.Add(GenericPageTable(pageData.DataStorage.Digital, "Data Storage - Non Digital Data"));
+
+            doc.NewPage();// IntellectualPropertyCopyrightAndOwnership
+            header = new Paragraph("Intellectual Property, Copyright and Ownership", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.IntellectualPropertyCopyrightAndOwnership, "Intellectual Property, Copyright and Ownership"));
+
+
+            doc.NewPage();// DataAccessAndSharing
+            header = new Paragraph("Data Access and Sharing", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.DataAccessAndSharing, "Data Access and Sharing"));
+
+            doc.NewPage();// DataDocumentationManagementAndEntry
+            header = new Paragraph("Data Documentation Management and Entry", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
+
+
+            doc.NewPage();// PostProjectDataRetentionSharingAndDestruction
+            header = new Paragraph("Post Project Data Retention Sharing and Destruction", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction, "Post Project Data Retention Sharing and Destruction"));
+            doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention, "Digital Data Retention"));
+            doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention, "Non Digital Data Rentention"));
+            
+            #region ////******Correction*************
+            /*
+            doc.NewPage(); // DataStorage
             doc.Add(DigitalDataStorage(pageData.DataStorage));
 
-            doc.NewPage();
+            doc.NewPage(); // DataStorage
             doc.Add(NonDigitalDataStorage(pageData.DataStorage));
 
-            doc.NewPage();
+            doc.NewPage();// IntellectualPropertyCopyrightAndOwnership
             doc.Add(IntellectualPropertyCopyright(pageData.IntellectualPropertyCopyrightAndOwnership));
 
-            doc.NewPage();
-            doc.Add(DataDocumentEntry(pageData.DataDocumentationManagementAndEntry));
-
-            doc.NewPage();
+            doc.NewPage();// DataAccessAndSharing
             doc.Add(AccessAndSharing(pageData.DataAccessAndSharing));
 
-            doc.NewPage();
+            doc.NewPage();// DataDocumentationManagementAndEntry
+            doc.Add(DataDocumentEntry(pageData.DataDocumentationManagementAndEntry));
+                                    
+            doc.NewPage();// PostProjectDataRetentionSharingAndDestruction
             doc.Add(PostDataRetention(pageData.PostProjectDataRetentionSharingAndDestruction));
-
-            //List<dynamic> dataList = new List<dynamic> { postDataPolicy, postDataPolicy.DigitalDataRetention, postDataPolicy.NonDigitalRentention };
-            //doc.Add(CreatePageTable(dataList, "Some test"));
-
+            */
+            #endregion
         }
 
+        private void WriteLines(int count, ref Document doc)
+        {
+            for (int i = 0; i <= count; i++)
+            {
+                doc.Add(new Paragraph(" "));
+            }
+        }
         private Image GeneratePDFImage(byte[] imageBytes)
         {
             iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(imageBytes, true); // System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -425,7 +512,7 @@ namespace DMP.Services
 
         private PdfPTable CreateProjectProfileTable(ProjectProfile ProjectProfile)
         {
-            BaseColor blackColor = new BaseColor(0, 0, 0);
+              BaseColor blackColor = new BaseColor(0, 0, 0);
             Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
 
             BaseColor fadedBlue = new BaseColor(79, 129, 189);
@@ -453,7 +540,7 @@ namespace DMP.Services
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk("Implementing Org", font8));
+            pp = new Paragraph(new Chunk("Name of Implementing Partner", font8));
             pp.IndentationLeft = 20;
             pp.SpacingAfter = 5f;
             pp.SpacingBefore = 5f;
@@ -470,6 +557,23 @@ namespace DMP.Services
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
 
+            pp = new Paragraph(new Chunk("Abbreviation of Implementing Partner", font8));
+            pp.IndentationLeft = 20;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.AbreviationOfImplementingPartner, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            pp.SpacingAfter = 0.1f;
+            pp.SpacingBefore = 1f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+            
             pp = new Paragraph(new Chunk("Mission Partner", font8));
             pp.IndentationLeft = 20;
             pp.SpacingAfter = 5f;
@@ -485,6 +589,57 @@ namespace DMP.Services
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
+
+
+            pp = new Paragraph(new Chunk("Lead Activity Manager", font8));
+            pp.IndentationLeft = 20;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
+            string leadActivityMgr = ProjectProfile.ProjectDetails.LeadActivityManager != null ? ProjectProfile.ProjectDetails.LeadActivityManager.FullName : "";
+            pp = new Paragraph(new Chunk(leadActivityMgr, fontValue));
+            pp.IndentationLeft = 10;
+            pp.SpacingAfter = 0.1f;
+            pp.SpacingBefore = 1f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Address Of Organization", font8));
+            pp.IndentationLeft = 20;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.AddressOfOrganization, fontValue));
+            pp.IndentationLeft = 10;
+            pp.SpacingAfter = 0.1f;
+            pp.SpacingBefore = 1f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Phone Number", font8));
+            pp.IndentationLeft = 20;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.PhoneNumber, fontValue));
+            pp.IndentationLeft = 10;
+            pp.SpacingAfter = 0.1f;
+            pp.SpacingBefore = 1f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            projectProfileTable.AddCell(PdfPCell);
+
 
             pp = new Paragraph(new Chunk("Project start date", font8));
             pp.IndentationLeft = 20;
@@ -520,22 +675,22 @@ namespace DMP.Services
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk("Project summary", font8));
-            pp.IndentationLeft = 20;
-            pp.SpacingAfter = 5f;
-            pp.SpacingBefore = 5f;
-            PdfPCell = new PdfPCell();
-            PdfPCell.AddElement(pp);
-            projectProfileTable.AddCell(PdfPCell);
+            //pp = new Paragraph(new Chunk("Project summary", font8));
+            //pp.IndentationLeft = 20;
+            //pp.SpacingAfter = 5f;
+            //pp.SpacingBefore = 5f;
+            //PdfPCell = new PdfPCell();
+            //PdfPCell.AddElement(pp);
+            //projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectSummary, fontValue));
-            PdfPCell = new PdfPCell();
-            pp.IndentationLeft = 10;
-            pp.SpacingAfter = 0.1f;
-            pp.SpacingBefore = 1f;
-            PdfPCell = new PdfPCell();
-            PdfPCell.AddElement(pp);
-            projectProfileTable.AddCell(PdfPCell);
+            //pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectSummary, fontValue));
+            //PdfPCell = new PdfPCell();
+            //pp.IndentationLeft = 10;
+            //pp.SpacingAfter = 0.1f;
+            //pp.SpacingBefore = 1f;
+            //PdfPCell = new PdfPCell();
+            //PdfPCell.AddElement(pp);
+            //projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk("Grant reference number", font8));
             pp.IndentationLeft = 20;
@@ -562,8 +717,8 @@ namespace DMP.Services
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
 
-
-            pp = new Paragraph(new Chunk(ProjectProfile.EthicalApproval.EthicalApprovalForTheProject, fontValue));
+            string ethicalApproval = ProjectProfile.EthicalApproval.EthicalApprovalForTheProject == null ? ProjectProfile.EthicalApproval.TypeOfEthicalApproval : ProjectProfile.EthicalApproval.EthicalApprovalForTheProject;
+            pp = new Paragraph(new Chunk(ethicalApproval, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -575,7 +730,7 @@ namespace DMP.Services
             projectProfileTable.SpacingAfter = 10f;
             projectProfileTable.SpacingBefore = 10f; // Give some space after the text or it may overlap the table
 
-            return projectProfileTable;
+            return projectProfileTable; 
         }
 
         public void GenerateTable<T>(T data, ref PdfPTable table)
@@ -682,7 +837,7 @@ namespace DMP.Services
         /// <param name="dataList"></param>
         /// <param name="tableHeader"></param>
         /// <returns></returns>
-        private IElement GenericPageTable<T>(List<T> dataList, string tableHeader)
+        private IElement GenericPageTable<T>(T data, string tableHeader)
         {
             PdfPTable table = new PdfPTable(1);
 
@@ -692,15 +847,15 @@ namespace DMP.Services
             PdfPTable body = new PdfPTable(2);
             var tanColor = System.Drawing.Color.FromArgb(40, System.Drawing.Color.Tan);
 
-            foreach (var data in dataList)
-            {
-                GenerateTable(data, ref body);
-            }
-            //pdfUtil.GenerateTable(postDataPolicy, ref body);
-            //pdfUtil.GenerateTable(postDataPolicy.DigitalDataRetention, ref body);
-            //pdfUtil.GenerateTable(postDataPolicy.NonDigitalRentention, ref body);
+            GenerateTable(data, ref body);             
 
-            PdfPCell bodyCell = new PdfPCell(body); bodyCell.BorderWidth = 0; table.AddCell(bodyCell);
+            PdfPCell bodyCell = new PdfPCell(body);
+            bodyCell.BorderWidth = 0;
+            table.AddCell(bodyCell);
+
+            table.SpacingAfter = 10f;
+            table.SpacingBefore = 10f;
+
             return table;
         }
     }

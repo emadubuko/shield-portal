@@ -75,15 +75,18 @@ namespace DMP.Controllers
                     projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                     summary = thepageDoc.Planning.Summary,
                     //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
-                    reportData = thepageDoc.Reports.ReportData,
-                    roleNresp = thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities,
-                    Trainings = thepageDoc.MonitoringAndEvaluationSystems.Trainings,
+                    reportData = thepageDoc.Reports != null ? thepageDoc.Reports.ReportData : new ReportData(),
+                    roleNresp = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities(),
+                    Trainings = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings : new Trainings(),
+                    //reportData = thepageDoc.Reports.ReportData,
+                    //roleNresp = thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities,
+                    //Trainings = thepageDoc.MonitoringAndEvaluationSystems.Trainings,
                     documentID = dmpDoc.Id.ToString(),
                     EditMode = true,
                     Profiles = profileDAO.RetrieveAll().ToDictionary(x => x.Id),
                     Organization = MyDMP.Organization,
                     dataCollection = thepageDoc.DataCollection,
-                   
+                    DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.DataFlowChart : null,
                 };
                 return View(docVM);
             }
@@ -132,6 +135,8 @@ namespace DMP.Controllers
             ProjDetails.AbreviationOfImplementingPartner = MyDMP.Organization.ShortName;
             ProjDetails.NameOfImplementingPartner = MyDMP.Organization.Name;
             ProjDetails.AddressOfOrganization = MyDMP.Organization.Address;
+            ProjDetails.PhoneNumber = MyDMP.Organization.PhoneNumber;
+            ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
 
             WizardPage page = new WizardPage
             {
@@ -214,10 +219,18 @@ namespace DMP.Controllers
            DigitalDataRetention digitalDataRetention, Trainings Trainings)
         {
 
-            ProjectDetails ProjDetails = projDTF; ;
             Guid dGuid = new Guid(doc.documentID);
             var previousDoc = dmpDocDAO.Retrieve(dGuid);
 
+            ProjectDetails ProjDetails = projDTF;
+            ProjDetails.Organization = previousDoc.TheDMP.Organization;
+            ProjDetails.AbreviationOfImplementingPartner = previousDoc.TheDMP.Organization.ShortName;
+            ProjDetails.NameOfImplementingPartner = previousDoc.TheDMP.Organization.Name;
+            ProjDetails.AddressOfOrganization = previousDoc.TheDMP.Organization.Address;
+            ProjDetails.PhoneNumber = previousDoc.TheDMP.Organization.PhoneNumber;
+            ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
+
+             
             if (previousDoc.TheDMP.TheProject == null)
             {
                 ProjDetails = projDTF;
