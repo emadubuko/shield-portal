@@ -8,6 +8,6 @@ namespace DAL.Entities
 {
     public class QualityAssurance 
     {
-        public virtual DataVerificaton DataVerification { get; set; }
+        public virtual List<DataVerificaton> DataVerification { get; set; }
     }
 }

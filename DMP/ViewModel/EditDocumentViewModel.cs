@@ -88,9 +88,9 @@ namespace DMP.ViewModel
 
     public class EditDocumentViewModel2
     {
-        public DataCollection dataCollection { get; set; }
+        public List<DataCollection> dataCollection { get; set; }
         public string DataFlowChart { get; set; }
-        public Trainings Trainings { get; set; }
+        public List<Trainings> Trainings { get; set; }
 
         public bool EditMode { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
@@ -108,8 +108,9 @@ namespace DMP.ViewModel
 
         public Summary summary { get; set; }
         public ReportData reportData { get; set; }
+        public List<ReportData> reportDataList { get; set; }
         public RolesAndResponsiblities roleNresp { get; set; }
-        public DataVerificaton dataVerification { get; set; }
+        public List<DataVerificaton> dataVerification { get; set; }
         public DataCollectionProcesses datacollectionProcesses { get; set; }
         public DigitalData digital { get; set; }
         public NonDigitalData nonDigital { get; set; }

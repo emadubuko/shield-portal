@@ -13,6 +13,6 @@ namespace DAL.Entities
 
         public virtual RolesAndResponsiblities RoleAndResponsibilities { get; set; }
 
-        public virtual Trainings Trainings { get; set; }
+        public virtual List<Trainings> Trainings { get; set; }
     }
 }

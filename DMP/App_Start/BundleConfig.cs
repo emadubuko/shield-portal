@@ -82,6 +82,23 @@ namespace DMP
                          ));
             bundles.Add(new StyleBundle("~/bundles/mysiteCss").Include(
                 "~/Content/Site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/MultiDatePickerCss").Include(
+                      "~/plugins/blockui-master/js/jquery-ui.js",
+                      "~/plugins/blockui-master/js/jquery.blockUI.js", 
+                      "~/plugins/jasny/js/jasny-bootstrap.min.js",
+                      "~/plugins/select2/js/select2.full.min.js",
+                      
+                      "~/Scripts/jquery-ui.multidatespicker.js",
+                      //"~/plugins/datepicker/js/bootstrap-datepicker.js",
+
+                      "~/Scripts/form-advanced-script.js",
+                      "~/Scripts/jquery.validate.min.js",
+                      "~/plugins/wizard/js/jquery.bootstrap.wizard.min.js",
+                      "~/plugins/wizard/js/wizard-script.js",
+                      "~/Scripts/functions.js",
+                      "~/Scripts/loader.js"));
+
         }
     }
 }

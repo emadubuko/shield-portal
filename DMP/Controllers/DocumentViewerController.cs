@@ -95,9 +95,9 @@ namespace DMP.Controllers
                 projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                 summary = thepageDoc.Planning.Summary,
                 versionMetadata = versionMetadata,
-                reportData = thepageDoc.Reports !=null ? thepageDoc.Reports.ReportData : new ReportData(),
+                reportData = new ReportData(), // thepageDoc.Reports !=null ? thepageDoc.Reports.ReportData : new ReportData(),
                 roleNresp = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities: new RolesAndResponsiblities(),
-                Trainings = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings: new Trainings(),
+                Trainings = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings: new List<Trainings>(),
                 documentID = Doc.Id.ToString(),
                 dmpId = Doc.TheDMP.Id,
                 Comments = comments,
@@ -367,13 +367,13 @@ namespace DMP.Controllers
                 Summary = new Summary
                 { ProjectObjectives = "TL;DR. Too long dont read" }
             },
-            DataCollection = new DataCollection
-            {
-                 DataSources = "Unknown"
-            },
+            //DataCollection = new DataCollection
+            //{
+            //     DataSources = "Unknown"
+            //},
              MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
              {
-                  Trainings = new Trainings(),
+                  Trainings = new  List<Trainings>(),
                    DataFlowChart = "",
                  RoleAndResponsibilities = new RolesAndResponsiblities
                  {
@@ -384,19 +384,20 @@ namespace DMP.Controllers
              },
             Reports = new Report
              {
-                  ReportData = new ReportData
-                  { 
-                      NameOfReport = "Test report",
-                      DurationOfReporting = "steady",
-                  }
+                  ReportData = new List<ReportData>(),
+                //ReportData
+                //  { 
+                //      NameOfReport = "Test report",
+                //      DurationOfReporting = "steady",
+                //  }
              },
             QualityAssurance = new QualityAssurance
             {
-                DataVerification = new DataVerificaton
-                {
-                    FormsOfDataVerification = "Manual",
-                    TypesOfDataVerification = "DQA"
-                },
+                //DataVerification = new DataVerificaton
+                //{
+                //    FormsOfDataVerification = "Manual",
+                //    TypesOfDataVerification = "DQA"
+                //},
             },
             DataCollectionProcesses = new DataCollectionProcesses
             {

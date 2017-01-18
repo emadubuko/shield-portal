@@ -8,7 +8,7 @@ namespace DAL.Entities
 {
     public class Report
     { 
-        public virtual ReportData ReportData { get; set; }
+        public virtual List<ReportData> ReportData { get; set; }
         
     }
 }

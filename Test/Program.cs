@@ -159,11 +159,11 @@ namespace Test
             //},
             QualityAssurance = new QualityAssurance
             {
-                DataVerification = new DataVerificaton
-                {
-                    FormsOfDataVerification = "Manual",
-                    TypesOfDataVerification = "DQA"
-                },
+                //DataVerification = new DataVerificaton
+                //{
+                //    FormsOfDataVerification = "Manual",
+                //    TypesOfDataVerification = "DQA"
+                //},
             },
             DataCollectionProcesses = new DataCollectionProcesses
             {

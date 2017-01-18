@@ -17,7 +17,7 @@ namespace DAL.Entities
 
         public virtual DataCollectionProcesses DataCollectionProcesses { get; set; }
 
-        public virtual DataCollection DataCollection { get; set; }
+        public virtual List<DataCollection> DataCollection { get; set; }
         public virtual MonitoringAndEvaluationSystems MonitoringAndEvaluationSystems { get; set; }
         public virtual QualityAssurance QualityAssurance { get; set; }
 

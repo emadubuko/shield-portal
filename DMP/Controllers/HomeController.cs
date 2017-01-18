@@ -55,6 +55,23 @@ namespace DMP.Controllers
         }
          
 
+        public ActionResult DynamicTable()
+        {
+            List<MockReportData> data = new List<MockReportData>();
+            data.Add(new MockReportData
+            {
+                 DurationOfReporting = "ij", FrequencyOfReporting="jb", Id=1, NameOfReport="hjbk",
+                 ThematicArea = "tehre", TimelinesForReporting= new List<DateTime> { DateTime.Now, DateTime.Now.AddMonths(1)}
+            });
+            return View(data);
+        }
+        [HttpPost]
+        public ActionResult DynamicTableAdd(List<MockReportData> data)
+        {
+            return Json(data.Count());
+        }
+
+
         #region - obsolete
         /*
         public ActionResult CreateNewDMP()
@@ -414,5 +431,15 @@ namespace DMP.Controllers
     
         */
         #endregion
+    }
+
+    public class MockReportData
+    {
+        public virtual int Id { get; set; }
+        public virtual string NameOfReport { get; set; }
+        public virtual string ThematicArea { get; set; }
+        public virtual List<DateTime> TimelinesForReporting { get; set; }
+        public virtual string FrequencyOfReporting { get; set; }
+        public virtual string DurationOfReporting { get; set; }
     }
 }

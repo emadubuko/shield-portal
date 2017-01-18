@@ -75,9 +75,9 @@ namespace DMP.Controllers
                     projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                     summary = thepageDoc.Planning.Summary,
                     //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
-                    reportData = thepageDoc.Reports != null ? thepageDoc.Reports.ReportData : new ReportData(),
+                    reportDataList = thepageDoc.Reports != null ? thepageDoc.Reports.ReportData : new List<ReportData>(),
                     roleNresp = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities(),
-                    Trainings = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings : new Trainings(),
+                    Trainings = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>(),
                     //reportData = thepageDoc.Reports.ReportData,
                     //roleNresp = thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities,
                     //Trainings = thepageDoc.MonitoringAndEvaluationSystems.Trainings,
@@ -113,11 +113,11 @@ namespace DMP.Controllers
 
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
-            Summary summary, RolesAndResponsiblities roleNresp, DataCollection DataCollection,
-            ReportData reportData, DataVerificaton dataVerification, DigitalData digital, NonDigitalData nonDigital,
+            Summary summary, RolesAndResponsiblities roleNresp, List<DataCollection> DataCollection,
+            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
             DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
-            DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, Trainings Trainings,
-            DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention)
+            DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<Trainings> Trainings,
+            DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention, List<ReportData> reportDataList)
         {
             //incase session has timed out
             if (MyDMP == null)
@@ -155,7 +155,7 @@ namespace DMP.Controllers
                 },
                 Reports = new Report
                 {
-                    ReportData = reportData
+                    ReportData = reportDataList
                 },
                 QualityAssurance = new QualityAssurance { DataVerification = dataVerification },
                 DataCollectionProcesses = datacollectionProcesses,
@@ -213,10 +213,10 @@ namespace DMP.Controllers
         [HttpPost]
         public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
            VersionAuthor versionAuthor, VersionMetadata versionMetadata, Summary summary, RolesAndResponsiblities roleNresp,
-           ReportData reportData, DataVerificaton dataVerification, DigitalData digital, NonDigitalData nonDigital,
+           ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
            DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
-           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
-           DigitalDataRetention digitalDataRetention, Trainings Trainings)
+           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<DataCollection> DataCollection,
+           DigitalDataRetention digitalDataRetention, List<Trainings> Trainings, List<ReportData> reportDataList)
         {
 
             Guid dGuid = new Guid(doc.documentID);
@@ -270,7 +270,7 @@ namespace DMP.Controllers
                 },
                  Reports = new Report
                  {
-                      ReportData = reportData
+                      ReportData = reportDataList
                  },
                 QualityAssurance = new QualityAssurance { DataVerification = dataVerification },
                 DataCollectionProcesses = datacollectionProcesses,

@@ -4,6 +4,7 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss") 
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 
     <style>
         .panel-default {
@@ -31,12 +32,49 @@
             }
             else {
                 $("#EthicalApprovalDiv").hide();
-            }            
+            }
         }
 
         function imageSelected(e) {
             imagePreview(e, $('#FlowChartimageURL'));
         }
+
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        var DataCollectionArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollection));
+        var datacollectionArray = [];
+        var TrainingArrayFromServer = @Html.Raw(Json.Encode(Model.Trainings));
+        var trainingArray = [];
+        var DataVerificationArrayFromServer = @Html.Raw(Json.Encode(Model.dataVerification));
+        var DataVerificationArray =[];
+       var ReportArrayFromServer =  @Html.Raw(Json.Encode(Model.reportDataList));//to be discarded
+        var reportArray = [];
+
+        function DeleteRow(row) {
+
+            if(row.id.indexOf("report") !== -1){
+            var rowid = row.id.split('x')[1];
+                $(row).remove();
+                reportArray.splice(rowid-1, 1);
+            }
+            if(dataType == 'report'){
+                $("#report"+row).remove();
+                reportArray.splice(row-1, 1);
+            }
+            else  if(dataType == 'dataverification'){
+                $("#dataverification"+row).remove();
+                DataVerificationArray.splice(row-1, 1);
+            }
+            else  if(dataType == 'training'){
+                $("#training"+row).remove();
+                trainingArray.splice(row-1, 1);
+            }
+            else  if(dataType == 'datacollection'){
+                $("#datacollection"+row).remove();
+                datacollectionArray.splice(row-1, 1);
+            }
+        }
+
     </script>
 
 }
@@ -69,7 +107,7 @@
 
                         <div class="tab-content">
 
-                            <div class="tab-pane active" id="ProjectProfile">
+                            <div class="tab-pane" id="ProjectProfile">
                                 <h4 class="panel-title" style="margin-left: 90px;">
                                     <b>Project Profile</b>
                                 </h4>
@@ -149,19 +187,21 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="ProjectStartDate">Project Start Date</label>
                                                 <div class="col-sm-9">
-                                                    <div id="date-popup" class="input-group date">
+                                                    <input id="ProjectStartDate" type="text" placeholder="Project Start Date" value="@Model.projectDetails.ProjectStartDate" class="form-control">
+                                                    @*<div id="date-popup" class="input-group date">
                                                         <input id="ProjectStartDate" type="text" placeholder="Project Start Date" value="@Model.projectDetails.ProjectStartDate" data-format="D, dd MM yyyy" class="form-control">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    </div>
+                                                    </div>*@
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Project End Date</label>
                                                 <div class="col-sm-9">
-                                                    <div id="date-popup2" class="input-group date">
+                                                    <input type="text" id="ProjectEndDate" placeholder="Project End Date" value="@Model.projectDetails.ProjectEndDate" data-format="D, dd MM yyyy" class="form-control">
+                                                    @*<div id="date-popup2" class="input-group date">
                                                         <input type="text" id="ProjectEndDate" placeholder="Project End Date" value="@Model.projectDetails.ProjectEndDate" data-format="D, dd MM yyyy" class="form-control">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    </div>
+                                                    </div>*@
                                                 </div>
                                             </div>
 
@@ -307,7 +347,7 @@
                             </div>
                             <!-- end of Data Collection Processes page-->
 
-                            <div class="tab-pane" id="DataCollection">
+                            <div class="tab-pane active" id="DataCollection">
                                 <h4 class="panel-title" style="margin-left: 70px;">
                                     <b>Data Collection</b>
                                 </h4>
@@ -317,15 +357,16 @@
                                         <h4 class="panel-title">Data</h4>
                                     </div>
                                     <div class="panel-body">
-                                        <div class="form-horizontal">
+                                        <div class="form-horizontal" id="datacollectionForm">
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="Datatype">Data Type</label>
+                                                <label class="col-sm-3 control-label" for="DataType">Data Type</label>
                                                 <div class="col-sm-8">
-                                                    <select id="Datatype" class="form-control">
+                                                    <select id="DataType" class="form-control">
                                                         <option value="" disabled selected>What types of data are collected ?</option>
                                                         @foreach (var item in Model.reportDataType)
                                                         {
-                                                            if (Model.dataCollection != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataCollection != null)
                                                             {
                                                                 if (@item == Model.dataCollection.DataType)
                                                                 {
@@ -339,20 +380,20 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item</option>
-                                                            }
-
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="Datatype">Data Sources</label>
+                                                <label class="col-sm-3 control-label" for="DataSources">Data Sources</label>
                                                 <div class="col-sm-8">
                                                     <select id="DataSources" class="form-control">
                                                         <option value="" disabled selected>What are the sources of your of data?</option>
                                                         @foreach (var item in Model.dataSourcesTypes)
                                                         {
-                                                            if (Model.dataCollection != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataCollection != null)
                                                             {
                                                                 if (@item == Model.dataCollection.DataSources)
                                                                 {
@@ -366,7 +407,7 @@
                                                             else
                                                             {
                                                                 <option value="@item"> @item </option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -378,7 +419,8 @@
                                                         <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
                                                         @foreach (var item in Model.reportingTools)
                                                         {
-                                                            if (Model.dataCollection != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataCollection != null)
                                                             {
                                                                 if (@item == Model.dataCollection.DataCollectionAndReportingTools)
                                                                 {
@@ -392,7 +434,7 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item </option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
 
@@ -412,7 +454,9 @@
                                                         <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
                                                         @foreach (var item in Model.dataFrequency)
                                                         {
-                                                            if (Model.dataCollection != null)
+                                                            <option value="@item">@item</option>
+
+                                                            @*if (Model.dataCollection != null)
                                                             {
                                                                 if (@item == Model.dataCollection.FrequencyOfDataCollection)
                                                                 {
@@ -426,19 +470,20 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item</option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="Durationofdatacollection">Duration of data collection</label>
+                                                <label class="col-sm-3 control-label" for="DurationOfDataCollection">Duration of data collection</label>
                                                 <div class="col-sm-8">
-                                                    <select id="Durationofdatacollection" class="form-control">
+                                                    <select id="DurationOfDataCollection" class="form-control">
                                                         <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
                                                         @foreach (var item in Model.Duration)
                                                         {
-                                                            if (Model.dataCollection != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataCollection != null)
                                                             {
                                                                 if (@item == Model.dataCollection.DurationOfDataCollection)
                                                                 {
@@ -452,16 +497,37 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item</option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-offset-9">
+                                                <a class="btn btn-black btn-sm btn-outline" id="adddatacollectionbtn">Add to list</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Data Type</th>
+                                                        <th>Data Sources</th>
+                                                        <th>Tools</th>
+                                                        <th>Frequency</th>
+                                                        <th>Duration</th>
+                                                        <th>Timelines</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="datacollectiondataTable"> </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+                            <!--End--of-Data collection-->
 
                             <div class="tab-pane" id="MonitoringEvaluationSystems">
                                 <div class="panel panel-default">
@@ -542,37 +608,44 @@
                                                 <h4 class="panel-title">Trainings</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <div class="form-horizontal">
+                                                <div class="form-horizontal" id="trainingForm">
+                                                   @* <div class="form-group">
+       <label class="col-sm-3 control-label" for="DataHandlingAndEntry">Data handling & entry</label>
+        <div class="col-sm-8">
+            <select id="DataHandlingAndEntry" class="form-control">
+                <option value="" selected disabled>Do you have trained personnels for data handling and entry? </option>
+                @foreach (var item in Model.YesNoOption)
+                {
+                    if (Model.Trainings != null)
+                    {
+                        if (@item == Model.Trainings.DataHandlingAndEntry)
+                        {
+                            <option value="@item" selected>@item</option>
+                        }
+                        else
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>*@
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="DataHandlingAndEntry">Data handling & entry</label>
+                                                        <label class="col-sm-3 control-label" for="NameOfTraining">Name of Trainings</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="What is this training for"><i class="icon-help"></i></button>
                                                         <div class="col-sm-8">
-                                                            <select id="DataHandlingAndEntry" class="form-control">
-                                                                <option value="" selected disabled>Do you have trained personnels for data handling and entry? </option>
-                                                                @foreach (var item in Model.YesNoOption)
-                                                                {
-                                                                    if (Model.Trainings != null)
-                                                                    {
-                                                                        if (@item == Model.Trainings.DataHandlingAndEntry)
-                                                                        {
-                                                                <option value="@item" selected>@item</option>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                <option value="@item">@item</option>
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                <option value="@item">@item</option>
-                                                                    }
-                                                                }
-                                                            </select>
+                                                            <input type="text" placeholder="What is this training for" id="NameOfTraining" value="" class="form-control">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="TimelinesForTrainings">Timelines for Trainings</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state timelines for trainings using dates"><i class="icon-help"></i></button>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state timelines for this training using dates"><i class="icon-help"></i></button>
                                                         <div class="col-sm-8">
                                                             <input type="text" placeholder="Clearly state timelines for trainings using dates" id="TimelinesForTrainings" value="" class="form-control">
                                                         </div>
@@ -581,24 +654,10 @@
                                                         <label class="col-sm-3 control-label" for="FequencyOfTrainings">Frequency of trainings</label>
                                                         <div class="col-sm-8">
                                                             <select id="FequencyOfTrainings" class="form-control">
-                                                                <option value="" disabled selected>How frequent will these trainings occur?</option>
+                                                                <option value="" disabled selected>How frequent will this trainings occur?</option>
                                                                 @foreach (var item in Model.dataFrequency)
                                                                 {
-                                                                    if (Model.Trainings != null)
-                                                                    {
-                                                                        if (@item == Model.Trainings.FequencyOfTrainings)
-                                                                        {
-                                                                <option value="@item" selected>@item</option>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                <option value="@item">@item</option>
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                <option value="@item">@item</option>
-                                                                    }
+                                                                <option value="@item">@item</option>                                                                    
                                                                 }
                                                             </select>
                                                         </div>
@@ -606,30 +665,36 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="DurationOfTrainings">Duration of trainings</label>
                                                         <div class="col-sm-8">
-                                                            <select id="DurationOfTrainings" class="form-control">
+                                                            <input type="text" placeholder="What is the duration assigned for this training?" id="DurationOfTrainings" value="" class="form-control">
+                                                            @*<select id="DurationOfTrainings" class="form-control">
                                                                 <option value="" disabled selected>What is the duration assigned for trainings?</option>
                                                                 @foreach (var item in Model.Duration)
                                                                 {
-                                                                    if (Model.Trainings != null)
-                                                                    {
-                                                                        if (@item == Model.Trainings.DurationOfTrainings)
-                                                                        {
-                                                                <option value="@item" selected>@item</option>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                <option value="@item">@item</option>
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                <option value="@item">@item</option>
-                                                                    }
+                                                                <option value="@item">@item</option>                                                                    
                                                                 }
-                                                            </select>
+                                                            </select>*@
                                                         </div>
                                                     </div>
+                                                    <div class="col-sm-offset-9">
+                                                        <a class="btn btn-black btn-sm btn-outline" id="addtrainingbtn">Add to list</a>
+                                                    </div>                                                    
                                                 </div>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Frequency</th>
+                                                                <th>Duration</th>
+                                                                <th>Timelines</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="trainingTable"> </tbody>
+                                                    </table>
+                                                </div> 
+
                                             </div>
                                         </div>
                                         <!--End of Tranings section-->
@@ -649,7 +714,7 @@
                                         <h4 class="panel-title">Data Verification</h4>
                                     </div>
                                     <div class="panel-body">
-                                        <div class="form-horizontal">
+                                        <div class="form-horizontal" id="dataVerificationForm">
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="DataVerificationApproach">Data verification approach</label>
                                                 <div class="col-sm-6">
@@ -657,7 +722,8 @@
                                                         <option value="" disabled selected>What methodology is employed for data verification ? </option>
                                                         @foreach (var item in Model.DataVerificationApproach)
                                                         {
-                                                            if (Model.dataVerification != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataVerification != null)
                                                             {
                                                                 if (@item == Model.dataVerification.DataVerificationApproach)
                                                                 {
@@ -671,15 +737,17 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item</option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="TypesOfDataVerification">Types of Data Verification</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Soft - checks &#013; Cross - checks of data sources &#013; Document reviews &#013; Trace verification &#013; Rountine Data Quality Assessment &#013; Data Quality Audit &#013 Others"><i class="icon-help"></i></button>
                                                 <div class="col-sm-6">
-                                                    <select id="TypesOfDataVerification" class="form-control">
+                                                    <input type="text" placeholder="What forms and tools are used for verifying data sources" id="TypesOfDataVerification" value="" class="form-control">
+                                                    @*<select id="TypesOfDataVerification" class="form-control">
                                                         <option value="" disabled selected>Select Types of Data Verification</option>
                                                         @foreach (var item in Model.typesOfDataVerification)
                                                         {
@@ -699,7 +767,7 @@
                                                                 <option value="@item">@item</option>
                                                             }
                                                         }
-                                                    </select>
+                                                    </select>*@
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -716,7 +784,8 @@
                                                         <option value="" disabled selected>How frequent will data verification be carried out?</option>
                                                         @foreach (var item in Model.dataFrequency)
                                                         {
-                                                            if (Model.dataVerification != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataVerification != null)
                                                             {
                                                                 if (@item == Model.dataVerification.FrequencyOfDataVerification)
                                                                 {
@@ -730,7 +799,7 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item</option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -742,7 +811,8 @@
                                                         <option value="" disabled selected>What is the duration of time assigned for data verification?</option>
                                                         @foreach (var item in Model.Duration)
                                                         {
-                                                            if (Model.dataVerification != null)
+                                                            <option value="@item">@item</option>
+                                                            @*if (Model.dataVerification != null)
                                                             {
                                                                 if (@item == Model.dataVerification.DurationOfDataVerificaion)
                                                                 {
@@ -756,12 +826,31 @@
                                                             else
                                                             {
                                                                 <option value="@item">@item</option>
-                                                            }
+                                                            }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-offset-9">
+                                                <a class="btn btn-black btn-sm btn-outline" id="addDataVerificationbtn">Add to List</a>
+                                            </div>
                                         </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Verification Approach</th>
+                                                        <th>Types</th>
+                                                        <th>Frequency</th>
+                                                        <th>Duration</th>
+                                                        <th>Timelines</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="dataVerificationTable"> </tbody>
+                                            </table>
+                                        </div> 
+
                                     </div>
                                 </div>
                                 <!--End of Data verificaton section-->
@@ -778,20 +867,12 @@
                                         <h4 class="panel-title">Data Report </h4>
                                     </div>
                                     <div class="panel-body">
-                                        <div class="form-horizontal">
+                                        <div class="form-horizontal" id="reportdatadiv">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="NameOfReport">Name of Report</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of reports are collated from data?"><i class="icon-help"></i></button>
-                                                <div class="col-sm-8">
-                                                    @if (Model.reportData != null)
-                                                    {
-                                                        <input type="text" placeholder="What types of reports are collated from data?" value="@Model.reportData.NameOfReport" id="NameOfReport" class="form-control">
-                                                    }
-                                                    else
-                                                    {
-                                                        <input type="text" placeholder="What types of reports are collated from data?" value="" id="NameOfReport" class="form-control">
-                                                    }
-                                                    
+                                                <div class="col-sm-8">                                                     
+                                                        <input type="text" placeholder="What types of reports are collated from data?" value="" id="NameOfReport" class="form-control">                                                    
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -801,30 +882,16 @@
                                                         <option value="" disabled selected>What thematic areas are reported on?</option>
                                                         @foreach (var item in Model.thematicAreas)
                                                         {
-                                                            if (Model.reportData != null)
-                                                            {
-                                                                if (@item == Model.reportData.ThematicArea)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="TimelinesforReporting">Timelines for reporting</label>
+                                                <label class="col-sm-3 control-label" for="TimelinesForReporting">Timelines for reporting</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state the timelines for these reporting"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
-                                                    <input type="text" placeholder="Clearly state the timelines for these reporting" id="TimelinesforReporting" value="" class="form-control">
+                                                    <input type="text" placeholder="Clearly state the timelines for these reporting" id="TimelinesForReporting" value="" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -834,21 +901,7 @@
                                                         <option value="" disabled selected>State the frquency of reporting</option>
                                                         @foreach (var item in Model.dataFrequency)
                                                         {
-                                                            if (Model.reportData != null)
-                                                            {
-                                                                if (@item == Model.reportData.FrequencyOfReporting)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
+                                                                <option value="@item">@item</option>                                                             
                                                         }
                                                     </select>
                                                 </div>
@@ -860,26 +913,32 @@
                                                         <option value="" disabled selected>Clearly state the duration of time assigned for reporting</option>
                                                         @foreach (var item in Model.Duration)
                                                         {
-                                                            if (Model.reportData != null)
-                                                            {
-                                                                if (@item == Model.reportData.DurationOfReporting)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
+                                                             <option value="@item">@item</option>                                                            
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
+                                             
+                                            <div class="col-sm-offset-9">
+                                                <a class="btn btn-black btn-sm btn-outline" id='addReportbtn'>Add to list</a>
+                                            </div>                                            
                                         </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Thematic Area</th>
+                                                        <th>Frequency</th>
+                                                        <th>Duration</th>
+                                                        <th>Timelines</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="reportdataTable"> </tbody>
+                                            </table>
+                                        </div>
+
                                     </div>
                                 </div>
                                 <!--End of Report Data section -->
@@ -1417,7 +1476,10 @@
 
 @section Scripts
 {
-    @Scripts.Render("~/bundles/CreateDMPJs")
+    @*@Scripts.Render("~/bundles/CreateDMPJs")*@
+@Scripts.Render("~/bundles/MultiDatePickerCss")
+
+ 
 
     <script>
         $(document).ready(function () {
@@ -1465,6 +1527,7 @@
                 if (base64Image != undefined) {
                     viewModel["DataFlowChart"] = base64Image;
                 }
+                viewModel["reportDataList"] = reportArray; //JSON.stringify(reportArray);
 
                 $.ajax({
                     type: "POST",
@@ -1496,6 +1559,19 @@
                 SaveAndContinue(e);
         });
 
+        $('#TimelinesForReporting').multiDatesPicker();
+        $("#ProjectStartDate").multiDatesPicker({maxPicks: 1,
+            addDates: [new Date(@Model.projectDetails.ProjectStartDate)]
+        });
+        $("#ProjectEndDate").multiDatesPicker({maxPicks: 1,
+            addDates: [new Date(@Model.projectDetails.ProjectEndDate)]
+            });
+             
         });
     </script>
+
+<script src="~/Scripts/ReportTableLogic.js"></script>
+<script src="~/Scripts/datacollectionTableLogic.js"></script>
+<script src="~/Scripts/dataverificationTableLogic.js"></script>
+<script src="~/Scripts/trainingreportTableLogic.js"></script>
 }

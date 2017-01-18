@@ -173,6 +173,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\entypo.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\jquery-ui.css" />
     <Content Include="images\alarm.jpg" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\imac-40.jpg" />
@@ -811,13 +812,18 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dashboard.js" />
+    <Content Include="Scripts\datacollectionTableLogic.js" />
+    <Content Include="Scripts\dataverificationTableLogic.js" />
     <Content Include="Scripts\form-advanced-script.js" />
     <Content Include="Scripts\functions.js" />
     <Content Include="Scripts\html5shiv.min.js" />
+    <Content Include="Scripts\jquery-ui.multidatespicker.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\loader.js" />
+    <Content Include="Scripts\ReportTableLogic.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\trainingreportTableLogic.js" />
     <Content Include="Scripts\Ultilities.js" />
     <Content Include="Scripts\_old\bootstrap.js" />
     <Content Include="Scripts\_old\bootstrap.min.js" />
@@ -906,6 +912,7 @@
     <Content Include="Views\Profile\ProfileDetail.cshtml" />
     <Content Include="Views\Organization\OrganizationEdit.cshtml" />
     <Content Include="Views\Profile\profileEdit.cshtml" />
+    <Content Include="Views\Home\DynamicTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
