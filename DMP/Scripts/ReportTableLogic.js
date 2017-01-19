@@ -63,25 +63,28 @@ function CreateReportTable(report){
     var dateArray = report.TimelinesForReporting;
     var removeId = "remove"+report.Id;
     var timelines='';
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    for(var i=0; i< dateArray.length; i++)
-    {
-        var dt = dateArray[i].toString();
-        if(dt.indexOf("Date") !== -1){
-            dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+    if (dateArray != null) {
+        for (var i = 0; i < dateArray.length; i++) {
+            var dt = dateArray[i].toString();
+            if (dt.indexOf("Date") !== -1) {
+                dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+            }
+            var dtt = new Date(dt);
+            dt = dtt.getDate() + '-' + months[dtt.getMonth()] + '-' + dtt.getFullYear();
+            timelines += dt + " &#013;";
         }
-        var dtt = new Date(dt);
-        dt = dtt.getDate() +'-'+months[dtt.getMonth()] + '-' + dtt.getFullYear();
-        timelines += dt+ " &#013;";
     }
+
     var reportId = "reportx" + report.Id;
     var html = '<tr id=' + reportId + '>';
     html += '<td>' + report.NameOfReport + '</td>';
     html += '<td>' + report.ThematicArea + '</td>';
     html += '<td>' + report.FrequencyOfReporting + '</td>';
     html += '<td>' + report.DurationOfReporting + '</td>';
-    html += '<td><a class="btn btn-info btn-sm btn-outline" title='+ JSON.stringify(timelines)+'>View</a></td>';
-    html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + reportId + ')"  id=' + removeId + '/></td>';
+    html += '<td><a class="btn btn-info btn-sm btn-outline" title=' + JSON.stringify(timelines) + '>View</a></td>';
+    if (editMode) {
+        html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + reportId + ')"  id=' + removeId + '/></td>';
+    }    
     html += '</tr>';
     $('#reportdataTable').append(html);
 }

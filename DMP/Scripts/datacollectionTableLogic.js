@@ -3,17 +3,22 @@ if (DataCollectionArrayFromServer.length > 0) {
     var datacollection = {};
     for (var c = 0; c < DataCollectionArrayFromServer.length; c++) {
         datacollection = DataCollectionArrayFromServer[c];
-        var tL = datacollection.DataCollectionTimelines;
-        var timeLines = [];
-        for (var i = 0; i < tL.length; i++) {
-            var dt = tL[i].toString();
-            if (dt.indexOf("Date") !== -1) {
-                dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
-                var dtt = new Date(dt);
-                timeLines.push(dtt);
+        if (datacollection.DataCollectionTimelines != null) {
+            var tL = datacollection.DataCollectionTimelines;
+            var timeLines = [];
+
+            for (var i = 0; i < tL.length; i++) {
+                var dt = tL[i].toString();
+                if (dt.indexOf("Date") !== -1) {
+                    dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+                    var dtt = new Date(dt);
+                    timeLines.push(dtt);
+                }
             }
+            datacollection.DataCollectionTimelines = timeLines;
         }
-        datacollection.DataCollectionTimelines = timeLines;
+        
+
         datacollectionArray.push(datacollection);
         CreatedatacollectionTable(datacollection);
     }
@@ -62,24 +67,29 @@ function CreatedatacollectionTable(datacollection) {
     var dateArray = datacollection.DataCollectionTimelines;
     var removeId = "remove" + datacollection.Id;
     var timelines = '';
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    for (var i = 0; i < dateArray.length; i++) {
-        var dt = dateArray[i].toString();
-        if (dt.indexOf("Date") !== -1) {
-            dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+    if (dateArray != null) {
+        for (var i = 0; i < dateArray.length; i++) {
+            var dt = dateArray[i].toString();
+            if (dt.indexOf("Date") !== -1) {
+                dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+            }
+            var dtt = new Date(dt);
+            dt = dtt.getDate() + '-' + months[dtt.getMonth()] + '-' + dtt.getFullYear();
+            timelines += dt + " &#013;";
         }
-        var dtt = new Date(dt);
-        dt = dtt.getDate() + '-' + months[dtt.getMonth()] + '-' + dtt.getFullYear();
-        timelines += dt + " &#013;";
-    }
+    }    
 
-    var html = '<tr id=datacollection' + datacollection.Id + '>';
-    html += '<td>' + datacollection.NameOfdatacollection + '</td>';
-    html += '<td>' + datacollection.ThematicArea + '</td>';
-    html += '<td>' + datacollection.FrequencyOfdatacollectioning + '</td>';
-    html += '<td>' + datacollection.DurationOfdatacollectioning + '</td>';
+    var datacollectionId = "datacollectionx" + datacollection.Id;
+    var html = '<tr id=' + datacollectionId + '>'; 
+    html += '<td>' + datacollection.DataType + '</td>';
+    html += '<td>' + datacollection.DataSources + '</td>';
+    html += '<td>' + datacollection.FrequencyOfDataCollection + '</td>';
+    html += '<td>' + datacollection.DurationOfDataCollection + '</td>';
+    html += '<td>' + datacollection.DataCollectionAndReportingTools + '</td>';
     html += '<td><a class="btn btn-info btn-sm btn-outline" title=' + JSON.stringify(timelines) + '>View</a></td>';
-    html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + datacollection.Id + ',"datacollection")"  id=' + removeId + '/></td>';
+    if (editMode) {
+        html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + datacollectionId + ')"  id=' + removeId + '/></td>';
+    }
     html += '</tr>';
     $('#datacollectiondataTable').append(html);
 }

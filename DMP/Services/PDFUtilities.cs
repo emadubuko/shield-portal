@@ -105,8 +105,11 @@ namespace DMP.Services
             header = new Paragraph("DATA COLLECTION", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataCollection, "Data Collection"));
-
+            foreach (var dt in pageData.DataCollection)
+            {
+                doc.Add(GenericPageTable(dt, "Data"));
+            }
+            
 
             doc.NewPage();// MonitoringAndEvaluationSystems
              header = new Paragraph("MONITORING AND EVALUATION SYSTEMS", istPageFont14);
@@ -119,30 +122,45 @@ namespace DMP.Services
             header.IndentationLeft = 55f;
             doc.Add(header);
 
-            string dataflowchart = !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.DataFlowChart.Split(',')[1] : null;
+            string dataflowchart = pageData.MonitoringAndEvaluationSystems !=null && !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.DataFlowChart.Split(',')[1] : null;
             if(dataflowchart != null)
             {
                 byte[] imageByte = Convert.FromBase64String(dataflowchart);
                 docLogo = GeneratePDFImage(imageByte);
                 doc.Add(docLogo);
-            }          
-            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.RoleAndResponsibilities, "Role and responsibilities"));
-            WriteLines(1, ref doc);
-            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Trainings, "Trainings"));
+            }
 
+            var roleNrsp = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities();
+            doc.Add(GenericPageTable(roleNrsp, "Role and responsibilities"));
+            WriteLines(1, ref doc);
+            header = new Paragraph("Trainings", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            var trn = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>();
+            foreach (var tr in trn)
+            {
+                doc.Add(GenericPageTable(tr, "Training"));
+            }
 
             doc.NewPage();// QualityAssurance
             header = new Paragraph("Quality Assurance", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.QualityAssurance.DataVerification, "Data Verification"));
-
+            foreach(var dv in pageData.QualityAssurance.DataVerification)
+            {
+                doc.Add(GenericPageTable(dv, "Data Verification"));
+            }
 
             doc.NewPage();// Report
             header = new Paragraph("REPORTS", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.Reports.ReportData, "Data Report"));
+            var reportList = pageData.Reports != null ? pageData.Reports.ReportData : new List<ReportData>();
+            foreach (var rpt in reportList)
+            {
+                doc.Add(GenericPageTable(rpt, "Data Report"));
+            }
+            
 
             doc.NewPage(); // DataStorage
             header = new Paragraph("Data Storage", istPageFont14);

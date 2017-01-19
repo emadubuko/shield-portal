@@ -5,15 +5,19 @@ if (TrainingArrayFromServer.length > 0) {
         training = TrainingArrayFromServer[c];
         var tL = training.TimelinesForTrainings;
         var timeLines = [];
-        for (var i = 0; i < tL.length; i++) {
-            var dt = tL[i].toString();
-            if (dt.indexOf("Date") !== -1) {
-                dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
-                var dtt = new Date(dt);
-                timeLines.push(dtt);
+
+        if (tL != null) {
+            for (var i = 0; i < tL.length; i++) {
+                var dt = tL[i].toString();
+                if (dt.indexOf("Date") !== -1) {
+                    dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+                    var dtt = new Date(dt);
+                    timeLines.push(dtt);
+                }
             }
-        }
-        training.TimelinesForTrainings = timeLines;
+            training.TimelinesForTrainings = timeLines;
+        }        
+
         trainingArray.push(training);
         CreatetrainingTable(training);
     }
@@ -54,23 +58,27 @@ function CreatetrainingTable(training) {
     var dateArray = training.TimelinesForTrainings;
     var removeId = "remove" + training.Id;
     var timelines = '';
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    for (var i = 0; i < dateArray.length; i++) {
-        var dt = dateArray[i].toString();
-        if (dt.indexOf("Date") !== -1) {
-            dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+    if (dateArray != null) {
+        for (var i = 0; i < dateArray.length; i++) {
+            var dt = dateArray[i].toString();
+            if (dt.indexOf("Date") !== -1) {
+                dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
+            }
+            var dtt = new Date(dt);
+            dt = dtt.getDate() + '-' + months[dtt.getMonth()] + '-' + dtt.getFullYear();
+            timelines += dt + " &#013;";
         }
-        var dtt = new Date(dt);
-        dt = dtt.getDate() + '-' + months[dtt.getMonth()] + '-' + dtt.getFullYear();
-        timelines += dt + " &#013;";
     }
 
-    var html = '<tr id=training' + training.Id + '>';
+    var trainingId = "trainingx" + training.Id;
+    var html = '<tr id=' + trainingId + '>';
     html += '<td>' + training.NameOfTraining + '</td>'; 
     html += '<td>' + training.FequencyOfTrainings + '</td>';
     html += '<td>' + training.DurationOfTrainings + '</td>';
     html += '<td><a class="btn btn-info btn-sm btn-outline" title=' + JSON.stringify(timelines) + '>View</a></td>';
-    html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + training.Id + ',"training")"  id=' + removeId + '/></td>';
+    if (editMode) {
+        html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + trainingId + ',"training")"  id=' + removeId + '/></td>';
+    }
     html += '</tr>';
     $('#trainingTable').append(html);
 }

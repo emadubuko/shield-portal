@@ -40,6 +40,7 @@
         }
 
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var editMode = true;
 
         var DataCollectionArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollection));
         var datacollectionArray = [];
@@ -57,22 +58,21 @@
                 $(row).remove();
                 reportArray.splice(rowid-1, 1);
             }
-            if(dataType == 'report'){
-                $("#report"+row).remove();
-                reportArray.splice(row-1, 1);
-            }
-            else  if(dataType == 'dataverification'){
-                $("#dataverification"+row).remove();
-                DataVerificationArray.splice(row-1, 1);
-            }
-            else  if(dataType == 'training'){
-                $("#training"+row).remove();
-                trainingArray.splice(row-1, 1);
-            }
-            else  if(dataType == 'datacollection'){
-                $("#datacollection"+row).remove();
+            else  if(row.id.indexOf('datacollection') !==-1){
+                $(row).remove();
+                var rowid = row.id.split('x')[1];
                 datacollectionArray.splice(row-1, 1);
             }
+            else  if(row.id.indexOf('dataverification') !==-1){
+                $(row).remove();
+                var rowid = row.id.split('x')[1];
+                DataVerificationArray.splice(row-1, 1);
+            }
+            else  if(row.id.indexOf('training') !== -1){
+                var rowid = row.id.split('x')[1];
+                $(row).remove();
+                trainingArray.splice(row-1, 1);
+            }            
         }
 
     </script>
@@ -107,7 +107,7 @@
 
                         <div class="tab-content">
 
-                            <div class="tab-pane" id="ProjectProfile">
+                            <div class="tab-pane active" id="ProjectProfile">
                                 <h4 class="panel-title" style="margin-left: 90px;">
                                     <b>Project Profile</b>
                                 </h4>
@@ -347,7 +347,7 @@
                             </div>
                             <!-- end of Data Collection Processes page-->
 
-                            <div class="tab-pane active" id="DataCollection">
+                            <div class="tab-pane" id="DataCollection">
                                 <h4 class="panel-title" style="margin-left: 70px;">
                                     <b>Data Collection</b>
                                 </h4>
@@ -1527,8 +1527,11 @@
                 if (base64Image != undefined) {
                     viewModel["DataFlowChart"] = base64Image;
                 }
-                viewModel["reportDataList"] = reportArray; //JSON.stringify(reportArray);
-
+                viewModel["reportDataList"] = reportArray; 
+                viewModel["Trainings"] = trainingArray; 
+                viewModel["DataCollection"] = datacollectionArray; 
+                viewModel["dataVerification"] = DataVerificationArray; 
+                
                 $.ajax({
                     type: "POST",
                     url: updateUrl,
@@ -1560,11 +1563,17 @@
         });
 
         $('#TimelinesForReporting').multiDatesPicker();
+        $("#DataCollectionTimelines").multiDatesPicker();
+        $("#TimelinesForTrainings").multiDatesPicker();
+        $("#TimelinesForDataVerification").multiDatesPicker();
+
+        
+
         $("#ProjectStartDate").multiDatesPicker({maxPicks: 1,
-            addDates: [new Date(@Model.projectDetails.ProjectStartDate)]
+           // addDates: [new Date(@Model.projectDetails.ProjectStartDate)]
         });
         $("#ProjectEndDate").multiDatesPicker({maxPicks: 1,
-            addDates: [new Date(@Model.projectDetails.ProjectEndDate)]
+           // addDates: [new Date(@Model.projectDetails.ProjectEndDate)]
             });
              
         });

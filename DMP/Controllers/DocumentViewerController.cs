@@ -95,7 +95,7 @@ namespace DMP.Controllers
                 projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                 summary = thepageDoc.Planning.Summary,
                 versionMetadata = versionMetadata,
-                reportData = new ReportData(), // thepageDoc.Reports !=null ? thepageDoc.Reports.ReportData : new ReportData(),
+                reportDataList = thepageDoc.Reports !=null ? thepageDoc.Reports.ReportData : new  List<ReportData>(),
                 roleNresp = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities: new RolesAndResponsiblities(),
                 Trainings = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings: new List<Trainings>(),
                 documentID = Doc.Id.ToString(),
@@ -275,19 +275,20 @@ namespace DMP.Controllers
                 return new HttpStatusCodeResult(400, "invalid documnent Id");
             }
 
-            string fileName = "dmp_Example1.pdf";
+            string fileName = Doc.DocumentTitle+ ".pdf";
             string fullFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Downloads/" + fileName);
 
-            FileStream fs = new FileStream(fullFilename, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            using (FileStream fs = new FileStream(fullFilename, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
+            {
+                Document doc = new Document(new Rectangle(PageSize.A4), 10f, 10f, 80f, 50f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, fs);
+                writer.PageEvent = new ITextEvents();
+                doc.Open();
 
-            Document doc = new Document(new Rectangle(PageSize.A4), 10f, 10f, 80f, 50f);
-            PdfWriter writer = PdfWriter.GetInstance(doc, fs);
-            writer.PageEvent = new ITextEvents();
-            doc.Open();
-             
-            pdfUtil.GeneratePDFDocument(Doc, ref doc);
+                pdfUtil.GeneratePDFDocument(Doc, ref doc);
 
-            doc.Close();
+                doc.Close();
+            }                
             return Json(fileName);
         }
 
