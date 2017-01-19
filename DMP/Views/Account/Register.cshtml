@@ -1,0 +1,114 @@
+﻿@model DMP.Models.RegisterViewModel
+@using DMP.Models;
+@{
+    ViewBag.Title = "Register";
+    Layout = null;
+}
+
+
+
+
+<h3 class="page-title">
+    User Management
+</h3>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="~/">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#">Account</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">User Management</a>
+
+        </li>
+
+    </ul>
+
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h4>Create a new account.</h4>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Register" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-6">
+        <h4>Manage users</h4>
+        <hr />
+        <div class="table-scrollable">
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Roles</th>
+                        <th>Failed attempts</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @*@foreach (var user in allUsers)
+            {
+                        <tr>
+                            <td>@user.Email</td>
+                            <td>@user.UserName</td>
+                            <td>@user.Roles.Count</td>
+                            <td>@user.AccessFailedCount</td>
+                            <td>
+                                <a class="edit" href="javascript:;">
+                                    Edit
+                                </a>
+                            </td>
+                            <td>
+                                <a class="delete" href="javascript:;">
+                                    Delete
+                                </a>
+                            </td>
+
+                        </tr>
+                    }*@
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
