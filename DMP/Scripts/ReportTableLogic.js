@@ -45,8 +45,19 @@ $("#addReportbtn").click(function (e) {
             report["FrequencyOfReporting"] =  $(this)[0].value;
             $(this).val("");
         }
-        else if($(this)[0].id == "DurationOfReporting"){
-            report["DurationOfReporting"] =  $(this)[0].value;
+        else if ($(this)[0].id == "rptDurationdrpdwn") {
+            var durationDrpDwn = $(this)[0].value;
+            var inputValue = $("#rptDurationField")[0].value;
+            var duration = inputValue;
+            switch (durationDrpDwn) {
+                case "Weeks":
+                    duration = inputValue * 7; break;
+                case "Months":
+                    duration = inputValue * 30; break;
+                case "Years":
+                    duration = inputValue * 365; break;
+            }
+            report["DurationOfReporting"] = duration; //  $(this)[0].value;
             $(this).val("");
         }
         else if($(this)[0].id == "justdate"){

@@ -189,9 +189,9 @@
                                                 <div class="col-sm-9">
                                                     <input id="ProjectStartDate" type="text" placeholder="Project Start Date" value="@Model.projectDetails.ProjectStartDate" class="form-control">
                                                     @*<div id="date-popup" class="input-group date">
-                                                        <input id="ProjectStartDate" type="text" placeholder="Project Start Date" value="@Model.projectDetails.ProjectStartDate" data-format="D, dd MM yyyy" class="form-control">
-                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    </div>*@
+                                            <input id="ProjectStartDate" type="text" placeholder="Project Start Date" value="@Model.projectDetails.ProjectStartDate" data-format="D, dd MM yyyy" class="form-control">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>*@
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -199,9 +199,9 @@
                                                 <div class="col-sm-9">
                                                     <input type="text" id="ProjectEndDate" placeholder="Project End Date" value="@Model.projectDetails.ProjectEndDate" data-format="D, dd MM yyyy" class="form-control">
                                                     @*<div id="date-popup2" class="input-group date">
-                                                        <input type="text" id="ProjectEndDate" placeholder="Project End Date" value="@Model.projectDetails.ProjectEndDate" data-format="D, dd MM yyyy" class="form-control">
-                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                    </div>*@
+                                            <input type="text" id="ProjectEndDate" placeholder="Project End Date" value="@Model.projectDetails.ProjectEndDate" data-format="D, dd MM yyyy" class="form-control">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>*@
                                                 </div>
                                             </div>
 
@@ -367,20 +367,20 @@
                                                         {
                                                             <option value="@item">@item</option>
                                                             @*if (Model.dataCollection != null)
-                                                            {
-                                                                if (@item == Model.dataCollection.DataType)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }*@
+                                                {
+                                                    if (@item == Model.dataCollection.DataType)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -394,20 +394,20 @@
                                                         {
                                                             <option value="@item">@item</option>
                                                             @*if (Model.dataCollection != null)
-                                                            {
-                                                                if (@item == Model.dataCollection.DataSources)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item"> @item </option>
-                                                            }*@
+                                                {
+                                                    if (@item == Model.dataCollection.DataSources)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item"> @item </option>
+                                                }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -421,20 +421,20 @@
                                                         {
                                                             <option value="@item">@item</option>
                                                             @*if (Model.dataCollection != null)
-                                                            {
-                                                                if (@item == Model.dataCollection.DataCollectionAndReportingTools)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item </option>
-                                                            }*@
+                                                {
+                                                    if (@item == Model.dataCollection.DataCollectionAndReportingTools)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item </option>
+                                                }*@
                                                         }
                                                     </select>
 
@@ -457,49 +457,38 @@
                                                             <option value="@item">@item</option>
 
                                                             @*if (Model.dataCollection != null)
-                                                            {
-                                                                if (@item == Model.dataCollection.FrequencyOfDataCollection)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }*@
+                                                {
+                                                    if (@item == Model.dataCollection.FrequencyOfDataCollection)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DurationOfDataCollection">Duration of data collection</label>
-                                                <div class="col-sm-8">
-                                                    <select id="DurationOfDataCollection" class="form-control">
-                                                        <option value="" disabled selected>What tools are used for data collection and reporting? List</option>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration assigned for data collection? numbers only"><i class="icon-help"></i></button>
+                                                <div class="col-sm-2">
+                                                    <select id="dtDurationdrpdwn" class="form-control">
+                                                        <option value="" disabled selected>Select</option>
                                                         @foreach (var item in Model.Duration)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataCollection != null)
-                                                            {
-                                                                if (@item == Model.dataCollection.DurationOfDataCollection)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }*@
                                                         }
                                                     </select>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <input type="number" id="dtDurationField" placeholder="" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="col-sm-offset-9">
@@ -513,9 +502,9 @@
                                                     <tr>
                                                         <th>Data Type</th>
                                                         <th>Data Sources</th>
-                                                        <th>Tools</th>
                                                         <th>Frequency</th>
-                                                        <th>Duration</th>
+                                                        <th>Duration (days)</th>
+                                                        <th>Tools</th>
                                                         <th>Timelines</th>
                                                         <th></th>
                                                         <th></th>
@@ -560,11 +549,11 @@
                                                         <div class="col-sm-8">
                                                             @if (Model.roleNresp != null)
                                                             {
-                                                            <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" value="@Model.roleNresp.HealthFacilityLevel" id="HealthFacilityLevel" class="form-control">
+                                                                <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" value="@Model.roleNresp.HealthFacilityLevel" id="HealthFacilityLevel" class="form-control">
                                                             }
                                                             else
                                                             {
-                                                            <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="HealthFacilityLevel" class="form-control">
+                                                                <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="HealthFacilityLevel" class="form-control">
                                                             }
                                                         </div>
                                                     </div>
@@ -575,11 +564,11 @@
                                                         <div class="col-sm-8">
                                                             @if (Model.roleNresp != null)
                                                             {
-                                                            <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="AggregationLevel" value="@Model.roleNresp.AggregationLevel" class="form-control">
+                                                                <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="AggregationLevel" value="@Model.roleNresp.AggregationLevel" class="form-control">
                                                             }
                                                             else
                                                             {
-                                                            <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="AggregationLevel" value="" class="form-control">
+                                                                <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="AggregationLevel" value="" class="form-control">
                                                             }
                                                         </div>
                                                     </div>
@@ -589,11 +578,11 @@
                                                         <div class="col-sm-8">
                                                             @if (Model.roleNresp != null)
                                                             {
-                                                            <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="CentralNationalLevel" value="@Model.roleNresp.CentralNationalLevel" class="form-control">
+                                                                <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="CentralNationalLevel" value="@Model.roleNresp.CentralNationalLevel" class="form-control">
                                                             }
                                                             else
                                                             {
-                                                            <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="CentralNationalLevel" value="" class="form-control">
+                                                                <input type="text" placeholder="Describe roles and responsibilities of stakeholders at this level" id="CentralNationalLevel" value="" class="form-control">
                                                             }
 
                                                         </div>
@@ -609,32 +598,32 @@
                                             </div>
                                             <div class="panel-body">
                                                 <div class="form-horizontal" id="trainingForm">
-                                                   @* <div class="form-group">
-       <label class="col-sm-3 control-label" for="DataHandlingAndEntry">Data handling & entry</label>
-        <div class="col-sm-8">
-            <select id="DataHandlingAndEntry" class="form-control">
-                <option value="" selected disabled>Do you have trained personnels for data handling and entry? </option>
-                @foreach (var item in Model.YesNoOption)
-                {
-                    if (Model.Trainings != null)
-                    {
-                        if (@item == Model.Trainings.DataHandlingAndEntry)
-                        {
-                            <option value="@item" selected>@item</option>
-                        }
-                        else
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    }
-                    else
-                    {
-                        <option value="@item">@item</option>
-                    }
-                }
-            </select>
-        </div>
-    </div>*@
+                                                    @* <div class="form-group">
+                                           <label class="col-sm-3 control-label" for="DataHandlingAndEntry">Data handling & entry</label>
+                                            <div class="col-sm-8">
+                                                <select id="DataHandlingAndEntry" class="form-control">
+                                                    <option value="" selected disabled>Do you have trained personnels for data handling and entry? </option>
+                                                    @foreach (var item in Model.YesNoOption)
+                                                    {
+                                                        if (Model.Trainings != null)
+                                                        {
+                                                            if (@item == Model.Trainings.DataHandlingAndEntry)
+                                                            {
+                                                                <option value="@item" selected>@item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item">@item</option>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>*@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="NameOfTraining">Name of Trainings</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="What is this training for"><i class="icon-help"></i></button>
@@ -657,27 +646,30 @@
                                                                 <option value="" disabled selected>How frequent will this trainings occur?</option>
                                                                 @foreach (var item in Model.dataFrequency)
                                                                 {
-                                                                <option value="@item">@item</option>                                                                    
+                                                                    <option value="@item">@item</option>
                                                                 }
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="DurationOfTrainings">Duration of trainings</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="What is the duration assigned for this training?" id="DurationOfTrainings" value="" class="form-control">
-                                                            @*<select id="DurationOfTrainings" class="form-control">
-                                                                <option value="" disabled selected>What is the duration assigned for trainings?</option>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration assigned for trainings? numbers only"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-2">
+                                                            <select id="trDurationdrpdwn" class="form-control">
+                                                                <option value="" disabled selected>Select</option>
                                                                 @foreach (var item in Model.Duration)
                                                                 {
-                                                                <option value="@item">@item</option>                                                                    
+                                                                    <option value="@item">@item</option>
                                                                 }
-                                                            </select>*@
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <input type="number" id="trDurationField" placeholder="" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-offset-9">
                                                         <a class="btn btn-black btn-sm btn-outline" id="addtrainingbtn">Add to list</a>
-                                                    </div>                                                    
+                                                    </div>
                                                 </div>
                                                 <div class="table-responsive">
                                                     <table class="table table-striped">
@@ -685,7 +677,7 @@
                                                             <tr>
                                                                 <th>Name</th>
                                                                 <th>Frequency</th>
-                                                                <th>Duration</th>
+                                                                <th>Duration (days)</th>
                                                                 <th>Timelines</th>
                                                                 <th></th>
                                                                 <th></th>
@@ -693,7 +685,7 @@
                                                         </thead>
                                                         <tbody id="trainingTable"> </tbody>
                                                     </table>
-                                                </div> 
+                                                </div>
 
                                             </div>
                                         </div>
@@ -724,20 +716,20 @@
                                                         {
                                                             <option value="@item">@item</option>
                                                             @*if (Model.dataVerification != null)
-                                                            {
-                                                                if (@item == Model.dataVerification.DataVerificationApproach)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }*@
+                                                {
+                                                    if (@item == Model.dataVerification.DataVerificationApproach)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -748,26 +740,26 @@
                                                 <div class="col-sm-6">
                                                     <input type="text" placeholder="What forms and tools are used for verifying data sources" id="TypesOfDataVerification" value="" class="form-control">
                                                     @*<select id="TypesOfDataVerification" class="form-control">
-                                                        <option value="" disabled selected>Select Types of Data Verification</option>
-                                                        @foreach (var item in Model.typesOfDataVerification)
-                                                        {
-                                                            if (Model.dataVerification != null)
-                                                            {
-                                                                if (@item == Model.dataVerification.TypesOfDataVerification)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
-                                                        }
-                                                    </select>*@
+                                            <option value="" disabled selected>Select Types of Data Verification</option>
+                                            @foreach (var item in Model.typesOfDataVerification)
+                                            {
+                                                if (Model.dataVerification != null)
+                                                {
+                                                    if (@item == Model.dataVerification.TypesOfDataVerification)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }
+                                            }
+                                        </select>*@
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -786,49 +778,38 @@
                                                         {
                                                             <option value="@item">@item</option>
                                                             @*if (Model.dataVerification != null)
-                                                            {
-                                                                if (@item == Model.dataVerification.FrequencyOfDataVerification)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }*@
+                                                {
+                                                    if (@item == Model.dataVerification.FrequencyOfDataVerification)
+                                                    {
+                                                        <option value="@item" selected>@item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item">@item</option>
+                                                }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="DurationOfDataVerificaion">Duration of data verificaion</label>
-                                                <div class="col-sm-6">
-                                                    <select id="DurationOfDataVerificaion" class="form-control">
-                                                        <option value="" disabled selected>What is the duration of time assigned for data verification?</option>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration of time assigned for data verification? numbers only"><i class="icon-help"></i></button>
+                                                <div class="col-sm-2">
+                                                    <select id="dvDurationdrpdwn" class="form-control">
+                                                        <option value="" disabled selected>Select</option>
                                                         @foreach (var item in Model.Duration)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataVerification != null)
-                                                            {
-                                                                if (@item == Model.dataVerification.DurationOfDataVerificaion)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }*@
                                                         }
                                                     </select>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <input type="number" id="dvDurationField" placeholder="" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="col-sm-offset-9">
@@ -849,7 +830,7 @@
                                                 </thead>
                                                 <tbody id="dataVerificationTable"> </tbody>
                                             </table>
-                                        </div> 
+                                        </div>
 
                                     </div>
                                 </div>
@@ -871,8 +852,8 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="NameOfReport">Name of Report</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of reports are collated from data?"><i class="icon-help"></i></button>
-                                                <div class="col-sm-8">                                                     
-                                                        <input type="text" placeholder="What types of reports are collated from data?" value="" id="NameOfReport" class="form-control">                                                    
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="What types of reports are collated from data?" value="" id="NameOfReport" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -901,27 +882,30 @@
                                                         <option value="" disabled selected>State the frquency of reporting</option>
                                                         @foreach (var item in Model.dataFrequency)
                                                         {
-                                                                <option value="@item">@item</option>                                                             
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DurationOfReporting">Duration of reporting</label>
-                                                <div class="col-sm-8">
-                                                    <select id="DurationOfReporting" class="form-control">
-                                                        <option value="" disabled selected>Clearly state the duration of time assigned for reporting</option>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="state the duration of time assigned for reporting? numbers only"><i class="icon-help"></i></button>
+                                                <div class="col-sm-2">
+                                                    <select id="rptDurationdrpdwn" class="form-control">
+                                                        <option value="" disabled selected>Select</option>
                                                         @foreach (var item in Model.Duration)
                                                         {
-                                                             <option value="@item">@item</option>                                                            
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
-                                            </div>
-                                             
+                                                <div class="col-sm-2">
+                                                    <input type="number" id="rptDurationField" placeholder="" class="form-control">
+                                                </div>
+                                            </div> 
                                             <div class="col-sm-offset-9">
                                                 <a class="btn btn-black btn-sm btn-outline" id='addReportbtn'>Add to list</a>
-                                            </div>                                            
+                                            </div>
                                         </div>
                                         <div class="table-responsive">
                                             <table class="table table-striped">
@@ -962,11 +946,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfdigitalData" class="form-control">
+                                                    <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfdigitalData" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="" class="form-control">
+                                                    <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -976,21 +960,21 @@
                                                     <select id="DataStorageFormat" class="form-control">
                                                         <option value="" disabled selected>Select Storage type</option>
                                                         @foreach (var item in Model.storageformats)
-                                                        {                                                            
+                                                        {
                                                             if (Model.digital != null)
                                                             {
                                                                 if (@item == Model.digital.Storagetype)
                                                                 {
-                                                                    <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1007,16 +991,16 @@
                                                             {
                                                                 if (@item == Model.digital.Storagelocation)
                                                                 {
-                                                                    <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1033,16 +1017,16 @@
                                                             {
                                                                 if (@item == Model.digital.Backup)
                                                                 {
-                                                                    <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1054,11 +1038,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" value="@Model.digital.Datasecurity" class="form-control">
+                                                    <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" value="@Model.digital.Datasecurity" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control">
+                                                    <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -1068,11 +1052,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" value="@Model.digital.Patientconfidentialitypolicies" id="Patientconfidentialitypolicies" class="form-control">
+                                                    <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" value="@Model.digital.Patientconfidentialitypolicies" id="Patientconfidentialitypolicies" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control">
+                                                    <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -1082,11 +1066,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <textarea type="text" value="@Model.digital.StorageOfPreExistingData" id="StorageOfPreExistingData" class="form-control"></textarea>
+                                                    <textarea type="text" value="@Model.digital.StorageOfPreExistingData" id="StorageOfPreExistingData" class="form-control"></textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" id="StorageOfPreExistingData" class="form-control"></textarea>
+                                                    <textarea type="text" id="StorageOfPreExistingData" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1113,16 +1097,16 @@
                                                             {
                                                                 if (@item == Model.nonDigital.NonDigitalDataTypes)
                                                                 {
-                                                                    <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1134,11 +1118,11 @@
                                                 <div class="col-sm-6">
                                                     @if (Model.nonDigital != null)
                                                     {
-                                                        <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" value="@Model.nonDigital.SafeguardsAndRequirements" id="NonDigitalStorageLocation" class="form-control">
+                                                    <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" value="@Model.nonDigital.SafeguardsAndRequirements" id="NonDigitalStorageLocation" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" id="NonDigitalStorageLocation" class="form-control">
+                                                    <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" id="NonDigitalStorageLocation" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -1148,11 +1132,11 @@
                                                 <div class="col-sm-6">
                                                     @if (Model.nonDigital != null)
                                                     {
-                                                        <input type="text" placeholder="Safeguards and Requirements" value="@Model.nonDigital.SafeguardsAndRequirements" id="SafeguardsAndRequirements" class="form-control">
+                                                    <input type="text" placeholder="Safeguards and Requirements" value="@Model.nonDigital.SafeguardsAndRequirements" id="SafeguardsAndRequirements" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="Safeguards and Requirements" id="SafeguardsAndRequirements" class="form-control">
+                                                    <input type="text" placeholder="Safeguards and Requirements" id="SafeguardsAndRequirements" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -1175,11 +1159,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.intelProp != null)
                                             {
-                                                <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control">@Model.intelProp.ContractsAndAgreements</textarea>
+                                            <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control">@Model.intelProp.ContractsAndAgreements</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1189,11 +1173,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.intelProp != null)
                                             {
-                                                <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control">@Model.intelProp.Ownership</textarea>
+                                            <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control">@Model.intelProp.Ownership</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1204,11 +1188,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.intelProp != null)
                                             {
-                                                <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control">@Model.intelProp.UseOfThirdPartyDataSources</textarea>
+                                            <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control">@Model.intelProp.UseOfThirdPartyDataSources</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1229,11 +1213,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.dataSharing != null)
                                             {
-                                                <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control">@Model.dataSharing.DataAccess</textarea>
+                                            <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control">@Model.dataSharing.DataAccess</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1244,11 +1228,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.dataSharing != null)
                                             {
-                                                <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control">@Model.dataSharing.DataSharingPolicies</textarea>
+                                            <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control">@Model.dataSharing.DataSharingPolicies</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1259,11 +1243,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.dataSharing != null)
                                             {
-                                                <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control">@Model.dataSharing.DataTransmissionPolicies</textarea>
+                                            <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control">@Model.dataSharing.DataTransmissionPolicies</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1273,11 +1257,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.dataSharing != null)
                                             {
-                                                <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control">@Model.dataSharing.SharingPlatForms</textarea>
+                                            <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control">@Model.dataSharing.SharingPlatForms</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1297,11 +1281,11 @@
                                         <div class="col-sm-6">
                                             @if (Model.dataDocMgt != null)
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control">@Model.dataDocMgt.StoredDocumentationAndDataDescriptors</textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control">@Model.dataDocMgt.StoredDocumentationAndDataDescriptors</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control"></textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1311,11 +1295,11 @@
                                         <div class="col-sm-6">
                                             @if (Model.dataDocMgt != null)
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control">@Model.dataDocMgt.NamingStructureAndFilingStructures</textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control">@Model.dataDocMgt.NamingStructureAndFilingStructures</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control"></textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1335,11 +1319,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.ppData != null)
                                             {
-                                                <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control">@Model.ppData.DataToRetain</textarea>
+                                            <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control">@Model.ppData.DataToRetain</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1349,11 +1333,11 @@
                                         <div class="col-sm-7">
                                             @if (@Model.ppData != null)
                                             {
-                                                <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control">@Model.ppData.PreExistingData</textarea>
+                                            <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control">@Model.ppData.PreExistingData</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1364,11 +1348,11 @@
                                         <div class="col-sm-7">
                                             @if (@Model.ppData != null)
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control">@Model.ppData.Duration</textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control">@Model.ppData.Duration</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control"></textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1379,11 +1363,11 @@
                                         <div class="col-sm-7">
                                             @if (@Model.ppData != null)
                                             {
-                                                <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control">@Model.ppData.Licensing</textarea>
+                                            <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control">@Model.ppData.Licensing</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1402,11 +1386,11 @@
                                                 <div class="col-sm-7">
                                                     @if (@Model.ppData != null)
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control">@Model.ppData.DigitalDataRetention.DataRetention</textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control">@Model.ppData.DigitalDataRetention.DataRetention</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control"></textarea>
                                                     }
 
                                                 </div>
@@ -1428,11 +1412,11 @@
                                                 <div class="col-sm-7">
                                                     @if (@Model.ppData != null)
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control">@Model.ppData.NonDigitalRentention.DataRention</textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control">@Model.ppData.NonDigitalRentention.DataRention</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>

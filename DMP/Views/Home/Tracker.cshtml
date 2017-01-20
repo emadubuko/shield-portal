@@ -1,0 +1,149 @@
+﻿@model DMP.ViewModel.TrackerViewModel
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+<link href="~/css/style.css" rel="stylesheet" /> 
+<link href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        padding: 0 0 50px 0;
+    }
+    h1 {
+        margin: 40px 0 20px 0;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        padding-bottom: 3px;
+        border-bottom: 1px solid #DDD;
+        margin-top: 50px;
+        margin-bottom: 25px;
+    }
+
+    table th:first-child {
+        width: 150px;
+    }
+</style>
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>
+                    <small> @Model.DocumentTitle</small>
+                </h1>
+            </div>
+
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>
+                            <label class="btn btn-sm" style="background-color:#F9C4E1 !important; border-color:#F9C4E1">&nbsp; T -Training </label>
+                        </td>
+                        <td>
+                            <label class="btn btn-sm" style="background-color:#FCD29A!important; border-color:#FCD29A !important ">DC - Data Collection</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="btn btn-sm" style="background-color: #D8EDA3 !important; border-color:#D8EDA3 !important">RPT - Report</label>
+                        </td>
+                        <td>
+                            <label class="btn btn-sm" style="background-color: #D0E4FD !important; border-color:#D0E4FD !important">DV - Data Verification</label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+       
+        
+         
+        <div class="gantt"></div>
+      
+    </div> 
+</div>
+
+<div class="modal fade" id="popview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 400px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <label id="titlemsg" class="modal-title"></label>
+            </div> 
+        </div>
+    </div>
+</div>
+ 
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap") 
+    @Scripts.Render("~/bundles/loader")  
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="~/Scripts/GanttChart/jquery.fn.gantt.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+ 
+<script>
+        $(function() {
+            var data = @Html.Raw(Json.Encode(Model.data));
+
+            "use strict";
+
+            $(".gantt").gantt({
+                source: data,
+                navigate: "scroll", 
+                //scale:"hours",
+                maxScale: "hours",
+                minScale: "weeks",
+                itemsPerPage: 10,
+                //onItemClick: function(dtt) {
+                //    alert("Item clicked - show some details");
+                //},
+                //PopItem: function(dtt) {
+                //    var $msg = $("<span><b>"+ dtt +"</b></span>");
+                //    $("#titlemsg").val = dtt;
+                //    $('#popview').modal('show');
+                //},
+                //onAddClick: function(dt, rowId) {
+                //    alert("Empty space clicked - add an item!");
+                //},
+                onRender: function() {
+                    if (window.console && typeof console.log === "function") {
+                        console.log("chart rendered");
+                    }
+                },
+                
+            });
+
+            //$(".gantt").popover({
+            //    selector: ".bar",
+            //    title: popoverData(event),
+            //    content: popoverData(this),
+            //    trigger: "hover",
+            //    placement: "auto right"
+            //});
+
+            function popoverData(e){
+                console.log(e);
+                return "this is the title";
+            }
+
+            prettyPrint();
+
+        });
+</script>
+
+<script>
+        $(document).ready(function () {
+
+            $(".page-container").attr('class', 'page-container sidebar-collapsed');
+
+        });
+</script>
+}

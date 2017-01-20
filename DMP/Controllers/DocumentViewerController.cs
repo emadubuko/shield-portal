@@ -124,6 +124,7 @@ namespace DMP.Controllers
                 {
                     commentDAO.Save(comment);
                     commentDAO.CommitChanges();
+                    comment.DMPDocument = null; //remove this to limit the data being tranmitted back
                     return Json(comment);
                 }
                 catch (Exception ex)
