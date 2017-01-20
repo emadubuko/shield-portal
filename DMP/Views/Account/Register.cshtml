@@ -1,40 +1,6 @@
 ﻿@model  DMP.ViewModel.ProfileViewModel
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Integral - A fully responsive, HTML5 based admin template">
-    <meta name="keywords" content="Responsive, Web Application, HTML5, Admin Template, business, professional, Integral, web design, CSS3">
-   
-    <style>
-        body {
-            background-image: url('../../images/background-image.jpg');
-        }
-    </style>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-          <script src="js/html5shiv.min.js"></script>
-          <script src="js/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-<body class="login-page">
-
-    <!-- Loader Backdrop -->
-    <div class="loader-backdrop">
-        <!-- Loader -->
-        <div class="loader">
-            <div class="bounce-1"></div>
-            <div class="bounce-2"></div>
-        </div>
-        <!-- /loader -->
-    </div>
-    <!-- loader backgrop -->
+     
 
     <div class="login-container"> 
         <div class="login-content" style="width: 100%;">
@@ -47,7 +13,7 @@
                     {
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
+                        <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
                         <div class="col-sm-6">
                             @if ((string)field.Value == "String")
                             {
@@ -144,6 +110,4 @@
                 //}
             });
         });
-    </script>
-</body>
-</html>
+    </script> 

@@ -11,9 +11,10 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    
     <style>
         .page-sidebar {
-            background-color:#fff;
+            background-color:transparent;
             border-bottom-color:#929b17;
             color:#929b17;
         }
@@ -28,6 +29,12 @@
          }
         ul.main-menu li a {
             color: #929b17;
+        }
+        .page-container{
+            background-color: transparent;
+        }
+        .main-container{
+             background-color: transparent;
         }
         
     </style>
@@ -62,7 +69,7 @@
                 <!-- Site header  -->
                 <header class="site-header">
                     <div class="site-logo">
-                        <a href="index.html"><img src="~/images/logo.jpg" alt="DMP" title="DMP" /></a>
+                        <a href="index.html"><img src="/images/logo.jpg" alt="DMP" title="DMP" /></a>
                     </div>
                     <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i class="icon-menu"></i></a></div>
                     <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse" class="mobile-menu-icon" href="#"><i class="icon-menu"></i></a></div>
@@ -72,12 +79,12 @@
                 <ul id="side-nav" class="main-menu navbar-collapse collapse">
                     <li><a href=@Url.Action("index","Home")><i class="icon-gauge">
                         </i><span class="title">Dashboard</span></a></li>
-                    <li>
+                    @*<li>
                         <a href=@Url.Action("tracker","Home")>
                             <i class="icon-flow-parallel">
                             </i><span class="title">Tracker</span>
                         </a>
-                    </li>
+                    </li>*@
                     <li><a href=@Url.Action("index","Organization")><i class="icon-layout"></i><span class="title">Implementing partners</span></a></li>
                     <li>
                         <a href=@Url.Action("index", "Profile")>
@@ -98,7 +105,7 @@
 
                 <div class="pull-right">
                     <div style="padding-right: 100px;">
-                        <a href="#"><i class="icon-logout"></i>Logout</a>
+                        <a href='#' id="logoff"><i class="icon-logout"></i>Logout</a>
                     </div>
                 </div>
             </div>
@@ -119,11 +126,28 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
 
-    @*
-        @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/bundles/bootstrap")
-        @Scripts.Render("~/bundles/dataTables")
-        @Scripts.Render("~/bundles/loader")*@
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+
+            $("#logoff").click(function (e, n) {
+
+
+                var someUrl = '@Url.Action("CreateNewProfile", "Profile")';
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("LogOff", "Account")',
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (dmpId) {
+                    window.location.replace('@Url.Action("index", "Home")');                        
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err); 
+                });
+                return false;
+            });
+            }); 
+    </script>
 </body>
 </html>

@@ -47,5 +47,7 @@ form{
  .btn-warning{
   background-color: #929b17;
    border-color: #929b17;
-        }  
- 
+        }
+body {
+    background-image: url('../images/background-image.jpg'); 
+}

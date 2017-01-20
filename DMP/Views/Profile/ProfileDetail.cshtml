@@ -31,7 +31,7 @@
 
                         @foreach (var field in typeof(DAL.Entities.Profile).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                         {
-                            if (field.Name == "Organization" && Model.Organization !=null)
+                            if (field.Name == "Organization" && Model.Organization != null)
                             {
                                 <div class="form-group">
                                     <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
@@ -40,7 +40,11 @@
                                     </div>
                                 </div>
                             }
-                            else if (field.Name != "Password" || field.Name != "OrganizationId")
+                            if (field.Name == "Password" || field.Name == "OrganizationId")
+                            {
+                                continue;
+                            }
+                            else
                             {
                                 <div class="form-group">
                                     <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
