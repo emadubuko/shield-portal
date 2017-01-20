@@ -31,12 +31,25 @@
 
                         @foreach (var field in typeof(DAL.Entities.Profile).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                         {
-                            <div class="form-group">
-                                <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                <div>
-                                    <span>@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
+                            if (field.Name == "Organization" && Model.Organization !=null)
+                            {
+                                <div class="form-group">
+                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                    <div>
+                                        <span>@Model.Organization.Name</span>
+                                    </div>
                                 </div>
-                            </div>
+                            }
+                            else if (field.Name != "Password" || field.Name != "OrganizationId")
+                            {
+                                <div class="form-group">
+                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                    <div>
+                                        <span>@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
+                                    </div>
+                                </div>
+                            }
+
                         }
                     </div>
                 </div>

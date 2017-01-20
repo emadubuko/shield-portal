@@ -1,114 +1,149 @@
-﻿@model DMP.Models.RegisterViewModel
-@using DMP.Models;
-@{
-    ViewBag.Title = "Register";
-    Layout = null;
-}
+﻿@model  DMP.ViewModel.ProfileViewModel
 
-
-
-
-<h3 class="page-title">
-    User Management
-</h3>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a href="~/">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <i class="fa fa-home"></i>
-            <a href="#">Account</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a href="#">User Management</a>
-
-        </li>
-
-    </ul>
-
-</div>
-<div class="row">
-    <div class="col-lg-6">
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <h4>Create a new account.</h4>
-            <hr />
-            @Html.ValidationSummary("", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
-                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" class="btn btn-default" value="Register" />
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Integral - A fully responsive, HTML5 based admin template">
+    <meta name="keywords" content="Responsive, Web Application, HTML5, Admin Template, business, professional, Integral, web design, CSS3">
+   
+    <style>
+        body {
+            background-image: url('../../images/background-image.jpg');
         }
-    </div>
+    </style>
 
-    <div class="col-lg-6">
-        <h4>Manage users</h4>
-        <hr />
-        <div class="table-scrollable">
-            <table class="table table-bordered table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Username</th>
-                        <th>Roles</th>
-                        <th>Failed attempts</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @*@foreach (var user in allUsers)
-            {
-                        <tr>
-                            <td>@user.Email</td>
-                            <td>@user.UserName</td>
-                            <td>@user.Roles.Count</td>
-                            <td>@user.AccessFailedCount</td>
-                            <td>
-                                <a class="edit" href="javascript:;">
-                                    Edit
-                                </a>
-                            </td>
-                            <td>
-                                <a class="delete" href="javascript:;">
-                                    Delete
-                                </a>
-                            </td>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+          <script src="js/html5shiv.min.js"></script>
+          <script src="js/respond.min.js"></script>
+    <![endif]-->
 
-                        </tr>
-                    }*@
-                </tbody>
-            </table>
+</head>
+<body class="login-page">
 
+    <!-- Loader Backdrop -->
+    <div class="loader-backdrop">
+        <!-- Loader -->
+        <div class="loader">
+            <div class="bounce-1"></div>
+            <div class="bounce-2"></div>
         </div>
+        <!-- /loader -->
     </div>
-</div>
+    <!-- loader backgrop -->
 
+    <div class="login-container"> 
+        <div class="login-content" style="width: 100%;">
+            <div class="row">
+                 
+                <form id="mainform" class="form-horizontal" role="form">
+                    @Html.AntiForgeryToken()
+                    <h4 style="text-align: center">Create New Profile</h4>
+                    @foreach (var field in Model.FieldCollection)
+                    {
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
+                        <div class="col-sm-6">
+                            @if ((string)field.Value == "String")
+                            {
+                                <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                            }
+                            else if ((string)field.Value == "Organizations")
+                            {
+                                <select id="OrganizationId" class="form-control" required>
+                                    <option value="" disabled selected>select organization</option>
+                                    @foreach (var item in Model.Organization)
+                                    {
+                                        <option value="@item.Id">@item.ShortName</option>
+                                    }
+                                </select>
+                            }
+                        </div>
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-4">
+                            <a href='@Url.Action("index", "Home")' class="btn btn-default">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                            &nbsp;&nbsp;
+                            <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
+                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                        </div>
+                    </div>
+                    
+                </form>
+
+                </div>
+               
+            </div>
+    </div>
+    <!--Load JQuery-->
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
+                if (key.charCode < 48 || key.charCode > 57)
+                    if (key.charCode != 43) {
+                        $('#my_modal').on('show.bs.modal', function (e) {
+                            $('#warningbox').val('invalid input');
+                        });
+                        $('#myModal').modal('show');
+                        return false;
+                    }
+            });            
+
+            $("input").attr("autocomplete", "off");
+
+            $("#dmpSubmit").click(function (e, n) {
+
+                var form = $(e.currentTarget.form);
+                //var validator = form.validate();
+                //if (form.valid()) {
+                    var formdata = $('#mainform')[0].elements;
+                    var viewModel = {};
+
+                    $("#loadImg").show();
+                    $('#dmpSubmit').disabled = true;
+
+                    $.each(formdata, function (name, formElements) {
+                        viewModel[formElements.id] = formElements.value;
+                    });
+                    viewModel["__RequestVerificationToken"] = $("input[name=__RequestVerificationToken]").val();
+
+                    var someUrl = '@Url.Action("Register","Account")'; //'@Url.Action("CreateNewProfile", "Profile")';
+                    $.ajax({
+                        type: "POST",
+                        url: someUrl,
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        data: viewModel,
+                        cache: false,
+                    }).done(function (dmpId) {
+                        console.log(dmpId);
+                        window.location.replace('@Url.Action("index", "Profile")');
+                        $("#loadImg").hide();
+                        $('#dmpSubmit').disabled = false;
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                        $("#loadImg").hide();
+                        $('#dmpSubmit').disabled = false;
+                    });
+
+                    return false;
+                //}
+            });
+        });
+    </script>
+</body>
+</html>

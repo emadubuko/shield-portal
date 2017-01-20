@@ -8,5 +8,8 @@ namespace DMP.ViewModel
 {
     public class ProfileViewModel : AutomaticViewModel<Profile>
     {
+        public IList<Organizations> Organization { get; set; }
+
+
     }
 }

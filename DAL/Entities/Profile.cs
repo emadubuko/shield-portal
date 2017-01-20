@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,14 +12,6 @@ namespace DAL.Entities
     {
         public virtual string Title { get; set; }
         public virtual string Username { get; set; }
-        public virtual string Password { get; set; }
-        public virtual string Surname { get; set; }
-        public virtual string FirstName { get; set; }
-        public virtual string OtherNames { get; set; }
-
-        public virtual string JobDesignation { get; set; }
-        public virtual string ContactPhoneNumber { get; set; }
-        public virtual string ContactEmailAddress { get; set; }
         public virtual string FullName
         {
             get
@@ -26,6 +19,21 @@ namespace DAL.Entities
                 return string.Format("{0} {1} {2}", Surname, OtherNames, FirstName);
             }
         }
+        public virtual string Password { get; set; }
+        public virtual string Surname { get; set; }
+        public virtual string FirstName { get; set; }
+        public virtual string OtherNames { get; set; }
+
+        public virtual string JobDesignation { get; set; }
+         
+        public virtual string ContactPhoneNumber { get; set; }
+
+       
+        public virtual string ContactEmailAddress { get; set; }
+
+        public virtual Organizations Organization { get; set; }
+        [XmlIgnore]
+        public virtual int OrganizationId { get; set; }
 
         [XmlIgnore]
         public virtual DateTime CreationDate { get; set; }

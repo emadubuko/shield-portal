@@ -1,14 +1,11 @@
 ﻿using DAL.DAO;
 using DAL.Entities;
-using DMP.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
         // GET: Profile
@@ -20,7 +17,8 @@ namespace DMP.Controllers
 
         public ActionResult CreateProfile()
         {
-            return View(new ProfileViewModel());
+            return RedirectToAction("Register", "Account");
+            //return View(new ProfileViewModel());
         }
 
         public ActionResult ProfileDetail(string profileId)
@@ -52,18 +50,18 @@ namespace DMP.Controllers
         }
 
 
-        public ActionResult CreateNewProfile(Profile profile)
-        {
-            if (profile != null)
-            {
-                var profileDAO = new ProfileDAO();
-                profileDAO.Save(profile);
-                profileDAO.CommitChanges();                
+        //public ActionResult CreateNewProfile(Profile profile)
+        //{
+        //    if (profile != null)
+        //    {
+        //        var profileDAO = new ProfileDAO();
+        //        profileDAO.Save(profile);
+        //        profileDAO.CommitChanges();                
 
-                return RedirectToAction("Index");
-            }
-            return Json("Ok");
-        }
+        //        return RedirectToAction("Index");
+        //    }
+        //    return Json("Ok");
+        //}
  
     }
 }

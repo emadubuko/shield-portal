@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Integral - A fully responsive, HTML5 based admin template">
     <meta name="keywords" content="Responsive, Web Application, HTML5, Admin Template, business, professional, Integral, web design, CSS3">
-    <title>Integral | Login</title>
+    <title>DMP | Login</title>
     <!-- Site favicon -->
     <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
 
@@ -51,7 +51,7 @@
     <!-- loader backgrop -->
 
     <div class="login-container">
-        <div class="login-branding">
+        <div class="login-branding" style="padding: 10px 0;">
             <img src="~/images/logo.jpg" alt="UMB-logo" title="DMP" />
         </div>
         <div class="login-content">
@@ -64,9 +64,9 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Username, new { @class = "col-md-2 control-label" })
+                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
