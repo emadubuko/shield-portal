@@ -224,6 +224,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\jquery-ui.css" />
     <Content Include="images\alarm.jpg" />
+    <Content Include="images\background-image.jpg" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\imac-40.jpg" />
     <Content Include="images\logo.jpg" />
