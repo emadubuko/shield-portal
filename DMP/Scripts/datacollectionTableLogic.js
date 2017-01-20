@@ -49,8 +49,20 @@ $("#adddatacollectionbtn").click(function (e) {
             datacollection["FrequencyOfDataCollection"] = $(this)[0].value;
             $(this).val("");
         }
-        else if ($(this)[0].id == "DurationOfDataCollection") {
-            datacollection["DurationOfDataCollection"] = $(this)[0].value;
+        else if ($(this)[0].id == "dtDurationdrpdwn") {
+            var durationDrpDwn = $(this)[0].value;
+            var inputValue = $("#dtDurationField")[0].value;
+            var duration = inputValue;
+            switch (durationDrpDwn) {
+                case "Weeks":
+                    duration = inputValue * 7; break;
+                case "Months":
+                    duration = inputValue * 30; break;
+                case "Years":
+                    duration = inputValue * 365; break;
+            }
+
+            datacollection["DurationOfDataCollection"] = duration; //$(this)[0].value;
             $(this).val("");
         }
         else if ($(this)[0].id == "DataCollectionAndReportingTools") {

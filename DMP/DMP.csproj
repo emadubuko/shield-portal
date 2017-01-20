@@ -215,6 +215,7 @@
     <Compile Include="ViewModel\DMPViewModel.cs" />
     <Compile Include="ViewModel\EditDocumentViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
+    <Compile Include="ViewModel\TrackerViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-rtl.min.css" />
@@ -223,6 +224,7 @@
     <Content Include="Content\entypo.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\jquery-ui.css" />
+    <Content Include="css\style.css" />
     <Content Include="images\alarm.jpg" />
     <Content Include="images\background-image.jpg" />
     <Content Include="images\clock.jpg" />
@@ -249,6 +251,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="images\spinner.gif" />
     <Content Include="images\umb-icon.jpg" />
+    <Content Include="img\grid.png" />
+    <Content Include="img\icon_sprite.png" />
+    <Content Include="img\slider_handle.png" />
     <Content Include="plugins\blockui-master\js\jquery-ui.js" />
     <Content Include="plugins\blockui-master\js\jquery.blockUI.js" />
     <Content Include="plugins\blockui-master\license.txt" />
@@ -866,6 +871,11 @@
     <Content Include="Scripts\dataverificationTableLogic.js" />
     <Content Include="Scripts\form-advanced-script.js" />
     <Content Include="Scripts\functions.js" />
+    <Content Include="Scripts\GanttChart\dataDays.js" />
+    <Content Include="Scripts\GanttChart\dataDaysEnh.js" />
+    <Content Include="Scripts\GanttChart\dataHours.js" />
+    <Content Include="Scripts\GanttChart\jquery.fn.gantt.js" />
+    <Content Include="Scripts\GanttChart\jquery.fn.gantt.min.js" />
     <Content Include="Scripts\html5shiv.min.js" />
     <Content Include="Scripts\jquery-ui.multidatespicker.js" />
     <Content Include="Scripts\jquery.min.js" />
@@ -966,6 +976,7 @@
     <Content Include="Views\Organization\OrganizationEdit.cshtml" />
     <Content Include="Views\Profile\profileEdit.cshtml" />
     <Content Include="Views\Home\DynamicTable.cshtml" />
+    <Content Include="Views\Home\Tracker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

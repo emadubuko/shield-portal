@@ -14,9 +14,9 @@ namespace DAL.Entities
 
         public virtual int Id { get; set; }
         public virtual string NameOfTraining { get; set; }
-        public virtual string TimelinesForTrainings { get; set; }
+        public virtual List<DateTime> TimelinesForTrainings { get; set; }
         public virtual string FequencyOfTrainings { get; set; }
-        public virtual string DurationOfTrainings { get; set; }
+        public virtual int DurationOfTrainings { get; set; }
 
     }
 }

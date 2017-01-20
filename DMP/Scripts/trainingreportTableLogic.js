@@ -44,8 +44,19 @@ $("#addtrainingbtn").click(function (e) {
             training["FequencyOfTrainings"] = $(this)[0].value;
             $(this).val("");
         }
-        else if ($(this)[0].id == "DurationOfTrainings") {
-            training["DurationOfTrainings"] = $(this)[0].value;
+        else if ($(this)[0].id == "trDurationdrpdwn") {
+            var durationDrpDwn = $(this)[0].value;
+            var inputValue = $("#trDurationField")[0].value;
+            var duration = inputValue;
+            switch (durationDrpDwn) {
+                case "Weeks":
+                    duration = inputValue * 7; break;
+                case "Months":
+                    duration = inputValue * 30; break;
+                case "Years":
+                    duration = inputValue * 365; break;
+            }
+            training["DurationOfTrainings"] = duration; // $(this)[0].value;
             $(this).val("");
         }
     });
@@ -77,7 +88,7 @@ function CreatetrainingTable(training) {
     html += '<td>' + training.DurationOfTrainings + '</td>';
     html += '<td><a class="btn btn-info btn-sm btn-outline" title=' + JSON.stringify(timelines) + '>View</a></td>';
     if (editMode) {
-        html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + trainingId + ',"training")"  id=' + removeId + '/></td>';
+        html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + trainingId + ')"  id=' + removeId + '/></td>';
     }
     html += '</tr>';
     $('#trainingTable').append(html);

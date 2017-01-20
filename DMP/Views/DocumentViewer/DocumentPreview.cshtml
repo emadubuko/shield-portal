@@ -73,11 +73,14 @@
                     <h4 class="panel-title">Preview DMP Document</h4>
 
                     <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
-                        <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-black btn-outline">
+                        <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-black btn-sm btn-outline">
                             <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
                         </a>
-                        <a id="downloadbtn" class="btn btn-black btn-outline"><i class="icon-download"></i><span>Download</span></a>
-                        <a id="approvebtn" class="btn btn-black btn-outline"><i class="icon-info"></i><span>Approval</span></a>
+                        <a id="downloadbtn" class="btn btn-black btn-sm btn-outline"><i class="icon-download"></i><span>Download</span></a>
+                        <a id="approvebtn" class="btn btn-black btn-sm btn-outline"><i class="icon-info"></i><span>Approval</span></a>
+                        <a href="~/Home/tracker?documnentId=@Model.documentID" class="btn btn-black btn-sm btn-outline">
+                            <i class="icon-flow-parallel"></i> View tracker
+                        </a>
                     </div>
                 </div>
 
