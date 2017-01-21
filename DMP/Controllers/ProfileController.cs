@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
-   // [Authorize]
+    [Authorize]
     public class ProfileController : Controller
     {
         // GET: Profile
@@ -32,6 +32,8 @@ namespace DMP.Controllers
         {
             Guid pGuid = new Guid(profileId);
             var pDetails = new ProfileDAO().Retrieve(pGuid);
+            var orgs = new OrganizationDAO().RetrieveAll();
+            ViewBag.Organizations = orgs;
             return View(pDetails);
         }
 
@@ -44,6 +46,7 @@ namespace DMP.Controllers
             Guid pGuid = new Guid(profileId);
             profile.Id = pGuid;
             var profileDao = new ProfileDAO();
+            profile.Organization = new OrganizationDAO().Retrieve(profile.OrganizationId);
             profileDao.Update(profile);
             profileDao.CommitChanges();
             return RedirectToAction("Index");

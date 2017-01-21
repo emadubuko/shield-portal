@@ -1,5 +1,5 @@
 ﻿
-if (TrainingArrayFromServer.length > 0) {
+if (TrainingArrayFromServer !=null && TrainingArrayFromServer.length > 0) {
     var training = {};
     for (var c = 0; c < TrainingArrayFromServer.length; c++) {
         training = TrainingArrayFromServer[c];

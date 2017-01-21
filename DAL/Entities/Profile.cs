@@ -16,7 +16,7 @@ namespace DAL.Entities
         {
             get
             {
-                return string.Format("{0} {1} {2}", Surname, OtherNames, FirstName);
+                return string.Format("{0} {1} {2} {3}", Title, Surname, OtherNames, FirstName);
             }
         }
         public virtual string Password { get; set; }

@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
+    [Authorize]
     public class OrganizationController : Controller
     {
         // GET: Organization

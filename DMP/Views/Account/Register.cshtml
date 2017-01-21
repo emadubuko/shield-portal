@@ -7,45 +7,48 @@
             <div class="row">
                  
                 <form id="mainform" class="form-horizontal" role="form">
-                    @Html.AntiForgeryToken()
-                    <h4 style="text-align: center">Create New Profile</h4>
-                    @foreach (var field in Model.FieldCollection)
-                    {
-
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
-                        <div class="col-sm-6">
-                            @if ((string)field.Value == "String")
-                            {
-                                <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
-                            }
-                            else if ((string)field.Value == "Organizations")
-                            {
-                                <select id="OrganizationId" class="form-control" required>
-                                    <option value="" disabled selected>select organization</option>
-                                    @foreach (var item in Model.Organization)
-                                    {
-                                        <option value="@item.Id">@item.ShortName</option>
-                                    }
-                                </select>
-                            }
-                        </div>
+    @Html.AntiForgeryToken()
+    <h4 style="text-align: center">Create New Profile</h4>
+    @foreach (var field in Model.FieldCollection)
+    {
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
+            <div class="col-sm-6">
+                @if ((string)field.Value == "Organizations")
+                {
+                    <select id="OrganizationId" class="form-control" required>
+                        <option value="" disabled selected>select organization</option>
+                        @foreach (var item in Model.Organization)
+                        {
+                            <option value="@item.Id">@item.ShortName</option>
+                        }
+                    </select>
+                }
+                else if ((string)field.Key == "Password")
+                {
+                    <input type="password" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                }
+                else if ((string)field.Value == "String")
+                {
+                    <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                }                
                     </div>
-                    }
+                </div>
+                }
 
-                    <div class="form-group">
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-4">
-                            <a href='@Url.Action("index", "Home")' class="btn btn-default">
-                                <i class="fa fa-close"></i> Cancel
-                            </a>
-                            &nbsp;&nbsp;
-                            <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
-                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-                        </div>
+                <div class="form-group">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4">
+                        <a href='@Url.Action("index", "Home")' class="btn btn-default">
+                            <i class="fa fa-close"></i> Cancel
+                        </a>
+                        &nbsp;&nbsp;
+                        <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
+                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                     </div>
-                    
-                </form>
+                </div>
+
+            </form>
 
                 </div>
                

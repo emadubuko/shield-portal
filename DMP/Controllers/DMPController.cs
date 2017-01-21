@@ -1,5 +1,6 @@
 ﻿using DAL.DAO;
 using DAL.Entities;
+using DMP.Services;
 using DMP.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -9,14 +10,13 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
+    [Authorize]
     public class DMPController : Controller
     {
         OrganizationDAO orgDAO = null;
         DMPDAO dmpDAO = null;
         DMPDocumentDAO dmpDocDAO = null;
-        static Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
-        static Profile initiator = new ProfileDAO().Retrieve(guid);
-
+      
         public DMPController()
         {
             dmpDAO = new DMPDAO();
@@ -46,7 +46,7 @@ namespace DMP.Controllers
             }
             DAL.Entities.DMP MyDMP = newDMP;
             MyDMP.DateCreated = DateTime.Now;
-            MyDMP.CreatedBy = initiator;
+            MyDMP.CreatedBy = new Utils().GetloggedInProfile();  
             MyDMP.Organization = OrgsRepo().FirstOrDefault(x=>x.Id == newDMP.OrganizationId);
 
 

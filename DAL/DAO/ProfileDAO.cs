@@ -35,5 +35,15 @@ namespace DAL.DAO
 
             return (ProfileCount != 0); //return true if user exist ProfileCount !=0
         }
+
+        public Profile GetProfileByUsername(string username)
+        {
+            var session = BuildSession();
+            ICriteria criteria = session.CreateCriteria<Profile>()
+            .Add(Restrictions.Eq("Username", username)); 
+            var profile = criteria.UniqueResult<Profile>();
+
+            return profile;
+        }
     }
 }

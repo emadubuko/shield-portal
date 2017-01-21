@@ -1,5 +1,5 @@
 ﻿
-if (DataCollectionArrayFromServer.length > 0) {
+if (DataCollectionArrayFromServer !=null && DataCollectionArrayFromServer.length > 0) {
     var datacollection = {};
     for (var c = 0; c < DataCollectionArrayFromServer.length; c++) {
         datacollection = DataCollectionArrayFromServer[c];

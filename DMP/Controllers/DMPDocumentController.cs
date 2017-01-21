@@ -1,5 +1,6 @@
 ﻿using DAL.DAO;
 using DAL.Entities;
+using DMP.Services;
 using DMP.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
+    [Authorize]
     public class DMPDocumentController : Controller
     {
         DMPDAO dmpDAO = null;
@@ -17,10 +19,7 @@ namespace DMP.Controllers
         OrganizationDAO orgDAO = null;
         ProjectDetailsDAO projDAO = null;
         ProfileDAO profileDAO = null;
-
-        static Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
-        static Profile initiator = new ProfileDAO().Retrieve(guid);
-
+ 
         public DMPDocumentController()
         {
             dmpDAO = new DMPDAO();
@@ -34,8 +33,6 @@ namespace DMP.Controllers
         {
             return View();
         }
-
-
 
         public ActionResult WizardPages(int? dmpId, string documnentId = null)
         {
@@ -58,6 +55,11 @@ namespace DMP.Controllers
             if (dmpDoc != null)
             {                
                 var thepageDoc = dmpDoc.Document;
+                if(dmpDoc.Status == DMPStatus.Approved)
+                {
+
+                }
+
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
                     //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
@@ -97,7 +99,7 @@ namespace DMP.Controllers
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
                     Organization = MyDMP.Organization,
-                    Initiator = initiator,
+                    Initiator = new Utils().GetloggedInProfile(),  
                     EditMode = false,
                     projectDetails = new ProjectDetails
                     {
@@ -306,13 +308,14 @@ namespace DMP.Controllers
         public DMPDocument SaveDMPDocument(WizardPage documentPages, int dmpId)
         {
             DMPDocument Doc = dmpDocDAO.SearchMostRecentByDMP(dmpId);
+            var currentUser = new Utils().GetloggedInProfile();
             if (Doc == null)
             {
                 Doc = new DMPDocument
                 {
                     CreationDate = DateTime.Now,
-                    Initiator = initiator,
-                    InitiatorUsername = initiator.Username,
+                    Initiator = currentUser,  
+                    InitiatorUsername = currentUser.Username,
                     LastModifiedDate = DateTime.Now,
                     Status = DMPStatus.New,
                     Version = 0,

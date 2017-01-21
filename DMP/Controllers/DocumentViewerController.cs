@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 namespace DMP.Controllers
 {
+    [Authorize]
     public class DocumentViewerController : Controller
     {
         static DMPDocument Doc = null;
@@ -156,7 +157,7 @@ namespace DMP.Controllers
             }
             try
             {
-                Doc.ApprovedBy = GetloggedInProfile();
+                Doc.ApprovedBy = new Utils().GetloggedInProfile();
                 Doc.Status = DMPStatus.Rejected;
                 Doc.ApprovedDate = DateTime.Now;
 
@@ -187,7 +188,7 @@ namespace DMP.Controllers
             }
 
             var previousRevision = Doc.Document.DocumentRevisions.LastOrDefault();
-            Profile currentUser = GetloggedInProfile();
+            Profile currentUser = new Utils().GetloggedInProfile();
 
             VersionMetadata versionMetaData = new VersionMetadata
             {
@@ -252,14 +253,8 @@ namespace DMP.Controllers
             return _approval;
         }
 
-        //this should get logged in User
-        Profile GetloggedInProfile()
-        {
-            //return dummy for now 
-            Guid pGuid = new Guid("D2ED8EA3-A335-4718-914D-A6F301671679");
-            var result = new ProfileDAO().Retrieve(pGuid);
-            return result;
-        }
+        
+        
 
         [HttpPost]
         public ActionResult DownloadDocument(string documnentId)

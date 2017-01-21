@@ -17,7 +17,7 @@ using System.Net;
 
 namespace DMP.Controllers
 {
-   // [Authorize]
+    [Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;

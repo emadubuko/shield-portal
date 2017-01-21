@@ -1,27 +1,20 @@
 ﻿using DAL.DAO;
-using DAL.Entities;
 using DMP.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
-   // [Authorize]
+    [Authorize]
     public class HomeController : Controller
     {
         DMPDAO dmpDAO = null;
         DMPDocumentDAO dmpDocDAO = null;
         OrganizationDAO orgDAO = null;
         ProjectDetailsDAO projDAO = null;
-
-        //static DAL.Entities.DMP MyDMP = null;
-
-        static Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
-        static Profile initiator = new ProfileDAO().Retrieve(guid);
-
+         
         public HomeController()
         {
             dmpDAO = new DMPDAO();
@@ -33,6 +26,7 @@ namespace DMP.Controllers
 
         public ActionResult Index()
         {
+
             var dmps = dmpDAO.RetrieveAll().Where(x => x.TheProject != null).ToList();
 
             List<DMPViewModel> dmpVM = new List<ViewModel.DMPViewModel>();
@@ -188,7 +182,6 @@ namespace DMP.Controllers
         {
             return Json(data.Count());
         }
-
 
         #region - obsolete
         /*

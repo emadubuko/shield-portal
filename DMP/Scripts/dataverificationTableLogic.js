@@ -1,5 +1,5 @@
 ﻿
-if (DataVerificationArrayFromServer.length > 0) {
+if (DataVerificationArrayFromServer !=null && DataVerificationArrayFromServer.length > 0) {
     var dataverification = {};
     for (var c = 0; c < DataVerificationArrayFromServer.length; c++) {
         dataverification = DataVerificationArrayFromServer[c];

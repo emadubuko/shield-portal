@@ -1,5 +1,5 @@
 ﻿
-if(ReportArrayFromServer.length > 0){
+if (ReportArrayFromServer!=null && ReportArrayFromServer.length > 0) {
     var report = {};
     for(var c =0; c< ReportArrayFromServer.length; c++){
         report = ReportArrayFromServer[c];
