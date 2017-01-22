@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace DAL.Entities
 {
@@ -17,6 +18,13 @@ namespace DAL.Entities
         public virtual string PhonenumberofApprover { get; set; }
         public virtual string EmailaddressofApprover { get; set; }
 
-
+        [XmlIgnore]
+        public virtual string DisplayName
+        {
+            get
+            {
+                return string.Format("{0} {1}", TitleofApprover, SurnameApprover);
+            }
+        }
     }
 }

@@ -88,6 +88,7 @@ namespace DMP.ViewModel
 
     public class EditDocumentViewModel2
     {
+        public List<DocumentRevisions> documentRevisions { get; set; }
         public List<DataCollection> dataCollection { get; set; }
         public string DataFlowChart { get; set; }
         public List<Trainings> Trainings { get; set; }

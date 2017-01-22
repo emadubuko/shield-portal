@@ -47,39 +47,14 @@ namespace DMP.Controllers
             var comments = commentDAO.SearchByDocumentId(Doc.Id);
  
 
-            VersionAuthor versionAuthor = null;
-            VersionMetadata versionMetadata = null;
+            VersionAuthor versionAuthor =  new VersionAuthor();
+            VersionMetadata versionMetadata = new VersionMetadata();
             Approval approval = new Approval();
-
-            if (Doc.Status != DMPStatus.Approved)
-            {
-                versionAuthor = GenerateVersionAuthor(Doc.Initiator);
-                versionMetadata = new VersionMetadata
-                {
-                    VersionDate = string.Format("{0:dd-MMM-yyyy}", Doc.CreationDate),
-                    VersionNumber = "0.1"
-                };
-
-            }
-            else
-            {
-                versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor;
-                versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata;
-                approval = thepageDoc.DocumentRevisions.LastOrDefault().Version.Approval;
-                if (versionMetadata == null || string.IsNullOrEmpty(versionMetadata.VersionNumber))
-                {
-                    versionAuthor = GenerateVersionAuthor(Doc.Initiator);
-                    versionMetadata = new VersionMetadata
-                    {
-                        VersionDate = string.Format("{0:dd-MMM-yyyy}", Doc.CreationDate),
-                        VersionNumber = "0.1"
-                    };
-                }
-            }
-
+             
 
             EditDocumentViewModel2 docVM = new EditDocumentViewModel2
             {
+                 documentRevisions = Doc.Document.DocumentRevisions,
                 versionAuthor = versionAuthor,
                 datacollectionProcesses = thepageDoc.DataCollectionProcesses,
                 dataCollection = thepageDoc.DataCollection,
@@ -186,27 +161,12 @@ namespace DMP.Controllers
             {
                 return new HttpStatusCodeResult(400, "Bad request");
             }
-
-            var previousRevision = Doc.Document.DocumentRevisions.LastOrDefault();
+             
             Profile currentUser = new Utils().GetloggedInProfile();
-
-            VersionMetadata versionMetaData = new VersionMetadata
-            {
-                VersionDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now),
-                VersionNumber = (Doc.Version + 1).ToString()
-            };
-            DocumentRevisions revision = new DocumentRevisions
-            {
-                Version = new DAL.Entities.Version
-                {
-                    Approval = GenerateApproval(currentUser),
-                    VersionAuthor = GenerateVersionAuthor(Doc.Initiator),
-                    VersionMetadata = versionMetaData
-                }
-            };
+              
             try
             {
-                Doc.Document.DocumentRevisions.Add(revision);
+                Doc.Document.DocumentRevisions = GenerateApprovedDocumentRevision(Doc);
                 Doc.ApprovedBy = currentUser;
                 Doc.Status = DMPStatus.Approved;
                 Doc.ApprovedDate = DateTime.Now;
@@ -220,26 +180,50 @@ namespace DMP.Controllers
                 dmpDocumentDAO.RollbackChanges();
                 return new HttpStatusCodeResult(400, ex.Message);
             }
-
         }
 
-        VersionAuthor GenerateVersionAuthor(Profile Initiator)
+
+        public List<DocumentRevisions> GenerateApprovedDocumentRevision(DMPDocument previousDoc)
         {
-            VersionAuthor author = new VersionAuthor
+            var previousVersion = previousDoc.Document.DocumentRevisions.LastOrDefault();
+            List<DocumentRevisions> revs = new List<DocumentRevisions>();
+            int noOfPreviousRevision = previousDoc.Document.DocumentRevisions.Count - 1;
+            revs.AddRange(previousDoc.Document.DocumentRevisions.Take(noOfPreviousRevision));
+
+            DocumentRevisions currentRevision = new DocumentRevisions
             {
-                EmailAddressOfAuthor = Initiator.ContactEmailAddress,
-                FirstNameOfAuthor = Initiator.FirstName,
-                JobDesignation = Initiator.JobDesignation,
-                OtherNamesOfAuthor = Initiator.OtherNames,
-                PhoneNumberOfAuthor = Initiator.ContactPhoneNumber,
-                SurnameAuthor = Initiator.Surname,
-                TitleOfAuthor = Initiator.Title
+                Version = new DAL.Entities.Version
+                {
+                    Approval = GenerateApproval(),
+                    VersionAuthor = previousVersion.Version.VersionAuthor,
+                    VersionMetadata = previousVersion != null && previousVersion.Version != null ? GenerateApprovedVersionMetaData(previousVersion.Version.VersionMetadata) : GenerateApprovedVersionMetaData(),
+                }
             };
-            return author;
+            revs.Add(currentRevision);
+            return revs;
         }
 
-        Approval GenerateApproval(Profile approver)
+        public VersionMetadata GenerateApprovedVersionMetaData(VersionMetadata previous = null)
         {
+            int mainVersion = 0;
+            int subVersion = 0;
+            if (previous != null)
+            {
+                var t = previous.VersionNumber.Split('.');
+                mainVersion = Convert.ToInt16(t[0]) + 1;                 
+            }
+            VersionMetadata metaData = new VersionMetadata
+            {
+                VersionDate = DateTime.Now.ToShortDateString(),
+                VersionNumber = mainVersion + "." + subVersion
+            };
+            return metaData;
+        }
+         
+
+        Approval GenerateApproval()
+        {
+            Profile approver = new Utils().GetloggedInProfile();
             Approval _approval = new Approval
             {
                 EmailaddressofApprover = approver.ContactEmailAddress,

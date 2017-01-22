@@ -55,10 +55,6 @@ namespace DMP.Controllers
             if (dmpDoc != null)
             {                
                 var thepageDoc = dmpDoc.Document;
-                if(dmpDoc.Status == DMPStatus.Approved)
-                {
-
-                }
 
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
@@ -80,9 +76,6 @@ namespace DMP.Controllers
                     reportDataList = thepageDoc.Reports != null ? thepageDoc.Reports.ReportData : new List<ReportData>(),
                     roleNresp = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities(),
                     Trainings = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>(),
-                    //reportData = thepageDoc.Reports.ReportData,
-                    //roleNresp = thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities,
-                    //Trainings = thepageDoc.MonitoringAndEvaluationSystems.Trainings,
                     documentID = dmpDoc.Id.ToString(),
                     EditMode = true,
                     Profiles = profileDAO.RetrieveAll().ToDictionary(x => x.Id),
@@ -93,9 +86,7 @@ namespace DMP.Controllers
                 return View(docVM);
             }
             else
-            {
-                CreateDocumentViewModel vm = new CreateDocumentViewModel();
-
+            { 
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
                     Organization = MyDMP.Organization,
@@ -147,6 +138,17 @@ namespace DMP.Controllers
                     EthicalApproval = ethicsApproval,
                     ProjectDetails = ProjDetails,
                 },
+                DocumentRevisions = new List<DocumentRevisions>
+                {
+                    new DocumentRevisions{
+                        Version = new DAL.Entities.Version
+                        {                             
+                            Approval = new Approval(),
+                            VersionAuthor = GenerateVersionAuthor(),
+                            VersionMetadata = GenerateMetaData(),
+                        }
+                    }
+                },
                 Planning = new Planning { Summary = summary },
                 DataCollection = DataCollection,
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
@@ -190,14 +192,12 @@ namespace DMP.Controllers
 
                     MyDMP.TheProject = ProjDetails;
                     dmpDAO.Update(MyDMP);
-                    //SaveOrUpdateDMP(false);
-                    var theDoc = SaveDMPDocument(page, MyDMP.Id);
+                    var theDoc = SaveDMPDocument(page, Guid.Empty); // MyDMP.Id);
                     dmpDocDAO.CommitChanges();
 
                     var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
 
-                    return Json(data, JsonRequestBehavior.AllowGet);
-                    //return Json(theDoc, JsonRequestBehavior.AllowGet);
+                    return Json(data, JsonRequestBehavior.AllowGet); 
                 }
                 else
                 {
@@ -243,6 +243,7 @@ namespace DMP.Controllers
                 ProjDetails.Id = previousDoc.TheDMP.TheProject.Id;
                 projDAO.Update(ProjDetails);
             }
+                         
             
             WizardPage page = new WizardPage
             {
@@ -251,17 +252,7 @@ namespace DMP.Controllers
                     EthicalApproval = ethicsApproval,
                     ProjectDetails = ProjDetails,
                 },
-                DocumentRevisions = new List<DocumentRevisions>
-                {
-                    new DocumentRevisions{
-                        Version = new DAL.Entities.Version
-                        {
-                            Approval = approval,
-                            VersionAuthor = versionAuthor,
-                            VersionMetadata = versionMetadata,
-                        }
-                    }
-                },
+                DocumentRevisions = GenerateDocumentRevision(previousDoc),
                 Planning = new Planning { Summary = summary },
                 DataCollection = DataCollection,
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
@@ -298,16 +289,18 @@ namespace DMP.Controllers
                 }
             };
 
-            var theDoc = SaveDMPDocument(page, previousDoc.TheDMP.Id);
+            Guid currentDocumentID = previousDoc.Status == DMPStatus.Approved ? Guid.Empty : previousDoc.Id;
+
+            var theDoc = SaveDMPDocument(page, currentDocumentID); // previousDoc.TheDMP.Id);
             projDAO.CommitChanges();
 
             var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
             return Json(data, JsonRequestBehavior.AllowGet); 
         }
 
-        public DMPDocument SaveDMPDocument(WizardPage documentPages, int dmpId)
+        public DMPDocument SaveDMPDocument(WizardPage documentPages, Guid documentId) // int dmpId)
         {
-            DMPDocument Doc = dmpDocDAO.SearchMostRecentByDMP(dmpId);
+            DMPDocument Doc = dmpDocDAO.Retrieve(documentId); // dmpDocDAO.SearchMostRecentByDMP(dmpId);
             var currentUser = new Utils().GetloggedInProfile();
             if (Doc == null)
             {
@@ -346,6 +339,63 @@ namespace DMP.Controllers
                 saved = true;
             }
             return saved;
+        }
+
+
+        public List<DocumentRevisions> GenerateDocumentRevision(DMPDocument previousDoc)
+        {
+            var previousVersion = previousDoc.Document.DocumentRevisions.LastOrDefault();
+            List<DocumentRevisions> revs = new List<DocumentRevisions>();
+            int noOfPreviousRevision = previousDoc.Document.DocumentRevisions.Count - 1;
+            revs.AddRange(previousDoc.Document.DocumentRevisions.Take(noOfPreviousRevision));
+
+            DocumentRevisions currentRevision = new DocumentRevisions
+            {
+                Version = new DAL.Entities.Version
+                {
+                    Approval = new Approval(),
+                    VersionAuthor = GenerateVersionAuthor(),
+                    VersionMetadata = previousVersion != null && previousVersion.Version != null ? GenerateMetaData(previousVersion.Version.VersionMetadata) : GenerateMetaData(),
+                }
+            };
+            revs.Add(currentRevision);
+            return revs;
+        }
+        public VersionAuthor GenerateVersionAuthor()
+        {
+            var profile = new Utils().GetloggedInProfile();
+            VersionAuthor author = new VersionAuthor
+            {
+                EmailAddressOfAuthor = profile.ContactEmailAddress,
+                FirstNameOfAuthor = profile.FirstName,
+                JobDesignation = profile.JobDesignation,
+                OtherNamesOfAuthor = profile.OtherNames,
+                PhoneNumberOfAuthor = profile.ContactPhoneNumber,
+                SurnameAuthor = profile.Surname,
+                TitleOfAuthor = profile.Title
+            };
+            return author;
+        }
+
+        public VersionMetadata GenerateMetaData(VersionMetadata previous = null)
+        {
+            string mainVersion = "0";
+            int subVersion = 1;
+            if (previous != null)
+            {
+                var t = previous.VersionNumber.Split('.');
+                mainVersion = t[0];
+                if (t.Count() > 1)
+                {
+                    subVersion = Convert.ToInt16(t[1]) + 1;
+                }
+            }
+            VersionMetadata metaData = new VersionMetadata
+            {
+                VersionDate = DateTime.Now.ToShortDateString(),
+                VersionNumber = mainVersion + "." + subVersion
+            };
+            return metaData;
         }
 
 
