@@ -84,6 +84,8 @@ namespace DMP.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    var profile = new ProfileDAO().GetProfileByUsername(model.Username);
+                    HttpContext.Session[".:LoggedInProfile:."] = profile;
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -141,7 +143,7 @@ namespace DMP.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+       // [AllowAnonymous]
         public ActionResult Register()
         {
             var context = new ApplicationDbContext();
@@ -265,30 +267,32 @@ namespace DMP.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
-            return code == null ? View("Error") : View();
+            //return code == null ? View("Error") : View();
+            return View();
         }
 
         //
         // POST: /Account/ResetPassword
         [HttpPost]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<ActionResult> ResetPassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var username = System.Web.HttpContext.Current.User.Identity.GetUserName();
+            var user = await UserManager.FindByNameAsync(username);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var result = await UserManager.ChangePasswordAsync(user.Id, model.CurrentPassword, model.Password); //.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                return RedirectToAction("index", "Home"); //("ResetPasswordConfirmation", "Account");
             }
             AddErrors(result);
             return View();

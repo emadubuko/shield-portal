@@ -54,11 +54,9 @@
                
             </div>
     </div>
-    <!--Load JQuery-->
-    <script src="~/Scripts/jquery.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/Scripts/loader.js"></script>
 
+@section Scripts
+{ 
     <script>
         $(document).ready(function () {
             $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
@@ -114,3 +112,4 @@
             });
         });
     </script> 
+}

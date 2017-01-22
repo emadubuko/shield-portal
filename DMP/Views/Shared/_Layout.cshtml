@@ -35,14 +35,13 @@
         }
         .main-container{
              background-color: transparent;
-        }
-        
+        }        
     </style>
     @if (IsSectionDefined("AddToHead"))
     {
         @RenderSection("AddToHead", required: false)
     }
-
+     
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -99,16 +98,31 @@
         <div class="main-container">
             <!-- Main header -->
             <div class="main-header row">
-                <div class="pull-left">
-                    <a href="#"><img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png">&nbsp;Guest</a>
+                <div class="col-sm-6 col-xs-7">
+
+                    <!-- User info -->
+                    <ul class="user-info pull-left">
+                        <li class="profile-info dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
+                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@DMP.Services.Utils.LoggedinProfileName</span> <span class="caret"></span>
+                            </a>
+                            <!-- User action menu -->
+                            <ul class="dropdown-menu">
+                                <li><a id="userdetail" style="cursor:pointer"><i class="icon-user"></i>My profile</a></li>
+                                <li><a id="changepassword" style="cursor:pointer"><i class="fa fa-key"></i>Change password</a></li>
+                            </ul>
+                            <!-- /user action menu -->
+                        </li>
+                    </ul>
+                    <!-- /user info -->
                 </div>
 
-                <div class="pull-right">
-                    <div style="padding-right: 100px;">
+                <div class="col-sm-6 col-xs-5">
+                    <div class="pull-right">
                         <a href='#' id="logoff"><i class="icon-logout"></i>Logout</a>
                     </div>
                 </div>
-            </div>
+                </div>
 
 
             @RenderBody()
@@ -125,14 +139,24 @@
     <script src="~/Scripts/jquery.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
 
     @RenderSection("scripts", required: false)
     <script>
         $(document).ready(function () {
 
+           // var profile = @Html.Raw(Json.Encode(HttpContext.Current.Session[".:LoggedInProfile:."]));
+            //$('#user').html(profile.FullName);
+
+            $("#userdetail").click(function(e){
+                window.document.location = '/Profile/ProfileDetail?profileId=@DMP.Services.Utils.LoggedinProfileID'; //profile.Id;
+            });
+
+            $('#changepassword').click(function(){
+                window.document.location = '/Account/ResetPassword';
+            });
+
             $("#logoff").click(function (e, n) {
-
-
                 var someUrl = '@Url.Action("CreateNewProfile", "Profile")';
                 $.ajax({
                     type: "POST",
@@ -140,14 +164,14 @@
                     contentType: "application/json; charset=utf-8",
                     cache: false,
                 }).done(function (dmpId) {
-                    window.location.replace('@Url.Action("index", "Home")');                        
+                    window.location.replace('@Url.Action("index", "Home")');
                 }).error(function (xhr, status, err) {
                     alert(err);
-                    console.log(err); 
+                    console.log(err);
                 });
                 return false;
             });
-            }); 
+            });
     </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
-    [Authorize]
+  //  [Authorize]
     public class ProfileController : Controller
     {
         // GET: Profile

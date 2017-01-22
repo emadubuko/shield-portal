@@ -969,6 +969,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
     <None Include="Views\Home\deleted.DocumentWizardPage.cshtml" />
     <Content Include="Views\Home\deleted.EditDocumentWizardPage.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />

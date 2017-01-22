@@ -163,6 +163,7 @@ namespace DMP.Controllers
             return View(vM);
         }
 
+        [AllowAnonymous]
         public ActionResult DynamicTable()
         {
             List<MockReportData> data = new List<MockReportData>();
