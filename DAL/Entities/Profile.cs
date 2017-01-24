@@ -32,6 +32,10 @@ namespace DAL.Entities
         public virtual string ContactEmailAddress { get; set; }
 
         public virtual Organizations Organization { get; set; }
+
+        
+        public virtual string RoleName { get; set; }
+
         [XmlIgnore]
         public virtual int OrganizationId { get; set; }
 

@@ -24,7 +24,17 @@
                         }
                     </select>
                 }
-                else if ((string)field.Key == "Password")
+                else if (field.Key == "Role name")
+                {
+                    <select id="RoleName" class="form-control" required>
+                        <option value="" disabled selected>select Role</option>
+                        @foreach (var item in Model.Role)
+                        {
+                            <option value="@item.Name">@item.Name</option>
+                        }
+                    </select>
+                }
+                else if (field.Key == "Password")
                 {
                     <input type="password" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
                 }

@@ -18,9 +18,9 @@ namespace DAL.Entities
         public virtual DateTime LastModifiedDate { get; set; }
         public virtual DateTime CreationDate { get; set; }
         public virtual Profile ApprovedBy { get; set; }
-        public virtual DateTime ApprovedDate { get; set; }
-        public virtual int Version { get; set; }
-        public virtual int TempVersion { get; set; }
+        public virtual DateTime? ApprovedDate { get; set; }
+        public virtual string Version { get; set; }
+        
        
         public virtual string DocumentTitle
         {
@@ -38,6 +38,6 @@ namespace DAL.Entities
 
     public enum DMPStatus
     {
-        New, pendingApproval, ReferedBack, Rejected, Approved
+        New, PendingApproval, ReferredBack, Rejected, Approved
     }
 }

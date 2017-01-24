@@ -5,10 +5,10 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
-  //  [Authorize]
+    [Authorize]
     public class ProfileController : Controller
     {
-        // GET: Profile
+        [Authorize(Roles = "sys_admin,shield_team")]
         public ActionResult Index()
         {
             var profiles = new ProfileDAO().RetrieveAll();
@@ -34,6 +34,7 @@ namespace DMP.Controllers
             var pDetails = new ProfileDAO().Retrieve(pGuid);
             var orgs = new OrganizationDAO().RetrieveAll();
             ViewBag.Organizations = orgs;
+            ViewBag.Roles = Services.Utils.RetrieveRoles();
             return View(pDetails);
         }
 
@@ -46,10 +47,28 @@ namespace DMP.Controllers
             Guid pGuid = new Guid(profileId);
             profile.Id = pGuid;
             var profileDao = new ProfileDAO();
-            profile.Organization = new OrganizationDAO().Retrieve(profile.OrganizationId);
+
+            var previous = profileDao.Retrieve(pGuid);
+            if (System.Web.HttpContext.Current.User.IsInRole("sys_admin"))
+            {
+                Services.Utils.UpdateUserToRole(profile.Username, previous.RoleName, profile.RoleName);
+                profile.Organization = new OrganizationDAO().Retrieve(profile.OrganizationId);
+            }
+            else
+            {
+                profile.Organization = previous.Organization;
+            }
             profileDao.Update(profile);
             profileDao.CommitChanges();
-            return RedirectToAction("Index");
+
+            if (System.Web.HttpContext.Current.User.IsInRole("sys_admin"))
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+               return RedirectToAction("Index", "Home");
+            }  
         }
 
 

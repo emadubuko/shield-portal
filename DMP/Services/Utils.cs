@@ -1,5 +1,8 @@
 ﻿using DAL.DAO;
 using DAL.Entities;
+using DMP.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,44 @@ namespace DMP.Services
 {
     public class Utils
     {
+
+        public static IQueryable<IdentityRole> RetrieveRoles()
+        {
+            var context = new ApplicationDbContext();
+
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+            var roles = RoleManager.Roles;
+
+            return roles;
+        }
+
+        public static int AddUserToRole(string userId, string rolename)
+        {
+            var context = new ApplicationDbContext();
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+            UserManager.AddToRole(userId, rolename);
+            return context.SaveChanges();
+        }
+
+        public static int UpdateUserToRole(string username, string currentRole, string newRolename)
+        { 
+            var context = new ApplicationDbContext();
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+
+           var user = UserManager.FindByName(username);
+            if (!string.IsNullOrEmpty(currentRole))
+            {
+                UserManager.RemoveFromRole(user.Id, currentRole);
+            }
+            if (!string.IsNullOrEmpty(newRolename))
+            {
+                UserManager.AddToRole(user.Id, newRolename);
+            }            
+            return context.SaveChanges();
+        }
+
+
         public Profile GetloggedInProfile()
         {
             if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
@@ -26,14 +67,7 @@ namespace DMP.Services
             if (profile == null)
             {
                 throw new ApplicationException("Profile info not found");
-            }
-            //else
-            //{
-            //    //return dummy for now 
-            //    Guid pGuid = new Guid("D2ED8EA3-A335-4718-914D-A6F301671679");
-            //    profile = new ProfileDAO().Retrieve(pGuid);
-            //}
-
+            } 
             return profile;
         }
 
@@ -45,6 +79,7 @@ namespace DMP.Services
                 if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
                 {
                     profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
+                    return profile.FullName;
                 }
 
                 ProfileDAO dao = new ProfileDAO(); 
@@ -56,6 +91,7 @@ namespace DMP.Services
                 }
                 else
                 {
+                    //TODO: redirect to login
                     return "";
                 }               
             }

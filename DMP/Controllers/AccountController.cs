@@ -14,6 +14,8 @@ using DMP.ViewModel;
 using DAL.DAO;
 using DAL.Entities;
 using System.Net;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace DMP.Controllers
 {
@@ -141,27 +143,25 @@ namespace DMP.Controllers
             }
         }
 
-        //
-        // GET: /Account/Register
-       // [AllowAnonymous]
+        [Authorize(Roles = "sys_admin")]
         public ActionResult Register()
         {
             var context = new ApplicationDbContext();
             var allUsers = context.Users.ToList();
+             
 
             OrganizationDAO orgDAO = new OrganizationDAO();
             ProfileViewModel vM = new ProfileViewModel
             {
-                Organization = orgDAO.RetrieveAll()
+                Organization = orgDAO.RetrieveAll(),
+                Role = DMP.Services.Utils.RetrieveRoles()
             };
 
             return View(vM);
         }
 
-        //
-        // POST: /Account/Register
+        [Authorize(Roles = "sys_admin")]
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(Profile model)
         {
@@ -177,25 +177,37 @@ namespace DMP.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
 
                 var profileDAO = new ProfileDAO();
-                model.Organization = new OrganizationDAO().Retrieve(model.OrganizationId);
-                profileDAO.Save(model);
 
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    try
+                    {
+                        var tt = Services.Utils.AddUserToRole(user.Id, model.RoleName);
 
-                    profileDAO.CommitChanges();
+                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                        model.Organization = new OrganizationDAO().Retrieve(model.OrganizationId);
+                        profileDAO.Save(model);
+                        profileDAO.CommitChanges();
+                        return new HttpStatusCodeResult(HttpStatusCode.OK); //  RedirectToAction("Index", "Home");
+                    }
+                    catch(Exception ex)
+                    {
+                        profileDAO.RollbackChanges();
+                        return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.Message);
+                    }
+                  
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return new HttpStatusCodeResult(HttpStatusCode.OK); //  RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    profileDAO.RollbackChanges();
+                    
                     AddErrors(result);
                     return new HttpStatusCodeResult(400, result.Errors.ToList()[0]);
                 }
@@ -429,6 +441,21 @@ namespace DMP.Controllers
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }
+
+        public ActionResult CreateRole(string roleName)
+        {
+            var context = new ApplicationDbContext();
+
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+            IdentityResult roleResult = RoleManager.Create(new IdentityRole(roleName));
+
+            context.SaveChanges();
+
+            return View();
+        }
+         
+         
 
         //
         // GET: /Account/ExternalLoginFailure

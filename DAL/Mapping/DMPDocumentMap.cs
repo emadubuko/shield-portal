@@ -23,7 +23,11 @@ namespace DAL.Mapping
             Map(x => x.ReferralCount);
             Map(x => x.LastModifiedDate);
             Map(x => x.Status);
+            Map(x => x.Version);
             References(x => x.TheDMP).Column("DMPId");
+            References(x => x.ApprovedBy).Column("AproverId");
+            Map(x => x.ApprovedDate);
+            Map(x => x.CreationDate);
         }
     }
 }

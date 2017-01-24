@@ -21,6 +21,7 @@ namespace DAL.Mapping
             Map(x => x.Status);
             Map(x => x.Title);
             References(x => x.Organization).Column("OrganizationId");
+            Map(x => x.RoleName);
         }
     }
 }

@@ -84,6 +84,7 @@ namespace DMP.ViewModel
 
         public string documentID { get; set; }
         public Guid leadactivitymanagerId { get; set; }
+        public string AdditionalInformation { get; set; }
     }
 
     public class EditDocumentViewModel2
@@ -91,6 +92,7 @@ namespace DMP.ViewModel
         public List<DocumentRevisions> documentRevisions { get; set; }
         public List<DataCollection> dataCollection { get; set; }
         public string DataFlowChart { get; set; }
+        public string AdditionalInformation { get; set; }
         public List<Trainings> Trainings { get; set; }
 
         public bool EditMode { get; set; }

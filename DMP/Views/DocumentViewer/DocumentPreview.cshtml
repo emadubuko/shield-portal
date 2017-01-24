@@ -76,6 +76,7 @@
                         <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-black btn-sm btn-outline">
                             <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
                         </a>
+                        <a id="submitbtn" class="btn btn-black btn-sm btn-outline"><i class="icon-check"></i><span>Submit</span></a>
                         <a id="downloadbtn" class="btn btn-black btn-sm btn-outline"><i class="icon-download"></i><span>Download</span></a>
                         <a id="approvebtn" class="btn btn-black btn-sm btn-outline"><i class="icon-info"></i><span>Approval</span></a>
                         <a href="~/Home/tracker?documnentId=@Model.documentID" class="btn btn-black btn-sm btn-outline">
@@ -285,6 +286,7 @@
                                 <div class="panel panel-success" id="Data">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data</h4>
+                                        <div style="float: right;"><span id="Datacomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -304,17 +306,7 @@
                                                     </thead>
                                                     <tbody id="datacollectiondataTable"> </tbody>
                                                 </table>
-                                            </div>
-                                            @*@foreach (var field in typeof(DAL.Entities.DataCollection).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                            {
-                                            <div class="form-group">
-                                                <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                <div>
-                                                    <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataCollection))</span>
-                                                    <a class="btn btn-default commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                            }*@
+                                            </div> 
                                         </div>
                                     </div>
                                 </div>
@@ -336,7 +328,15 @@
                                             <img id="DataFlowChart">
                                         </div>
                                     </div>
-                                    <div class="panel panel-success" id="RolesAndResponsiblities">
+                                    <div class="form-group">
+                                        <label>Additional Information</label>
+                                        <div>
+                                            <span id="AdditionalInformation" style="padding-left: 30px;">@Model.AdditionalInformation</span>
+                                            <a class="btn btn-default commentBox"> comment</a>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    @*<div class="panel panel-success" id="RolesAndResponsiblities">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Roles And Responsiblities</h4>
                                         </div>
@@ -354,12 +354,13 @@
                                             }
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>*@
                                     <!--roles and responsibilty-->
 
-                                    <div class="panel panel-success" id="Trainings">
+                                    <div class="panel panel-success">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Trainings</h4>
+                                            <div style="float: right;"><span id="Trainingscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                         </div>
                                         <div class="panel-body">
                                             <div class="form-horizontal">
@@ -378,18 +379,7 @@
                                                         <tbody id="trainingTable">
                                                         </tbody>
                                                     </table>
-                                                </div>
-
-                                                @*@foreach (var field in typeof(DAL.Entities.Trainings).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                            {
-                                                <div class="form-group">
-                                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                    <div>
-                                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.Trainings))</span>
-                                                        <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                            }*@
+                                                </div> 
                                             </div>
                                         </div>
                                     </div>
@@ -398,8 +388,7 @@
                             </div>
                         </div>
                         <!-- end of M&E page-->
-                        
-                        
+                                            
                         <div class="panel panel-success" id="QualityAssurance">
                             <h4 class="Adjusted-header">
                                 <b>Quality Assurance</b>
@@ -408,6 +397,7 @@
                                 <div class="panel panel-success" id="DataVerification">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Verification</h4>
+                                        <div style="float: right;"><span id="DataVerificationscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -442,6 +432,7 @@
                                 <div class="panel panel-success" id="ReportData">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Report </h4>
+                                        <div style="float: right;"><span id="Reportscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="table-responsive">
@@ -465,7 +456,6 @@
                                 <!--End of Report Data section -->
                             </div>
                         </div>
-
 
 
                         <div class="panel panel-success" id="DataStorage">
@@ -695,8 +685,8 @@
                 <h4 class="modal-title">Please confirm action</h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button id="approveConfirm" type="button" class="btn btn-success">Approve</button>
+                <button type="button" id="referback" class="btn btn-default"><i class="icon-reply"></i>Refer back</button>
+                <button id="approveConfirm" type="button" class="btn btn-success"><i class="icon-check"></i>Approve</button>
             </div>
         </div>
     </div>
@@ -718,6 +708,22 @@
     </div>
 </div>
 
+<div class="modal fade" id="submitconfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 400px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Please confirm action</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel</button>
+                <button type="button" id="submitbtnModal" class="btn btn-success"><i class="icon-check"></i>Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts
 {
@@ -748,16 +754,19 @@
 
 
 
-            if('@Model.status' == "Approved"){
+            if('@Model.status' != "PendingApproval"){
                 $("#approvebtn").hide();
+            }
+            if('@Model.status' == "PendingApproval"){
+                $("#submitbtn").hide();
             }
 
 
             $("#approvebtn").click(function (e, n) {
                 $('#ApprovalModal1').modal('show');
             });
-            $("#approveConfirm").click(function (e, n) {
 
+            $("#approveConfirm").click(function (e, n) {
                 $('#ApprovalModal1').modal('hide');
 
                 $.ajax({
@@ -781,6 +790,54 @@
                 return false;
             });
 
+            $("#referback").click(function (e, n) {
+                $('#ApprovalModal1').modal('hide');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/DocumentViewer/referback?documnentId=@Model.documentID",
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (response) {
+                    var $msg = $("<span><b>"+ response +"</b></span>");
+                    $("#approvedmsg").append($msg);
+                    $('#ApprovalMessage').modal('show');
+                    $("#approvebtn").hide();
+
+                }).error(function (xhr, status, err) {
+                    var $msg = $("<span><b>"+ err +"</b></span>");
+                    $("#approvedmsg").append($msg);
+                    $('#ApprovalMessage').modal('show');
+                    console.log(err);
+                });
+                return false;
+            });
+
+            $("#submitbtn").click(function (e, n) {
+                $('#submitconfirmModal').modal('show');
+            });
+
+            $("#submitbtnModal").click(function (e, n) {
+                $("#submitconfirmModal").modal('hide');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/DocumentViewer/submit?documnentId=@Model.documentID",
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (response) {
+                    var $msg = $("<span><b>"+ response +"</b></span>");
+                    $("#approvedmsg").append($msg);
+                    $('#ApprovalMessage').modal('show');
+                    $("#submitbtn").hide();
+                }).error(function (xhr, status, err) {
+                    var $msg = $("<span><b>"+ err +"</b></span>");
+                    $("#approvedmsg").append($msg);
+                    $('#ApprovalMessage').modal('show');
+                    console.log(err);
+                });
+                return false;
+            });
 
             var clickedTag;
             var comments =@Html.Raw(Json.Encode(Model.Comments));

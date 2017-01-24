@@ -63,8 +63,7 @@ namespace Test
                 Status = DMPStatus.New,
                 CreationDate = DateTime.Now,
                 TheDMP = dmp,
-                Version = 0,
-                TempVersion = 1
+                Version ="0.1", 
             };
 
             try

@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace DMP.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="sys_admin,shield_team")]
     public class OrganizationController : Controller
     {
         // GET: Organization

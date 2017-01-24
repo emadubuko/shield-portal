@@ -9,6 +9,7 @@ using iTextSharp.text.pdf;
 using System.IO;
 using DMP.Services;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 
 namespace DMP.Controllers
 {
@@ -54,6 +55,7 @@ namespace DMP.Controllers
 
             EditDocumentViewModel2 docVM = new EditDocumentViewModel2
             {
+                 AdditionalInformation = thepageDoc.MonitoringAndEvaluationSystems.AdditionalInformation,
                  documentRevisions = Doc.Document.DocumentRevisions,
                 versionAuthor = versionAuthor,
                 datacollectionProcesses = thepageDoc.DataCollectionProcesses,
@@ -117,11 +119,46 @@ namespace DMP.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeclineDocument(string documnentId = null)
+        public ActionResult ReferBack(string documnentId)
         {
             if ((documnentId == null))
             {
-                return RedirectToAction("CreateNewDMP", "Home");
+                return new HttpStatusCodeResult(400, "invalid document id");
+            }
+            Guid dGuid = new Guid(documnentId);
+            Doc = dmpDocumentDAO.Retrieve(dGuid);
+
+            if (Doc == null)
+            {
+                return new HttpStatusCodeResult(400, "Bad request");
+            }
+            if (Doc.Status != DMPStatus.PendingApproval)
+            {
+                return new HttpStatusCodeResult(400, "Document is not submitted yet");
+            }
+            try
+            {
+                Doc.ApprovedBy = null;
+                Doc.Status = DMPStatus.ReferredBack;
+                Doc.ApprovedDate = (DateTime)SqlDateTime.Null;
+
+                dmpDocumentDAO.Update(Doc);
+                dmpDocumentDAO.CommitChanges();
+                return Json("The document has been referred back");
+            }
+            catch (Exception ex)
+            {
+                dmpDocumentDAO.RollbackChanges();
+                return new HttpStatusCodeResult(400, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Submit(string documnentId)
+        {
+            if ((documnentId == null))
+            {
+                return new HttpStatusCodeResult(400, "invalid document id");
             }
             Guid dGuid = new Guid(documnentId);
             Doc = dmpDocumentDAO.Retrieve(dGuid);
@@ -132,13 +169,13 @@ namespace DMP.Controllers
             }
             try
             {
-                Doc.ApprovedBy = new Utils().GetloggedInProfile();
-                Doc.Status = DMPStatus.Rejected;
-                Doc.ApprovedDate = DateTime.Now;
+                Doc.ApprovedBy = null;
+                Doc.Status = DMPStatus.PendingApproval;
+                Doc.ApprovedDate = (DateTime)SqlDateTime.Null;
 
                 dmpDocumentDAO.Update(Doc);
                 dmpDocumentDAO.CommitChanges();
-                return Json(Doc.Status);
+                return Json("The document has been submitted");
             }
             catch (Exception ex)
             {
@@ -161,7 +198,10 @@ namespace DMP.Controllers
             {
                 return new HttpStatusCodeResult(400, "Bad request");
             }
-             
+            if (Doc.Status != DMPStatus.PendingApproval)
+            {
+                return new HttpStatusCodeResult(400, "Document is not submitted yet");
+            }
             Profile currentUser = new Utils().GetloggedInProfile();
               
             try

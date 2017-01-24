@@ -17,5 +17,29 @@ namespace DAL.DAO
 
             return result;
         }
+
+        public IList<DMP> SearchOrganizaionId(int orgId)
+        {
+            var session = BuildSession();
+            ICriteria criteria = session.CreateCriteria<DMP>()
+            .Add(Restrictions.Eq("Organization.Id", orgId))
+            .Add(Restrictions.IsNotNull("TheProject.Id"));
+
+            var result = criteria.List<DMP>();
+
+            return result;
+        }
+
+        public IList<DMP> RetrieveDMPSorted()
+        {
+            var session = BuildSession();
+            ICriteria criteria = session.CreateCriteria<DMP>() 
+            .Add(Restrictions.IsNotNull("TheProject.Id"))
+            .AddOrder(Order.Desc("DateCreated"));
+
+            var result = criteria.List<DMP>();
+
+            return result;
+        }
     }
 }

@@ -91,7 +91,7 @@ namespace DMP.Controllers
                         LastModifiedDate = string.Format("{0:dd-MMM-yyyy}", x.LastModifiedDate),
                         ReferralCount = x.ReferralCount,
                         Status = ((DMPStatus)x.Status).ToString(),
-                        Version = string.Format("{0}.{1}", x.Version, x.TempVersion),
+                        Version = x.Version,
                         PageNumber = x.PageNumber
                     })
                 );

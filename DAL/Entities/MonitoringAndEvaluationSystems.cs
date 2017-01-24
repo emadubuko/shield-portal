@@ -10,6 +10,7 @@ namespace DAL.Entities
     {
         //Data Flow Chart(Diagram)
         public virtual string DataFlowChart { get; set; }
+        public virtual string AdditionalInformation { get; set; }
 
         public virtual RolesAndResponsiblities RoleAndResponsibilities { get; set; }
 

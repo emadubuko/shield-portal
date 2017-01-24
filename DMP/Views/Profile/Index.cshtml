@@ -23,11 +23,13 @@
                 <div class="panel-heading clearfix">
 
                     <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
-                        <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-outline">
-                            <i class="icon-user-add"></i> Create New Profile
-                        </a>
-                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-
+                        @if (System.Web.HttpContext.Current.User.IsInRole("sys_admin"))
+                        {
+                            <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-outline">
+                                <i class="icon-user-add"></i> Create New Profile
+                            </a>
+                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">                           
+                        }
                         <a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a>
                     </div>
 
@@ -60,8 +62,8 @@
     </div>
 </div>
 @section Scripts
-{    
-    @Scripts.Render("~/bundles/dataTables") 
+{
+    @Scripts.Render("~/bundles/dataTables")
     <script>
         $("#dmpCreate").click(function (e, n) {
             $("#loadImg").show();

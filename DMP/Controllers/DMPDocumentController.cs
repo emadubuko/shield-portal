@@ -4,6 +4,7 @@ using DMP.Services;
 using DMP.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -142,7 +143,7 @@ namespace DMP.Controllers
                 {
                     new DocumentRevisions{
                         Version = new DAL.Entities.Version
-                        {                             
+                        {
                             Approval = new Approval(),
                             VersionAuthor = GenerateVersionAuthor(),
                             VersionMetadata = GenerateMetaData(),
@@ -154,6 +155,7 @@ namespace DMP.Controllers
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
                 {
                     DataFlowChart = doc.DataFlowChart,
+                    AdditionalInformation = doc.AdditionalInformation,
                     RoleAndResponsibilities = roleNresp,
                     Trainings = Trainings,
                 },
@@ -201,14 +203,13 @@ namespace DMP.Controllers
                 }
                 else
                 {
-                    return Json("project with the same name already exist", JsonRequestBehavior.AllowGet);
+                    return new HttpStatusCodeResult(400, "project with the same name already exist");
                 }
-
             }
             catch (Exception ex)
             {
                 projDAO.RollbackChanges();
-                throw ex;
+                return new HttpStatusCodeResult(400, ex.Message);
             }
         }
 
@@ -243,8 +244,8 @@ namespace DMP.Controllers
                 ProjDetails.Id = previousDoc.TheDMP.TheProject.Id;
                 projDAO.Update(ProjDetails);
             }
-                         
-            
+
+            var revisions = GenerateDocumentRevision(previousDoc);
             WizardPage page = new WizardPage
             {
                 ProjectProfile = new ProjectProfile
@@ -252,13 +253,14 @@ namespace DMP.Controllers
                     EthicalApproval = ethicsApproval,
                     ProjectDetails = ProjDetails,
                 },
-                DocumentRevisions = GenerateDocumentRevision(previousDoc),
+                DocumentRevisions = revisions,
                 Planning = new Planning { Summary = summary },
                 DataCollection = DataCollection,
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
                 {
-                     DataFlowChart = doc.DataFlowChart,
-                      RoleAndResponsibilities = roleNresp,
+                    DataFlowChart = doc.DataFlowChart,
+                    AdditionalInformation = doc.AdditionalInformation,
+                    RoleAndResponsibilities = roleNresp,
                     Trainings = Trainings,
                 },
                  Reports = new Report
@@ -291,14 +293,31 @@ namespace DMP.Controllers
 
             Guid currentDocumentID = previousDoc.Status == DMPStatus.Approved ? Guid.Empty : previousDoc.Id;
 
-            var theDoc = SaveDMPDocument(page, currentDocumentID); // previousDoc.TheDMP.Id);
-            projDAO.CommitChanges();
+            VersionMetadata currentMetadata = null;
+            if(revisions.LastOrDefault() !=null && revisions.LastOrDefault().Version != null)
+            {
+                currentMetadata = revisions.LastOrDefault().Version.VersionMetadata;
+            }
 
-            var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
-            return Json(data, JsonRequestBehavior.AllowGet); 
+
+            var theDoc = SaveDMPDocument(page, currentDocumentID, currentMetadata); // previousDoc.TheDMP.Id);
+
+            try
+            {
+                projDAO.CommitChanges();
+
+                var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                projDAO.RollbackChanges();
+                return new HttpStatusCodeResult(400, ex.Message);
+            }
+            
         }
 
-        public DMPDocument SaveDMPDocument(WizardPage documentPages, Guid documentId) // int dmpId)
+        public DMPDocument SaveDMPDocument(WizardPage documentPages, Guid documentId, VersionMetadata metadata =null) // int dmpId)
         {
             DMPDocument Doc = dmpDocDAO.Retrieve(documentId); // dmpDocDAO.SearchMostRecentByDMP(dmpId);
             var currentUser = new Utils().GetloggedInProfile();
@@ -307,24 +326,31 @@ namespace DMP.Controllers
                 Doc = new DMPDocument
                 {
                     CreationDate = DateTime.Now,
-                    Initiator = currentUser,  
+                    Initiator = currentUser,
                     InitiatorUsername = currentUser.Username,
                     LastModifiedDate = DateTime.Now,
                     Status = DMPStatus.New,
-                    Version = 0,
-                    TempVersion = 1,
+                    Version = "0.1",
                     TheDMP = MyDMP,
                     ReferralCount = 0,
                     PageNumber = 0,
                     Document = documentPages,
                     ApprovedBy = null,
+                    ApprovedDate = (DateTime)SqlDateTime.Null
                 };
                 dmpDocDAO.Save(Doc);
             }
             else
             {
+                if(DateTime.MinValue >= Doc.CreationDate)
+                {
+                    Doc.CreationDate = DateTime.Now;
+                }
+
+                Doc.ApprovedDate = (DateTime)SqlDateTime.Null;
                 Doc.LastModifiedDate = DateTime.Now;
                 Doc.Document = documentPages;
+                Doc.Version = metadata != null ? metadata.VersionNumber : "0.1";
                 dmpDocDAO.Update(Doc);
             }
             return Doc;
@@ -381,7 +407,7 @@ namespace DMP.Controllers
         {
             string mainVersion = "0";
             int subVersion = 1;
-            if (previous != null)
+            if (previous != null && !string.IsNullOrEmpty(previous.VersionNumber))
             {
                 var t = previous.VersionNumber.Split('.');
                 mainVersion = t[0];

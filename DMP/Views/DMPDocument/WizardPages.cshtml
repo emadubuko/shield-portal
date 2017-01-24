@@ -22,9 +22,7 @@
     </style>
     <script src="~/Scripts/Ultilities.js"></script>
     <script type="text/javascript">
-        //$(function () {
-        //    $("[rel='tooltip']").tooltip();
-        //});
+        
 
         function EnableDisableEthicalApproval(e) {
             if (e.value == "Yes") {
@@ -34,6 +32,7 @@
                 $("#EthicalApprovalDiv").hide();
             }
         }
+         
 
         function imageSelected(e) {
             imagePreview(e, $('#FlowChartimageURL'));
@@ -99,13 +98,14 @@
                                 <li><a href="#DataStorage" data-toggle="tab"><span>8</span>Data Storage</a></li>
                                 <li><a href="#IntellectualPropertyCopyrightAndOwnership" data-toggle="tab"><span>9</span>Copyright</a></li>
                                 <li><a href="#DataAccessAndSharing" data-toggle="tab"><span>10</span>Data Access</a></li>
-                                <li><a href="#DataDocumentationManagementAndEntry" data-toggle="tab"><span>11</span>Documentation</a></li>
+                                <li><a href="#DataDocumentationManagementAndEntry" data-toggle="tab"><span>11</span>Data Entry</a></li>
                                 <li><a href="#PostProjectDataRetentionSharingAndDestruction" data-toggle="tab"><span>12</span>Data Retention</a></li>
                             </ul>
                         </div>
                         <hr />
 
                         <div class="tab-content">
+                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
 
                             <div class="tab-pane active" id="ProjectProfile">
                                 <h4 class="panel-title" style="margin-left: 90px;">
@@ -288,7 +288,6 @@
                             </div>
                             <!-- end of Project profile page-->
 
-
                             <div class="tab-pane" id="Planning">
                                 <h4 class="panel-title" style="margin-left: 70px;">
                                     <b>Planning</b>
@@ -366,21 +365,6 @@
                                                         @foreach (var item in Model.reportDataType)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataCollection != null)
-                                                {
-                                                    if (@item == Model.dataCollection.DataType)
-                                                    {
-                                                        <option value="@item" selected>@item</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -393,21 +377,6 @@
                                                         @foreach (var item in Model.dataSourcesTypes)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataCollection != null)
-                                                {
-                                                    if (@item == Model.dataCollection.DataSources)
-                                                    {
-                                                        <option value="@item" selected>@item</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item"> @item </option>
-                                                }*@
                                                         }
                                                     </select>
                                                 </div>
@@ -420,31 +389,9 @@
                                                         @foreach (var item in Model.reportingTools)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataCollection != null)
-                                                {
-                                                    if (@item == Model.dataCollection.DataCollectionAndReportingTools)
-                                                    {
-                                                        <option value="@item" selected>@item</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item">@item </option>
-                                                }*@
                                                         }
                                                     </select>
 
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="DataCollectionTimelines">Data Collection Timelines</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What are the timelines attached to data collection. Describe using dates"><i class="icon-help"></i></button>
-                                                <div class="col-sm-8">
-                                                    <input type="text" placeholder="What are the timelines attached to data collection. Describe using dates" id="DataCollectionTimelines" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -455,26 +402,20 @@
                                                         @foreach (var item in Model.dataFrequency)
                                                         {
                                                             <option value="@item">@item</option>
-
-                                                            @*if (Model.dataCollection != null)
-                                                {
-                                                    if (@item == Model.dataCollection.FrequencyOfDataCollection)
-                                                    {
-                                                        <option value="@item" selected>@item</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="DataCollectionTimelines">Milestones</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Select the deadline dates attached to this data collection activity."><i class="icon-help"></i></button>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Select the deadline dates attached to this data collection activity" id="DataCollectionTimelines" class="form-control">
+                                                    <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
+                                                </div>
+                                            </div>
+                                            
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DurationOfDataCollection">Duration of data collection</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration assigned for data collection? numbers only"><i class="icon-help"></i></button>
@@ -530,14 +471,23 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataFlowChart">Data Flow Chart</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe the levels of data flow using a Flow Chart diagram  e.g Facility--LGA--State--National"><i class="icon-help"></i></button>
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-7">
                                                     <input type="file" onchange="imageSelected(this)" accept="image/*" id="DataFlowChart" class="form-control">
                                                     <img id="FlowChartimageURL" height="100">
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="AdditionalInformation">Additional Information</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide an additional information/explanation regarding the flow chart uploaded "><i class="icon-help"></i></button>
+                                                <div class="col-sm-7">
+                                                    <textarea type="text" rows="3" id="AdditionalInformation" placeholder="Provide an additional information/explanation regarding the flow chart uploaded" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        <div class="panel panel-default" id="RoleAndResponsibilities">
+                                        @*<div class="panel panel-default" id="RoleAndResponsibilities">
                                             <div class="panel-heading clearfix">
                                                 <h4 class="panel-title">Role And Responsibilities</h4>
                                             </div>
@@ -589,7 +539,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>*@
                                         <!--End of RoleNResponsibilities section-->
 
                                         <div class="panel panel-default" id="Trainings">
@@ -598,45 +548,11 @@
                                             </div>
                                             <div class="panel-body">
                                                 <div class="form-horizontal" id="trainingForm">
-                                                    @* <div class="form-group">
-                                           <label class="col-sm-3 control-label" for="DataHandlingAndEntry">Data handling & entry</label>
-                                            <div class="col-sm-8">
-                                                <select id="DataHandlingAndEntry" class="form-control">
-                                                    <option value="" selected disabled>Do you have trained personnels for data handling and entry? </option>
-                                                    @foreach (var item in Model.YesNoOption)
-                                                    {
-                                                        if (Model.Trainings != null)
-                                                        {
-                                                            if (@item == Model.Trainings.DataHandlingAndEntry)
-                                                            {
-                                                                <option value="@item" selected>@item</option>
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            <option value="@item">@item</option>
-                                                        }
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>*@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="NameOfTraining">Name of Trainings</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="What is this training for"><i class="icon-help"></i></button>
                                                         <div class="col-sm-8">
                                                             <input type="text" placeholder="What is this training for" id="NameOfTraining" value="" class="form-control">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="TimelinesForTrainings">Timelines for Trainings</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state timelines for this training using dates"><i class="icon-help"></i></button>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" placeholder="Clearly state timelines for trainings using dates" id="TimelinesForTrainings" value="" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -652,8 +568,17 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label class="col-sm-3 control-label" for="TimelinesForTrainings">Training Milestones</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="select the applicable deadline dates for this trainings"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" placeholder="select applicable deadline dates for this trainings" id="TimelinesForTrainings" value="" class="form-control">
+                                                            <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="DurationOfTrainings">Duration of trainings</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration assigned for trainings? numbers only"><i class="icon-help"></i></button>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration assigned for this trainings? numbers only"><i class="icon-help"></i></button>
                                                         <div class="col-sm-2">
                                                             <select id="trDurationdrpdwn" class="form-control">
                                                                 <option value="" disabled selected>Select</option>
@@ -695,7 +620,6 @@
                             </div>
                             <!-- end of Data M&E page-->
 
-
                             <div class="tab-pane" id="QualityAssurance">
                                 <h4 class="panel-title" style="margin-left: 70px;">
                                     <b>Quality Assurance</b>
@@ -703,42 +627,27 @@
                                 <hr />
                                 <div class="panel panel-default" id="DataVerification">
                                     <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Data Verification</h4>
+                                        <h4 class="panel-title">Data Validation</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal" id="dataVerificationForm">
                                             <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="DataVerificationApproach">Data verification approach</label>
+                                                <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
                                                 <div class="col-sm-6">
                                                     <select id="DataVerificationApproach" class="form-control">
-                                                        <option value="" disabled selected>What methodology is employed for data verification ? </option>
+                                                        <option value="" disabled selected>What methodology is employed for data validation ? </option>
                                                         @foreach (var item in Model.DataVerificationApproach)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataVerification != null)
-                                                {
-                                                    if (@item == Model.dataVerification.DataVerificationApproach)
-                                                    {
-                                                        <option value="@item" selected>@item</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="TypesOfDataVerification">Types of Data Verification</label>
+                                                <label class="col-sm-4 control-label" for="TypesOfDataVerification">Types of Data validation</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Soft - checks &#013; Cross - checks of data sources &#013; Document reviews &#013; Trace verification &#013; Rountine Data Quality Assessment &#013; Data Quality Audit &#013 Others"><i class="icon-help"></i></button>
                                                 <div class="col-sm-6">
-                                                    <input type="text" placeholder="What forms and tools are used for verifying data sources" id="TypesOfDataVerification" value="" class="form-control">
+                                                    <input type="text" placeholder="What forms and tools are used for validating data sources" id="TypesOfDataVerification" value="" class="form-control">
                                                     @*<select id="TypesOfDataVerification" class="form-control">
                                             <option value="" disabled selected>Select Types of Data Verification</option>
                                             @foreach (var item in Model.typesOfDataVerification)
@@ -763,42 +672,29 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="TimelinesForDataVerification">Timelines for data verification</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What are the timelines for these data verification? Clearly describe using dates"><i class="icon-help"></i></button>
-                                                <div class="col-sm-6">
-                                                    <input type="text" placeholder="What are the timelines for these data verification? Clearly describe using dates" id="TimelinesForDataVerification" value="" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="FrequencyOfDataVerification">Frequency of data verification</label>
+                                                <label class="col-sm-4 control-label" for="FrequencyOfDataVerification">Frequency of data validation</label>
                                                 <div class="col-sm-6">
                                                     <select id="FrequencyOfDataVerification" class="form-control">
-                                                        <option value="" disabled selected>How frequent will data verification be carried out?</option>
+                                                        <option value="" disabled selected>How frequent will data validation be carried out?</option>
                                                         @foreach (var item in Model.dataFrequency)
                                                         {
                                                             <option value="@item">@item</option>
-                                                            @*if (Model.dataVerification != null)
-                                                {
-                                                    if (@item == Model.dataVerification.FrequencyOfDataVerification)
-                                                    {
-                                                        <option value="@item" selected>@item</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }*@
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="DurationOfDataVerificaion">Duration of data verificaion</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration of time assigned for data verification? numbers only"><i class="icon-help"></i></button>
+                                                <label class="col-sm-4 control-label" for="TimelinesForDataVerification">Milestones</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Select the applicable timelines for this data validation"><i class="icon-help"></i></button>
+                                                <div class="col-sm-6">
+                                                    <input type="text" placeholder="What are the timelines for this data validation" id="TimelinesForDataVerification" value="" class="form-control">
+                                                    <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="DurationOfDataVerificaion">Duration</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration of this data validation excercise? numbers only"><i class="icon-help"></i></button>
                                                 <div class="col-sm-2">
                                                     <select id="dvDurationdrpdwn" class="form-control">
                                                         <option value="" disabled selected>Select</option>
@@ -869,13 +765,6 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="TimelinesForReporting">Timelines for reporting</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state the timelines for these reporting"><i class="icon-help"></i></button>
-                                                <div class="col-sm-8">
-                                                    <input type="text" placeholder="Clearly state the timelines for these reporting" id="TimelinesForReporting" value="" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="FrequencyOfReporting">Frequency of reporting</label>
                                                 <div class="col-sm-8">
                                                     <select id="FrequencyOfReporting" class="form-control">
@@ -887,6 +776,15 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="TimelinesForReporting">Milestone</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state the timelines for this reporting excercise"><i class="icon-help"></i></button>
+                                                <div class="col-sm-8">
+                                                    <input type="text" placeholder="Clearly state the timelines for this reporting excercise" id="TimelinesForReporting" value="" class="form-control">
+                                                    <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
+                                                </div>
+                                            </div>
+                                            
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DurationOfReporting">Duration of reporting</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="state the duration of time assigned for reporting? numbers only"><i class="icon-help"></i></button>
@@ -1473,6 +1371,7 @@
                 BindPureBase64StringToControl($('#FlowChartimageURL'), base64Image)
             }
 
+            //used for page load
             var EthicalApprovalForTheProject = $("#EthicalApprovalForTheProject")[0].value
             if (EthicalApprovalForTheProject == "No") {
                 $("#EthicalApprovalDiv").hide()
@@ -1489,6 +1388,7 @@
                         return false;
                     }
             });
+
             $("input").attr("autocomplete", "off");
 
             var updateUrl;
@@ -1502,6 +1402,8 @@
             }
 
             function SaveAndContinue(e) {
+                $("#loadImg").show();
+
                 var formdata = $('#rootwizard-2')[0].elements;
                 var viewModel = {};
                 $.each(formdata, function (name, formElements) {
@@ -1524,6 +1426,8 @@
                     dataType: 'json',
                     cache: false,
                 }).done(function (result) {
+                    
+
                     if (result != undefined && result.documentId != undefined) {
                         documentID = result.documentId;
                         updateUrl = '@Url.Action("EditDocumentNext", "DMPDocument")'
@@ -1535,14 +1439,15 @@
                     if (nxtcss === "next disabled") {
                         $("#finish").removeClass("removeVisibility");
                     }
-
+                    $("#loadImg").hide();
                 }).error(function (xhr, status, err) {
+                    $("#loadImg").hide();
+                    alert(err);
                     console.log(err);
                 });
             }
 
-        $("#SaveNext,#finishbtn").click(function (e, n) {
-                updateUrl
+        $("#SaveNext,#finishbtn").click(function (e, n) {                
                 SaveAndContinue(e);
         });
 
