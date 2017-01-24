@@ -752,11 +752,12 @@
                 return false;
             });
 
+          var isIpUser =  '@HttpContext.Current.User.IsInRole("ip")' == 'True' ? true : false;
 
-
-            if('@Model.status' != "PendingApproval"){
+            if('@Model.status' != "PendingApproval" || isIpUser){
                 $("#approvebtn").hide();
             }
+
             if('@Model.status' == "PendingApproval"){
                 $("#submitbtn").hide();
             }
@@ -765,6 +766,7 @@
             $("#approvebtn").click(function (e, n) {
                 $('#ApprovalModal1').modal('show');
             });
+
 
             $("#approveConfirm").click(function (e, n) {
                 $('#ApprovalModal1').modal('hide');
