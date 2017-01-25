@@ -764,7 +764,7 @@ namespace DMP.Services
 
             foreach (var info in infos)
             {
-                pp = new Paragraph(new Chunk(DAL.Utilities.Utilities.PasCaseConversion(info.Name), font8));
+                pp = new Paragraph(new Chunk(CommonUtil.Utilities.Utilities.PasCaseConversion(info.Name), font8));
                 pp.IndentationLeft = 20;
                 pp.PaddingTop = 10f;
                 pp.SpacingAfter = 5f;

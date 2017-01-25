@@ -96,7 +96,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href=@Url.Action("index","Home")>
+                        <a href=@Url.Action("index", "BiWeeklyReport")>
                             <i class="icon-clock">
                             </i><span class="title">Bi-Weekly Reports</span>
                         </a>
@@ -189,9 +189,6 @@
     @RenderSection("scripts", required: false)
     <script>
         $(document).ready(function () {
-
-           // var profile = @Html.Raw(Json.Encode(HttpContext.Current.Session[".:LoggedInProfile:."]));
-            //$('#user').html(profile.FullName);
 
             $("#userdetail").click(function(e){
                 window.document.location = '/Profile/ProfileDetail?profileId=@DMP.Services.Utils.LoggedinProfileID'; //profile.Id;

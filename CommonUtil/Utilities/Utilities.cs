@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace DAL.Utilities
+namespace CommonUtil.Utilities
 {
     public class Utilities
     {

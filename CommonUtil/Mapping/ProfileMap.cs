@@ -1,7 +1,7 @@
-﻿using DAL.Entities;
+﻿using CommonUtil.Entities;
 using FluentNHibernate.Mapping;
 
-namespace DAL.Mapping
+namespace CommonUtil.Mapping
 {
     public class ProfileMap : ClassMap<Profile>
     {

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace DAL.Entities
+namespace CommonUtil.Entities
 {
-    public class Profile : Common
+    public class Profile
     {
+        [XmlIgnore]
+        public virtual Guid Id { get; set; }
+
         public virtual string Title { get; set; }
         public virtual string Username { get; set; }
         public virtual string FullName
@@ -46,9 +44,7 @@ namespace DAL.Entities
 
         [XmlIgnore]
         public virtual ProfileStatus Status { get; set; }
-
-        [XmlIgnore]
-        public virtual IList<DMPDocument> DMPDocuments { get; set; }
+         
     }
 
     public enum ProfileStatus

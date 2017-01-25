@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using CommonUtil.Entities;
+using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace DMP.ViewModel
                 _organizationType = new List<string>();
                 foreach (var name in Enum.GetNames(typeof(OrganizationType)))
                 {
-                    _organizationType.Add(DAL.Utilities.Utilities.PasCaseConversion(name));
+                    _organizationType.Add(CommonUtil.Utilities.Utilities.PasCaseConversion(name));
                 }
                 return _organizationType;
             }

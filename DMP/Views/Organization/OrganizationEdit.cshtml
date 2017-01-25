@@ -1,4 +1,4 @@
-﻿@model  DAL.Entities.Organizations
+﻿@model  CommonUtil.Entities.Organizations
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
@@ -25,27 +25,27 @@
                     <div class="panel-body">
                         <form id="mainform" class="validate">
                             <div class="form-horizontal">
-                                @foreach (var field in typeof(DAL.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                @foreach (var field in typeof(CommonUtil.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                 {
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <label class="col-sm-3 control-label" for="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                         <div class="col-sm-9">
                                             @if (field.Name == "OrganizationType")
                                             {
                                                 <select id="@field.Name" class="form-control" required>
-                                                    @foreach (var orgType in Enum.GetValues(typeof(DAL.Entities.OrganizationType)))
+                                                    @foreach (var orgType in Enum.GetValues(typeof(CommonUtil.Entities.OrganizationType)))
                                                     {
                                                         if (Convert.ToString(orgType) == Convert.ToString(field.GetValue(Model)))
                                                         {
-                                                            <option value="@orgType" selected>@DAL.Utilities.Utilities.PasCaseConversion(orgType)</option>
+                                                            <option value="@orgType" selected>@CommonUtil.Utilities.Utilities.PasCaseConversion(orgType)</option>
                                                         }
-                                                        <option value="@orgType">@DAL.Utilities.Utilities.PasCaseConversion(orgType)</option>
+                                                        <option value="@orgType">@CommonUtil.Utilities.Utilities.PasCaseConversion(orgType)</option>
                                                     }
                                                 </select>
                                             }
                                             else if (field.PropertyType == typeof(byte[]))
                                             {
-                                                <input type="file" onchange="imagePreview()" id="@field.Name" accept="image/*" class="form-control">
+                                                <input type="file" onchange="imagePreview(this)" id="@field.Name" accept="image/*" class="form-control">
                                             }
                                             else
                                             {

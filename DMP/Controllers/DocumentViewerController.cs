@@ -10,6 +10,7 @@ using System.IO;
 using DMP.Services;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using CommonUtil.Entities;
 
 namespace DMP.Controllers
 {

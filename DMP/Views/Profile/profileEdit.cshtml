@@ -1,4 +1,4 @@
-﻿@model  DAL.Entities.Profile
+﻿@model  CommonUtil.Entities.Profile
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
@@ -25,18 +25,18 @@
                 <div class="panel-body">
                     <form id="mainform" class="validate">
                         <div class="form-horizontal">
-                            @foreach (var field in typeof(DAL.Entities.Profile).GetProperties().Where(x => x.CanWrite && !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                            @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties().Where(x => x.CanWrite && !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                             {
                                 if (field.Name == "Organization")
                                 {
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <label class="col-sm-3 control-label" for="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                         <div class="col-sm-8">
                                             @if (HttpContext.Current.User.IsInRole("sys_admin"))
                                             {
                                                 <select id="OrganizationId" class="form-control" required>
                                                     <option value="" disabled selected>select organization</option>
-                                                    @foreach (DAL.Entities.Organizations item in ViewBag.Organizations)
+                                                    @foreach (CommonUtil.Entities.Organizations item in ViewBag.Organizations)
                                                     {
                                                         if (Model.Organization != null && Model.Organization.Id == item.Id)
                                                         {
@@ -63,7 +63,7 @@
                                 else if (field.Name == "Username")
                                 {
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <label class="col-sm-3 control-label" for="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                         <div class="col-sm-8">
                                             <input type="text" disabled id="@field.Name" value="@field.GetValue(Model)" required title="required field" class="form-control">
                                         </div>
@@ -102,7 +102,7 @@
                                 else
                                 {
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <label class="col-sm-3 control-label" for="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                         <div class="col-sm-8">
                                             <input type="text" id="@field.Name" value="@field.GetValue(Model)" required title="required field" class="form-control">
                                         </div>

@@ -1,4 +1,6 @@
-﻿using DAL.DAO;
+﻿using CommonUtil.DAO;
+using CommonUtil.Entities;
+using DAL.DAO;
 using DAL.Entities;
 using DMP.ViewModel;
 using System;

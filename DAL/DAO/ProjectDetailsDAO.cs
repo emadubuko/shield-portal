@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using CommonUtil.DBSessionManager;
+using DAL.Entities;
 using NHibernate;
 using NHibernate.Criterion;
 using System;

@@ -6,11 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DAL.DAO
+namespace CommonUtil.DBSessionManager
 {
     public class BaseDAO<T, idT> where T : class
     {
@@ -143,7 +140,7 @@ namespace DAL.DAO
             }
         }
 
-        internal void DirectDBPost(DataTable dt, string tableName)
+        public void DirectDBPost(DataTable dt, string tableName)
         {
             ISessionFactory sessionFactory = BuildSession().SessionFactory;
 

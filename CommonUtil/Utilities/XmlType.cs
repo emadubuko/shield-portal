@@ -1,15 +1,9 @@
 ﻿using NHibernate.SqlTypes;
 using NHibernate.Type;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 
-namespace DAL.Utilities
+namespace CommonUtil.Utilities
 {
     [Serializable]
     public class XmlType<T> : MutableType

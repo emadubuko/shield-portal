@@ -22,7 +22,7 @@ namespace DMP.ViewModel
                     _fieldCollection = new Dictionary<string, object>();
                     foreach (var info in typeof(T).GetProperties().Where(x =>x.CanWrite && !Attribute.IsDefined(x, typeof(XmlIgnoreAttribute))).ToArray())
                     {
-                        _fieldCollection.Add(DAL.Utilities.Utilities.PasCaseConversion(info.Name), info.PropertyType.Name);
+                        _fieldCollection.Add(CommonUtil.Utilities.Utilities.PasCaseConversion(info.Name), info.PropertyType.Name);
                     }
                     return _fieldCollection;
                 }

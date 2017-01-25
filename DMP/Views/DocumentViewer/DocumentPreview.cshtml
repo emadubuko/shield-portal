@@ -472,9 +472,9 @@
                                             @foreach (var field in typeof(DAL.Entities.DigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                         {
                                                 <div class="form-group">
-                                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                                     <div>
-                                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.digital))</span>
+                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.digital))</span>
                                                         <a class="btn btn-default commentBox"> comment</a>
                                                     </div>
                                                 </div>
@@ -493,9 +493,9 @@
                                             @foreach (var field in typeof(DAL.Entities.NonDigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                         {
                                                 <div class="form-group">
-                                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                                     <div>
-                                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.nonDigital))</span>
+                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.nonDigital))</span>
                                                         <a class="btn btn-default commentBox"> comment</a>
                                                     </div>
                                                 </div>
@@ -518,9 +518,9 @@
                                     @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                     {
                                         <div class="form-group">
-                                            <label class="col-sm-4">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                            <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div class="col-sm-8">
-                                                <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.intelProp))</span>
+                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.intelProp))</span>
                                                 <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
@@ -540,9 +540,9 @@
                                     @foreach (var field in typeof(DAL.Entities.DataAccessAndSharing).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                     {
                                         <div class="form-group">
-                                            <label class="col-sm-4">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                            <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div class="col-sm-8">
-                                                <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataSharing))</span>
+                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataSharing))</span>
                                                 <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>
@@ -562,9 +562,9 @@
                                     @foreach (var field in typeof(DAL.Entities.DataDocumentationManagementAndEntry).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                     {
                                         <div class="form-group">
-                                            <label class="col-sm-4">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                            <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div class="col-sm-8">
-                                                <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataDocMgt))</span>
+                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataDocMgt))</span>
                                                 <a class="btn btn-default commentBox"> comment</a>
                                             </div>
                                         </div>

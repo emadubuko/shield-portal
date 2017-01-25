@@ -4,7 +4,8 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss") 
-<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<link href="~/Content/jquery-ui.css" rel="stylesheet" />
+@*<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">*@
 
     <style>
         .panel-default {
@@ -1329,8 +1330,13 @@
                             <ul class="pager wizard">
                                 <li class="previous"><a href="javascript:void(0)"><i class="icon-left-open"></i>Previous</a></li>
                                 <li id="nextbtn" class="next"><a id="SaveNext" href="javascript:void(0)">Save and Next<i class="icon-right-open"></i></a> </li>
-                                <li id="finish" style="float: right;" class="removeVisibility"><a id="finishbtn" href="javascript:void(0)">Finish and Preview<i class="icon-right-open"></i></a> </li>
-                            </ul>
+                                <li id="finish" style="float: right;" class="removeVisibility">
+                                    <a id="finishbtn" href="javascript:void(0)">
+                                        Finish and Preview<i class="icon-right-open"></i>
+                                    </a>
+                                    <img id="finishSpinner" style=" display:none" class="center" src="~/images/spinner.gif" width="36">
+                                </li>
+                            </ul>                            
                         </div>
                     </form>
                 </div>
@@ -1447,7 +1453,10 @@
                 });
             }
 
-        $("#SaveNext,#finishbtn").click(function (e, n) {                
+            $("#SaveNext,#finishbtn").click(function (e, n) { 
+                if (e.currentTarget.id === "finishbtn") {
+                    $("#finishSpinner").show();
+                }
                 SaveAndContinue(e);
         });
 

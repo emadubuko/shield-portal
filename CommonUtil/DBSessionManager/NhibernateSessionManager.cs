@@ -1,14 +1,14 @@
-﻿using DAL.Entities;
-using FluentNHibernate.Cfg;
+﻿using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate;
+using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using System;
-using System.Configuration;
+using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 
-namespace DAL.DAO
+namespace CommonUtil.DBSessionManager
 {
 
     public class NhibernateSessionManager
@@ -87,23 +87,44 @@ namespace DAL.DAO
 
         private void InitSessionFactory()
         {
-            string connectionString = "";
-            if (Convert.ToBoolean(ConfigurationManager.AppSettings["UseOnlineStorage"]))
+            Configuration cfg = new Configuration().Configure();
+            FluentConfiguration fluentCfg = Fluently.Configure(cfg);
+
+            NHibernate.Cfg.ConfigurationSchema.HibernateConfiguration hc 
+                = System.Configuration.ConfigurationManager.GetSection(NHibernate.Cfg.ConfigurationSchema.CfgXmlHelper.CfgSectionName) as NHibernate.Cfg.ConfigurationSchema.HibernateConfiguration;
+            if (hc == null) throw new HibernateConfigException("Cannot process Hibernate Section in config file");
+            if (hc.SessionFactory != null)
             {
-                connectionString = ConfigurationManager.ConnectionStrings["DMPOnlineDataStore"].ConnectionString;
-            }
-            else
-            {
-                connectionString = ConfigurationManager.ConnectionStrings["DMPLocalDataStore"].ConnectionString;
-            }
-            
-            sessionFactory = Fluently.Configure()
-           .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString))
-           .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DMPDocument>())
-           .ExposeConfiguration(cfg => new SchemaUpdate(cfg)
-               .Execute(false, true))
-               .BuildSessionFactory();
+                foreach (NHibernate.Cfg.ConfigurationSchema.MappingConfiguration mappingAssemblyCfg in hc.SessionFactory.Mappings)
+                {
+                    fluentCfg.Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load(mappingAssemblyCfg.Assembly)));
+                }
+            } 
+
+            Configuration conf = fluentCfg.BuildConfiguration(); 
+            new SchemaUpdate(conf).Execute(false, true);
+            sessionFactory = conf.BuildSessionFactory();
         }
+
+        //private void InitSessionFactory()
+        //{
+        //    string connectionString = "";
+        //    if (Convert.ToBoolean(ConfigurationManager.AppSettings["UseOnlineStorage"]))
+        //    {
+        //        connectionString = ConfigurationManager.ConnectionStrings["DMPOnlineDataStore"].ConnectionString;
+        //    }
+        //    else
+        //    {
+        //        connectionString = ConfigurationManager.ConnectionStrings["DMPLocalDataStore"].ConnectionString;
+        //    }
+            
+        //    sessionFactory = Fluently.Configure()
+        //   .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString))
+        //   .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DMPDocument>())
+        //   .ExposeConfiguration(cfg => new SchemaUpdate(cfg)
+        //       .Execute(false, true))
+        //       .BuildSessionFactory();
+        //}
 
         private bool IsInWebContext()
         {

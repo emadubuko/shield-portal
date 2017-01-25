@@ -1,4 +1,5 @@
-﻿using DAL.DAO;
+﻿using CommonUtil.DAO;
+using DAL.DAO;
 using DAL.Entities;
 using DMP.Services;
 using DMP.ViewModel;
@@ -187,8 +188,9 @@ namespace DMP.Controllers
 
             try
             {
-                bool saved = SaveProject(ProjDetails);
-                if (saved || MyDMP.TheProject != null)
+                // bool saved =  SaveProject(ProjDetails);
+                projDAO.Save(ProjDetails);
+                //if (saved || MyDMP.TheProject != null)
                 {
                     projDAO.CommitChanges();
 
@@ -201,10 +203,10 @@ namespace DMP.Controllers
 
                     return Json(data, JsonRequestBehavior.AllowGet); 
                 }
-                else
-                {
-                    return new HttpStatusCodeResult(400, "project with the same name already exist");
-                }
+                //else
+                //{
+                //    return new HttpStatusCodeResult(400, "project with the same name already exist");
+                //}
             }
             catch (Exception ex)
             {
@@ -237,7 +239,8 @@ namespace DMP.Controllers
             if (previousDoc.TheDMP.TheProject == null)
             {
                 ProjDetails = projDTF;
-                SaveProject(ProjDetails);
+                projDAO.Save(ProjDetails);
+                //SaveProject(ProjDetails);
             }
             else
             {

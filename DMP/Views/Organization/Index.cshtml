@@ -1,4 +1,4 @@
-﻿@model List<DAL.Entities.Organizations>
+﻿@model List<CommonUtil.Entities.Organizations>
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
@@ -47,7 +47,7 @@
                                     <tr onclick="window.document.location='/Organization/OrganizationDetail?OrgId=@item.Id'" style="cursor: pointer;">
                                         <td>@item.Id</td>
                                         <td>@item.ShortName</td>
-                                        <td>@DAL.Utilities.Utilities.PasCaseConversion(Enum.GetName(typeof(DAL.Entities.OrganizationType), item.OrganizationType))</td>
+                                        <td>@CommonUtil.Utilities.Utilities.PasCaseConversion(Enum.GetName(typeof(CommonUtil.Entities.OrganizationType), item.OrganizationType))</td>
                                     </tr>
                                 }
                             </tbody>

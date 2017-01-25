@@ -1,6 +1,8 @@
-﻿using DAL.DAO;
+﻿using CommonUtil.DAO;
+using CommonUtil.DBSessionManager;
+using CommonUtil.Entities;
+using DAL.DAO;
 using DAL.Entities;
-using DAL.Utilities;
 using System;
 using System.Collections.Generic;
 

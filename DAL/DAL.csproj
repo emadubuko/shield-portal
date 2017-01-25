@@ -38,16 +38,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+    <Reference Include="Castle.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
+    <Reference Include="FluentNHibernate, Version=1.4.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentNHibernate.1.4.0.0\lib\net35\FluentNHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <HintPath>..\packages\NHibernate.4.0.0.4000\lib\net40\NHibernate.dll</HintPath>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.3.4.1.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate.ByteCode.Castle, Version=3.3.3.4000, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.ByteCode.Castle.3.3.3.4000\lib\net35\NHibernate.ByteCode.Castle.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,12 +71,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAO\BaseDAO.cs" />
     <Compile Include="DAO\CommentDAO.cs" />
     <Compile Include="DAO\DMPDAO.cs" />
     <Compile Include="DAO\DMPDocumentDAO.cs" />
-    <Compile Include="DAO\OrganizationDAO.cs" />
-    <Compile Include="DAO\ProfileDAO.cs" />
     <Compile Include="DAO\ProjectDetailsDAO.cs" />
     <Compile Include="Entities\Approval.cs" />
     <Compile Include="Entities\Comment.cs" />
@@ -89,10 +94,8 @@
     <Compile Include="Entities\MonitoringAndEvaluationSystems.cs" />
     <Compile Include="Entities\NonDigitalData.cs" />
     <Compile Include="Entities\NonDigitalDataRetention.cs" />
-    <Compile Include="Entities\Organizations.cs" />
     <Compile Include="Entities\Planning.cs" />
     <Compile Include="Entities\PostProjectDataRetentionSharingAndDestruction.cs" />
-    <Compile Include="Entities\Profile.cs" />
     <Compile Include="Entities\ProjectDetails.cs" />
     <Compile Include="Entities\ProjectProfile.cs" />
     <Compile Include="Entities\QualityAssurance.cs" />
@@ -108,18 +111,17 @@
     <Compile Include="Mapping\CommentMap.cs" />
     <Compile Include="Mapping\DMPDocumentMap.cs" />
     <Compile Include="Mapping\DMPMap.cs" />
-    <Compile Include="Mapping\OrganizationsMap.cs" />
-    <Compile Include="Mapping\ProfileMap.cs" />
     <Compile Include="Mapping\ProjectDetailsMap.cs" />
     <Compile Include="Mapping\WizardPageMap.cs" />
-    <Compile Include="DAO\NhibernateSessionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ProfileManagement.cs" />
-    <Compile Include="Utilities\Utilities.cs" />
-    <Compile Include="Utilities\XmlType.cs" />
-    <Compile Include="Utilities\XMLUtil.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CommonUtil\CommonUtil.csproj">
+      <Project>{4D8392CE-F3A5-4822-B65D-CE0ED6798638}</Project>
+      <Name>CommonUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

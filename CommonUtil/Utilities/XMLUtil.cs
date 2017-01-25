@@ -1,13 +1,8 @@
-﻿using DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace DAL.Utilities
+namespace CommonUtil.Utilities
 {
     public class XMLUtil
     {

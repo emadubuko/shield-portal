@@ -16,6 +16,8 @@ using DAL.Entities;
 using System.Net;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
+using CommonUtil.Entities;
+using CommonUtil.DAO;
 
 namespace DMP.Controllers
 {
