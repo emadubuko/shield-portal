@@ -113,6 +113,7 @@ namespace DMP.Services
                 if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
                 {
                     profile = dao.GetProfileByUsername(user.Identity.Name);
+                    HttpContext.Current.Session[".:LoggedInProfile:."] = profile;
                     return profile.Id;
                 }
                 else

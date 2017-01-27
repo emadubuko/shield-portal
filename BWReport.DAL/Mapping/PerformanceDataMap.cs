@@ -7,16 +7,18 @@ namespace BWReport.DAL.Mapping
     {
         public PerformanceDataMap()
         {
+            Table("bwr_PerformanceData");
             Id(x => x.Id);
             Map(x => x.HTC_TST);
             Map(x => x.HTC_TST_POS);
             Map(x => x.Tx_NEW);
-            Map(x => x.ReportPeriodFrom);
-            Map(x => x.ReportPeriodTo);
+            Map(x => x.ReportPeriod);
+            Map(x => x.FY);
+            //Map(x => x.ReportPeriodFrom);
+            //Map(x => x.ReportPeriodTo);
             References(x => x.HealthFacility).Column("HealthFacilityId");
             References(x => x.ReportUpload).Column("ReportId");
-            References(x => x.FiscalYearTarget).Column("YearlyPerformanceTargetId");
-
+             
         }
     }
 }

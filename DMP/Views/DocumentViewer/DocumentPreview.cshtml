@@ -70,9 +70,9 @@
         <div class="col-lg-12">
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
-                    <h4 class="panel-title">Preview DMP Document</h4>
+                    <h4 class="panel-title"> DMP Document Preview</h4>
 
-                    <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
+                    <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -40%;">
                         <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-black btn-sm btn-outline">
                             <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
                         </a>
@@ -286,7 +286,7 @@
                                 <div class="panel panel-success" id="Data">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data</h4>
-                                        <div style="float: right;"><span id="Datacomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
+                                        <div style="margin-right: -40%;"><span id="Datacomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -296,9 +296,9 @@
                                                         <tr>
                                                             <th>Data Type</th>
                                                             <th>Data Sources</th>
-                                                            <th>Tools</th>
                                                             <th>Frequency</th>
-                                                            <th>Duration</th>
+                                                            <th>Duration(days)</th>
+                                                            <th>Tools</th>
                                                             <th>Timelines</th>
                                                             <th></th>
                                                             <th></th>
@@ -317,7 +317,7 @@
                         
                         <div class="panel panel-success" id="MonitoringAndEvaluation">
                             <h4 class="Adjusted-header">
-                                <b>Monitorig and Evaluation Systems</b>
+                                <b>Monitoring and Evaluation Systems</b>
                             </h4>
                             
                             <div class="panel-body">
@@ -329,7 +329,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Additional Information</label>
+                                        <label class="col-sm-3">Additional Information</label>
                                         <div>
                                             <span id="AdditionalInformation" style="padding-left: 30px;">@Model.AdditionalInformation</span>
                                             <a class="btn btn-default commentBox"> comment</a>
@@ -360,7 +360,7 @@
                                     <div class="panel panel-success">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Trainings</h4>
-                                            <div style="float: right;"><span id="Trainingscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
+                                            <div style="margin-right: -40%;"><span id="Trainingscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                         </div>
                                         <div class="panel-body">
                                             <div class="form-horizontal">
@@ -397,7 +397,7 @@
                                 <div class="panel panel-success" id="DataVerification">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Verification</h4>
-                                        <div style="float: right;"><span id="DataVerificationscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
+                                        <div style="margin-right: -40%;"><span id="DataVerificationscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -432,7 +432,7 @@
                                 <div class="panel panel-success" id="ReportData">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Report </h4>
-                                        <div style="float: right;"><span id="Reportscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
+                                        <div style="margin-right: -40%;"><span id="Reportscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="table-responsive">

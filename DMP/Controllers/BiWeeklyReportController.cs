@@ -5,42 +5,57 @@ using BWReport.DAL.Services;
 using System.Net;
 using System.IO;
 using DMP.ViewModel.BWR;
-using System.Collections.Generic;
+using CommonUtil.DAO;
+using System.Linq;
+using System.Web.Helpers;
 using BWReport.DAL.Entities;
+using System.Collections.Generic;
 
 namespace DMP.Controllers
 {
+    [Authorize]
     public class BiWeeklyReportController : Controller
     {
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
+            PerformanceDataDao pDao = new PerformanceDataDao();
+             
+            var GroupedLGAAcheivement = pDao.GenerateLGALevelAchievementPerTarget(2017);
+
+            var positivityRates = pDao.ComputePositivityRateByFacilityType(2017);
 
             ReportViewModel reportList = new ReportViewModel
             {
-                Reports = new ReportUploadsDao().RetrieveAll()
+                LGAReports = GroupedLGAAcheivement,
+                CommunityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.CommunityBasedOrganization),
+                FacilityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.HealthFacilty),
+                ImplementingPartner = new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList()
             };
 
             return View(reportList);
         }
 
         [HttpPost]
-        public ActionResult Upload(DateTime reportingPeriodFrom, DateTime reportingPeriodTo)
+        public ActionResult Upload(string reportingPeriod, int Year, string ImplementingPartner)
         {
             var files = Request.Files;
-            if(files == null  || files.Count == 0)
+            if (files == null || files.Count == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
             }
             string fileName = files[0].FileName;
             string fullfilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Uploads/_" + fileName);
-             
+
             Stream fileContent = files[0].InputStream;
-            string loggedInUser = "Admin";
+            string loggedInUser = Services.Utils.LoggedinProfileName;
+
+            int startColumnIndex = new ReportViewModel().IndexPeriods[reportingPeriod];
+
             try
             {
-                bool result = new ReportLoader().ExtractReport(reportingPeriodFrom, reportingPeriodTo, fullfilename, fileName, fileContent, loggedInUser);
-                return new HttpStatusCodeResult(HttpStatusCode.OK); // Ok();
+                bool result = new ReportLoader().ExtractReport(reportingPeriod, Year, startColumnIndex, ImplementingPartner, fileContent, loggedInUser);
+                return Json("Upload succesful", JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -48,39 +63,50 @@ namespace DMP.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<GoogleLocation> GetLocationAsync(GPSDataModel location)
-        //{
-        //    string key = "AIzaSyBYzNzHAY8dZ0mrPeWEss7feDZ6hHdRa4I";
-        //    HttpClient http = new HttpClient();
-        //    string address = "";
+        public ActionResult ManageYearlyPerformanceTarget()
+        {
+            YearlyPerfomanceTargetViewModel vM = new YearlyPerfomanceTargetViewModel
+            {
+                Facilities = new HealthFacilityDAO().RetrieveAll(),
+                Targets = new YearlyPerformanceTargetDAO().RetrieveAll(),
+            };
+            return View(vM);
+        }
 
-        //    if (location != null)
-        //    {
-        //        address = location.location;
-        //        if (!location.location.ToLower().EndsWith(" nig"))
-        //        {
-        //            address = location.location + "nigeria";
-        //        }
-        //        if (!location.location.ToLower().Contains("nigeria"))
-        //        {
-        //            address = location.location + "nigeria";
-        //        }
-        //    }
-        //    var response = await http.GetAsync("https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + location.location + "&key=" + key);
+        [HttpPost]
+        public ActionResult CreateNewPerformanceTarget(YearlyPerformanceTarget Target)
+        {
+            YearlyPerformanceTargetDAO dao = new YearlyPerformanceTargetDAO();
+            if (dao.GetTargetByYear(Target.FiscalYear, Target.HealthFaciltyId) == null)
+            {
+                Target.HealthFacilty = new HealthFacilityDAO().Retrieve(Target.HealthFaciltyId);
+                dao.Save(Target);
+                dao.CommitChanges();
 
-        //    string result = response.Content.ReadAsStringAsync().Result;
-        //    if (result.Contains(")"))
-        //    {
-        //        string[] split = result.Split('(', ')');
-        //        if (split.Count() > 1)
-        //            result = split[1];
-        //    }
-        //    var responseResult = Newtonsoft.Json.JsonConvert.DeserializeObject<GoogleAPIResponse>(result);
-        //    return responseResult.status.ToUpper() == "OK" ? responseResult.results[0].geometry.location : null;
-        //}
+                return Json("Saved Succesfully", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Conflict, "Target is alreadt set for the facility for the selected year");
+            }
+        }
 
+        public ActionResult UploadNewPerformanceTarget(int fiscalyear)
+        {
+            string wrongEntries = "";
+            YearlyPerformanceTargetDAO dao = new YearlyPerformanceTargetDAO();
+            var files = Request.Files;
+            if (files == null || files.Count == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
+            }
 
-
+            Stream fileContent = files[0].InputStream;
+            bool saved = dao.SaveBatchFromCSV(fileContent, fiscalyear, out wrongEntries);
+            if (saved)
+                return Json("Upload Succesful");
+            else
+                return new HttpStatusCodeResult(HttpStatusCode.Conflict, wrongEntries);
+        }
     }
 }

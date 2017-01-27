@@ -15,13 +15,9 @@ namespace CommonUtil.Entities
         public virtual string WebSite { get; set; }
         public virtual string Fax { get; set; }
 
-        public virtual OrganizationType OrganizationType { get; set; }
+       // public virtual OrganizationType OrganizationType { get; set; }
 
     }
 
-    public enum OrganizationType
-    {
-        ImplemetingPartner, HealthFacilty, CommunityBasedOrganization,StandAloneLab, 
-        StateMinistryOfHealth, FederalMinistryOfHealth
-    }
+    
 }

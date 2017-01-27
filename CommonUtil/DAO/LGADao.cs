@@ -6,9 +6,9 @@ using System;
 
 namespace CommonUtil.DAO
 {
-    public class LGADao : BaseDAO<LGA, long>
+    public class LGADao : BaseDAO<LGA, string>
     {
-        public LGA RetrievebyId(string name)
+        public LGA Retrievebyname(string name)
         {
             LGA lga = null;
             ISession session = BuildSession();

@@ -1,0 +1,301 @@
+﻿@model DMP.ViewModel.BWR.YearlyPerfomanceTargetViewModel
+
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+
+    <style>
+        .form-control {
+            border-color: #29b6f6;
+        }
+
+        form {
+            color: #000;
+        }
+    </style>
+
+}
+
+<div class="row">
+    <div class="col-sm-offset-7 col-xs-offset-4">
+        <a class="btn btn-info" id="uploadbtn" style="margin-top: 10px;">
+            <i class="icon-upload"></i> &nbsp;<span>Upload New Target</span>
+        </a>
+        <a class="btn btn-info" id="creatnew" style="margin-top: 10px;">
+            <i class="icon-list-add"></i> &nbsp;<span>Set Facility Target</span>
+        </a>
+    </div>
+</div>
+
+<div id="page-wrapper" class="main-content">
+
+    <div class="panel panel-info">
+        <div class="panel-heading clearfix">
+            Yearly  Performance Target
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" style="overflow-x: initial;">
+                <table style="width:100%" class="table table-striped table-bordered table-hover" id="dataTables">
+                    <thead>
+                        <tr>
+                            <th>FY</th>
+                            <th>Facilty</th>
+                            <th>HTC_TST </th>
+                            <th>HTC_TST_pos</th>
+                            <th>Tx_NEW</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Targets)
+                        {
+                            <tr>
+                                <td>@item.FiscalYear</td>
+                                <td>@item.HealthFacilty.Name</td>
+                                <td>@item.HTC_TST</td>
+                                <td>@item.HTC_TST_POS</td>
+                                <td>@item.Tx_NEW</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="modal fade" id="createModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 45%;border-color: #29b6f6;" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #FFF;background-color: #29b6f6;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div style="padding-top: 15px; padding-left: 7px;">
+                <form id="createForm" class="form-horizontal" role="form">
+                    <h4 style="text-align: center">Set Performance Target</h4>
+
+                    @foreach (var field in Model.FieldCollection)
+                                {
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")"><b>@field.Key</b></label>
+                            <div class="col-sm-6">
+                                @if ((string)field.Value == "HealthFacility")
+                                        {
+                            <select id="HealthFaciltyId" class="form-control" required>
+                                <option value="" disabled selected>Select Facility</option>
+                                @foreach (var item in Model.Facilities)
+                                                {
+                                            <option value="@item.Id">@item.Name</option>
+                                                }
+                            </select>
+                                        }
+                                        else if (field.Key == "Fiscal year")
+                                        {
+                            <select id="FiscalYear" class="form-control" required>
+                                <option value="" disabled selected>Year</option>
+                                @foreach (var item in Model.Year)
+                                                {
+                                            <option value="@item">@item</option>
+                                                }
+                            </select>
+                                        }
+                                        else
+                                        {
+                            <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ", "")" required title="@field.Key is required" class="form-control">
+                                        }
+                            </div>
+                        </div>
+                                }
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <a class="btn btn-default" data-dismiss="modal"> <i class="fa fa-close"></i> Cancel</a>
+                            &nbsp;&nbsp;
+                            <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
+                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="uploadModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 45%;border-color: #29b6f6;" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #FFF;background-color: #29b6f6;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" style="text-align: center;">Upload</h4>
+            </div>
+            <div style="padding-top: 15px; padding-left: 7px;">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Period:</label>
+                        <div class="col-sm-3">
+                            <select id="ReportingYear" class="form-control" required>
+                                <option value="" disabled selected>Year</option>
+                                @foreach (var item in Model.Year)
+                                    {
+                                    <option value="@item">@item</option>
+                                    }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label"> Upload:</label>
+                        <div class="col-md-7">
+                            <input type="file" class="form-control" id="fileUpload" placeholder="Upload CSV file" />
+                        </div>
+                    </div>
+                </form>
+                <hr />
+                <label id="error" class="text-danger" style="display:none"></label>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-2"> </div>
+                <div class="col-sm-7">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel</button>
+                    <button id="upload" type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> &nbsp; Upload</button>
+                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    @Scripts.Render("~/bundles/dataTables")
+
+    <script>
+        $(document).ready(function () {
+
+            $(".page-container").attr('class', 'page-container sidebar-collapsed');
+
+            $('#dataTables').DataTable({
+                responsive: true
+            });
+
+            $("#creatnew").click(function (e) {
+                $("#createModal").draggable({
+                    handle: ".modal-header"
+                });
+                $('#createModal').modal('show');
+            });
+
+            $("#uploadbtn").click(function (e) {
+                $("#uploadModal").draggable({
+                    handle: ".modal-header"
+                });
+                $('#uploadModal').modal('show');
+            });
+
+            $("input").attr("autocomplete", "off");
+
+            $("#dmpSubmit").click(function (e, n) {
+
+                var form = $(e.currentTarget.form);
+                var validator = form.validate();
+                if (form.valid()) {
+                    var formdata = $('#createForm')[0].elements;
+                    var viewModel = {};
+
+                    $("#loadImg").show();
+                    $('dmpSubmit').disabled = true;
+
+                    $.each(formdata, function (name, formElements) {
+                        viewModel[formElements.id] = formElements.value;
+                    });
+
+
+                    var someUrl = '@Url.Action("CreateNewPerformanceTarget", "BiWeeklyReport")';
+                    $.ajax({
+                        type: "POST",
+                        url: someUrl,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(viewModel),
+                        cache: false,
+                    }).done(function (dmpId) {
+                        location.reload();
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                        $("#loadImg").hide();
+                        $('dmpSubmit').disabled = false;
+                    });
+
+                    return false;
+                }
+            });
+
+
+            $("#upload").click(function (e, n) {
+
+                $('#upload').disabled = true;
+                $("#loadImg").show();
+
+                var data = new FormData();
+
+                try {
+                    var file = $('form input[type=file]')[0].files[0];
+                    data.append('file', file);
+                    var ReportingYear = $("#ReportingYear")[0].value;
+                }
+                catch (e) {
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    $("#error").empty();
+                    $("#error").append("system error occurred. Please select reporting year")
+                    $("#error").show();
+                    return false;
+                }
+                if (ReportingYear == "") {
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    $("#error").empty();
+                    $("#error").append("Please select reporting year")
+                    $("#error").show();
+                    return false;
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '/BiWeeklyReport/UploadNewPerformanceTarget?fiscalyear=' + ReportingYear,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    cache: false,
+                }).done(function (result) {
+                    location.reload();
+                }).error(function (xhr, status, err) {
+                    console.log(err);
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    $("#error").empty();
+                    $("#error").append(err);
+                    $("#error").show();
+                });
+                return false;
+
+            });
+
+
+        });
+    </script>
+}

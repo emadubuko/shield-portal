@@ -1,0 +1,118 @@
+﻿@model  DMP.ViewModel.BWR.HealthFacilityViewModel
+ 
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    @Styles.Render("~/bundles/mysiteCss")
+
+    <script src="~/Scripts/Ultilities.js"></script>
+}
+
+<div class="main-content">
+    <div style="width: 80%;">
+        <div class="row">
+
+            <form id="mainform" class="form-horizontal" role="form">
+                <h4 style="text-align: center">Create New Facility</h4> 
+
+                            @foreach (var field in Model.FieldCollection)
+                            { 
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")"><b>@field.Key</b></label>
+                                    <div class="col-sm-6">                                        
+                                        @if ((string)field.Value == "String")
+                                        {
+                                            <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                                        }
+                                        else if ((string)field.Value == "OrganizationType")
+                                        {
+                                            <select id="@field.Key.Replace(" ","")" class="form-control" required>
+                                                <option value="" disabled selected>select facility type</option>
+                                                @foreach (var item in Model.OrganizationType)
+                                                {
+                                                    <option value="@item.Replace(" ","")">@item</option>
+                                                }
+                                            </select>
+                                        }
+                                        else if ((string)field.Value == "LGA")
+                                        {
+                                            <select id="lgacode" class="form-control" required>
+                                                <option value="" disabled selected>Select LGA</option>
+                                                @foreach (var item in Model.LGA)
+                                                {
+                                                    <option value="@item.lga_code">@item.DisplayName</option>
+                                                }
+                                            </select>
+                                        } 
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-4">
+                                    <a href='@Url.Action("index","HealthFacility")' class="btn btn-default">
+                                        <i class="fa fa-close"></i> Cancel
+                                    </a>
+                                    &nbsp;&nbsp;
+                                    <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
+                                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                                </div>
+                            </div> 
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    <script>
+        $(document).ready(function () {
+           
+            $("input").attr("autocomplete", "off");
+
+            $("#dmpSubmit").click(function (e, n) {
+
+                var form = $(e.currentTarget.form);
+                var validator = form.validate();
+                if (form.valid()) {
+                    var formdata = $('#mainform')[0].elements;
+                    var viewModel = {};
+
+                    $("#loadImg").show();
+                    $('dmpSubmit').disabled = true;
+
+                    $.each(formdata, function (name, formElements) {
+                        viewModel[formElements.id] = formElements.value;
+                    });
+                     
+
+                    var someUrl = '@Url.Action("CreateNewHealthFacility", "HealthFacility")';
+                    $.ajax({
+                        type: "POST",
+                        url: someUrl,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(viewModel),
+                        cache: false,
+                    }).done(function (dmpId) {
+                        console.log(dmpId);
+                        window.location.replace('@Url.Action("index", "HealthFacility")');
+                        $("#loadImg").hide();
+                        $('dmpSubmit').disabled = false;
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                        $("#loadImg").hide();
+                        $('dmpSubmit').disabled = false;
+                    });
+
+                    return false;
+                }
+            });
+
+
+        });
+    </script>
+}

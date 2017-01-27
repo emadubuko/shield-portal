@@ -7,9 +7,11 @@ namespace CommonUtil.Mapping
     {
         public LGAMap()
         {
-            Id(x => x.ID);
-            Map(x => x.Name);
-            References(x => x.State).Column("StateId");
+            Table("lga");
+            Id(x => x.lga_code);
+            Map(x => x.lga_name);
+            Map(x => x.lga_hm_longcode);
+            References(x => x.state_code).Column("state_code").Not.LazyLoad();
         }
     }
 }

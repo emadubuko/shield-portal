@@ -7,14 +7,15 @@ namespace BWReport.DAL.Mapping
     {
         public ReportUploadMap()
         {
-            Id(x => x.Id);
-            Map(x => x.ReportName).Length(int.MaxValue);
-            Map(x => x.DateUploaded);            
-            Map(x => x.ReportingPeriodFrom);
-            Map(x => x.ReportingPeriodTo);
-            Map(x => x.UploadingUser);
-            Map(x => x.FileLocation).Length(int.MaxValue);
+            Table("bwr_ReportUploads");
 
+            Id(x => x.Id);           
+            Map(x => x.DateUploaded);
+            Map(x => x.ReportingPeriod);
+            Map(x => x.FY); 
+            Map(x => x.UploadingUser); 
+            Map(x => x.ImplementingPartner);
+            
         }
     }
 }

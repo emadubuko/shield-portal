@@ -72,6 +72,7 @@
     <Compile Include="Entities\Organizations.cs" />
     <Compile Include="Entities\Profile.cs" />
     <Compile Include="Entities\State.cs" />
+    <Compile Include="Enums\OrganizationType.cs" />
     <Compile Include="Mapping\LGAMap.cs" />
     <Compile Include="Mapping\OrganizationsMap.cs" />
     <Compile Include="Mapping\ProfileMap.cs" />

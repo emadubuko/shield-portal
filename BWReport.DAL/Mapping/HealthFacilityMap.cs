@@ -7,14 +7,13 @@ namespace BWReport.DAL.Mapping
     {
         public HealthFacilityMap()
         {
-            Id(x => x.Id).GeneratedBy.Native();
+            Id(x => x.Id);
             Map(x => x.Name);
             Map(x => x.FacilityCode);
-            References(x => x.LGA).Column("LGAId");
-            References(x => x.State).Column("StateId");
+            References(x => x.LGA).Column("LGAId").Not.Nullable(); 
             Map(x => x.Longitude);
             Map(x => x.Latitude);
-
+            Map(x => x.OrganizationType);
 
         }
     }

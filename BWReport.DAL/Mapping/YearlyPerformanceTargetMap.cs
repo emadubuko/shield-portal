@@ -12,9 +12,9 @@ namespace BWReport.DAL.Mapping
     {
         public YearlyPerformanceTargetMap()
         {
-            Id(x => x.Id);
-            Map(x => x.FiscalYearFrom);
-            Map(x => x.FiscalYearTo);
+            Table("bwr_YearlyPerformanceTarget");
+            Id(x => x.Id); 
+            Map(x => x.FiscalYear);
             Map(x => x.HTC_TST);
             Map(x => x.HTC_TST_POS);
             Map(x => x.Tx_NEW);

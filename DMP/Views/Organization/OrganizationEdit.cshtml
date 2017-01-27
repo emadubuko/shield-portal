@@ -33,7 +33,7 @@
                                             @if (field.Name == "OrganizationType")
                                             {
                                                 <select id="@field.Name" class="form-control" required>
-                                                    @foreach (var orgType in Enum.GetValues(typeof(CommonUtil.Entities.OrganizationType)))
+                                                    @foreach (var orgType in Enum.GetValues(typeof(CommonUtil.Enums.OrganizationType)))
                                                     {
                                                         if (Convert.ToString(orgType) == Convert.ToString(field.GetValue(Model)))
                                                         {

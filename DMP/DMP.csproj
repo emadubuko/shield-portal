@@ -212,6 +212,7 @@
     <Compile Include="Controllers\DMPController.cs" />
     <Compile Include="Controllers\DMPDocumentController.cs" />
     <Compile Include="Controllers\DocumentViewerController.cs" />
+    <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
@@ -227,7 +228,9 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\AutomaticViewModel.cs" />
     <Compile Include="ViewModel\BWR\GPSDataModel.cs" />
+    <Compile Include="ViewModel\BWR\HealthFacilityViewModel.cs" />
     <Compile Include="ViewModel\BWR\ReportViewModel.cs" />
+    <Compile Include="ViewModel\BWR\YearlyPerfomanceTargetViewModel.cs" />
     <Compile Include="ViewModel\CreateDMPViewModel.cs" />
     <Compile Include="ViewModel\CreateDocumentViewModel.cs" />
     <Compile Include="ViewModel\CreateIPViewModel.cs" />
@@ -1006,6 +1009,11 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\BiWeeklyReport\Index.cshtml" />
+    <Content Include="Views\HealthFacility\Index.cshtml" />
+    <Content Include="Views\HealthFacility\HealthFacilityDetail.cshtml" />
+    <Content Include="Views\HealthFacility\CreateHealthFacility.cshtml" />
+    <Content Include="Views\HealthFacility\HealthFacilityEdit.cshtml" />
+    <Content Include="Views\BiWeeklyReport\ManageYearlyPerformanceTarget.cshtml" />
     <None Include="Views\Home\deleted.DocumentWizardPage.cshtml" />
     <Content Include="Views\Home\deleted.EditDocumentWizardPage.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
@@ -1022,6 +1030,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Downloads\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

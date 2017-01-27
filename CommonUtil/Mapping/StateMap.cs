@@ -7,9 +7,10 @@ namespace CommonUtil.Mapping
     {
         public StateMap()
         {
-            Id(x => x.ID);
-            Map(x => x.Name);
-            Map(x => x.StateCode);
+            Table("states");
+            Id(x => x.state_code);
+            Map(x => x.state_name); 
+            Map(x => x.geo_polictical_region);
         }
     }
 }

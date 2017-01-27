@@ -72,7 +72,8 @@
   <ItemGroup>
     <Compile Include="DAO\ReportUploadsDao.cs" />
     <Compile Include="DAO\PerformanceDataDao.cs" />
-    <Compile Include="DAO\SDFDao.cs" />
+    <Compile Include="DAO\HealthFacilityDAO.cs" />
+    <Compile Include="DAO\YearlyPerformanceTargetDAO.cs" />
     <Compile Include="Entities\HealthFacility.cs" />
     <Compile Include="Entities\ReportUploads.cs" />
     <Compile Include="Entities\PerformanceData.cs" />

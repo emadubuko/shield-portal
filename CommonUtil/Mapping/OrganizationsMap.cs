@@ -12,7 +12,7 @@ namespace CommonUtil.Mapping
             Map(x => x.Name);
             Map(x => x.ShortName);
             Map(x => x.Address);
-            Map(x => x.OrganizationType);
+           // Map(x => x.OrganizationType);
             Map(x => x.MissionPartner);
             Map(x => x.Logo).Length(int.MaxValue); //.Length(10000);;
             Map(x => x.WebSite);

@@ -64,7 +64,7 @@
 
     <div class="page-container">
         <div class="page-sidebar">
-            <div class="sidebar-fixed">
+            <div class="sidebar">
                 <!-- Site header  -->
                 <header class="site-header">
                     <div class="site-logo">
@@ -97,10 +97,10 @@
                     </li>
                     <li>
                         <a href=@Url.Action("index", "BiWeeklyReport")>
-                            <i class="icon-clock">
-                            </i><span class="title">Bi-Weekly Reports</span>
+                            <i class="icon-clock"></i><span class="title">Bi-Weekly Reports</span>
                         </a>
                     </li>
+
                     <li>
                         <a href=@Url.Action("index","Home")>
                             <i class="fa fa-line-chart">
@@ -118,10 +118,20 @@
                     {
                         <li>
                             <a href="#/"><i class="icon-layout"></i><span class="title">Admin</span></a>
-                            <ul class="nav collapse in">                                
-                                    <li>
-                                        <a href=@Url.Action("index", "Organization")><i class="fa fa-bank"></i><span class="title">Implementing partners</span></a>
-                                    </li>
+                            <ul class="nav collapse in">
+                                <li>
+                                    <a href=@Url.Action("index", "Organization")><i class="fa fa-bank"></i><span class="title">Implementing partners</span></a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("index", "HealthFacility")>
+                                        <i class="fa fa-h-square"></i><span class="title">Health Facilities</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport")>
+                                        <i class="fa fa-hourglass-end"></i><span class="title">Manage Perfomance Target</span>
+                                    </a>
+                                </li>
                                 @if (HttpContext.Current.User.IsInRole("sys_admin"))
                                 {
                                     <li>

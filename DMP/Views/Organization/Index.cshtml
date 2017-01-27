@@ -38,7 +38,7 @@
                                 <tr>
                                     <th>Unique Id</th>
                                     <th>Short Name</th>
-                                    <th>Type</th> 
+                                    <th>Mission Partner</th> 
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,7 +47,7 @@
                                     <tr onclick="window.document.location='/Organization/OrganizationDetail?OrgId=@item.Id'" style="cursor: pointer;">
                                         <td>@item.Id</td>
                                         <td>@item.ShortName</td>
-                                        <td>@CommonUtil.Utilities.Utilities.PasCaseConversion(Enum.GetName(typeof(CommonUtil.Entities.OrganizationType), item.OrganizationType))</td>
+                                        <td>@item.MissionPartner</td>
                                     </tr>
                                 }
                             </tbody>
