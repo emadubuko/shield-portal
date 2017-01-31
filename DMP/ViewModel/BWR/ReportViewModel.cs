@@ -10,10 +10,10 @@ namespace DMP.ViewModel.BWR
 
         public IList<Facility_Community_Postivity> FacilityPositivty { get; set; }
         public IList<Facility_Community_Postivity> CommunityPositivty { get; set; }
-         
-        
 
-        public  List<string> Year = new List<string>
+        public string SelectedYear { get; set; }
+
+        public List<string> Year = new List<string>
         {
             (DateTime.Now.Year -1).ToString(),
             DateTime.Now.Year.ToString(),
@@ -23,8 +23,10 @@ namespace DMP.ViewModel.BWR
 
 
     public class BiWeeklyReportUploadViewModel
-    { 
+    {
         public Dictionary<string, List<bool>> IPReports { get; set; }
+
+        public string SelectedYear { get; set; }
 
         public List<string> Year = new List<string>
         {
@@ -32,7 +34,7 @@ namespace DMP.ViewModel.BWR
             DateTime.Now.Year.ToString(),
             (DateTime.Now.Year + 1).ToString()
         };
-public Dictionary<string, int> IndexPeriods { get; set; }
+        public Dictionary<string, int> IndexPeriods { get; set; }
         public IList<string> ImplementingPartner { get; set; }
     }
 }

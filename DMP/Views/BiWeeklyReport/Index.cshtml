@@ -14,11 +14,34 @@
             color: #000;
         }
     </style>
+
+<script type="text/javascript">
+        function reloadPage(e) {
+            window.location.replace('/BiWeeklyReport/index?fYear=' + e.value);
+        }
+</script>
 }
  
 
 
 <div id="page-wrapper" class="main-content">
+
+    <label>Financial Year</label>
+    <select id="fYear" required onchange="reloadPage(this)">
+        <option value="" disabled selected>Finacial year</option>
+        @foreach (var item in Model.Year)
+            {
+                if (item == Model.SelectedYear)
+                {
+                <option value="@item" selected>@item</option>
+            }
+            else
+            {
+                <option value="@item">@item</option>
+            }
+        }
+    </select>
+
 
     <div class="panel panel-info">
         <div class="panel-heading clearfix">

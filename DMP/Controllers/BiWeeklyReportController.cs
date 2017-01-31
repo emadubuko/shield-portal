@@ -27,17 +27,18 @@ namespace DMP.Controllers
             }
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int fYear = 2017)
         {
             ViewBag.Title = "Home Page";
             PerformanceDataDao pDao = new PerformanceDataDao();
              
-            var GroupedLGAAcheivement = pDao.GenerateLGALevelAchievementPerTarget(2017);
+            var GroupedLGAAcheivement = pDao.GenerateLGALevelAchievementPerTarget(fYear);
 
-            var positivityRates = pDao.ComputePositivityRateByFacilityType(2017);
+            var positivityRates = pDao.ComputePositivityRateByFacilityType(fYear);
 
             ReportViewModel reportList = new ReportViewModel
             {  
+                 SelectedYear = fYear.ToString(),
                 LGAReports = GroupedLGAAcheivement,
                 CommunityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.CommunityBasedOrganization),
                 FacilityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.HealthFacilty),
@@ -74,12 +75,12 @@ namespace DMP.Controllers
         }
 
 
-        public ActionResult BiWeeklyReportUploads()
+        public ActionResult BiWeeklyReportUploads(int fYear = 2017)
         {
             ViewBag.IndexPeriods = IndexPeriods.Keys.ToList();
             PerformanceDataDao pDao = new PerformanceDataDao();
-
-            var reports = pDao.GenerateIPUploadReports(2017).GroupBy(x => x.IPName);
+                       
+            var reports = pDao.GenerateIPUploadReports(fYear).GroupBy(x => x.IPName);
 
             List<BiWeeklyReportUploadViewModel> vMReport = new List<BiWeeklyReportUploadViewModel>();
             var vm = new BiWeeklyReportUploadViewModel();
@@ -103,11 +104,12 @@ namespace DMP.Controllers
 
             vm.IndexPeriods = IndexPeriods;
             vm.ImplementingPartner = new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
+            vm.SelectedYear = fYear.ToString();
             return View(vm);
         }
 
 
-        public ActionResult BiWeeklyReportDownload(string IP)
+        public ActionResult BiWeeklyReportDownload(string IP, int fYear)
         {
             string IpSample = IP + "_sample.xlsx";
             string existingTemplate = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/" + IpSample);
@@ -115,7 +117,7 @@ namespace DMP.Controllers
             string fileName = IP + ".xlsx";
             string newFile = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/" + fileName);
 
-            new ReportLoader().GenerateExcel(newFile, existingTemplate, IP, 2017);
+            new ReportLoader().GenerateExcel(newFile, existingTemplate, IP, fYear);
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(newFile);            
 
