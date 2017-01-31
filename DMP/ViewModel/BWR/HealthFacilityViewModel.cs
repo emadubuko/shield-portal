@@ -24,6 +24,8 @@ namespace DMP.ViewModel.BWR
                 return _organizationType;
             }
         }
+
+        public List<Organizations> Organizations { get; set; }
  
         public List<LGA> LGA { get; set; }
     }

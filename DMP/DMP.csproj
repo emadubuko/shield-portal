@@ -212,6 +212,7 @@
     <Compile Include="Controllers\DMPController.cs" />
     <Compile Include="Controllers\DMPDocumentController.cs" />
     <Compile Include="Controllers\DocumentViewerController.cs" />
+    <Compile Include="Controllers\DQAController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
@@ -250,6 +251,7 @@
     <Content Include="css\style.css" />
     <Content Include="images\alarm.jpg" />
     <Content Include="images\background-image.jpg" />
+    <Content Include="images\background-image_old.jpg" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\imac-40.jpg" />
     <Content Include="Content\images\animated-overlay.gif" />
@@ -267,6 +269,7 @@
     <Content Include="Content\images\ui-icons_888888_256x240.png" />
     <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="images\logo.jpg" />
+    <Content Include="images\logo_old.jpg" />
     <Content Include="images\Profile-image.png" />
     <Content Include="images\favicon.png" />
     <Content Include="images\macbook-40.jpg" />
@@ -909,6 +912,10 @@
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\datacollectionTableLogic.js" />
     <Content Include="Scripts\dataverificationTableLogic.js" />
+    <Content Include="Scripts\fns\base.js" />
+    <Content Include="Scripts\fns\fn_dashboard.js" />
+    <Content Include="Scripts\fns\fn_dqa.js" />
+    <Content Include="Scripts\fns\jsonTable.js" />
     <Content Include="Scripts\form-advanced-script.js" />
     <Content Include="Scripts\functions.js" />
     <Content Include="Scripts\GanttChart\dataDays.js" />
@@ -917,6 +924,7 @@
     <Content Include="Scripts\GanttChart\jquery.fn.gantt.js" />
     <Content Include="Scripts\GanttChart\jquery.fn.gantt.min.js" />
     <Content Include="Scripts\html5shiv.min.js" />
+    <Content Include="Scripts\ipdashboard.js" />
     <Content Include="Scripts\jquery-ui.multidatespicker.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -975,6 +983,10 @@
     <Content Include="plugins\summernote\font\summernote.woff" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <None Include="Properties\PublishProfiles\dmpPub.pubxml" />
+    <Content Include="Resources\IHVN_sample.xlsx" />
+    <Content Include="Resources\APIN_sample.xlsx" />
+    <Content Include="Resources\CCFN_sample.xlsx" />
+    <Content Include="Resources\CIHP_sample.xlsx" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1014,6 +1026,12 @@
     <Content Include="Views\HealthFacility\CreateHealthFacility.cshtml" />
     <Content Include="Views\HealthFacility\HealthFacilityEdit.cshtml" />
     <Content Include="Views\BiWeeklyReport\ManageYearlyPerformanceTarget.cshtml" />
+    <Content Include="Views\BiWeeklyReport\BiWeeklyReportUploads.cshtml" />
+    <Content Include="Views\DQA\Dashboard.cshtml" />
+    <Content Include="Views\DQA\GetDQA.cshtml" />
+    <Content Include="Views\DQA\Index.cshtml" />
+    <Content Include="Views\DQA\IpDQA.cshtml" />
+    <Content Include="Views\DQA\UploadDQA.cshtml" />
     <None Include="Views\Home\deleted.DocumentWizardPage.cshtml" />
     <Content Include="Views\Home\deleted.EditDocumentWizardPage.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
@@ -1026,6 +1044,7 @@
     <Content Include="Views\Profile\profileEdit.cshtml" />
     <Content Include="Views\Home\DynamicTable.cshtml" />
     <Content Include="Views\Home\Tracker.cshtml" />
+    <Content Include="Views\Home\gg.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -17,6 +17,7 @@ namespace BWReport.DAL.Entities
         public virtual string lgacode { get; set; }
         public virtual string Latitude { get; set; }
         public virtual string Longitude { get; set; }
+        public virtual Organizations Organization { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }
 
         [XmlIgnore]

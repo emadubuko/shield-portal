@@ -10,6 +10,17 @@ namespace BWReport.DAL.DAO
 {
     public class PerformanceDataDao : BaseDAO<PerformanceData, long>
     {
+        public List<PerformanceData> RetrieveByOrganizationShortName(int fYear, string OrgShortName)
+        {
+            ICriteria criteria = BuildSession()
+               .CreateCriteria<PerformanceData>("pd").Add(Restrictions.Eq("FY", fYear))
+               .CreateCriteria("HealthFacility")
+               .CreateCriteria("Organization", "org", NHibernate.SqlCommand.JoinType.InnerJoin)
+               .Add(Restrictions.Eq("ShortName", OrgShortName));
+            List<PerformanceData> data = criteria.List<PerformanceData>() as List<PerformanceData>;
+            return data;
+
+        }
 
         public IList<LGALevelAchievementPerTarget> GenerateLGALevelAchievementPerTarget(int  fYear)
         {
@@ -65,6 +76,24 @@ namespace BWReport.DAL.DAO
             IList<Facility_Community_Postivity> rates = criteria.SetResultTransformer(new NHibernate.Transform.AliasToBeanResultTransformer(typeof(Facility_Community_Postivity))).List<Facility_Community_Postivity>();
             return rates;
         }
+
+
+        public IList<IPUploadReport> GenerateIPUploadReports(int fYear)
+        {
+            ICriteria criteria = BuildSession()
+                .CreateCriteria<PerformanceData>("pd").Add(Restrictions.Eq("FY", fYear))
+                .CreateCriteria("HealthFacility", "hf")
+                .CreateCriteria("Organization", "org", NHibernate.SqlCommand.JoinType.InnerJoin);
+            
+            criteria.SetProjection(
+                Projections.Alias(Projections.GroupProperty("org.Name"), "IPName"),
+                 Projections.Alias(Projections.GroupProperty("pd.ReportPeriod"), "ReportPeriod")
+                );
+
+            IList<IPUploadReport> reports = criteria.SetResultTransformer(new NHibernate.Transform.AliasToBeanResultTransformer(typeof(IPUploadReport))).List<IPUploadReport>();
+            return reports;
+        }
+
 
         public bool BulkInsert(List<PerformanceData> TargetMeasures)
         {

@@ -2,6 +2,7 @@
 using BWReport.DAL.Entities;
 using CommonUtil.DAO;
 using CommonUtil.Entities;
+using CommonUtil.Utilities;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace BWReport.DAL.Services
             return "";
         }
 
-        public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, string ImplementingPartner,  Stream ReportStream, string loggedinUser)
+        public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, string ImplementingPartner, Stream ReportStream, string loggedinUser)
         {
             List<PerformanceData> ActualPerformanceMeasures = new List<PerformanceData>();
 
@@ -31,7 +32,12 @@ namespace BWReport.DAL.Services
             var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
             var existingFacilities = sdfDao.RetrieveAll().ToDictionary(x => x.FacilityCode);
 
-           
+            Organizations ip = new OrganizationDAO().SearchByShortName(ImplementingPartner);
+            if (ip == null)
+            {
+                throw new ApplicationException("Unknown IP");
+            }
+
             try
             {
                 using (ExcelPackage package = new ExcelPackage(ReportStream))//(new FileInfo(FilePath)))
@@ -45,7 +51,7 @@ namespace BWReport.DAL.Services
 
                     var upload = new ReportUploads
                     {
-                        DateUploaded = DateTime.Now, 
+                        DateUploaded = DateTime.Now,
                         ImplementingPartner = ImplementingPartner,
                         UploadingUser = loggedinUser,
                         ReportingPeriod = reportingPeriod,
@@ -79,7 +85,8 @@ namespace BWReport.DAL.Services
                             }
 
                             string facilityType = ReadCell(sheet, row, 4);
-                            string facilityCode = GetFacilityCode(sheet, row, ImplementingPartner, theLGA, facilityType.Substring(0, 1));
+                            string fType = !string.IsNullOrEmpty(facilityType) ? facilityType.Substring(0, 1) : "F";
+                            string facilityCode = GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
 
                             HealthFacility theFacility = null;
                             existingFacilities.TryGetValue(facilityCode, out theFacility);
@@ -88,6 +95,7 @@ namespace BWReport.DAL.Services
                             {
                                 theFacility = new HealthFacility
                                 {
+                                    Organization = ip,
                                     FacilityCode = facilityCode,
                                     LGA = theLGA,
                                     Name = facilityName,
@@ -135,7 +143,7 @@ namespace BWReport.DAL.Services
             }
         }
 
-        private string GetFacilityCode(ExcelWorksheet sheet, int row, string IP, LGA lga, string FacilityType )
+        private string GetFacilityCode(ExcelWorksheet sheet, int row, string IP, LGA lga, string FacilityType)
         {
 
             string facilityCode = ReadCell(sheet, row, 1);
@@ -147,7 +155,95 @@ namespace BWReport.DAL.Services
 
             return facilityCode;
         }
+
+
+        public void GenerateExcel( string newTemplate, string existingTemplate, string IP, int year)
+        {
+            PerformanceDataDao _targetDao = new PerformanceDataDao();
+            var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
+            var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
+
+            var pds = _targetDao.RetrieveByOrganizationShortName(year, IP)
+                .OrderBy(x=>x.HealthFacility.Name).GroupBy(x => x.HealthFacility.LGA);            
+
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(existingTemplate)))
+            { 
+                foreach (var item in pds)
+                {
+                    string lgaName = item.Key.lga_name;
+
+                    ExcelWorksheet sheet =  RetrieveMatchingWorkSheet(lgaName, package.Workbook.Worksheets, LGADictionary);
+                    if (sheet == null)
+                        continue;
+                     
+                    int row = 8;
+                    int columnStart = 1;
+
+                    var groupedByFacility = item.ToList().GroupBy(x => x.HealthFacility); //.Values.ToDictionary(x => x.HealthFacility);
+
+                    foreach (var f in groupedByFacility)
+                    {
+                        sheet.Cells[row, columnStart].Value = f.Key.FacilityCode;
+                        
+                        sheet.Cells[row, columnStart + 2].Value = f.Key.Name;
+
+                        switch (f.Key.OrganizationType)
+                        {
+                            case CommonUtil.Enums.OrganizationType.CommunityBasedOrganization:
+                                sheet.Cells[row, columnStart + 3].Value = "Community";
+                                break;
+                            case CommonUtil.Enums.OrganizationType.HealthFacilty:
+                                sheet.Cells[row, columnStart + 3].Value = "Facility";
+                                break;
+                            default:
+                                sheet.Cells[row, columnStart + 3].Value = "Unknown";
+                                break;
+                        }
+
+                        var lineEntries = f.OrderBy(x=>x.HealthFacility.Name).ToList();
+                        for (int i = 0; i < lineEntries.Count; i++)
+                        {
+                            var aLine = lineEntries[i];
+                            int valueStartingPoint = IndexPeriods[aLine.ReportPeriod];
+
+                            sheet.Cells[row, valueStartingPoint].Value = aLine.HTC_TST;
+                            sheet.Cells[row, valueStartingPoint + 1].Value = aLine.HTC_TST_POS;
+                            sheet.Cells[row, valueStartingPoint + 2].Value = aLine.Tx_NEW;
+                            
+                        }
+
+                        row += 1;
+
+                    }
+
+
+
+                }
+                package.SaveAs(new FileInfo(newTemplate));
+            }
+        }
+
+        private ExcelWorksheet RetrieveMatchingWorkSheet(string lgaName, ExcelWorksheets worksheets, Dictionary<string, LGA> lGADictionary)
+        {
+            ExcelWorksheet sheet = null;
+            foreach (var sh in worksheets)
+            {
+                string sheet_lga = ReadCell(sh, 1, 1);
+
+                LGA theLGA = null;
+                lGADictionary.TryGetValue("NIE " + sheet_lga, out theLGA);
+                if (theLGA == null)
+                {
+                    continue;
+                }
+                if (theLGA.lga_name == lgaName)
+                    sheet = sh;
+            }
+
+            return sheet;
+        }
     }
+
     public enum MonthAbreviation
     {
         Jan = 1,

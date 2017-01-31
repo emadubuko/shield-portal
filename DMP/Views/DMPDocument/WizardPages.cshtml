@@ -5,7 +5,7 @@
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss") 
 <link href="~/Content/jquery-ui.css" rel="stylesheet" />
-@*<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">*@
+
 
     <style>
         .panel-default {
@@ -20,6 +20,7 @@
             label{
                 font-weight:bold;
             }
+
     </style>
     <script src="~/Scripts/Ultilities.js"></script>
     <script type="text/javascript">
@@ -361,7 +362,8 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataType">Data Type</label>
                                                 <div class="col-sm-8">
-                                                    <select id="DataType" class="form-control">
+                                                    @*<select class="chosen-select" multiple tabindex="4">*@
+                                                        <select id="DataType" class="form-control">
                                                         <option value="" disabled selected>What types of data are collected ?</option>
                                                         @foreach (var item in Model.reportDataType)
                                                         {
@@ -1367,10 +1369,15 @@
     @*@Scripts.Render("~/bundles/CreateDMPJs")*@
 @Scripts.Render("~/bundles/MultiDatePickerCss")
 
- 
+ <script src="http://harvesthq.github.io/chosen/chosen.jquery.js"></script>
 
     <script>
         $(document).ready(function () {
+
+            $(function() {
+                $('.chosen-select').chosen();
+                $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
+            });
 
             base64Image = '@Model.DataFlowChart';
             if(base64Image !=undefined){

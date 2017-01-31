@@ -100,4 +100,10 @@ namespace BWReport.DAL.Entities
         }
         public OrganizationType FacilityType { get; set; }
     }
+
+    public class IPUploadReport
+    {
+        public string IPName { get; set; }
+        public string ReportPeriod { get; set; }
+    }
 }

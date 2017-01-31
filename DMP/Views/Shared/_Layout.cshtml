@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Responsive, Web Application, HTML5, Admin Template, business, professional, Integral, web design, CSS3">
+    <meta http-equiv="Cache-control" content="public">
     <title>DMP | Data Management Plan</title>
     <!-- Site favicon -->
     <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
@@ -76,6 +76,7 @@
                 <!-- /site header -->
                 <!-- Main navigation -->
                 <ul id="side-nav" class="main-menu navbar-collapse collapse">
+
                     <li>
                         <a href=@Url.Action("index","Home")>
                             <i class="icon-gauge">
@@ -89,16 +90,44 @@
                             </i><span class="title">Data Management Plan</span>
                         </a>
                     </li>
+
                     <li>
-                        <a href=@Url.Action("index","Home")>
-                            <i class="fa fa-check-square-o">
+                        <a href='#/'>  <i class="fa fa-check-square-o">
                             </i><span class="title">Data Quality Assuarance</span>
                         </a>
+                        <ul class="nav collapse in">
+                            <li>
+                                <a href=@Url.Action("index", "DQA")>
+                                    <i class="fa fa-area-chart"></i><span class="title">DQA DashBoard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("UploadDQA", "DQA")>
+                                    <i class="fa fa-newspaper-o"></i><span class="title">Upload DQA</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("IpDQA", "DQA")>
+                                    <i class="fa fa-newspaper-o"></i><span class="title">IP DQA Summary</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+
                     <li>
-                        <a href=@Url.Action("index", "BiWeeklyReport")>
-                            <i class="icon-clock"></i><span class="title">Bi-Weekly Reports</span>
-                        </a>
+                        <a href="#/"><i class="icon-clock"></i><span class="title">Bi-Weekly Reports</span></a>
+                        <ul class="nav collapse in">
+                            <li>
+                                <a href=@Url.Action("index", "BiWeeklyReport")>
+                                    <i class="fa fa-area-chart"></i><span class="title">LGA Level DashBoard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("BiWeeklyReportUploads", "BiWeeklyReport")>
+                                    <i class="fa fa-newspaper-o"></i><span class="title">IP Upload Reports</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li>
@@ -107,6 +136,7 @@
                             </i><span class="title">Evaluation Plan</span>
                         </a>
                     </li>
+
                     <li>
                         <a href=@Url.Action("index","Home")>
                             <i class="fa fa-calendar-check-o">
@@ -191,7 +221,7 @@
         </div>
     </div>
 
-    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.min.js" ></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
     <script src="~/Scripts/loader.js"></script>

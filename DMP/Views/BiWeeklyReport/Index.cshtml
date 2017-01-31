@@ -15,14 +15,7 @@
         }
     </style>
 }
-
-<div class="row">
-    <div class="col-sm-offset-9 col-xs-offset-4">
-        <a class="btn btn-info" id="uploadRpt" style="margin-top: 10px;">
-            <i class="icon-upload"></i> &nbsp;<span>Upload New Report</span>
-        </a>
-    </div>
-</div>
+ 
 
 
 <div id="page-wrapper" class="main-content">
@@ -146,77 +139,7 @@
     </div>
 </div>
         
-
-        <div class="modal fade" id="uploadModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" style="width: 45%;border-color: #29b6f6;" role="document">
-                <div class="modal-content">
-                    <div class="modal-header" style="color: #FFF;background-color: #29b6f6;">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title" style="text-align: center;">Upload Report</h4>
-                    </div>
-                    <div style="padding-top: 15px; padding-left: 7px;">
-                        <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">Reporting Period:</label>
-                                <div class="col-sm-4">
-                                    <select id="ReportingPeriod" class="form-control" required>
-                                        <option value="" disabled selected>Reporting Period</option>
-                                        @foreach (var item in Model.IndexPeriods)
-                                {
-                                            <option value="@item.Key">@item.Key</option>
-                                }
-                                    </select>
-                                </div>
-                                <div class="col-sm-3">
-                                    <select id="ReportingYear" class="form-control" required>
-                                        <option value="" disabled selected>Year</option>
-                                        @foreach (var item in Model.Year)
-                                {
-                                            <option value="@item">@item</option>
-                                }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">Implementing Partner:</label>
-                                <div class="col-sm-7">
-                                    <select id="ImplementingPartner" class="form-control" required>
-                                        <option value="" disabled selected>Implementing Partner</option>
-                                        @foreach (var item in Model.ImplementingPartner)
-                                {
-                                            <option value="@item">@item</option>
-                                }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label"> Upload:</label>
-                                <div class="col-md-7">
-                                    <input type="file" class="form-control" id="fileUpload" placeholder="Upload CSV file" />
-                                </div>
-                            </div>
-                        </form>
-
-                        <hr />
-                        <label id="error" class="text-danger" style="display:none"></label>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="col-sm-2"> </div>
-                        <div class="col-sm-7">
-                            <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel</button>
-
-                            <button id="upload" type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> &nbsp; Upload</button>
-                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
+ 
         @section Scripts
 {
             @Scripts.Render("~/bundles/CreateDMPJs")
@@ -228,79 +151,11 @@
 
                     $(".page-container").attr('class', 'page-container sidebar-collapsed');
 
-                    $("#uploadRpt").click(function () {
-                        $("#uploadModal").draggable({
-                            handle: ".modal-header"
-                        });
-                        $('#uploadModal').modal('show');
-                    });
 
                     $('.table').DataTable({
                         responsive: true
                     });
 
-
-                    $("#upload").click(function (e, n) {
-
-                        $('#upload').disabled = true;
-                        $("#loadImg").show();
-
-                        var data = new FormData();
-
-                        try {
-                            var file = $('form input[type=file]')[0].files[0];
-                            data.append('file', file);
-                            var ReportingPeriod = $("form #ReportingPeriod")[0].value;
-                            var ReportingYear = $("form #ReportingYear")[0].value;
-                            var ImplementingPartner = $("form #ImplementingPartner")[0].value;
-                        }
-                        catch (e) {
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            $("#error").empty();
-                            $("#error").append("system error occurred. Please provide valid inputs")
-                            $("#error").show();
-                            return false;
-                        }
-
-                        if (ReportingPeriod == "" || ReportingYear == "" || ImplementingPartner == "") {
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            $("#error").empty();
-                            $("#error").append("Please provide valid inputs")
-                            $("#error").show();
-                            return false;
-                        }
-
-
-                        $.ajax({
-                            type: "POST",
-                            url: '/BiWeeklyReport/Upload?ReportingPeriod=' + ReportingPeriod + '&Year=' + ReportingYear + '&ImplementingPartner=' + ImplementingPartner,
-                            contentType: false,
-                            processData: false,
-                            data: data,
-                            cache: false,
-                        }).done(function (result) {
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            console.log(result);
-                            $("#error").empty();
-                            $("#error").append('<span style="color:green;">' + result + '</span>');
-                            $("#error").show();
-                        }).error(function (xhr, status, err) {
-                            console.log(err);
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            $("#error").empty();
-                            $("#error").append(err);
-                            $("#error").show();
-                        });
-                        return false;
-
-                    });
                 });
             </script>
-
-
-
-        }
+}

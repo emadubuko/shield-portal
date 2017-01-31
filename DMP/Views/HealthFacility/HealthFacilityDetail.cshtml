@@ -35,11 +35,16 @@
                                     {
                                         <span>@(Model.LGA.DisplayName)</span>
                                     }
+                                    else if (field.Name == "Organization")
+                                    {
+                                        <span>@(Model.Organization ==null ? "" : (Model.Organization.Name  + " - " +@Model.Organization.ShortName))</span>
+                                    }
                                     else
                                     {
                                         <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
                                     }
-                                    
+
+
                                 </div>
                             </div>
                         }

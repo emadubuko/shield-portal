@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "UploadDQA";
+}
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <style>
+        .panel-warning {
+            border-color: #929b17;
+        }
+
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+            }
+    </style>
+}
+
+<div class="main-content">
+    
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix" style="padding:15px">
+                    <h4 class="panel-title">Upload DQA</h4>
+                    
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="post" enctype="multipart/form-data" >
+                       
+                      
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">File</label>
+                            <div class="col-sm-10">
+                                <input type="file" id="field-file" name="upFile" class="form-control">
+                            </div>
+                        </div>
+                        <div class="line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button class="btn btn-default" id="btnSubmit" type="submit">Upload</button>
+                            </div>
+                        </div>
+                        </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="output">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+
+                    </div>
+                </div>
+            </div>
+        <div class="col-lg-2"></div>
+                </div>
+               
+            </div>
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/dataTables")
+    @Scripts.Render("~/bundles/loader")
+
+    <script>
+        $("form").submit(function () {
+            
+            var formData = new FormData($(this)[0]);
+            $("#btnSubmit").prop("disabled", true);
+
+            $.ajax({
+                url: 'http://localhost:25312/api/dqa/post',
+                type: 'POST',
+                data: formData,
+                async: false,
+                success: function (data) {
+                    $("#output tbody").prepend(data);
+                    $("#btnSubmit").prop("disabled", false);
+                    //$('#output').append(data);
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+
+
+            return false;
+        });
+    </script>
+}

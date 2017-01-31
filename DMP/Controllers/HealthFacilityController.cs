@@ -80,7 +80,7 @@ namespace DMP.Controllers
         {
             var vM = new HealthFacilityViewModel();
             vM.LGA = new LGADao().RetrieveAll() as List<LGA>;
-
+            vM.Organizations = new OrganizationDAO().RetrieveAll() as List<Organizations>;
             return View(vM);
         }
 

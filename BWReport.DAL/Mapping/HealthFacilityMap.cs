@@ -14,7 +14,7 @@ namespace BWReport.DAL.Mapping
             Map(x => x.Longitude);
             Map(x => x.Latitude);
             Map(x => x.OrganizationType);
-
+            References(x => x.Organization).Column("OrganizationId").Not.Nullable();
         }
     }
 }

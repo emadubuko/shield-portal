@@ -42,6 +42,16 @@
                                                     <option value="@item.lga_code">@item.DisplayName</option>
                                                 }
                                             </select>
+                                        }
+                                        else if ((string)field.Value == "Organization")
+                                        {
+                                            <select id="OrganizationId" class="form-control" required>
+                                                <option value="" disabled selected>Select Organization</option>
+                                                @foreach (var item in Model.Organizations)
+                                                {
+                                                    <option value="@item.Id">@item.ShortName</option>
+                                                }
+                                            </select>
                                         } 
                                     </div>
                                 </div>

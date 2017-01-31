@@ -7,15 +7,26 @@ using System.IO;
 using DMP.ViewModel.BWR;
 using CommonUtil.DAO;
 using System.Linq;
-using System.Web.Helpers;
 using BWReport.DAL.Entities;
 using System.Collections.Generic;
+using CommonUtil.Utilities;
+using System.Runtime.InteropServices;
 
 namespace DMP.Controllers
 {
     [Authorize]
     public class BiWeeklyReportController : Controller
     {
+        static Dictionary<string, int> IndexPeriods;
+
+        public BiWeeklyReportController()
+        {
+            if(IndexPeriods == null)
+            {
+                IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
+            }
+        }
+
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
@@ -26,11 +37,10 @@ namespace DMP.Controllers
             var positivityRates = pDao.ComputePositivityRateByFacilityType(2017);
 
             ReportViewModel reportList = new ReportViewModel
-            {
+            {  
                 LGAReports = GroupedLGAAcheivement,
                 CommunityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.CommunityBasedOrganization),
                 FacilityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.HealthFacilty),
-                ImplementingPartner = new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList()
             };
 
             return View(reportList);
@@ -50,7 +60,7 @@ namespace DMP.Controllers
             Stream fileContent = files[0].InputStream;
             string loggedInUser = Services.Utils.LoggedinProfileName;
 
-            int startColumnIndex = new ReportViewModel().IndexPeriods[reportingPeriod];
+            int startColumnIndex = IndexPeriods[reportingPeriod]; // new ReportViewModel().IndexPeriods[reportingPeriod];
 
             try
             {
@@ -62,6 +72,57 @@ namespace DMP.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
+        public ActionResult BiWeeklyReportUploads()
+        {
+            ViewBag.IndexPeriods = IndexPeriods.Keys.ToList();
+            PerformanceDataDao pDao = new PerformanceDataDao();
+
+            var reports = pDao.GenerateIPUploadReports(2017).GroupBy(x => x.IPName);
+
+            List<BiWeeklyReportUploadViewModel> vMReport = new List<BiWeeklyReportUploadViewModel>();
+            var vm = new BiWeeklyReportUploadViewModel();
+            vm.IPReports = new Dictionary<string, List<bool>>();
+
+            foreach (var r in reports)
+            {
+                List<bool> uploaded = new List<bool>(IndexPeriods.Count);
+                var ipEntries = r.ToList().Select(x => x.ReportPeriod).ToList();
+
+                foreach (var index in IndexPeriods.Keys)
+                {
+                    if (ipEntries.FirstOrDefault(x => x == index) != null)                     
+                        uploaded.Add(true);
+                    else
+                        uploaded.Add(false);
+                }
+
+                vm.IPReports.Add(r.Key, uploaded);
+            }
+
+            vm.IndexPeriods = IndexPeriods;
+            vm.ImplementingPartner = new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
+            return View(vm);
+        }
+
+
+        public ActionResult BiWeeklyReportDownload(string IP)
+        {
+            string IpSample = IP + "_sample.xlsx";
+            string existingTemplate = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/" + IpSample);
+
+            string fileName = IP + ".xlsx";
+            string newFile = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/" + fileName);
+
+            new ReportLoader().GenerateExcel(newFile, existingTemplate, IP, 2017);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(newFile);            
+
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);         
+        }
+
+
 
         public ActionResult ManageYearlyPerformanceTarget()
         {
