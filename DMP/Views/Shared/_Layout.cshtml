@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Cache-control" content="public">
-    <title>DMP | Data Management Plan</title>
+    <title>Shield Portal</title>
     <!-- Site favicon -->
     <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
 
@@ -14,10 +14,12 @@
     
     <style>
         .page-sidebar {
-            background-color:transparent;
-            border-bottom-color:#000;
-            color:#000;
+            background-color: transparent;
+            border-bottom-color: #000;
+            color: #000;
+            width: 300px;
         }
+
         ul.main-menu > li:hover > a {
             color: #000;
             font-weight:bold;
@@ -42,14 +44,6 @@
         @RenderSection("AddToHead", required: false)
     }
      
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="~/Scripts/html5shiv.min.js"></script>
-    <script src="~/Scripts/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 <body>
     <!-- Loader Backdrop -->
@@ -68,7 +62,7 @@
                 <!-- Site header  -->
                 <header class="site-header">
                     <div class="site-logo">
-                        <a><img src="/images/logo.jpg" alt="DMP" title="DMP" /></a>
+                        <a><img src="~/images/shield_logo.png" alt="Shield Logo" width="250" title="SHIELD" /></a>
                     </div>
                     <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i class="icon-menu"></i></a></div>
                     <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse" class="mobile-menu-icon" href="#"><i class="icon-menu"></i></a></div>
@@ -93,7 +87,7 @@
 
                     <li>
                         <a href='#/'>  <i class="fa fa-check-square-o">
-                            </i><span class="title">Data Quality Assuarance</span>
+                            </i><span class="title">Data Quality Assesment</span>
                         </a>
                         <ul class="nav collapse in">
                             <li>
@@ -115,7 +109,7 @@
                     </li>
 
                     <li>
-                        <a href="#/"><i class="icon-clock"></i><span class="title">Bi-Weekly Reports</span></a>
+                        <a href="#/"><i class="icon-clock"></i><span class="title">Semi-Monthly LGA Scale up Reports</span></a>
                         <ul class="nav collapse in">
                             <li>
                                 <a href=@Url.Action("index", "BiWeeklyReport")>
@@ -208,14 +202,14 @@
                     </div>
                 </div>
                 </div>
-
+            <a href="javascript:history.back()" class="btn btn-default btn-sm btn-outline"><i class="icon-left-open"></i><b>Go Back</b></a>
 
             @RenderBody()
             <hr />
 
             <!-- Footer -->
             <footer class="footer-main">
-                &copy; @DateTime.Now.Year <strong>My DMP</strong> by <a target="_blank" href="#/">MGIC</a>
+                &copy; @DateTime.Now.Year  <a target="_blank" href="#/">University of Maryland</a>
             </footer>
             <!-- /footer -->
         </div>

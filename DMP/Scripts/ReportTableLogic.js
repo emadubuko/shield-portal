@@ -31,12 +31,24 @@ $("#addReportbtn").click(function (e) {
             report["NameOfReport"] =  $(this)[0].value;
             $(this).val("");
         }
+        else if ($(this)[0].id == "ReportsType") {
+            report["ReportsType"] = $(this)[0].value;
+            $(this).val("");
+        }
+        else if ($(this)[0].id == "ReportsCollated") {
+            report["ReportsCollated"] = $(this)[0].value;
+            $(this).val("");
+        }
         else if($(this)[0].id == "ThematicArea"){
             report["ThematicArea"] =  $(this)[0].value;
             $(this).val("");
         }
-        else if($(this)[0].id == "TimelinesForReporting"){
-            dateStringArray = $(this)[0].value.split(',');
+        else if ($(this)[0].id == "TimelinesForReporting") {
+            if ($(this)[0].value == "") {
+                alert("please select timelines")
+                return;
+            }
+            dateStringArray = $(this)[0].value.split(',');            
             report["TimelinesForReporting"]  = dateStringArray;
             $(this).val("");
             $('#TimelinesForReporting').multiDatesPicker('resetDates', 'picked'); 
@@ -56,8 +68,10 @@ $("#addReportbtn").click(function (e) {
                     duration = inputValue * 30; break;
                 case "Years":
                     duration = inputValue * 365; break;
+                default:
+                    duration = 1; break; //assume one day
             }
-            report["DurationOfReporting"] = duration; //  $(this)[0].value;
+            report["DurationOfReporting"] = duration;
             $(this).val("");
         }
         else if($(this)[0].id == "justdate"){
@@ -65,9 +79,11 @@ $("#addReportbtn").click(function (e) {
             $(this).val("");
         }
     });
-
-    reportArray.push(report);
-    CreateReportTable(report);
+    if (report.TimelinesForReporting != null) {
+        reportArray.push(report);
+        CreateReportTable(report);
+    }
+    
 });
 
 function CreateReportTable(report){
@@ -89,6 +105,8 @@ function CreateReportTable(report){
     var reportId = "reportx" + report.Id;
     var html = '<tr id=' + reportId + '>';
     html += '<td>' + report.NameOfReport + '</td>';
+    html += '<td>' + report.ReportsType + '</td>';
+    html += '<td>' + report.ReportsCollated + '</td>';
     html += '<td>' + report.ThematicArea + '</td>';
     html += '<td>' + report.FrequencyOfReporting + '</td>';
     html += '<td>' + report.DurationOfReporting + '</td>';

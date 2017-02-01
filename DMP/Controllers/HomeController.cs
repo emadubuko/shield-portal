@@ -27,37 +27,17 @@ namespace DMP.Controllers
 
         public ActionResult Index()
         {
-            bool isIpUser = System.Web.HttpContext.Current.User.IsInRole("ip");
-            var currentProfile = new Services.Utils().GetloggedInProfile();
+            return RedirectToAction("index", "DMP");
+        }
 
-            List<DAL.Entities.DMP> dmps = new List<DAL.Entities.DMP>();
-            if(isIpUser)
-            {
-                dmps = dmpDAO.SearchOrganizaionId(currentProfile.Organization.Id) as List<DAL.Entities.DMP>;
-            }
-            else
-            {
-                dmps = dmpDAO.RetrieveDMPSorted() as List<DAL.Entities.DMP>; //.RetrieveAll().Where(x => x.TheProject != null).ToList();
-            }           
 
-            List<DMPViewModel> dmpVM = new List<DMPViewModel>();
-            dmps.ForEach(x =>
-            {
-                dmpVM.Add(new DMPViewModel
-                {
-                    Id = x.Id,
-                    CreatedBy = x.CreatedBy != null ? x.CreatedBy.FullName : "test",
-                    DateCreated = string.Format("{0:dd-MMM-yyy}", x.DateCreated),
-                    ProjectTitle = x.TheProject.ProjectTitle,
-                    Title = x.DMPTitle,
-                    Owner = x.Organization.ShortName,
-                    StartDate = string.Format("{0:dd-MMM-yyy}", x.StartDate),
-                    EndDate = string.Format("{0:dd-MMM-yyy}", x.EndDate)
-                    //Status = ((DMPStatus)x.Status).ToString()
-                });
-            });
+        public ActionResult ViewAllTracker()
+        {
+            List<TrackerViewModel> trackableDMP = new List<TrackerViewModel>();
 
-            return View(dmpVM);
+            //dmpDocDAO.SearchMostRecentByDMP
+
+            return View();
         }
 
 
@@ -65,30 +45,33 @@ namespace DMP.Controllers
         {
             var doc = dmpDocDAO.Retrieve(documnentId);
 
-            if(doc.Document.MonitoringAndEvaluationSystems == null || doc.Document.QualityAssurance == null || doc.Document.Reports == null)
+            if (doc.Document.MonitoringAndEvaluationSystems == null || doc.Document.QualityAssurance == null || doc.Document.DataProcesses.Reports == null)
             {
                 return new HttpStatusCodeResult(400, "DMP document is not yet completed");
             }
-            var trainings = doc.Document.MonitoringAndEvaluationSystems.Trainings;
-            var dataCollection = doc.Document.DataCollection;
+            var trainings = doc.Document.MonitoringAndEvaluationSystems.People.Trainings;
+            var dataCollection = doc.Document.DataProcesses.DataCollection;
             var dataVerification = doc.Document.QualityAssurance.DataVerification;
-            var reports = doc.Document.Reports.ReportData;
-             
+            var reports = doc.Document.DataProcesses.Reports.ReportData;
+
 
             List<GanttChartData> chartData = new List<GanttChartData>();
             List<ChartValues> values = new List<ChartValues>();
             foreach (var tr in trainings)
-            {                
+            {
                 tr.TimelinesForTrainings.ForEach(z =>
                 {
-                    values.Add(new ChartValues
+                    if (z > DateTime.MinValue)
                     {
-                        customClass = Labels.trainingLabelClass,
-                        from = z,
-                        to = z.AddDays(tr.DurationOfTrainings),
-                        label = Labels.trainingLabelName,
-                        dataObj = tr.NameOfTraining,
-                    });
+                        values.Add(new ChartValues
+                        {
+                            customClass = Labels.trainingLabelClass,
+                            from = z,
+                            to = z.AddDays(tr.DurationOfTrainings),
+                            label = Labels.trainingLabelName,
+                            dataObj = tr.NameOfTraining,
+                        });
+                    }
                 });
             }
             chartData.Add(
@@ -99,20 +82,23 @@ namespace DMP.Controllers
                    });
 
             values = new List<ChartValues>();
-            foreach(var dt in dataCollection)
-            {
-                dt.DataCollectionTimelines.ForEach(z =>
-                {
-                    values.Add(new ChartValues
-                    {
-                        customClass = Labels.dataCollectionLabelClass,
-                        from = z,
-                        to = z.AddDays(dt.DurationOfDataCollection),
-                        label = Labels.dataCollectionLabelName,
-                        dataObj = dt.DataType,
-                    });
-                });
-            }
+            //foreach (var dt in dataCollection)
+            //{
+            //    dt.DataCollectionTimelines.ForEach(z =>
+            //    {
+            //        if (z > DateTime.MinValue)
+            //        {
+            //            values.Add(new ChartValues
+            //            {
+            //                customClass = Labels.dataCollectionLabelClass,
+            //                from = z,
+            //                to = z.AddDays(dt.DurationOfDataCollection),
+            //                label = Labels.dataCollectionLabelName,
+            //                dataObj = dt.DataType,
+            //            });
+            //        }
+            //    });
+            //}
             chartData.Add(
                     new GanttChartData
                     {
@@ -121,18 +107,21 @@ namespace DMP.Controllers
                     });
 
             values = new List<ChartValues>();
-            foreach(var rpt in reports)
+            foreach (var rpt in reports)
             {
                 rpt.TimelinesForReporting.ForEach(z =>
                 {
-                    values.Add(new ChartValues
+                    if (z > DateTime.MinValue)
                     {
-                        customClass = Labels.reportLabelClass,
-                        from = z,
-                        to = z.AddDays(rpt.DurationOfReporting),
-                        label = Labels.reportLabelName,
-                        dataObj = rpt.NameOfReport,
-                    });
+                        values.Add(new ChartValues
+                        {
+                            customClass = Labels.reportLabelClass,
+                            from = z,
+                            to = z.AddDays(rpt.DurationOfReporting),
+                            label = Labels.reportLabelName,
+                            dataObj = rpt.NameOfReport,
+                        });
+                    }
                 });
             }
             chartData.Add(
@@ -140,21 +129,24 @@ namespace DMP.Controllers
                     {
                         name = "Report",
                         values = values
-                    }); 
+                    });
 
             values = new List<ChartValues>();
-            foreach(var dv in dataVerification)
+            foreach (var dv in dataVerification)
             {
                 dv.TimelinesForDataVerification.ForEach(z =>
                 {
-                    values.Add(new ChartValues
+                    if (z > DateTime.MinValue)
                     {
-                        customClass = Labels.dataVerificationLabelClass,
-                        from = z,
-                        to = z.AddDays(dv.DurationOfDataVerificaion),
-                        label = Labels.dataVerificationLabelName,
-                        dataObj = dv.TypesOfDataVerification + "\n " + dv.DataVerificationApproach,
-                    });
+                        values.Add(new ChartValues
+                        {
+                            customClass = Labels.dataVerificationLabelClass,
+                            from = z,
+                            to = z.AddDays(dv.DurationOfDataVerificaion),
+                            label = Labels.dataVerificationLabelName,
+                            dataObj = dv.TypesOfDataVerification + "\n " + dv.DataVerificationApproach,
+                        });
+                    }
                 });
             }
             chartData.Add(
@@ -163,12 +155,12 @@ namespace DMP.Controllers
                         name = "Data Verification",
                         values = values
                     });
-                   
+
 
             TrackerViewModel vM = new TrackerViewModel
             {
-                data = chartData, // new List<GanttChartData> { reportChart, TrainingsChart, dataCollectionChart, dataVerificationChart },
-                 DocumentTitle = doc.DocumentTitle
+                data = chartData,
+                DocumentTitle = doc.DocumentTitle
             };
 
             return View(vM);

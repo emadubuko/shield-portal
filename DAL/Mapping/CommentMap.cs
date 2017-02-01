@@ -12,6 +12,7 @@ namespace DAL.Mapping
     {
         public CommentMap()
         {
+            Table("dmp_commment");
             Id(x => x.Id);
             Map(x => x.Message);
             Map(x => x.TagName);

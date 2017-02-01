@@ -38,6 +38,10 @@ $("#addDataVerificationbtn").click(function (e) {
             $(this).val("");
         }
         else if ($(this)[0].id == "TimelinesForDataVerification") {
+            if ($(this)[0].value == "") {
+                alert("please select timelines")
+                return;
+            }
             dateStringArray = $(this)[0].value.split(',');
             dataverification["TimelinesForDataVerification"] = dateStringArray;
             $(this).val("");
@@ -58,14 +62,19 @@ $("#addDataVerificationbtn").click(function (e) {
                     duration = inputValue * 30; break;
                 case "Years":
                     duration = inputValue * 365; break;
+                default:
+                    duration = 1; break;
             }
             dataverification["DurationOfDataVerificaion"] = duration; // $(this)[0].value;
             $(this).val("");
         }        
     });
 
-    DataVerificationArray.push(dataverification);
-    CreatedataverificationTable(dataverification);
+    if (dataverification.TimelinesForDataVerification != null) {
+        DataVerificationArray.push(dataverification);
+        CreatedataverificationTable(dataverification);
+    }
+    
 });
 
 function CreatedataverificationTable(dataverification) {

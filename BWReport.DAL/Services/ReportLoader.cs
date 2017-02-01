@@ -128,6 +128,11 @@ namespace BWReport.DAL.Services
                     }
                 }
 
+                if(ActualPerformanceMeasures == null || ActualPerformanceMeasures.Count() == 0)
+                {
+                    throw new ApplicationException("invalid upload. Please cross-check the template");
+                }
+
                 //save here
                 bool saved = false;
 

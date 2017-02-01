@@ -34,5 +34,28 @@ namespace CommonUtil.Utilities
 
             return indexedPeriod;
         }
+
+        public static List<string> RetrieveStatesName()
+        {
+            List<string> states = new List<string>();
+            string script = "select [state_name] from [states]";
+
+            ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
+
+            using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
+            {
+                SqlConnection s = (SqlConnection)connection;
+                SqlCommand selectCommand = new SqlCommand(script, s);
+                SqlDataReader reader = null;
+                reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    states.Add(reader[0] as string);
+                }
+                reader.Dispose();
+            }
+            return states;
+        }
     }
 }

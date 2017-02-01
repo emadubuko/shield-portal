@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class DataCollectionProcesses
+   public class Equipment
     {
-        public virtual string DataCollectionProcessess { get; set; }
+        public virtual string ProjectEquipments { get; set; }
     }
 }

@@ -80,7 +80,11 @@
     <Compile Include="Entities\Common.cs" />
     <Compile Include="Entities\DataAccessAndSharing.cs" />
     <Compile Include="Entities\DataCollection.cs" />
-    <Compile Include="Entities\DataCollectionProcesses.cs" />
+    <Compile Include="Entities\DataOrganization.cs" />
+    <Compile Include="Entities\DataProcesses.cs" />
+    <Compile Include="Entities\Environment.cs" />
+    <Compile Include="Entities\Equipment.cs" />
+    <Compile Include="Entities\Processes.cs" />
     <Compile Include="Entities\DataDocumentationManagementAndEntry.cs" />
     <Compile Include="Entities\DataStorage.cs" />
     <Compile Include="Entities\DataVerificaton.cs" />
@@ -94,6 +98,7 @@
     <Compile Include="Entities\MonitoringAndEvaluationSystems.cs" />
     <Compile Include="Entities\NonDigitalData.cs" />
     <Compile Include="Entities\NonDigitalDataRetention.cs" />
+    <Compile Include="Entities\People.cs" />
     <Compile Include="Entities\Planning.cs" />
     <Compile Include="Entities\PostProjectDataRetentionSharingAndDestruction.cs" />
     <Compile Include="Entities\ProjectDetails.cs" />

@@ -12,9 +12,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Integral - A fully responsive, HTML5 based admin template">
-    <meta name="keywords" content="Responsive, Web Application, HTML5, Admin Template, business, professional, Integral, web design, CSS3">
-    <title>DMP | Login</title>
+    <title>Shield Portal | Login</title>
     <!-- Site favicon -->
     <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
 
@@ -51,15 +49,15 @@
     <!-- loader backgrop -->
 
     <div class="login-container">
-        <div class="login-branding" style="padding: 10px 0;">
-            <img src="~/images/logo.jpg" alt="UMB-logo" title="DMP" />
-        </div>
+       
         <div class="login-content">
-            
+            <div class="login-branding" style="padding: 0 0;">
+                <img src="~/images/shield_login_burned.png" alt="Shield Logo" title="SHIELD LOGO" />
+            </div>
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken()
-                <h2 style="text-align: center"><strong>Welcome</strong></h2>
+                <h2 style="text-align: center"><strong></strong></h2>
                
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 

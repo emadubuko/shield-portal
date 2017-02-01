@@ -45,6 +45,10 @@ namespace DMP.ViewModel
         public string Dataformat { get; set; }
         public string DataCollectionAndReportingTools { get; set; }
         public string DataFlowChart { get; set; }
+        public string Staffing { get; set; }
+        public string RoleAndResponsibilities { get; set; }
+        public string DataHandlingAndEntry { get; set; }
+
         public string HealthFacility { get; set; }
         public string ImplementingPartner { get; set; }
         public string LGA { get; set; }
@@ -86,12 +90,14 @@ namespace DMP.ViewModel
         public string documentID { get; set; }
         public Guid leadactivitymanagerId { get; set; }
         public string AdditionalInformation { get; set; }
+        public string StatesCoveredByImplementingPartners { get; set; }
     }
 
     public class EditDocumentViewModel2
     {
         public List<DocumentRevisions> documentRevisions { get; set; }
-        public List<DataCollection> dataCollection { get; set; }
+        public DataCollection dataCollection { get; set; }
+        // public List<DataCollection> dataCollection { get; set; }
         public string DataFlowChart { get; set; }
         public string AdditionalInformation { get; set; }
         public List<Trainings> Trainings { get; set; }
@@ -115,7 +121,13 @@ namespace DMP.ViewModel
         public List<ReportData> reportDataList { get; set; }
         public RolesAndResponsiblities roleNresp { get; set; }
         public List<DataVerificaton> dataVerification { get; set; }
-        public DataCollectionProcesses datacollectionProcesses { get; set; }
+        public Processes processes { get; set; }
+        public People People { get; set; }
+        public Processes Process { get; set; }
+        public Equipment Equipment { get; set; }
+        public DAL.Entities.Environment Environment { get; set; }
+        
+        public DataProcesses dataProcess { get; set; }
         public DigitalData digital { get; set; }
         public NonDigitalData nonDigital { get; set; }
         public IntellectualPropertyCopyrightAndOwnership intelProp { get; set; }
@@ -145,6 +157,13 @@ namespace DMP.ViewModel
             }
         }
 
+        public List<string> equipment
+        {
+            get
+            {
+                return new List<string> { "IT equipments", "Tools", "IT solutions", "Centralized server", "Mobile computer Lab", "Others" };
+            }
+        }
 
         public List<string> reportingTools
         {
@@ -161,6 +180,23 @@ namespace DMP.ViewModel
                 return new string[] { "Research", "Experimental", "Observational", "Simulated" };
             }
         }
+
+        public ICollection<string> rational
+        {
+            get
+            {
+                return new string[] { " Project", "Publish", "Other" };
+            }
+        }
+
+        public ICollection<string> reviewBoard
+        {
+            get
+            {
+                return new string[] { "CDC Atlanta", "NHREC", "Others" };
+            }
+        }
+
         public ICollection<string> thematicAreas
         {
             get
@@ -172,9 +208,11 @@ namespace DMP.ViewModel
         {
             get
             {
-                return new string[] { "EMR", "Patient registers", "Aggregate data", "Patient line data", "Others(Please List)" };
+                return new string[] { "EMR", "Registers", "Monthly Summary Forms", "Client intake forms", "Hand card", "Community enrollment form", "Household enumeration forms", "Household enumeration sticker", "Mobile ART card", "Referral forms", "HIV request result form", "Mobile appointment diary", "Others(Please List)" };
             }
         }
+           
+
         public ICollection<string> dataFrequency
         {
             get
@@ -186,7 +224,7 @@ namespace DMP.ViewModel
         {
             get
             {
-                return new string[] { "Qualitative", "Quantitative" };
+                return new string[] { "Qualitative", "Quantitative", "Both", "Others" };
             }
         }
 
@@ -195,6 +233,22 @@ namespace DMP.ViewModel
             get
             { 
                 return new string[] { "Auditing Approach", "Verification Actors", "Others" };
+            }
+        }
+       
+         public ICollection<string> reportTypes
+        {
+            get
+            {
+                return new string[] { "ART", "PMTCT", "HTC", "OVC", "RADET", "Bi-Weekly for scale-up LGAs", "OTHERS" };
+            }
+        }
+
+        public ICollection<string> datareported
+        {
+            get
+            {
+                return new string[] { "GON", "PEPFAR", "OTHERS" };
             }
         }
 
@@ -229,13 +283,8 @@ namespace DMP.ViewModel
                 "HTML(.htm, .html)" };                 
             }
         }
-        //public ICollection<string> storageLocation
-        //{
-        //    get
-        //    {
-        //        return new string[] { "On premise", "Cloud store" };
-        //    }
-        //}
+        public ICollection<string> states { get; set; }
+
         public ICollection<string> nonDigitalDataTypes
         {
             get

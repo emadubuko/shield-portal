@@ -47,25 +47,25 @@ namespace DMP.Controllers
 
             var thepageDoc = Doc.Document;
             var comments = commentDAO.SearchByDocumentId(Doc.Id);
- 
 
-            VersionAuthor versionAuthor =  new VersionAuthor();
+
+            VersionAuthor versionAuthor = new VersionAuthor();
             VersionMetadata versionMetadata = new VersionMetadata();
             Approval approval = new Approval();
-             
+
 
             EditDocumentViewModel2 docVM = new EditDocumentViewModel2
-            {
-                 AdditionalInformation = thepageDoc.MonitoringAndEvaluationSystems.AdditionalInformation,
-                 documentRevisions = Doc.Document.DocumentRevisions,
+            {               
+                People = thepageDoc.MonitoringAndEvaluationSystems.People,
+                documentRevisions = Doc.Document.DocumentRevisions,
                 versionAuthor = versionAuthor,
-                datacollectionProcesses = thepageDoc.DataCollectionProcesses,
-                dataCollection = thepageDoc.DataCollection,
-                dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
-                dataSharing = thepageDoc.DataAccessAndSharing,
+                processes = thepageDoc.MonitoringAndEvaluationSystems.Process,
+                dataCollection = thepageDoc.DataProcesses.DataCollection,
+                dataDocMgt = thepageDoc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry,
+                dataSharing = thepageDoc.DataStorageAccessAndSharing.DataAccessAndSharing,
                 dataVerification = thepageDoc.QualityAssurance.DataVerification,
-                digital = thepageDoc.DataStorage.Digital,
-                nonDigital = thepageDoc.DataStorage.NonDigital,
+                digital = thepageDoc.DataStorageAccessAndSharing.Digital,
+                nonDigital = thepageDoc.DataStorageAccessAndSharing.NonDigital,
                 digitalDataRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention,
                 nonDigitalRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention,
                 ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
@@ -74,9 +74,8 @@ namespace DMP.Controllers
                 projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
                 summary = thepageDoc.Planning.Summary,
                 versionMetadata = versionMetadata,
-                reportDataList = thepageDoc.Reports !=null ? thepageDoc.Reports.ReportData : new  List<ReportData>(),
-                roleNresp = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities: new RolesAndResponsiblities(),
-                Trainings = thepageDoc.MonitoringAndEvaluationSystems !=null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings: new List<Trainings>(),
+                reportDataList =  thepageDoc.DataProcesses.Reports.ReportData,
+                Trainings = thepageDoc.MonitoringAndEvaluationSystems.People.Trainings,
                 documentID = Doc.Id.ToString(),
                 dmpId = Doc.TheDMP.Id,
                 Comments = comments,
@@ -84,7 +83,7 @@ namespace DMP.Controllers
                 approval = approval,
                 ProjectSummary = thepageDoc.ProjectProfile.ProjectDetails.ProjectSummary,
                 Organization = Doc.TheDMP.Organization,
-                DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.DataFlowChart : null,
+                DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems.People.DataFlowChart,
             };
 
             return View(docVM);
@@ -204,7 +203,7 @@ namespace DMP.Controllers
                 return new HttpStatusCodeResult(400, "Document is not submitted yet");
             }
             Profile currentUser = new Utils().GetloggedInProfile();
-              
+
             try
             {
                 Doc.Document.DocumentRevisions = GenerateApprovedDocumentRevision(Doc);
@@ -251,7 +250,7 @@ namespace DMP.Controllers
             if (previous != null)
             {
                 var t = previous.VersionNumber.Split('.');
-                mainVersion = Convert.ToInt16(t[0]) + 1;                 
+                mainVersion = Convert.ToInt16(t[0]) + 1;
             }
             VersionMetadata metaData = new VersionMetadata
             {
@@ -260,7 +259,7 @@ namespace DMP.Controllers
             };
             return metaData;
         }
-         
+
 
         Approval GenerateApproval()
         {
@@ -278,8 +277,8 @@ namespace DMP.Controllers
             return _approval;
         }
 
-        
-        
+
+
 
         [HttpPost]
         public ActionResult DownloadDocument(string documnentId)
@@ -296,7 +295,7 @@ namespace DMP.Controllers
                 return new HttpStatusCodeResult(400, "invalid documnent Id");
             }
 
-            string fileName = Doc.DocumentTitle+ ".pdf";
+            string fileName = Doc.DocumentTitle + ".pdf";
             string fullFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Downloads/" + fileName);
 
             using (FileStream fs = new FileStream(fullFilename, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
@@ -309,169 +308,9 @@ namespace DMP.Controllers
                 pdfUtil.GeneratePDFDocument(Doc, ref doc);
 
                 doc.Close();
-            }                
+            }
             return Json(fileName);
         }
-
-
-
-        /// <summary>
-        /// ///////////////this is dummmy data for testing
-        /// </summary>
-
-        WizardPage dummyData = new WizardPage
-        {
-            ProjectProfile = new ProjectProfile
-            {
-                EthicalApproval = new EthicsApproval
-                {
-                    EthicalApprovalForTheProject = @"Program must be of social or scientific value to either participants, the population they represent, the local community, the host country or the world.",
-                    TypeOfEthicalApproval = "General",
-                },
-                ProjectDetails = new ProjectDetails
-                {
-                    ProjectSummary = @"Strengthening HIV Field Epidemiology Infectious Disease Surveillance and Lab Diagnostic Program [SHIELD] is a 5 years Health system strengthening project to be carried out by the University of Maryland Baltimore under the Division of Epidemiology and the Division of Clinical Care and Research",
-                    AbreviationOfImplementingPartner = "CCCRN",
-                    AddressOfOrganization = "Jahi district",
-                    NameOfImplementingPartner = "Center for clinical research nigeria",
-                    DocumentTitle = "SEED DMP for CCCRN",
-                    ProjectTitle = "Strengthening HIV Field Epidemiology Infectious Disease Surveillance &Lab Diagnostic Program(SHIELD)",
-                    ProjectEndDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now.AddMonths(7)),
-                    ProjectStartDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now.AddMonths(-2)),
-                    MissionPartner = "University of Maryland Baltimore"
-                },
-            },
-            DocumentRevisions = new List<DocumentRevisions>
-            {
-                new DocumentRevisions{
-                Version = new DAL.Entities.Version
-                {
-                    Approval = new Approval
-                    {
-                        SurnameApprover = "madubuko",
-                        FirstnameofApprover = "Emeka"
-                    },
-                    VersionAuthor = new VersionAuthor
-                    {
-                        SurnameAuthor = "Madubuko",
-                        FirstNameOfAuthor = "Christian"
-                    },
-                    VersionMetadata = new VersionMetadata
-                    {
-                        VersionDate = DateTime.Now.ToShortDateString(),
-                        VersionNumber = "1.0"
-                    },
-                },
-                },
-                new DocumentRevisions{
-                Version = new DAL.Entities.Version
-                {
-                    Approval = new Approval
-                    {
-                        SurnameApprover = "John",
-                        FirstnameofApprover = "Doe"
-                    },
-                    VersionAuthor = new VersionAuthor
-                    {
-                        SurnameAuthor = "Madubuko",
-                        FirstNameOfAuthor = "Christian"
-                    },
-                    VersionMetadata = new VersionMetadata
-                    {
-                        VersionDate = DateTime.Now.ToShortDateString(),
-                        VersionNumber = "2.0"
-                    },
-                },
-                }
-            },
-            Planning = new Planning
-            {
-                Summary = new Summary
-                { ProjectObjectives = "TL;DR. Too long dont read" }
-            },
-            //DataCollection = new DataCollection
-            //{
-            //     DataSources = "Unknown"
-            //},
-             MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
-             {
-                  Trainings = new  List<Trainings>(),
-                   DataFlowChart = "",
-                 RoleAndResponsibilities = new RolesAndResponsiblities
-                 {
-                      AggregationLevel = "Determines the report",
-                      CentralNationalLevel = "Archives",
-                      HealthFacilityLevel = "Generates the report",                      
-                 }
-             },
-            Reports = new Report
-             {
-                  ReportData = new List<ReportData>(),
-                //ReportData
-                //  { 
-                //      NameOfReport = "Test report",
-                //      DurationOfReporting = "steady",
-                //  }
-             },
-            QualityAssurance = new QualityAssurance
-            {
-                //DataVerification = new DataVerificaton
-                //{
-                //    FormsOfDataVerification = "Manual",
-                //    TypesOfDataVerification = "DQA"
-                //},
-            },
-            DataCollectionProcesses = new DataCollectionProcesses
-            {
-                DataCollectionProcessess = "Collected by hand"
-            },
-            DataStorage = new DataStorage
-            {
-                Digital = new DigitalData
-                {
-                    Backup = "None",
-                    Storagetype = "DBs"
-                },
-                NonDigital = new NonDigitalData
-                {
-                    NonDigitalDataTypes = "Registers",
-                    StorageLocation = "File Cabinet"
-                }
-            },
-            IntellectualPropertyCopyrightAndOwnership = new IntellectualPropertyCopyrightAndOwnership
-            {
-                ContractsAndAgreements = "None",
-                Ownership = "Fully Us",
-                UseOfThirdPartyDataSources = "None Needed"
-            },
-            DataAccessAndSharing = new DataAccessAndSharing
-            {
-                DataAccess = "Everyone with Login",
-                DataSharingPolicies = "Only staff",
-                DataTransmissionPolicies = "SSL Secured",
-                SharingPlatForms = "Mobile"
-            },
-            DataDocumentationManagementAndEntry = new DataDocumentationManagementAndEntry
-            {
-                NamingStructureAndFilingStructures = "camel Case Name, arranged Alphabetical order",
-                StoredDocumentationAndDataDescriptors = "Dont know"
-            },
-            PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
-            {
-                DataToRetain = "None",
-                DigitalDataRetention = new DigitalDataRetention
-                {
-                    DataRetention = "Yes, anticipated"
-                },
-                Licensing = "MIT",
-                NonDigitalRentention = new NonDigitalDataRetention
-                {
-                    DataRention = "In place"
-                },
-                Duration = "As long as relevant",
-                PreExistingData = "Nope"
-            }
-        };
 
     }
 }

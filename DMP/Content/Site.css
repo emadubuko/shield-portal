@@ -23,31 +23,45 @@ li.removeVisibility {
 }
 
 .panel-warning {
-    border-color: #929b17;
+    border-color: steelblue;
 }
     .panel-warning > .panel-heading {
         color: #FFF;
-        background-color: #929b17;
-        border-color: #929b17;
+        background-color: steelblue;
+        border-color: steelblue;
     }
 
-     .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-                    padding: 5px 25%;
-            }
+.panel-heading {
+    padding: 5px 20%;
+}
 
 form{
-    color:#929b17;
+    color:steelblue;
 }
 .form-control{
-    border-color:#929b17;
+    border-color:steelblue;
 }
  .btn-warning{
-  background-color: #929b17;
-   border-color: #929b17;
+  background-color: steelblue;
+   border-color: steelblue;
+        }
+ .btn-warning:hover{
+  background-color: steelblue;
+   border-color: steelblue;
         }
 body {
     background-image: url('../images/background-image.jpg'); 
+}
+label {
+    font-weight: bold;
+}
+.btn-default.btn-outline {
+    color: steelblue;
+    background-color: transparent;
+    border-color: steelblue;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: steelblue;
 }

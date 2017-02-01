@@ -35,6 +35,10 @@ $("#addtrainingbtn").click(function (e) {
             $(this).val("");
         }
         else if ($(this)[0].id == "TimelinesForTrainings") {
+            if ($(this)[0].value == "") {
+                alert("please select timelines")
+                return;
+            }
             dateStringArray = $(this)[0].value.split(',');
             training["TimelinesForTrainings"] = dateStringArray;
             $(this).val("");
@@ -55,14 +59,18 @@ $("#addtrainingbtn").click(function (e) {
                     duration = inputValue * 30; break;
                 case "Years":
                     duration = inputValue * 365; break;
+                default:
+                    duration = 1; break;
             }
             training["DurationOfTrainings"] = duration; // $(this)[0].value;
             $(this).val("");
         }
     });
 
-    trainingArray.push(training);
-    CreatetrainingTable(training);
+    if (training.TimelinesForTrainings != null) {
+        trainingArray.push(training);
+        CreatetrainingTable(training);
+    }    
 });
 
 function CreatetrainingTable(training) {

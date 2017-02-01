@@ -10,7 +10,7 @@ namespace DAL.Entities
         [XmlIgnore]
         public virtual int Id { get; set; }
         [XmlIgnore]
-        public virtual List<DMPDocument> DMPDocuments { get; set; }
+        public virtual IList<DMPDocument> DMPDocuments { get; set; }
         [XmlIgnore]
         public virtual ProjectDetails TheProject { get; set; }
         public virtual Organizations Organization { get; set; }

@@ -28,7 +28,37 @@ namespace DMP.Controllers
         // GET: DMP
         public ActionResult Index()
         {
-            return View();
+            bool isIpUser = System.Web.HttpContext.Current.User.IsInRole("ip");
+            var currentProfile = new Services.Utils().GetloggedInProfile();
+
+            List<DAL.Entities.DMP> dmps = new List<DAL.Entities.DMP>();
+            if (isIpUser)
+            {
+                dmps = dmpDAO.SearchOrganizaionId(currentProfile.Organization.Id) as List<DAL.Entities.DMP>;
+            }
+            else
+            {
+                dmps = dmpDAO.RetrieveDMPSorted() as List<DAL.Entities.DMP>; //.RetrieveAll().Where(x => x.TheProject != null).ToList();
+            }
+
+            List<DMPViewModel> dmpVM = new List<DMPViewModel>();
+            dmps.ForEach(x =>
+            {
+                dmpVM.Add(new DMPViewModel
+                {
+                    Id = x.Id,
+                    CreatedBy = x.CreatedBy != null ? x.CreatedBy.FullName : "test",
+                    DateCreated = string.Format("{0:dd-MMM-yyy}", x.DateCreated),
+                    ProjectTitle = x.TheProject.ProjectTitle,
+                    Title = x.DMPTitle,
+                    Owner = x.Organization.ShortName,
+                    StartDate = string.Format("{0:dd-MMM-yyy}", x.StartDate),
+                    EndDate = string.Format("{0:dd-MMM-yyy}", x.EndDate)
+                    //Status = ((DMPStatus)x.Status).ToString()
+                });
+            });
+
+            return View(dmpVM);
         }
 
         public ActionResult CreateDMP()

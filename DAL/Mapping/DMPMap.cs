@@ -12,7 +12,7 @@ namespace DAL.Mapping
     {
         public DMPMap()
         {
-            Table("dmps");
+            Table("dmp");
 
             Id(x => x.Id);
             Map(x => x.DMPTitle);
@@ -22,6 +22,8 @@ namespace DAL.Mapping
             Map(x => x.EndDate);
             References(x => x.CreatedBy).Not.LazyLoad();
             Map(x => x.DateCreated);
+            HasMany(x => x.DMPDocuments)
+            .Inverse().KeyColumns.Add("DMPId", mapping => mapping.Name("DMPId"));
         }
     }
 }

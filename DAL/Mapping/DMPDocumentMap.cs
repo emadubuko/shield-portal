@@ -8,7 +8,7 @@ namespace DAL.Mapping
     {
         public DMPDocumentMap()
         {
-            Table("dmp_XMLDocument");
+            Table("dmp_xmldocument");
             Id(x => x.Id);
             Map(x => x.Document).CustomType(typeof(XmlType<WizardPage>));
             Map(x => x.PageNumber);

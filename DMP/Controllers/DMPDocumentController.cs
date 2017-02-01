@@ -1,4 +1,5 @@
 ﻿using CommonUtil.DAO;
+using CommonUtil.Utilities;
 using DAL.DAO;
 using DAL.Entities;
 using DMP.Services;
@@ -57,33 +58,35 @@ namespace DMP.Controllers
             if (dmpDoc != null)
             {                
                 var thepageDoc = dmpDoc.Document;
-
+                var states = ExcelHelper.RetrieveStatesName();
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
+                    states = states,
+                    People = thepageDoc.MonitoringAndEvaluationSystems.People,
+                    Equipment = thepageDoc.MonitoringAndEvaluationSystems.Equipment,
+                    Environment = thepageDoc.MonitoringAndEvaluationSystems.Environment,
                     //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
-                    datacollectionProcesses = thepageDoc.DataCollectionProcesses,
-                    dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
-                    dataSharing = thepageDoc.DataAccessAndSharing,
+                    processes = thepageDoc.MonitoringAndEvaluationSystems.Process,
+                    dataDocMgt = thepageDoc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry,
+                    dataSharing = thepageDoc.DataStorageAccessAndSharing.DataAccessAndSharing,
                     dataVerification = thepageDoc.QualityAssurance.DataVerification,
-                    digital = thepageDoc.DataStorage.Digital,
-                    nonDigital = thepageDoc.DataStorage.NonDigital,
+                    digital = thepageDoc.DataStorageAccessAndSharing.Digital,
+                    nonDigital = thepageDoc.DataStorageAccessAndSharing.NonDigital,
                     digitalDataRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention,
                     nonDigitalRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention,
                     ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
                     intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
                     ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
                     projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
-                    summary = thepageDoc.Planning.Summary,
-                    //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
-                    reportDataList = thepageDoc.Reports != null ? thepageDoc.Reports.ReportData : new List<ReportData>(),
-                    roleNresp = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities(),
-                    Trainings = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>(),
+                    summary = thepageDoc.Planning.Summary, 
+                    reportDataList = thepageDoc.DataProcesses.Reports.ReportData,
+                    Trainings = thepageDoc.MonitoringAndEvaluationSystems.People.Trainings,
                     documentID = dmpDoc.Id.ToString(),
                     EditMode = true,
                     Profiles = profileDAO.RetrieveAll().ToDictionary(x => x.Id),
                     Organization = MyDMP.Organization,
-                    dataCollection = thepageDoc.DataCollection,
-                    DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems != null ? thepageDoc.MonitoringAndEvaluationSystems.DataFlowChart : null,
+                    dataCollection = thepageDoc.DataProcesses.DataCollection,
+                    DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems.People.DataFlowChart,
                 };
                 return View(docVM);
             }
@@ -104,13 +107,13 @@ namespace DMP.Controllers
                 return View(docVM);
             }
         }
-        
+
 
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
-            Summary summary, RolesAndResponsiblities roleNresp, List<DataCollection> DataCollection,
+            Summary summary, Equipment equipment, DataCollection DataCollection,
             ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
-            DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
+            Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, AreaCoveredByIP siteCount,
             DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<Trainings> Trainings,
             DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention, List<ReportData> reportDataList)
         {
@@ -152,28 +155,41 @@ namespace DMP.Controllers
                     }
                 },
                 Planning = new Planning { Summary = summary },
-                DataCollection = DataCollection,
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
                 {
-                    DataFlowChart = doc.DataFlowChart,
-                    AdditionalInformation = doc.AdditionalInformation,
-                    RoleAndResponsibilities = roleNresp,
-                    Trainings = Trainings,
+                    People = new People
+                    {
+                        Trainings = Trainings,
+                        DataFlowChart = doc.DataFlowChart,
+                        DataHandlingAndEntry = doc.DataHandlingAndEntry,
+                        RoleAndResponsibilities = doc.RoleAndResponsibilities,
+                        Staffing = doc.Staffing
+                    },
+                    Equipment = equipment,
+                    Environment = new DAL.Entities.Environment
+                    {
+                        StatesCoveredByImplementingPartners = doc.StatesCoveredByImplementingPartners,
+                     NumberOfSitesCoveredByImplementingPartners = siteCount
+                    },
+                    Process = processes
                 },
-                Reports = new Report
+                DataProcesses = new DataProcesses
                 {
-                    ReportData = reportDataList
+                    DataCollection = DataCollection,
+                    Reports = new Report
+                    {
+                        ReportData = reportDataList
+                    },
                 },
                 QualityAssurance = new QualityAssurance { DataVerification = dataVerification },
-                DataCollectionProcesses = datacollectionProcesses,
-                DataStorage = new DataStorage
+                DataStorageAccessAndSharing = new DataStorage
                 {
                     Digital = digital,
-                    NonDigital = nonDigital
+                    NonDigital = nonDigital,
+                    DataAccessAndSharing = dataSharing,
+                    DataDocumentationManagementAndEntry = dataDocMgt,
                 },
                 IntellectualPropertyCopyrightAndOwnership = intelProp,
-                DataAccessAndSharing = dataSharing,
-                DataDocumentationManagementAndEntry = dataDocMgt,
                 PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
                 {
                     DataToRetain = doc.DataToRetain,
@@ -188,25 +204,18 @@ namespace DMP.Controllers
 
             try
             {
-                // bool saved =  SaveProject(ProjDetails);
                 projDAO.Save(ProjDetails);
-                //if (saved || MyDMP.TheProject != null)
-                {
-                    projDAO.CommitChanges();
+                projDAO.CommitChanges();
 
-                    MyDMP.TheProject = ProjDetails;
-                    dmpDAO.Update(MyDMP);
-                    var theDoc = SaveDMPDocument(page, Guid.Empty); // MyDMP.Id);
-                    dmpDocDAO.CommitChanges();
+                MyDMP.TheProject = ProjDetails;
+                dmpDAO.Update(MyDMP);
+                var theDoc = SaveDMPDocument(page, Guid.Empty); // MyDMP.Id);
+                dmpDocDAO.CommitChanges();
 
-                    var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
+                var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
 
-                    return Json(data, JsonRequestBehavior.AllowGet); 
-                }
-                //else
-                //{
-                //    return new HttpStatusCodeResult(400, "project with the same name already exist");
-                //}
+                return Json(data, JsonRequestBehavior.AllowGet);
+
             }
             catch (Exception ex)
             {
@@ -217,35 +226,39 @@ namespace DMP.Controllers
 
         [HttpPost]
         public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
-           VersionAuthor versionAuthor, VersionMetadata versionMetadata, Summary summary, RolesAndResponsiblities roleNresp,
+           AreaCoveredByIP siteCount, Equipment equipment, Summary summary,
            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
-           DataCollectionProcesses datacollectionProcesses, IntellectualPropertyCopyrightAndOwnership intelProp,
-           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<DataCollection> DataCollection,
+           Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp,
+           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
            DigitalDataRetention digitalDataRetention, List<Trainings> Trainings, List<ReportData> reportDataList)
         {
 
             Guid dGuid = new Guid(doc.documentID);
             var previousDoc = dmpDocDAO.Retrieve(dGuid);
-
             ProjectDetails ProjDetails = projDTF;
-            ProjDetails.Organization = previousDoc.TheDMP.Organization;
-            ProjDetails.AbreviationOfImplementingPartner = previousDoc.TheDMP.Organization.ShortName;
-            ProjDetails.NameOfImplementingPartner = previousDoc.TheDMP.Organization.Name;
-            ProjDetails.AddressOfOrganization = previousDoc.TheDMP.Organization.Address;
-            ProjDetails.PhoneNumber = previousDoc.TheDMP.Organization.PhoneNumber;
-            ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
 
-             
             if (previousDoc.TheDMP.TheProject == null)
             {
-                ProjDetails = projDTF;
-                projDAO.Save(ProjDetails);
-                //SaveProject(ProjDetails);
+                
+                ProjDetails.Organization = previousDoc.TheDMP.Organization;
+                ProjDetails.AbreviationOfImplementingPartner = previousDoc.TheDMP.Organization.ShortName;
+                ProjDetails.NameOfImplementingPartner = previousDoc.TheDMP.Organization.Name;
+                ProjDetails.AddressOfOrganization = previousDoc.TheDMP.Organization.Address;
+                ProjDetails.PhoneNumber = previousDoc.TheDMP.Organization.PhoneNumber;
+                ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
+                projDAO.Save(ProjDetails); 
             }
             else
-            {
-                ProjDetails.Id = previousDoc.TheDMP.TheProject.Id;
-                projDAO.Update(ProjDetails);
+            {                               
+                previousDoc.TheDMP.TheProject.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
+                previousDoc.TheDMP.TheProject.GrantReferenceNumber = projDTF.GrantReferenceNumber; 
+                previousDoc.TheDMP.TheProject.ProjectTitle = projDTF.ProjectTitle;
+                previousDoc.TheDMP.TheProject.ProjectEndDate = projDTF.ProjectEndDate;
+                previousDoc.TheDMP.TheProject.ProjectStartDate = projDTF.ProjectStartDate; 
+
+                projDAO.Update(previousDoc.TheDMP.TheProject);
+
+                ProjDetails = previousDoc.TheDMP.TheProject;
             }
 
             var revisions = GenerateDocumentRevision(previousDoc);
@@ -258,28 +271,41 @@ namespace DMP.Controllers
                 },
                 DocumentRevisions = revisions,
                 Planning = new Planning { Summary = summary },
-                DataCollection = DataCollection,
                 MonitoringAndEvaluationSystems = new MonitoringAndEvaluationSystems
                 {
-                    DataFlowChart = doc.DataFlowChart,
-                    AdditionalInformation = doc.AdditionalInformation,
-                    RoleAndResponsibilities = roleNresp,
-                    Trainings = Trainings,
+                    People = new People
+                    {
+                        Trainings = Trainings,
+                        DataFlowChart = doc.DataFlowChart,
+                        DataHandlingAndEntry = doc.DataHandlingAndEntry,
+                        RoleAndResponsibilities = doc.RoleAndResponsibilities,
+                        Staffing = doc.Staffing
+                    },
+                    Equipment = equipment,
+                    Environment = new DAL.Entities.Environment
+                    {
+                        StatesCoveredByImplementingPartners = doc.StatesCoveredByImplementingPartners,
+                        NumberOfSitesCoveredByImplementingPartners = siteCount
+                    },
+                    Process = processes
                 },
-                 Reports = new Report
-                 {
-                      ReportData = reportDataList
-                 },
+                DataProcesses = new DataProcesses
+                {
+                    DataCollection = DataCollection,
+                    Reports = new Report
+                    {
+                        ReportData = reportDataList
+                    },
+                },
                 QualityAssurance = new QualityAssurance { DataVerification = dataVerification },
-                DataCollectionProcesses = datacollectionProcesses,
-                DataStorage = new DataStorage
+                DataStorageAccessAndSharing = new DataStorage
                 {
                     Digital = digital,
-                    NonDigital = nonDigital
+                    NonDigital = nonDigital,
+                    DataAccessAndSharing = dataSharing,
+                    DataDocumentationManagementAndEntry = dataDocMgt,
                 },
                 IntellectualPropertyCopyrightAndOwnership = intelProp,
-                DataAccessAndSharing = dataSharing,
-                DataDocumentationManagementAndEntry = dataDocMgt,
                 PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
                 {
                     DataToRetain = doc.DataToRetain,
@@ -302,7 +328,6 @@ namespace DMP.Controllers
                 currentMetadata = revisions.LastOrDefault().Version.VersionMetadata;
             }
 
-
             var theDoc = SaveDMPDocument(page, currentDocumentID, currentMetadata); // previousDoc.TheDMP.Id);
 
             try
@@ -316,8 +341,7 @@ namespace DMP.Controllers
             {
                 projDAO.RollbackChanges();
                 return new HttpStatusCodeResult(400, ex.Message);
-            }
-            
+            }            
         }
 
         public DMPDocument SaveDMPDocument(WizardPage documentPages, Guid documentId, VersionMetadata metadata =null) // int dmpId)
@@ -426,48 +450,5 @@ namespace DMP.Controllers
             };
             return metaData;
         }
-
-
     }
 }
-
-//public ActionResult EditDocumentWizardPage(int? dmpId, string documnentId = null)
-//{
-//    if ((documnentId == null))
-//    {
-//        return RedirectToAction("CreateNewDMP", "Home");
-//    }
-//    Guid dGuid = new Guid(documnentId);
-//    DMPDocument Doc = new DMPDocumentDAO().Retrieve(dGuid);
-
-//    if (Doc == null)
-//    {
-//        return new HttpStatusCodeResult(400, "Bad request");
-//    }
-//    MyDMP = Doc.TheDMP;
-
-//    var thepageDoc = Doc.Document;
-//    EditDocumentViewModel2 docVM = new EditDocumentViewModel2
-//    {
-//        //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
-//        datacollectionProcesses = thepageDoc.DataCollectionProcesses,
-//        dataDocMgt = thepageDoc.DataDocumentationManagementAndEntry,
-//        dataSharing = thepageDoc.DataAccessAndSharing,
-//        dataVerification = thepageDoc.QualityAssurance.DataVerification,
-//        digital = thepageDoc.DataStorage.Digital,
-//        nonDigital = thepageDoc.DataStorage.NonDigital,
-//        digitalDataRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention,
-//        nonDigitalRetention = thepageDoc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention,
-//        ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
-//        intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
-//        ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
-//        projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
-//        summary = thepageDoc.Planning.Summary,
-//        //versionMetadata = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionMetadata,
-//        reportData = thepageDoc.DataCollection.Report.ReportData,
-//        roleNresp = thepageDoc.DataCollection.Report.RoleAndResponsibilities,
-//        documentID = Doc.Id.ToString(),
-//    };
-
-//    return View(docVM);
-//}

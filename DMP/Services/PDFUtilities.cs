@@ -17,7 +17,6 @@ namespace DMP.Services
             WizardPage pageData = dmpDoc.Document;
 
             Font pageFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-            // FontFactory.GetFont("Corbel", 7);
 
             Font istPageFont20 = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD, fadedBlue);
             Font istPageFont26 = new Font(Font.FontFamily.TIMES_ROMAN, 26, Font.NORMAL, fadedBlue);
@@ -38,21 +37,15 @@ namespace DMP.Services
             
             istPage = new Paragraph(dmpDoc.TheDMP.Organization.Name, istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
-            //istPage.IndentationRight = 85f;
             doc.Add(istPage);
 
             WriteLines(3, ref doc); 
 
             istPage = new Paragraph("DATA MANAGEMENT PLAN", istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
-            //istPage.IndentationRight = 85f;
             doc.Add(istPage);
 
-            //istPage = new Paragraph("PROJECT", istPageFont18);
-            //istPage.Alignment = Element.ALIGN_RIGHT;
-            //istPage.IndentationRight = 55f;
-            //doc.Add(istPage);
-
+       
             WriteLines(6, ref doc); 
 
             istPage = new Paragraph("SI LEAD", istPageFont14);
@@ -99,16 +92,16 @@ namespace DMP.Services
             header = new Paragraph("DATA COLLECTION PROCESS", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataCollectionProcesses, "Data Collection Processes"));
+           // doc.Add(GenericPageTable(pageData.DataCollectionProcesses, "Data Collection Processes"));
 
             doc.NewPage();//DataCollection
             header = new Paragraph("DATA COLLECTION", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            foreach (var dt in pageData.DataCollection)
-            {
-                doc.Add(GenericPageTable(dt, "Data"));
-            }
+            //foreach (var dt in pageData.DataCollection)
+            //{
+            //    doc.Add(GenericPageTable(dt, "Data"));
+            //}
             
 
             doc.NewPage();// MonitoringAndEvaluationSystems
@@ -122,25 +115,25 @@ namespace DMP.Services
             header.IndentationLeft = 55f;
             doc.Add(header);
 
-            string dataflowchart = pageData.MonitoringAndEvaluationSystems !=null && !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.DataFlowChart.Split(',')[1] : null;
-            if(dataflowchart != null)
-            {
-                byte[] imageByte = Convert.FromBase64String(dataflowchart);
-                docLogo = GeneratePDFImage(imageByte);
-                doc.Add(docLogo);
-            }
+            //string dataflowchart = pageData.MonitoringAndEvaluationSystems !=null && !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.DataFlowChart.Split(',')[1] : null;
+            //if(dataflowchart != null)
+            //{
+            //    byte[] imageByte = Convert.FromBase64String(dataflowchart);
+            //    docLogo = GeneratePDFImage(imageByte);
+            //    doc.Add(docLogo);
+            //}
 
-            var roleNrsp = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities();
-            doc.Add(GenericPageTable(roleNrsp, "Role and responsibilities"));
+            //var roleNrsp = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities();
+           // doc.Add(GenericPageTable(roleNrsp, "Role and responsibilities"));
             WriteLines(1, ref doc);
             header = new Paragraph("Trainings", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            var trn = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>();
-            foreach (var tr in trn)
-            {
-                doc.Add(GenericPageTable(tr, "Training"));
-            }
+            //var trn = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>();
+            //foreach (var tr in trn)
+            //{
+            //    doc.Add(GenericPageTable(tr, "Training"));
+            //}
 
             doc.NewPage();// QualityAssurance
             header = new Paragraph("Quality Assurance", istPageFont14);
@@ -155,19 +148,19 @@ namespace DMP.Services
             header = new Paragraph("REPORTS", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            var reportList = pageData.Reports != null ? pageData.Reports.ReportData : new List<ReportData>();
-            foreach (var rpt in reportList)
-            {
-                doc.Add(GenericPageTable(rpt, "Data Report"));
-            }
+            //var reportList = pageData.Reports != null ? pageData.Reports.ReportData : new List<ReportData>();
+            //foreach (var rpt in reportList)
+            //{
+            //    doc.Add(GenericPageTable(rpt, "Data Report"));
+            //}
             
 
             doc.NewPage(); // DataStorage
             header = new Paragraph("Data Storage", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataStorage.Digital, "Data Storage - Digital Data"));
-            doc.Add(GenericPageTable(pageData.DataStorage.Digital, "Data Storage - Non Digital Data"));
+            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Digital Data"));
+            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Non Digital Data"));
 
             doc.NewPage();// IntellectualPropertyCopyrightAndOwnership
             header = new Paragraph("Intellectual Property, Copyright and Ownership", istPageFont14);
@@ -180,13 +173,13 @@ namespace DMP.Services
             header = new Paragraph("Data Access and Sharing", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataAccessAndSharing, "Data Access and Sharing"));
+            //doc.Add(GenericPageTable(pageData.DataAccessAndSharing, "Data Access and Sharing"));
 
             doc.NewPage();// DataDocumentationManagementAndEntry
             header = new Paragraph("Data Documentation Management and Entry", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
+           // doc.Add(GenericPageTable(pageData.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
 
 
             doc.NewPage();// PostProjectDataRetentionSharingAndDestruction
@@ -344,7 +337,7 @@ namespace DMP.Services
         }
 
 
-        PdfPTable DataCollection(DataCollectionProcesses DCP, DataCollection dCollection, QualityAssurance QA)
+        PdfPTable DataCollection(Processes DCP, DataCollection dCollection, QualityAssurance QA)
         {
             PdfPTable table = new PdfPTable(1);
 

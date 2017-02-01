@@ -12,7 +12,7 @@ namespace DAL.Mapping
     {
         public ProjectDetailsMap()
         {
-            Table("dmp_ProjectDetails");
+            Table("dmp_projectdetails");
             Id(x => x.Id);
             Map(x => x.ProjectTitle);
             Map(x => x.GrantReferenceNumber);

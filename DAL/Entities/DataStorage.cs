@@ -10,5 +10,7 @@ namespace DAL.Entities
     {
         public virtual DigitalData Digital { get; set; }
         public virtual NonDigitalData NonDigital { get; set; }
+        public virtual DataAccessAndSharing DataAccessAndSharing { get; set; }
+        public virtual DataDocumentationManagementAndEntry DataDocumentationManagementAndEntry { get; set; }
     }
 }

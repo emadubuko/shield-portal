@@ -166,11 +166,11 @@ namespace Test
                 //    TypesOfDataVerification = "DQA"
                 //},
             },
-            DataCollectionProcesses = new DataCollectionProcesses
-            {
-                DataCollectionProcessess = "Collected by hand"
-            },
-            DataStorage = new DataStorage
+            //DataCollectionProcesses = new Processes
+            //{
+            //    DataCollectionProcessess = "Collected by hand"
+            //},
+            DataStorageAccessAndSharing = new DataStorage
             {
                 Digital = new DigitalData
                 {
@@ -189,18 +189,18 @@ namespace Test
                 Ownership = "Fully Us",
                 UseOfThirdPartyDataSources = "None Needed"
             },
-            DataAccessAndSharing = new DataAccessAndSharing
-            {
-                DataAccess = "Everyone with Login",
-                DataSharingPolicies = "Only staff",
-                DataTransmissionPolicies = "SSL Secured",
-                SharingPlatForms = "Mobile"
-            },
-            DataDocumentationManagementAndEntry = new DataDocumentationManagementAndEntry
-            {
-                NamingStructureAndFilingStructures = "camel Case Name, arranged Alphabetical order",
-                StoredDocumentationAndDataDescriptors = "Dont know"
-            },
+            //DataAccessAndSharing = new DataAccessAndSharing
+            //{
+            //    DataAccess = "Everyone with Login",
+            //    DataSharingPolicies = "Only staff",
+            //    DataTransmissionPolicies = "SSL Secured",
+            //    SharingPlatForms = "Mobile"
+            //},
+            //DataDocumentationManagementAndEntry = new DataDocumentationManagementAndEntry
+            //{
+            //    NamingStructureAndFilingStructures = "camel Case Name, arranged Alphabetical order",
+            //    StoredDocumentationAndDataDescriptors = "Dont know"
+            //},
             PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
             {
                 DataToRetain = "None",

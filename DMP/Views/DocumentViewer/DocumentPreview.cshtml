@@ -4,57 +4,44 @@
 }
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
-
     <style>
         .Adjusted-header {
             padding-left: 30%;
             padding-top: 10px;
             height: 30px;
-            background-color: #004b17;
-            color: #fff;
+            /*background-color: #004b17;*/
+            color: steelblue;
+            font-weight: bold;
         }
-
-        .panel-success {
-            border-color: #929b17;
-        }
-
-            .panel-success > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-            }
-
-        .panel-warning {
-            border-color: #929b17;
-        }
-
-            .panel-warning > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-            }
 
         .commentBox {
-            float: right; 
-            border-color: #929b17;
+            float: right;
+            border-color: steelblue;
+            color: steelblue;
+        }
+            .commentBox:hover {
+                color: #333;
+                background-color: steelblue;
+            }
+        .form-horizontal .form-group {
+            border-bottom: 1px solid #ccc;
         }
 
-        .commentBox:hover {
-    color: #333;
-    background-color: #929b17;
-    border-color: #929b17;
-}
+        div > span {
+            color: #333;
+        }
     </style>
 
-<script src="~/Scripts/Ultilities.js"></script>
+    <script src="~/Scripts/Ultilities.js"></script>
     <script type="text/javascript">
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var editMode = false;
         var ReportArrayFromServer =  @Html.Raw(Json.Encode(Model.reportDataList));
         var reportArray = [];
 
-        var DataCollectionArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollection));
-        var datacollectionArray = [];
+        @*var DataCollectionArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollection));
+        var datacollectionArray = [];*@
+
         var TrainingArrayFromServer = @Html.Raw(Json.Encode(Model.Trainings));
         var trainingArray = [];
         var DataVerificationArrayFromServer = @Html.Raw(Json.Encode(Model.dataVerification));
@@ -62,39 +49,34 @@
 
     </script>
 }
+
 <div class="main-content">
-    <a href="javascript:history.back()" class="btn btn-success btn-sm btn-outline"><i class="icon-left-open"></i><b>Go Back</b></a>
-    
-  <h3 style="text-align:center"> @Model.projectDetails.DocumentTitle </h3> 
     <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-warning">
-                <div class="panel-heading clearfix">
-                    <h4 class="panel-title"> DMP Document Preview</h4>
-
-                    <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -40%;">
-                        <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-black btn-sm btn-outline">
+            <div>
+                <div class="clearfix">
+                    <div class="col-sm-offset-7">
+                        <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-default btn-sm btn-outline">
                             <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
                         </a>
-                        <a id="submitbtn" class="btn btn-black btn-sm btn-outline"><i class="icon-check"></i><span>Submit</span></a>
-                        <a id="downloadbtn" class="btn btn-black btn-sm btn-outline"><i class="icon-download"></i><span>Download</span></a>
-                        <a id="approvebtn" class="btn btn-black btn-sm btn-outline"><i class="icon-info"></i><span>Approval</span></a>
-                        <a href="~/Home/tracker?documnentId=@Model.documentID" class="btn btn-black btn-sm btn-outline">
+                        <a id="submitbtn" class="btn btn-default btn-sm btn-outline"><i class="icon-check"></i><span>Submit</span></a>
+                        <a id="downloadbtn" class="btn btn-default btn-sm btn-outline"><i class="icon-download"></i><span>Download</span></a>
+                        <a id="approvebtn" class="btn btn-default btn-sm btn-outline"><i class="icon-info"></i><span>Approval</span></a>
+                        <a href="~/Home/tracker?documnentId=@Model.documentID" class="btn btn-default btn-sm btn-outline">
                             <i class="icon-flow-parallel"></i> View tracker
                         </a>
                     </div>
+                    <h3 style="text-align:center"> @Model.projectDetails.DocumentTitle </h3> 
                 </div>
 
                 <div class="panel-body">
                     <form id="previewWizard">
-                        
-
-                        <div class="panel panel-success" id="ProjectProfile">
+                        <div class="panel panel-warning" id="ProjectProfile">
                             <div class="panel-heading clearfix">
                                 <h4 class="panel-title">Project Profile</h4>
                             </div>
                             <div class="panel-body">
-                                <div class="panel panel-success" id="ProjectDetails">
+                                <div class="panel panel-warning" id="ProjectDetails">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Project Details</h4>
                                     </div>
@@ -108,22 +90,23 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3">Project Title</label>
                                                 <span id="ProjectTitle">@Model.projectDetails.ProjectTitle</span>
-                                                <a class="btn btn-default commentBox"> comment</a>
+                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3">Document Title</label>
-                                                <span id="DocumentTitle">@Model.projectDetails.DocumentTitle </span><a class="btn btn-default commentBox"> comment</a>
+                                                <span id="DocumentTitle">@Model.projectDetails.DocumentTitle </span>
+                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
                                             </div>
 
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="organization">Organization</label>
                                                 <span id="organization">@Model.projectDetails.NameOfImplementingPartner </span>
                                             </div>
-                                            
+
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="leadActivityMgr">Lead Activity Manager</label>
                                                 <div>
-                                                    <span id="leadActivityMgr">@(Model.projectDetails.LeadActivityManager!=null? Model.projectDetails.LeadActivityManager.FullName : "")</span>
+                                                    <span id="leadActivityMgr">@(Model.projectDetails.LeadActivityManager != null ? Model.projectDetails.LeadActivityManager.FullName : "")</span>
                                                 </div>
                                             </div>
 
@@ -144,20 +127,20 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="ProjectStartDate">Project Start Date</label>
                                                 <div>
-                                                    <span id="ProjectStartDate">@Model.projectDetails.ProjectStartDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="ProjectStartDate">@Model.projectDetails.ProjectStartDate</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3">Project End Date</label>
                                                 <div>
-                                                    <span id="ProjectEndDate">@Model.projectDetails.ProjectEndDate</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="ProjectEndDate">@Model.projectDetails.ProjectEndDate</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
 
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="GrantReferenceNumber">Grant Reference Number</label>
                                                 <div>
-                                                    <span id="GrantReferenceNumber">@Model.projectDetails.GrantReferenceNumber</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="GrantReferenceNumber">@Model.projectDetails.GrantReferenceNumber</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -165,7 +148,7 @@
                                 </div>
                                 <!--end of project details section-->
 
-                                <div class="panel panel-success" id="EthicsApproval">
+                                <div class="panel panel-warning" id="EthicsApproval">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Ethics Approval</h4>
                                     </div>
@@ -174,32 +157,44 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="EthicalApprovalForTheProject">Ethical Approval For the Project</label>
                                                 <div>
-                                                    <span id="EthicalApprovalForTheProject">@Model.ethicsApproval.EthicalApprovalForTheProject</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="EthicalApprovalForTheProject">@Model.ethicsApproval.EthicalApprovalForTheProject</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="Rational">Rational</label>
+                                                <div>
+                                                    <span id="Rational">@Model.ethicsApproval.Rational</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="AprrovingInstititionalReviewBoard">Aprroving instititional review board</label>
+                                                <div>
+                                                    <span id="AprrovingInstititionalReviewBoard">@Model.ethicsApproval.AprrovingInstititionalReviewBoard</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="TypeOfEthicalApproval">Type of Ethical Approval</label>
                                                 <div>
-                                                    <span id="TypeOfEthicalApproval">@Model.ethicsApproval.TypeOfEthicalApproval</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="TypeOfEthicalApproval">@Model.ethicsApproval.TypeOfEthicalApproval</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
                                 <!--End of ethic approval section-->
                             </div>
-                            </div>
+                        </div>
                         <!-- end of Project profile page-->
-
                         
-                        <div class="panel panel-success" id="DocumentRevisions">
+                        <div class="panel panel-warning" id="DocumentRevisions">
                             <h4 class="Adjusted-header">
                                 <b>Document Revisions</b>
                             </h4>
                             <div class="panel-body">
 
 
-                                <div class="panel panel-success" id="Version">
+                                <div class="panel panel-warning" id="Version">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Versions</h4>
                                     </div>
@@ -218,14 +213,14 @@
                                                     </thead>
                                                     <tbody>
                                                         @foreach (var item in Model.documentRevisions)
-                                                    {
+                                                        {
                                                             <tr>
                                                                 <td>@item.Version.VersionAuthor.DisplayName</td>
                                                                 <td>@item.Version.VersionMetadata.VersionNumber</td>
                                                                 <td>@item.Version.VersionMetadata.VersionDate</td>
                                                                 <td>@item.Version.Approval.DisplayName</td>
                                                             </tr>
-                                                    }
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -236,13 +231,13 @@
                         </div>
                         <!-- end of document revision page-->
 
-                        
-                        <div class="panel panel-success" id="Planning">
+
+                        <div class="panel panel-warning" id="Planning">
                             <h4 class="Adjusted-header">
                                 <b>Planning</b>
                             </h4>
                             <div class="panel-body">
-                                <div class="panel panel-success" id="Summary">
+                                <div class="panel panel-warning" id="Summary">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Summary</h4>
                                     </div>
@@ -250,7 +245,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <span id="ProjectSummary">@Model.summary.ProjectObjectives</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="ProjectSummary">@Model.summary.ProjectObjectives</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -260,66 +255,13 @@
                             </div>
                         </div>
                         <!-- end of Planning page-->
-
-                        <div class="panel panel-success" id="DataCollectionProcesses">
-                            <h4 class="Adjusted-header">
-                                <b>Data Collection Processes</b>
-                            </h4>
-                            
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group" style="padding-left: 30px;"> 
-                                        <span id="DataCollectionProcessess">@Model.datacollectionProcesses.DataCollectionProcessess</span> <a class="btn btn-default commentBox"> comment</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of Data Collection Processes page-->
-
                         
-                        <div class="panel panel-success" id="DataCollection">
-                            <h4 class="Adjusted-header">
-                                <b>Data Collection</b>
-                            </h4>
-                            
-                            <div class="panel-body">
-                                <div class="panel panel-success" id="Data">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Data</h4>
-                                        <div style="margin-right: -40%;"><span id="Datacomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Data Type</th>
-                                                            <th>Data Sources</th>
-                                                            <th>Frequency</th>
-                                                            <th>Duration(days)</th>
-                                                            <th>Tools</th>
-                                                            <th>Timelines</th>
-                                                            <th></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="datacollectiondataTable"> </tbody>
-                                                </table>
-                                            </div> 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of Data Collection page-->
 
-                        
-                        <div class="panel panel-success" id="MonitoringAndEvaluation">
+                        <div class="panel panel-warning" id="MonitoringAndEvaluation">
                             <h4 class="Adjusted-header">
                                 <b>Monitoring and Evaluation Systems</b>
                             </h4>
-                            
+
                             <div class="panel-body">
                                 <div class="form-horizontal">
                                     <div class="form-group">
@@ -329,38 +271,32 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3">Additional Information</label>
+                                        <label class="col-sm-3">Staffing</label>
                                         <div>
-                                            <span id="AdditionalInformation" style="padding-left: 30px;">@Model.AdditionalInformation</span>
-                                            <a class="btn btn-default commentBox"> comment</a>
+                                            <span id="Staffing" style="padding-left: 30px;">@Model.People.Staffing</span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Role & Responsibilities</label>
+                                        <div>
+                                            <span id="RoleAndResponsibilities" style="padding-left: 30px;">@Model.People.RoleAndResponsibilities</span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Data handling & entry</label>
+                                        <div>
+                                            <span id="DataHandlingAndEntry" style="padding-left: 30px;">@Model.People.DataHandlingAndEntry</span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
                                     </div>
                                     <hr />
-                                    @*<div class="panel panel-success" id="RolesAndResponsiblities">
-                                        <div class="panel-heading clearfix">
-                                            <h4 class="panel-title">Roles And Responsiblities</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="form-horizontal">
-                                                @foreach (var field in typeof(DAL.Entities.RolesAndResponsiblities).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                            {
-                                                <div class="form-group">
-                                                    <label class="col-sm-3">@DAL.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                    <div>
-                                                        <span id="@field.Name">@DAL.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.roleNresp))</span>
-                                                        <a class="btn btn-default commentBox"> comment</a>
-                                                    </div>
-                                                </div>
-                                            }
-                                            </div>
-                                        </div>
-                                    </div>*@
-                                    <!--roles and responsibilty-->
+                                     
 
-                                    <div class="panel panel-success">
+                                    <div class="panel panel-warning">
                                         <div class="panel-heading clearfix">
                                             <h4 class="panel-title">Trainings</h4>
-                                            <div style="margin-right: -40%;"><span id="Trainingscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                         </div>
                                         <div class="panel-body">
                                             <div class="form-horizontal">
@@ -376,10 +312,10 @@
                                                                 <th></th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody id="trainingTable">
-                                                        </tbody>
+                                                        <tbody id="trainingTable"></tbody>
                                                     </table>
-                                                </div> 
+                                                </div>
+                                                <span id="Trainingscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
                                             </div>
                                         </div>
                                     </div>
@@ -388,16 +324,15 @@
                             </div>
                         </div>
                         <!-- end of M&E page-->
-                                            
-                        <div class="panel panel-success" id="QualityAssurance">
+
+                        <div class="panel panel-warning" id="QualityAssurance">
                             <h4 class="Adjusted-header">
                                 <b>Quality Assurance</b>
                             </h4>
                             <div class="panel-body">
-                                <div class="panel panel-success" id="DataVerification">
+                                <div class="panel panel-warning" id="DataVerification">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Verification</h4>
-                                        <div style="margin-right: -40%;"><span id="DataVerificationscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -416,6 +351,7 @@
                                                     <tbody id="dataVerificationTable"> </tbody>
                                                 </table>
                                             </div>
+                                            <span id="DataVerificationscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
                                         </div>
                                     </div>
                                 </div>
@@ -424,15 +360,14 @@
                         </div>
                         <!-- end of Quality Assurance page-->
 
-                        <div class="panel panel-success"  id="Reports">
+                        <div class="panel panel-warning" id="Reports">
                             <h4 class="Adjusted-header">
                                 <b>Reports</b>
                             </h4>
                             <div class="panel-body">
-                                <div class="panel panel-success" id="ReportData">
+                                <div class="panel panel-warning" id="ReportData">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Report </h4>
-                                        <div style="margin-right: -40%;"><span id="Reportscomment"></span><a class="btn btn-black btn-sm commentBox"> comment</a></div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="table-responsive">
@@ -450,7 +385,7 @@
                                                 <tbody id="reportdataTable"> </tbody>
                                             </table>
                                         </div>
-
+                                        <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
                                     </div>
                                 </div>
                                 <!--End of Report Data section -->
@@ -458,48 +393,48 @@
                         </div>
 
 
-                        <div class="panel panel-success" id="DataStorage">
+                        <div class="panel panel-warning" id="DataStorage">
                             <h4 class="Adjusted-header">
                                 <b>Data Storage</b>
                             </h4>
                             <div class="panel-body">
-                                <div class="panel panel-success" id="Digital">
+                                <div class="panel panel-warning" id="Digital">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Digital</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
                                             @foreach (var field in typeof(DAL.Entities.DigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                        {
+                                            {
                                                 <div class="form-group">
                                                     <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                                     <div>
                                                         <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.digital))</span>
-                                                        <a class="btn btn-default commentBox"> comment</a>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                     </div>
                                                 </div>
-                                        }
+                                            }
                                         </div>
                                     </div>
                                 </div>
                                 <!--end of Digital data section-->
 
-                                <div class="panel panel-success" id="NonDigital">
+                                <div class="panel panel-warning" id="NonDigital">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Non-Digital</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
                                             @foreach (var field in typeof(DAL.Entities.NonDigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                        {
+                                            {
                                                 <div class="form-group">
                                                     <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                                     <div>
                                                         <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.nonDigital))</span>
-                                                        <a class="btn btn-default commentBox"> comment</a>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                     </div>
                                                 </div>
-                                        }
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -509,7 +444,7 @@
                         <!-- end of Data Storage page-->
 
 
-                        <div class="panel panel-success" id="IntellectualPropertyCopyrightAndOwnership">
+                        <div class="panel panel-warning" id="IntellectualPropertyCopyrightAndOwnership">
                             <h4 class="Adjusted-header">
                                 <b>Intellectual Property Copyright and Ownership</b>
                             </h4>
@@ -521,7 +456,7 @@
                                             <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div class="col-sm-8">
                                                 <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.intelProp))</span>
-                                                <a class="btn btn-default commentBox"> comment</a>
+                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
                                             </div>
                                         </div>
                                     }
@@ -531,7 +466,7 @@
                         <!-- end of Intellectual Property Copyright And Ownership page-->
 
 
-                        <div class="panel panel-success" id="DataAccessAndSharing">
+                        <div class="panel panel-warning" id="DataAccessAndSharing">
                             <h4 class="Adjusted-header">
                                 <b>Data Access and Sharing</b>
                             </h4>
@@ -543,7 +478,7 @@
                                             <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div class="col-sm-8">
                                                 <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataSharing))</span>
-                                                <a class="btn btn-default commentBox"> comment</a>
+                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
                                             </div>
                                         </div>
                                     }
@@ -553,7 +488,7 @@
                         <!-- end of Data Access and Sharing page-->
 
 
-                        <div class="panel panel-success" id="DataDocumentationManagementAndEntry">
+                        <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
                             <h4 class="Adjusted-header">
                                 <b>Data Documentation Management and Entry</b>
                             </h4>
@@ -565,7 +500,7 @@
                                             <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                             <div class="col-sm-8">
                                                 <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataDocMgt))</span>
-                                                <a class="btn btn-default commentBox"> comment</a>
+                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
                                             </div>
                                         </div>
                                     }
@@ -575,7 +510,7 @@
                         <!-- end of Data Documentation Management and Entry page-->
 
 
-                        <div class="panel panel-success" id="PostProjectDataRetentionSharingAndDestruction">
+                        <div class="panel panel-warning" id="PostProjectDataRetentionSharingAndDestruction">
                             <h4 class="Adjusted-header">
                                 <b>Post Project Data Retention Sharing and Destruction</b>
                             </h4>
@@ -584,30 +519,30 @@
                                     <div class="form-group">
                                         <label class="col-sm-3" for="DataToRetain">Data To Retain</label>
                                         <div class="col-sm-9">
-                                            <span id="DataToRetain">@Model.ppData.DataToRetain</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <span id="DataToRetain">@Model.ppData.DataToRetain</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3" for="PreExistingData">Pre-Existing Data</label>
                                         <div class="col-sm-9">
-                                            <span id="PreExistingData">@Model.ppData.PreExistingData</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <span id="PreExistingData">@Model.ppData.PreExistingData</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3" for="Duration">Duration</label>
                                         <div class="col-sm-9">
-                                            <span id="Duration">@Model.ppData.Duration</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <span id="Duration">@Model.ppData.Duration</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3" for="Licensing">Licensing</label>
                                         <div class="col-sm-9">
-                                            <span id="Licensing">@Model.ppData.Licensing</span> <a class="btn btn-default commentBox"> comment</a>
+                                            <span id="Licensing">@Model.ppData.Licensing</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="panel panel-success" id="DigitalDataRetention">
+                                <div class="panel panel-warning" id="DigitalDataRetention">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Digital Data Retention</h4>
                                     </div>
@@ -616,7 +551,7 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="DataRetention">Data Retention</label>
                                                 <div class="col-sm-9">
-                                                    <span id="DataRetention">@Model.ppData.DigitalDataRetention.DataRetention</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="DataRetention">@Model.ppData.DigitalDataRetention.DataRetention</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -624,7 +559,7 @@
                                 </div>
                                 <!--end of digital data retention-->
 
-                                <div class="panel panel-success" id="NonDigitalDataRetention">
+                                <div class="panel panel-warning" id="NonDigitalDataRetention">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Non Digital Data Retention</h4>
                                     </div>
@@ -633,7 +568,7 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3" for="nonDigitalDataRetention">Data Retention</label>
                                                 <div class="col-sm-9">
-                                                    <span id="nonDigitalDataRetention">@Model.ppData.NonDigitalRentention.DataRention</span> <a class="btn btn-default commentBox"> comment</a>
+                                                    <span id="nonDigitalDataRetention">@Model.ppData.NonDigitalRentention.DataRention</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -752,7 +687,7 @@
                 return false;
             });
 
-          var isIpUser =  '@HttpContext.Current.User.IsInRole("ip")' == 'True' ? true : false;
+            var isIpUser =  '@HttpContext.Current.User.IsInRole("ip")' == 'True' ? true : false;
 
             if('@Model.status' != "PendingApproval" || isIpUser){
                 $("#approvebtn").hide();
@@ -902,8 +837,8 @@
 
         });
     </script>
-<script src="~/Scripts/ReportTableLogic.js"></script>
-<script src="~/Scripts/datacollectionTableLogic.js"></script>
-<script src="~/Scripts/dataverificationTableLogic.js"></script>
-<script src="~/Scripts/trainingreportTableLogic.js"></script>
+    <script src="~/Scripts/ReportTableLogic.js"></script>
+    @*<script src="~/Scripts/datacollectionTableLogic.js"></script>*@
+    <script src="~/Scripts/dataverificationTableLogic.js"></script>
+    <script src="~/Scripts/trainingreportTableLogic.js"></script>
 }
