@@ -56,6 +56,8 @@ namespace DMP.Controllers
 
             EditDocumentViewModel2 docVM = new EditDocumentViewModel2
             {               
+                Equipment = thepageDoc.MonitoringAndEvaluationSystems.Equipment,
+                 Environment = thepageDoc.MonitoringAndEvaluationSystems.Environment,
                 People = thepageDoc.MonitoringAndEvaluationSystems.People,
                 documentRevisions = Doc.Document.DocumentRevisions,
                 versionAuthor = versionAuthor,

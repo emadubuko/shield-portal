@@ -77,8 +77,8 @@
                             </div>
                             <div class="panel-body">
                                 <div class="panel panel-warning" id="ProjectDetails">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Project Details</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Project Details</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -149,8 +149,8 @@
                                 <!--end of project details section-->
 
                                 <div class="panel panel-warning" id="EthicsApproval">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Ethics Approval</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Ethics Approval</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -186,17 +186,17 @@
                             </div>
                         </div>
                         <!-- end of Project profile page-->
-                        
+
                         <div class="panel panel-warning" id="DocumentRevisions">
-                            <h4 class="Adjusted-header">
-                                <b>Document Revisions</b>
-                            </h4>
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Document Revisions</b>
+                                </h4>
+                            </div>                            
                             <div class="panel-body">
-
-
                                 <div class="panel panel-warning" id="Version">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Versions</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Versions</h4>
                                     </div>
                                     <div class="panel-body">
 
@@ -233,13 +233,16 @@
 
 
                         <div class="panel panel-warning" id="Planning">
-                            <h4 class="Adjusted-header">
-                                <b>Planning</b>
-                            </h4>
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Planning</b>
+                                </h4>
+                            </div>
+                            
                             <div class="panel-body">
                                 <div class="panel panel-warning" id="Summary">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Summary</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Summary</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
@@ -255,84 +258,227 @@
                             </div>
                         </div>
                         <!-- end of Planning page-->
-                        
+
 
                         <div class="panel panel-warning" id="MonitoringAndEvaluation">
-                            <h4 class="Adjusted-header">
-                                <b>Monitoring and Evaluation Systems</b>
-                            </h4>
-
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Monitoring and Evaluation Systems</b>
+                                </h4>
+                            </div>                            
                             <div class="panel-body">
-                                <div class="form-horizontal">
-                                    <div class="form-group">
-                                        <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
-                                        <div>
-                                            <img id="DataFlowChart">
-                                        </div>
+                                <div class="panel panel-warning" id="People">
+                                    <div>
+                                        <h4 class="Adjusted-header">People</h4>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3">Staffing</label>
-                                        <div>
-                                            <span id="Staffing" style="padding-left: 30px;">@Model.People.Staffing</span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3">Role & Responsibilities</label>
-                                        <div>
-                                            <span id="RoleAndResponsibilities" style="padding-left: 30px;">@Model.People.RoleAndResponsibilities</span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3">Data handling & entry</label>
-                                        <div>
-                                            <span id="DataHandlingAndEntry" style="padding-left: 30px;">@Model.People.DataHandlingAndEntry</span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                     
-
-                                    <div class="panel panel-warning">
-                                        <div class="panel-heading clearfix">
-                                            <h4 class="panel-title">Trainings</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="form-horizontal">
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Frequency</th>
-                                                                <th>Duration</th>
-                                                                <th>Timelines</th>
-                                                                <th></th>
-                                                                <th></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="trainingTable"></tbody>
-                                                    </table>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
+                                                <div>
+                                                    <img id="DataFlowChart">
                                                 </div>
-                                                <span id="Trainingscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Staffing</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="Staffing" style="padding-left: 30px;">@Model.People.Staffing</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>                                                
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Role & Responsibilities</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="RoleAndResponsibilities" style="padding-left: 30px;">@Model.People.RoleAndResponsibilities</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3">Data handling & entry</label>
+                                                <div> 
+                                                    <span id="DataHandlingAndEntry" style="padding-left: 30px;">@Model.People.DataHandlingAndEntry</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <hr />
+
+                                            <div class="panel panel-warning">
+                                                <div>
+                                                    <h4 class="Adjusted-header">Trainings</h4>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="form-horizontal">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Frequency</th>
+                                                                        <th>Duration</th>
+                                                                        <th>Timelines</th>
+                                                                        <th></th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="trainingTable"></tbody>
+                                                            </table>
+                                                        </div>
+                                                        <span id="Trainingscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Trainings-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-warning" id="Process">
+                                    <div>
+                                        <h4 class="Adjusted-header">Process</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.Processes).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label class="col-sm-3">@(field.Name == "ImplementingPartnerMEProcess" ? "Implementing partner M & E process" :  CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name))</label>
+                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.processes))</span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            }                                           
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-warning" id="Equipment">
+                                    <div>
+                                        <h4 class="Adjusted-header">Equipment</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="ProjectEquipments">Project equipments</label>
+                                                <div>
+                                                    <span id="ProjectEquipments">@Model.Equipment.ProjectEquipments</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!--Trainings-->
+                                </div>
+
+                                <div class="panel panel-warning" id="Environment">
+                                    <div>
+                                        <h4 class="Adjusted-header">Environment</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label for="StatesCoveredByImplementingPartners">States covered by implementing partners</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="StatesCoveredByImplementingPartners">@Model.Environment.StatesCoveredByImplementingPartners</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="panel-heading clearfix">
+                                                <h4 class="panel-title">Number of sites covered by implementing partners</h4>
+                                                <hr />
+                                            </div>
+                                            @foreach (var field in typeof(DAL.Entities.AreaCoveredByIP).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div class="col-sm-3">
+                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.Environment.NumberOfSitesCoveredByImplementingPartners))</span>
+                                                        
+                                                    </div>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            }                                            
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- end of M&E page-->
 
+                        <div class="panel panel-warning" id="dataprocess">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Data Processes</b>
+                                </h4>
+                            </div>
+                            
+                            <div class="panel-body">
+                                <div class="panel panel-warning">
+                                    <div>
+                                        <h4 class="Adjusted-header">Data</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3" for="DataCollectionProcessess">Data Collection Processes</label>
+                                                <div>
+                                                    <span id="DataCollectionProcessess">@(Model.dataCollection != null ? Model.dataCollection.DataCollectionProcessess : "")</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="DataFormat" class="col-sm-3">Data Format</label>
+                                                <div>
+                                                    <span id="DataFormat">@(Model.dataCollection != null ? Model.dataCollection.DataFormat : "")</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="DataSourceCollectionAndReportingTools" class="col-sm-3">Data source, collection and reporting tools</label>
+                                                <div>
+                                                    <span id="DataSourceCollectionAndReportingTools">@(Model.dataCollection != null ? Model.dataCollection.DataSourceCollectionAndReportingTools : "")</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-warning" id="ReportData">
+                                    <div>
+                                        <h4 class="Adjusted-header">Reports </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Thematic Area</th>
+                                                        <th>Frequency</th>
+                                                        <th>Duration</th>
+                                                        <th>Timelines</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="reportdataTable"> </tbody>
+                                            </table>
+                                        </div>
+                                        <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
+                                    </div>
+                                </div>
+                                <!--End of Report Data section -->
+                            </div>
+                        </div>
+
+
                         <div class="panel panel-warning" id="QualityAssurance">
-                            <h4 class="Adjusted-header">
-                                <b>Quality Assurance</b>
-                            </h4>
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Quality Assurance</b>
+                                </h4>
+                            </div>
+                            
                             <div class="panel-body">
                                 <div class="panel panel-warning" id="DataVerification">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Data Verification</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Data Verification</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -360,59 +506,29 @@
                         </div>
                         <!-- end of Quality Assurance page-->
 
-                        <div class="panel panel-warning" id="Reports">
-                            <h4 class="Adjusted-header">
-                                <b>Reports</b>
-                            </h4>
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="ReportData">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Data Report </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Thematic Area</th>
-                                                        <th>Frequency</th>
-                                                        <th>Duration</th>
-                                                        <th>Timelines</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="reportdataTable"> </tbody>
-                                            </table>
-                                        </div>
-                                        <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <!--End of Report Data section -->
-                            </div>
-                        </div>
-
-
+                          
                         <div class="panel panel-warning" id="DataStorage">
-                            <h4 class="Adjusted-header">
-                                <b>Data Storage</b>
-                            </h4>
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Data Storage, Access & Sharing</b>
+                                </h4>
+                            </div>                            
                             <div class="panel-body">
                                 <div class="panel panel-warning" id="Digital">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Digital</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Digital Data</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
                                             @foreach (var field in typeof(DAL.Entities.DigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                             {
-                                                <div class="form-group">
-                                                    <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                    <div>
-                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.digital))</span>
-                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                    </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                <div>
+                                                    <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.digital))</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
+                                            </div>
                                             }
                                         </div>
                                     </div>
@@ -420,17 +536,40 @@
                                 <!--end of Digital data section-->
 
                                 <div class="panel panel-warning" id="NonDigital">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Non-Digital</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Non-Digital Data</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
                                             @foreach (var field in typeof(DAL.Entities.NonDigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                             {
+                                            <div class="form-group">
+                                                <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                <div>
+                                                    <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.nonDigital))</span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of non digital data section -->
+
+                                <div class="panel panel-warning" id="DataAccessAndSharing">
+                                    <div>
+                                        <h4 class="Adjusted-header">
+                                            Data Access and Sharing
+                                        </h4>
+                                    </div> 
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.DataAccessAndSharing).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
                                                 <div class="form-group">
                                                     <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                                     <div>
-                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.nonDigital))</span>
+                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataSharing))</span>
                                                         <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                     </div>
                                                 </div>
@@ -438,82 +577,67 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--end of non digital data section -->
+                                <!-- end of Data Access and Sharing page-->
+
+                                <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
+                                    <div>
+                                        <h4 class="Adjusted-header">
+                                           Data Documentation Management and Entry
+                                        </h4>
+                                    </div>
+                                   
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.DataDocumentationManagementAndEntry).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div>
+                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataDocMgt))</span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end of Data Documentation Management and Entry page-->
                             </div>
                         </div>
                         <!-- end of Data Storage page-->
 
 
                         <div class="panel panel-warning" id="IntellectualPropertyCopyrightAndOwnership">
-                            <h4 class="Adjusted-header">
-                                <b>Intellectual Property Copyright and Ownership</b>
-                            </h4>
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Intellectual Property Copyright and Ownership</b>
+                                </h4>
+                            </div>                            
                             <div class="panel-body">
                                 <div class="form-horizontal">
                                     @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                     {
-                                        <div class="form-group">
-                                            <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                            <div class="col-sm-8">
-                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.intelProp))</span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                            </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <div class="col-sm-8">
+                                            <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.intelProp))</span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
+                                    </div>
                                     }
                                 </div>
                             </div>
                         </div>
                         <!-- end of Intellectual Property Copyright And Ownership page-->
 
-
-                        <div class="panel panel-warning" id="DataAccessAndSharing">
-                            <h4 class="Adjusted-header">
-                                <b>Data Access and Sharing</b>
-                            </h4>
-                            <div class="panel-body">
-                                <div class="form-horizontal">
-                                    @foreach (var field in typeof(DAL.Entities.DataAccessAndSharing).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                    {
-                                        <div class="form-group">
-                                            <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                            <div class="col-sm-8">
-                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataSharing))</span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of Data Access and Sharing page-->
-
-
-                        <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
-                            <h4 class="Adjusted-header">
-                                <b>Data Documentation Management and Entry</b>
-                            </h4>
-                            <div class="panel-body">
-                                <div class="form-horizontal">
-                                    @foreach (var field in typeof(DAL.Entities.DataDocumentationManagementAndEntry).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                    {
-                                        <div class="form-group">
-                                            <label class="col-sm-4">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                            <div class="col-sm-8">
-                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.dataDocMgt))</span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of Data Documentation Management and Entry page-->
-
-
+                         
                         <div class="panel panel-warning" id="PostProjectDataRetentionSharingAndDestruction">
-                            <h4 class="Adjusted-header">
-                                <b>Post Project Data Retention Sharing and Destruction</b>
-                            </h4>
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Post Project Data Retention Sharing and Destruction</b>
+                                </h4>
+                            </div>
+                            
                             <div class="panel-body">
                                 <div class="form-horizontal">
                                     <div class="form-group">
@@ -543,8 +667,8 @@
                                 </div>
 
                                 <div class="panel panel-warning" id="DigitalDataRetention">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Digital Data Retention</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Digital Data Retention</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
@@ -560,8 +684,8 @@
                                 <!--end of digital data retention-->
 
                                 <div class="panel panel-warning" id="NonDigitalDataRetention">
-                                    <div class="panel-heading clearfix">
-                                        <h4 class="panel-title">Non Digital Data Retention</h4>
+                                    <div>
+                                        <h4 class="Adjusted-header">Non Digital Data Retention</h4>
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">

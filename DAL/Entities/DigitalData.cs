@@ -8,12 +8,12 @@ namespace DAL.Entities
 {
     public class DigitalData
     {
-        public virtual string VolumeOfdigitalData { get; set; }
-        public virtual string Storagetype { get; set; }
-        public virtual string Storagelocation { get; set; }
+        public virtual string VolumeOfDigitalData { get; set; }
+        public virtual string StorageType { get; set; }
+        public virtual string StorageLocation { get; set; }
         public virtual string Backup { get; set; }
-        public virtual string Datasecurity { get; set; }
-        public virtual string Patientconfidentialitypolicies { get; set; }
+        public virtual string DataSecurity { get; set; }
+        public virtual string PatientConfidentialityPolicies { get; set; }
 
         //Storageofpre-existingdata
         public virtual string StorageOfPreExistingData { get; set; }

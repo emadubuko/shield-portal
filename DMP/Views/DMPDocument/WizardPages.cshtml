@@ -952,7 +952,7 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfdigitalData" class="form-control">
+                                                        <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfDigitalData" class="form-control">
                                                     }
                                                     else
                                                     {
@@ -969,7 +969,7 @@
                                                         {
                                                             if (Model.digital != null)
                                                             {
-                                                                if (@item == Model.digital.Storagetype)
+                                                                if (@item == Model.digital.StorageType)
                                                                 {
                                                                     <option value="@item" selected>@item</option>
                                                                 }
@@ -995,7 +995,7 @@
                                                         {
                                                             if (Model.digital != null)
                                                             {
-                                                                if (@item == Model.digital.Storagelocation)
+                                                                if (@item == Model.digital.StorageLocation)
                                                                 {
                                                                     <option value="@item" selected>@item</option>
                                                                 }
@@ -1044,7 +1044,7 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" value="@Model.digital.Datasecurity" class="form-control">
+                                                        <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" value="@Model.digital.DataSecurity" class="form-control">
                                                     }
                                                     else
                                                     {
@@ -1058,7 +1058,7 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" value="@Model.digital.Patientconfidentialitypolicies" id="Patientconfidentialitypolicies" class="form-control">
+                                                        <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" value="@Model.digital.PatientConfidentialityPolicies" id="Patientconfidentialitypolicies" class="form-control">
                                                     }
                                                     else
                                                     {
