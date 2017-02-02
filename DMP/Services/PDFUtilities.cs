@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 
-namespace DMP.Services
+namespace ShieldPortal.Services
 {
     public class PDFUtilities
     {
@@ -383,7 +383,7 @@ namespace DMP.Services
             
             Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11,Font.ITALIC, fadedBlue);
 
-            string title = firstVersion ? "Initial date of DMP completion" : "Review date of DMP completion";
+            string title = firstVersion ? "Initial date of ShieldPortal completion" : "Review date of ShieldPortal completion";
 
             pp = new Paragraph(new Chunk(title, font8));
             pp.IndentationLeft = 20;

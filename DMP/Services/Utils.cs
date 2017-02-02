@@ -2,7 +2,7 @@
 using CommonUtil.Entities;
 using DAL.DAO;
 using DAL.Entities;
-using DMP.Models;
+using ShieldPortal.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace DMP.Services
+namespace ShieldPortal.Services
 {
     public class Utils
     {

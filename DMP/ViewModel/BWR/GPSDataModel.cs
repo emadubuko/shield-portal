@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DMP.BWR.ViewModel
+namespace ShieldPortal.BWR.ViewModel
 {
     public class GPSDataModel
     {

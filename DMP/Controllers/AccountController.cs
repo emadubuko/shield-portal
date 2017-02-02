@@ -9,8 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 
-using DMP.Models;
-using DMP.ViewModel;
+using ShieldPortal.Models;
+using ShieldPortal.ViewModel;
 using DAL.DAO;
 using DAL.Entities;
 using System.Net;
@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using CommonUtil.Entities;
 using CommonUtil.DAO;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class AccountController : Controller
@@ -156,7 +156,7 @@ namespace DMP.Controllers
             ProfileViewModel vM = new ProfileViewModel
             {
                 Organization = orgDAO.RetrieveAll(),
-                Role = DMP.Services.Utils.RetrieveRoles()
+                Role = ShieldPortal.Services.Utils.RetrieveRoles()
             };
 
             return View(vM);

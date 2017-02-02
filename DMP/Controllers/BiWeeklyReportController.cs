@@ -4,7 +4,7 @@ using BWReport.DAL.DAO;
 using BWReport.DAL.Services;
 using System.Net;
 using System.IO;
-using DMP.ViewModel.BWR;
+using ShieldPortal.ViewModel.BWR;
 using CommonUtil.DAO;
 using System.Linq;
 using BWReport.DAL.Entities;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using CommonUtil.Utilities;
 using System.Runtime.InteropServices;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class BiWeeklyReportController : Controller

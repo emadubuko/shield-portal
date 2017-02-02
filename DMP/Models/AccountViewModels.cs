@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DMP.Models
+namespace ShieldPortal.Models
 {
     public class ExternalLoginConfirmationViewModel
     {

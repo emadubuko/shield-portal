@@ -1,12 +1,12 @@
 ﻿using CommonUtil.DAO;
 using DAL.DAO;
-using DMP.ViewModel;
+using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class HomeController : Controller
@@ -27,7 +27,7 @@ namespace DMP.Controllers
 
         public ActionResult Index()
         {
-            return RedirectToAction("index", "DMP");
+            return RedirectToAction("index", "ShieldPortal");
         }
 
 
@@ -47,7 +47,7 @@ namespace DMP.Controllers
 
             if (doc.Document.MonitoringAndEvaluationSystems == null || doc.Document.QualityAssurance == null || doc.Document.DataProcesses.Reports == null)
             {
-                return new HttpStatusCodeResult(400, "DMP document is not yet completed");
+                return new HttpStatusCodeResult(400, "ShieldPortal document is not yet completed");
             }
             var trainings = doc.Document.MonitoringAndEvaluationSystems.People.Trainings;
             var dataCollection = doc.Document.DataProcesses.DataCollection;
@@ -197,7 +197,7 @@ namespace DMP.Controllers
         }
 
         [HttpPost]
-        public ActionResult DocumentWizardPage(DAL.Entities.DMP newDMP)
+        public ActionResult DocumentWizardPage(DAL.Entities.ShieldPortal newDMP)
         {
             if(newDMP == null || string.IsNullOrEmpty(newDMP.DMPTitle))
             {
@@ -214,7 +214,7 @@ namespace DMP.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "DMP with this title already exists");
+                return new HttpStatusCodeResult(400, "ShieldPortal with this title already exists");
             }
         }
 

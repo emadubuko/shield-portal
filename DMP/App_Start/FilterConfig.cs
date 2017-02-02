@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace DMP
+namespace ShieldPortal
 {
     public class FilterConfig
     {

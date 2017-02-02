@@ -2,14 +2,14 @@
 using CommonUtil.Entities;
 using DAL.DAO;
 using DAL.Entities;
-using DMP.ViewModel;
+using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize(Roles ="sys_admin,shield_team")]
     public class OrganizationController : Controller

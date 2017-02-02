@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="shield_dmpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="dmp_Organizations">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="ShortName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="OrganizationType" Type="nvarchar" MaxLength="255" />
+          <Property Name="MissionPartner" Type="nvarchar" MaxLength="255" />
+          <Property Name="Logo" Type="varbinary(max)" />
+          <Property Name="WebSite" Type="nvarchar" MaxLength="255" />
+          <Property Name="Fax" Type="nvarchar" MaxLength="255" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="dqa_facility">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="State" Type="float" />
+          <Property Name="Site Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Site Ref# ID" Type="float" />
+          <Property Name="LGA" Type="nvarchar" MaxLength="255" />
+          <Property Name="Point of Service" Type="nvarchar" MaxLength="255" />
+          <Property Name="PEPFAR Support" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Facility Category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Facility Type" Type="float" />
+          <Property Name="Facility Level" Type="float" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Funder" Type="float" />
+          <Property Name="Partners" Type="float" />
+          <Property Name="HQR Mechanism ID" Type="float" />
+          <Property Name="Coag Number" Type="nvarchar" MaxLength="255" />
+          <Property Name="Start Date" Type="float" />
+          <Property Name="End Date" Type="float" />
+          <Property Name="Coag PO" Type="nvarchar" MaxLength="255" />
+          <Property Name="EMR" Type="float" />
+          <Property Name="PMTCT" Type="float" />
+          <Property Name="AB" Type="float" />
+          <Property Name="PEP" Type="float" />
+          <Property Name="C&amp;OP" Type="float" />
+          <Property Name="Blood Safety" Type="float" />
+          <Property Name=" Injection Safety" Type="float" />
+          <Property Name="Med Waste/Management" Type="float" />
+          <Property Name="HCT hospital based" Type="float" />
+          <Property Name="HCT stand alone" Type="nvarchar" MaxLength="255" />
+          <Property Name="HCT mobile" Type="nvarchar" MaxLength="255" />
+          <Property Name="HCT home based" Type="nvarchar" MaxLength="255" />
+          <Property Name="C&amp;S" Type="float" />
+          <Property Name="TB/HIV" Type="float" />
+          <Property Name="OVC" Type="float" />
+          <Property Name="Treatment" Type="float" />
+          <Property Name="HSS/Lab  clinical" Type="float" />
+          <Property Name="HSS/Lab point of care" Type="float" />
+          <Property Name="HSS/ Supply Chain" Type="float" />
+          <Property Name="QI/QM" Type="float" />
+          <Property Name="Support Group" Type="nvarchar" MaxLength="255" />
+          <Property Name="Gen pop/ youth" Type="nvarchar" MaxLength="255" />
+          <Property Name="Key pop" Type="float" />
+          <Property Name="Gender" Type="float" />
+          <Property Name="PHDP/Family Planning Integration" Type="float" />
+          <Property Name="Food &amp; Nutrition" Type="float" />
+        </EntityType>
+        <EntityType Name="dqa_facility_level">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FacilityLevel" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_facility_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_funder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Funder" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_indicator">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IndicatorCode" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="IndicatorName" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="Readonly" Type="nvarchar" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="dqa_lga">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="lga_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="lga_hm_longcode" Type="nvarchar" MaxLength="255" />
+          <Property Name="lga_code" Type="nvarchar" MaxLength="255" />
+          <Property Name="state_code" Type="nvarchar" MaxLength="255" />
+          <Property Name="state_id" Type="int" />
+        </EntityType>
+        <EntityType Name="dqa_report_metadata">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SiteId" Type="int" Nullable="false" />
+          <Property Name="LgaId" Type="int" Nullable="false" />
+          <Property Name="StateId" Type="int" Nullable="false" />
+          <Property Name="LgaLevel" Type="int" Nullable="false" />
+          <Property Name="FundingAgency" Type="int" Nullable="false" />
+          <Property Name="ImplementingPartner" Type="int" Nullable="false" />
+          <Property Name="FiscalYear" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="AssessmentWeek" Type="int" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Month" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_report_value">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MetadataId" Type="int" Nullable="false" />
+          <Property Name="IndicatorId" Type="int" Nullable="false" />
+          <Property Name="IndicatorValueMonth1" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="IndicatorValueMonth2" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="IndicatorValueMonth3" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="dqa_states">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="state_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="state_code" Type="nvarchar" MaxLength="255" />
+          <Property Name="geo_polictical_region" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK_dqa_report_value_dqa_indicator">
+          <End Role="dqa_indicator" Type="Self.dqa_indicator" Multiplicity="1" />
+          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dqa_indicator">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="dqa_report_value">
+              <PropertyRef Name="IndicatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dqa_report_value_dqa_report_metadata">
+          <End Role="dqa_report_metadata" Type="Self.dqa_report_metadata" Multiplicity="1" />
+          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dqa_report_metadata">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="dqa_report_value">
+              <PropertyRef Name="MetadataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="shield_dmpModelStoreContainer">
+          <EntitySet Name="dmp_Organizations" EntityType="Self.dmp_Organizations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_facility" EntityType="Self.dqa_facility" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_lga" EntityType="Self.dqa_lga" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_report_metadata" EntityType="Self.dqa_report_metadata" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_states" EntityType="Self.dqa_states" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
+            <End Role="dqa_indicator" EntitySet="dqa_indicator" />
+            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dqa_report_value_dqa_report_metadata" Association="Self.FK_dqa_report_value_dqa_report_metadata">
+            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
+            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="shield_dmpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="dmp_Organizations">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShortName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OrganizationType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MissionPartner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Logo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="WebSite" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="dqa_facility">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="State" Type="Double" />
+          <Property Name="Site_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Site_Ref__ID" Type="Double" />
+          <Property Name="LGA" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Point_of_Service" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PEPFAR_Support" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Facility_Category" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Facility_Type" Type="Double" />
+          <Property Name="Facility_Level" Type="Double" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Funder" Type="Double" />
+          <Property Name="Partners" Type="Double" />
+          <Property Name="HQR_Mechanism_ID" Type="Double" />
+          <Property Name="Coag_Number" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Start_Date" Type="Double" />
+          <Property Name="End_Date" Type="Double" />
+          <Property Name="Coag_PO" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EMR" Type="Double" />
+          <Property Name="PMTCT" Type="Double" />
+          <Property Name="AB" Type="Double" />
+          <Property Name="PEP" Type="Double" />
+          <Property Name="C_OP" Type="Double" />
+          <Property Name="Blood_Safety" Type="Double" />
+          <Property Name="C_Injection_Safety" Type="Double" />
+          <Property Name="Med_Waste_Management" Type="Double" />
+          <Property Name="HCT_hospital_based" Type="Double" />
+          <Property Name="HCT_stand_alone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HCT_mobile" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HCT_home_based" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="C_S" Type="Double" />
+          <Property Name="TB_HIV" Type="Double" />
+          <Property Name="OVC" Type="Double" />
+          <Property Name="Treatment" Type="Double" />
+          <Property Name="HSS_Lab__clinical" Type="Double" />
+          <Property Name="HSS_Lab_point_of_care" Type="Double" />
+          <Property Name="HSS__Supply_Chain" Type="Double" />
+          <Property Name="QI_QM" Type="Double" />
+          <Property Name="Support_Group" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Gen_pop__youth" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Key_pop" Type="Double" />
+          <Property Name="Gender" Type="Double" />
+          <Property Name="PHDP_Family_Planning_Integration" Type="Double" />
+          <Property Name="Food___Nutrition" Type="Double" />
+        </EntityType>
+        <EntityType Name="dqa_facility_level">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FacilityLevel" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_facility_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_funder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Funder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_indicator">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IndicatorCode" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IndicatorName" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Readonly" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dqa_report_value" Relationship="Self.FK_dqa_report_value_dqa_indicator" FromRole="dqa_indicator" ToRole="dqa_report_value" />
+        </EntityType>
+        <EntityType Name="dqa_lga">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="lga_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="lga_hm_longcode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="lga_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="state_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="state_id" Type="Int32" />
+        </EntityType>
+        <EntityType Name="dqa_report_metadata">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SiteId" Type="Int32" Nullable="false" />
+          <Property Name="LgaId" Type="Int32" Nullable="false" />
+          <Property Name="StateId" Type="Int32" Nullable="false" />
+          <Property Name="LgaLevel" Type="Int32" Nullable="false" />
+          <Property Name="FundingAgency" Type="Int32" Nullable="false" />
+          <Property Name="ImplementingPartner" Type="Int32" Nullable="false" />
+          <Property Name="FiscalYear" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AssessmentWeek" Type="Int32" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Month" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="dqa_report_value" Relationship="Self.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_metadata" ToRole="dqa_report_value" />
+        </EntityType>
+        <EntityType Name="dqa_report_value">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MetadataId" Type="Int32" Nullable="false" />
+          <Property Name="IndicatorId" Type="Int32" Nullable="false" />
+          <Property Name="IndicatorValueMonth1" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IndicatorValueMonth2" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IndicatorValueMonth3" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="dqa_indicator" Relationship="Self.FK_dqa_report_value_dqa_indicator" FromRole="dqa_report_value" ToRole="dqa_indicator" />
+          <NavigationProperty Name="dqa_report_metadata" Relationship="Self.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_value" ToRole="dqa_report_metadata" />
+        </EntityType>
+        <EntityType Name="dqa_states">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="state_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="state_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="geo_polictical_region" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_dqa_report_value_dqa_indicator">
+          <End Role="dqa_indicator" Type="Self.dqa_indicator" Multiplicity="1" />
+          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dqa_indicator">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="dqa_report_value">
+              <PropertyRef Name="IndicatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dqa_report_value_dqa_report_metadata">
+          <End Role="dqa_report_metadata" Type="Self.dqa_report_metadata" Multiplicity="1" />
+          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dqa_report_metadata">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="dqa_report_value">
+              <PropertyRef Name="MetadataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="shield_dmpEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dmp_Organizations" EntityType="Self.dmp_Organizations" />
+          <EntitySet Name="dqa_facility" EntityType="Self.dqa_facility" />
+          <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" />
+          <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" />
+          <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" />
+          <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" />
+          <EntitySet Name="dqa_lga" EntityType="Self.dqa_lga" />
+          <EntitySet Name="dqa_report_metadata" EntityType="Self.dqa_report_metadata" />
+          <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" />
+          <EntitySet Name="dqa_states" EntityType="Self.dqa_states" />
+          <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
+            <End Role="dqa_indicator" EntitySet="dqa_indicator" />
+            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dqa_report_value_dqa_report_metadata" Association="Self.FK_dqa_report_value_dqa_report_metadata">
+            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
+            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="shield_dmpModelStoreContainer" CdmEntityContainer="shield_dmpEntities">
+          <EntitySetMapping Name="dmp_Organizations">
+            <EntityTypeMapping TypeName="shield_dmpModel.dmp_Organizations">
+              <MappingFragment StoreEntitySet="dmp_Organizations">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="OrganizationType" ColumnName="OrganizationType" />
+                <ScalarProperty Name="MissionPartner" ColumnName="MissionPartner" />
+                <ScalarProperty Name="Logo" ColumnName="Logo" />
+                <ScalarProperty Name="WebSite" ColumnName="WebSite" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_facility">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_facility">
+              <MappingFragment StoreEntitySet="dqa_facility">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Site_Name" ColumnName="Site Name" />
+                <ScalarProperty Name="Site_Ref__ID" ColumnName="Site Ref# ID" />
+                <ScalarProperty Name="LGA" ColumnName="LGA" />
+                <ScalarProperty Name="Point_of_Service" ColumnName="Point of Service" />
+                <ScalarProperty Name="PEPFAR_Support" ColumnName="PEPFAR Support" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Facility_Category" ColumnName="Facility Category" />
+                <ScalarProperty Name="Facility_Type" ColumnName="Facility Type" />
+                <ScalarProperty Name="Facility_Level" ColumnName="Facility Level" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Funder" ColumnName="Funder" />
+                <ScalarProperty Name="Partners" ColumnName="Partners" />
+                <ScalarProperty Name="HQR_Mechanism_ID" ColumnName="HQR Mechanism ID" />
+                <ScalarProperty Name="Coag_Number" ColumnName="Coag Number" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End Date" />
+                <ScalarProperty Name="Coag_PO" ColumnName="Coag PO" />
+                <ScalarProperty Name="EMR" ColumnName="EMR" />
+                <ScalarProperty Name="PMTCT" ColumnName="PMTCT" />
+                <ScalarProperty Name="AB" ColumnName="AB" />
+                <ScalarProperty Name="PEP" ColumnName="PEP" />
+                <ScalarProperty Name="C_OP" ColumnName="C&amp;OP" />
+                <ScalarProperty Name="Blood_Safety" ColumnName="Blood Safety" />
+                <ScalarProperty Name="C_Injection_Safety" ColumnName=" Injection Safety" />
+                <ScalarProperty Name="Med_Waste_Management" ColumnName="Med Waste/Management" />
+                <ScalarProperty Name="HCT_hospital_based" ColumnName="HCT hospital based" />
+                <ScalarProperty Name="HCT_stand_alone" ColumnName="HCT stand alone" />
+                <ScalarProperty Name="HCT_mobile" ColumnName="HCT mobile" />
+                <ScalarProperty Name="HCT_home_based" ColumnName="HCT home based" />
+                <ScalarProperty Name="C_S" ColumnName="C&amp;S" />
+                <ScalarProperty Name="TB_HIV" ColumnName="TB/HIV" />
+                <ScalarProperty Name="OVC" ColumnName="OVC" />
+                <ScalarProperty Name="Treatment" ColumnName="Treatment" />
+                <ScalarProperty Name="HSS_Lab__clinical" ColumnName="HSS/Lab  clinical" />
+                <ScalarProperty Name="HSS_Lab_point_of_care" ColumnName="HSS/Lab point of care" />
+                <ScalarProperty Name="HSS__Supply_Chain" ColumnName="HSS/ Supply Chain" />
+                <ScalarProperty Name="QI_QM" ColumnName="QI/QM" />
+                <ScalarProperty Name="Support_Group" ColumnName="Support Group" />
+                <ScalarProperty Name="Gen_pop__youth" ColumnName="Gen pop/ youth" />
+                <ScalarProperty Name="Key_pop" ColumnName="Key pop" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="PHDP_Family_Planning_Integration" ColumnName="PHDP/Family Planning Integration" />
+                <ScalarProperty Name="Food___Nutrition" ColumnName="Food &amp; Nutrition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_facility_level">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_facility_level">
+              <MappingFragment StoreEntitySet="dqa_facility_level">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FacilityLevel" ColumnName="FacilityLevel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_facility_type">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_facility_type">
+              <MappingFragment StoreEntitySet="dqa_facility_type">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_funder">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_funder">
+              <MappingFragment StoreEntitySet="dqa_funder">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Funder" ColumnName="Funder" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_indicator">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_indicator">
+              <MappingFragment StoreEntitySet="dqa_indicator">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IndicatorCode" ColumnName="IndicatorCode" />
+                <ScalarProperty Name="IndicatorName" ColumnName="IndicatorName" />
+                <ScalarProperty Name="Readonly" ColumnName="Readonly" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_lga">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_lga">
+              <MappingFragment StoreEntitySet="dqa_lga">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="lga_name" ColumnName="lga_name" />
+                <ScalarProperty Name="lga_hm_longcode" ColumnName="lga_hm_longcode" />
+                <ScalarProperty Name="lga_code" ColumnName="lga_code" />
+                <ScalarProperty Name="state_code" ColumnName="state_code" />
+                <ScalarProperty Name="state_id" ColumnName="state_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_report_metadata">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_metadata">
+              <MappingFragment StoreEntitySet="dqa_report_metadata">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+                <ScalarProperty Name="LgaId" ColumnName="LgaId" />
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="LgaLevel" ColumnName="LgaLevel" />
+                <ScalarProperty Name="FundingAgency" ColumnName="FundingAgency" />
+                <ScalarProperty Name="ImplementingPartner" ColumnName="ImplementingPartner" />
+                <ScalarProperty Name="FiscalYear" ColumnName="FiscalYear" />
+                <ScalarProperty Name="AssessmentWeek" ColumnName="AssessmentWeek" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_report_value">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_value">
+              <MappingFragment StoreEntitySet="dqa_report_value">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MetadataId" ColumnName="MetadataId" />
+                <ScalarProperty Name="IndicatorId" ColumnName="IndicatorId" />
+                <ScalarProperty Name="IndicatorValueMonth1" ColumnName="IndicatorValueMonth1" />
+                <ScalarProperty Name="IndicatorValueMonth2" ColumnName="IndicatorValueMonth2" />
+                <ScalarProperty Name="IndicatorValueMonth3" ColumnName="IndicatorValueMonth3" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_states">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_states">
+              <MappingFragment StoreEntitySet="dqa_states">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="state_name" ColumnName="state_name" />
+                <ScalarProperty Name="state_code" ColumnName="state_code" />
+                <ScalarProperty Name="geo_polictical_region" ColumnName="geo_polictical_region" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

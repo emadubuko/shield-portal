@@ -10,9 +10,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using DMP.Models;
+using ShieldPortal.Models;
 
-namespace DMP
+namespace ShieldPortal
 {
     public class EmailService : IIdentityMessageService
     {

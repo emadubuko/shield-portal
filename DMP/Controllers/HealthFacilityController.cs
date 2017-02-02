@@ -2,8 +2,8 @@
 using BWReport.DAL.Entities;
 using CommonUtil.DAO;
 using CommonUtil.Entities;
-using DMP.ViewModel;
-using DMP.ViewModel.BWR;
+using ShieldPortal.ViewModel;
+using ShieldPortal.ViewModel.BWR;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     public class HealthFacilityController : Controller
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(DMP.Startup))]
-namespace DMP
+[assembly: OwinStartupAttribute(typeof(ShieldPortal.Startup))]
+namespace ShieldPortal
 {
     public partial class Startup
     {

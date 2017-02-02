@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace DMP.Services
+namespace ShieldPortal.Services
 {
     public class ITextEvents : PdfPageEventHelper
     {

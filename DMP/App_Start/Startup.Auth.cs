@@ -5,9 +5,9 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 //using Microsoft.Owin.Security.Google;
 using Owin;
-using DMP.Models;
+using ShieldPortal.Models;
 
-namespace DMP
+namespace ShieldPortal
 {
     public partial class Startup
     {

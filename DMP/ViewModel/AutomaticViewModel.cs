@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
 
-namespace DMP.ViewModel
+namespace ShieldPortal.ViewModel
 {
     public class AutomaticViewModel<T> where T : class
     {

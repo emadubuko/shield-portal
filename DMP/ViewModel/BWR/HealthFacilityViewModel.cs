@@ -4,7 +4,7 @@ using CommonUtil.Enums;
 using System;
 using System.Collections.Generic;
 
-namespace DMP.ViewModel.BWR
+namespace ShieldPortal.ViewModel.BWR
 {
     public class HealthFacilityViewModel : AutomaticViewModel<HealthFacility>
     {

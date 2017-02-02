@@ -2,15 +2,15 @@
 using CommonUtil.Entities;
 using DAL.DAO;
 using DAL.Entities;
-using DMP.Services;
-using DMP.ViewModel;
+using ShieldPortal.Services;
+using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class DMPController : Controller
@@ -25,7 +25,7 @@ namespace DMP.Controllers
             orgDAO = new OrganizationDAO();
             dmpDocDAO = new DMPDocumentDAO();
         }
-        // GET: DMP
+        // GET: ShieldPortal
         public ActionResult Index()
         {
             bool isIpUser = System.Web.HttpContext.Current.User.IsInRole("ip");
@@ -91,7 +91,7 @@ namespace DMP.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "DMP with this title already exists");
+                return new HttpStatusCodeResult(400, "ShieldPortal with this title already exists");
             }           
         }
 

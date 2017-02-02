@@ -3,7 +3,7 @@ using DAL.Entities;
 using System;
 using System.Collections.Generic;
 
-namespace DMP.ViewModel
+namespace ShieldPortal.ViewModel
 {
     public class CreateDMPViewModel : AutomaticViewModel<DAL.Entities.DMP>
     {       
@@ -11,7 +11,7 @@ namespace DMP.ViewModel
 
         public Dictionary<string, string> ToolTip = new Dictionary<string, string>
         {
-            { "DMPTitle", "Provide a title for the DMP" },
+            { "DMPTitle", "Provide a title for the ShieldPortal" },
         };
     }
             

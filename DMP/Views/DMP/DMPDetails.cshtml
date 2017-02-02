@@ -1,8 +1,8 @@
 ﻿@{
-    ViewBag.Title = "DMP Details page";
+    ViewBag.Title = "ShieldPortal Details page";
 }
 
-@model DMP.ViewModel.DMPDocumentViewModel
+@model ShieldPortal.ViewModel.DMPDocumentViewModel
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
     
@@ -14,7 +14,7 @@
         <div class="col-lg-12">
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
-                    <h4 class="panel-title">DMP Details</h4>                     
+                    <h4 class="panel-title">ShieldPortal Details</h4>                     
                 </div>
                 <div class="panel-body" style="padding-top: 0px;">
                     <div class="row filter-wrapper visible-box gray-bg" id="details-box">
@@ -33,7 +33,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>DMP Title</label>
+                                    <label>ShieldPortal Title</label>
                                     <div>
                                         <span>@Model.DmpDetails.Title</span>
                                     </div>
@@ -94,7 +94,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (DMP.ViewModel.DMPDocumentDetails item in Model.Documents)
+                                @foreach (ShieldPortal.ViewModel.DMPDocumentDetails item in Model.Documents)
                                 {
                                     <tr>
                                         <td>@item.DocumentTitle</td>

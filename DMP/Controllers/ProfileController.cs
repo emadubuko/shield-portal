@@ -5,7 +5,7 @@ using DAL.Entities;
 using System;
 using System.Web.Mvc;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class ProfileController : Controller

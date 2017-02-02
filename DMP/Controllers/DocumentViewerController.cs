@@ -1,18 +1,18 @@
 ﻿using DAL.DAO;
 using DAL.Entities;
-using DMP.ViewModel;
+using ShieldPortal.ViewModel;
 using System;
 using System.Linq;
 using System.Web.Mvc;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
-using DMP.Services;
+using ShieldPortal.Services;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using CommonUtil.Entities;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class DocumentViewerController : Controller

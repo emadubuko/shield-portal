@@ -2,8 +2,8 @@
 using CommonUtil.Utilities;
 using DAL.DAO;
 using DAL.Entities;
-using DMP.Services;
-using DMP.ViewModel;
+using ShieldPortal.Services;
+using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace DMP.Controllers
+namespace ShieldPortal.Controllers
 {
     [Authorize]
     public class DMPDocumentController : Controller
@@ -41,7 +41,7 @@ namespace DMP.Controllers
         {
             if ((!dmpId.HasValue || dmpId.Value == 0))
             {
-                return RedirectToAction("CreateDMP", "DMP");
+                return RedirectToAction("CreateDMP", "ShieldPortal");
             }
             MyDMP = dmpDAO.Retrieve(dmpId.Value);
             DMPDocument dmpDoc = null;

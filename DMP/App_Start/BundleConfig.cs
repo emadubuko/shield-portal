@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace DMP
+namespace ShieldPortal
 {
     public class BundleConfig
     {

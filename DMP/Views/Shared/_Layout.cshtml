@@ -183,7 +183,7 @@
                     <ul class="user-info pull-left">
                         <li class="profile-info dropdown">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
-                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@DMP.Services.Utils.LoggedinProfileName</span> <span class="caret"></span>
+                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.LoggedinProfileName</span> <span class="caret"></span>
                             </a>
                             <!-- User action menu -->
                             <ul class="dropdown-menu">
@@ -225,7 +225,7 @@
         $(document).ready(function () {
 
             $("#userdetail").click(function(e){
-                window.document.location = '/Profile/ProfileDetail?profileId=@DMP.Services.Utils.LoggedinProfileID'; //profile.Id;
+                window.document.location = '/Profile/ProfileDetail?profileId=@ShieldPortal.Services.Utils.LoggedinProfileID'; //profile.Id;
             });
 
             $('#changepassword').click(function(){

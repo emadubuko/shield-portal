@@ -13,8 +13,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DMP</RootNamespace>
-    <AssemblyName>DMP</AssemblyName>
+    <RootNamespace>ShieldPortal</RootNamespace>
+    <AssemblyName>ShieldPortal</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -128,6 +128,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -209,9 +211,11 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BiWeeklyReportController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DMPController.cs" />
     <Compile Include="Controllers\DMPDocumentController.cs" />
     <Compile Include="Controllers\DocumentViewerController.cs" />
+    <Compile Include="Controllers\DQAApiController.cs" />
     <Compile Include="Controllers\DQAController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -226,6 +230,7 @@
     <Compile Include="Services\ITextEvents.cs" />
     <Compile Include="Services\PDFUtilities.cs" />
     <Compile Include="Services\Utils.cs" />
+    <Compile Include="Service\MetaDataService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\AutomaticViewModel.cs" />
     <Compile Include="ViewModel\BWR\GPSDataModel.cs" />
@@ -987,6 +992,7 @@
     <Content Include="Resources\APIN_sample.xlsx" />
     <Content Include="Resources\CCFN_sample.xlsx" />
     <Content Include="Resources\CIHP_sample.xlsx" />
+    <Content Include="Report\UploadsCopy of DQA Draft 4.v2.2 %2814thJan%29 HT %28002%29.xlsx" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1046,6 +1052,10 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Downloads\" />
+    <Folder Include="Models\Data\" />
+    <Folder Include="Report\Downloads\" />
+    <Folder Include="Report\Template\" />
+    <Folder Include="Report\Uploads\" />
     <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
@@ -1069,6 +1079,13 @@
       <Project>{9F0B7662-62EA-468E-B677-34FAAC9F120F}</Project>
       <Name>DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DQA.DAL\DQA.DAL.csproj">
+      <Project>{adc0f63f-ce6c-4be8-867f-16eaf68b00b4}</Project>
+      <Name>DQA.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
