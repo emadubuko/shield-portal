@@ -77,7 +77,7 @@ namespace DMP.Controllers
                     ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
                     intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
                     ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
-                    projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
+                    projectDetails =  thepageDoc.ProjectProfile.ProjectDetails,
                     summary = thepageDoc.Planning.Summary, 
                     reportDataList = thepageDoc.DataProcesses.Reports.ReportData,
                     Trainings = thepageDoc.MonitoringAndEvaluationSystems.People.Trainings,
@@ -245,6 +245,7 @@ namespace DMP.Controllers
                 ProjDetails.NameOfImplementingPartner = previousDoc.TheDMP.Organization.Name;
                 ProjDetails.AddressOfOrganization = previousDoc.TheDMP.Organization.Address;
                 ProjDetails.PhoneNumber = previousDoc.TheDMP.Organization.PhoneNumber;
+                ProjDetails.DocumentTitle = projDTF.DocumentTitle;
                 ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
                 projDAO.Save(ProjDetails); 
             }
@@ -254,9 +255,10 @@ namespace DMP.Controllers
                 previousDoc.TheDMP.TheProject.GrantReferenceNumber = projDTF.GrantReferenceNumber; 
                 previousDoc.TheDMP.TheProject.ProjectTitle = projDTF.ProjectTitle;
                 previousDoc.TheDMP.TheProject.ProjectEndDate = projDTF.ProjectEndDate;
-                previousDoc.TheDMP.TheProject.ProjectStartDate = projDTF.ProjectStartDate; 
+                previousDoc.TheDMP.TheProject.ProjectStartDate = projDTF.ProjectStartDate;
+                previousDoc.TheDMP.TheProject.DocumentTitle = projDTF.DocumentTitle;
 
-                projDAO.Update(previousDoc.TheDMP.TheProject);
+                projDAO.ExplicitUpdate(previousDoc.TheDMP.TheProject);
 
                 ProjDetails = previousDoc.TheDMP.TheProject;
             }

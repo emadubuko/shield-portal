@@ -11,6 +11,7 @@
     <h4 style="text-align: center">Create New Profile</h4>
     @foreach (var field in Model.FieldCollection)
     {
+        if (field.Key == "Id") { continue; }
         <div class="form-group">
             <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
             <div class="col-sm-6">

@@ -2,17 +2,7 @@
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
-    <style>
-        .panel-warning {
-            border-color: #929b17;
-        }
-
-            .panel-warning > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-            }
-    </style>
+   
 }
 
 <div class="main-content">
@@ -22,15 +12,14 @@
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
 
-                    <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
+                    <div class="col-sm-offset-12">
                         @if (System.Web.HttpContext.Current.User.IsInRole("sys_admin"))
                         {
-                            <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-outline">
+                            <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-sm btn-outline">
                                 <i class="icon-user-add"></i> Create New Profile
                             </a>
                             <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">                           
                         }
-                        <a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a>
                     </div>
 
                 </div>

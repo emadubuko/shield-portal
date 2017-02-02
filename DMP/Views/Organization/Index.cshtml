@@ -1,18 +1,7 @@
 ﻿@model List<CommonUtil.Entities.Organizations>
 
 @section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
-    <style>
-        .panel-warning {
-            border-color: #929b17;
-        }
-
-            .panel-warning > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-            }
-    </style>
+    @Styles.Render("~/bundles/CreateDMPCss") 
 }
 
 <div class="main-content">
@@ -22,13 +11,11 @@
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
                     IMPLEMENTING PARTNERS
-                    <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
-                        <a id="dmpCreate" href='@Url.Action("CreateOrganization", "Organization")' class="btn btn-black btn-outline">
+                    <div class="col-sm-offset-12">
+                        <a id="dmpCreate" href='@Url.Action("CreateOrganization", "Organization")' class="btn btn-black btn-sm btn-outline">
                             <i class="fa fa-plus"></i> Create New IP
                         </a>
-                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-
-                        <a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a>
+                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36"> 
                     </div>
                 </div>
                 <div class="panel-body">

@@ -19,7 +19,7 @@ namespace DAL.Mapping
             Map(x => x.ProjectStartDate);
             Map(x => x.ProjectEndDate);
             Map(x => x.ProjectSummary);
-            References(x => x.LeadActivityManager).Column("LeadActivityManagerId");
+            References(x => x.LeadActivityManager).Column("LeadActivityManagerId").Not.LazyLoad();
             References(x => x.Organization).Column("OrganizationId");
         }
     }

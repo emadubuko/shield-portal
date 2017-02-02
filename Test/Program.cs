@@ -175,7 +175,7 @@ namespace Test
                 Digital = new DigitalData
                 {
                     Backup = "None",
-                    StorageType = "DBs"
+                    //StorageType = "DBs"
                 },
                 NonDigital = new NonDigitalData
                 {

@@ -2,17 +2,7 @@
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
-    <style>
-        .panel-warning {
-            border-color: #929b17;
-        }
-
-            .panel-warning > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-            }
-    </style>
+     
 }
 
 <div class="main-content">
@@ -22,16 +12,14 @@
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
                     Health Facilities
-                    <div style="float: right;padding: 0;margin-bottom: 0;margin-right: -0.5em;">
+                    <div class="col-sm-7 col-sm-offset-9">
                         <a id="uploadfacilitybtn" href='#' class="btn btn-black btn-sm btn-outline">
                             <i class="fa fa-plus"></i> Upload New Facilities
                         </a>
                         <a id="dmpCreate" href='@Url.Action("CreateHealthFacility", "HealthFacility")' class="btn btn-black btn-sm btn-outline">
                             <i class="fa fa-plus"></i> Add New Facility
                         </a>
-                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-
-                        <a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a>
+                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36"> 
                     </div>
                 </div>
                 <div class="panel-body">

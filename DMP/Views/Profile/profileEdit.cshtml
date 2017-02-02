@@ -8,9 +8,7 @@
 }
 
 <div class="main-content">
-    <a href="javascript:history.back()" class="btn btn-default" style="color:#929b17"><i class="icon-left-open"></i><b>Go Back</b></a>
-    <hr />
-
+   
     <div class="row">
         <div class="col-lg-1"></div>
         <div class="col-lg-8">
@@ -27,6 +25,7 @@
                         <div class="form-horizontal">
                             @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties().Where(x => x.CanWrite && !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                             {
+                                if (field.Name == "Id") { continue; }
                                 if (field.Name == "Organization")
                                 {
                                     <div class="form-group">

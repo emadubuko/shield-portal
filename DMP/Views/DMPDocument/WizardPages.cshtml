@@ -17,6 +17,9 @@
     input[type="number"] {
         -moz-appearance: textfield;
     }
+    .modifiedselect{
+        position:absolute;top:0px;width:85%;height:31px;padding-left: 12px;color: black;
+    }
     </style>
 
     <script src="~/Scripts/Ultilities.js"></script>
@@ -242,60 +245,28 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label" for="Rational">Rational</label>
                                                     <div class="col-sm-5">
-                                                        <select id="Rational" class="form-control">
-                                                            <option value="" disabled selected>What is the rational for approval</option>
-                                                            @if (Model.ethicsApproval != null)
+                                                        <select class="form-control" onchange="document.getElementById('Rational').value=this.options[this.selectedIndex].text;">
+                                                            <option value="" disabled>please specify if not on the list</option>    
+                                                            @foreach (var item in Model.rational)
                                                             {
-                                                                foreach (var item in Model.rational)
-                                                                {
-                                                                    if (@item == Model.ethicsApproval.Rational)
-                                                                    {
-                                                                        <option value="@item" selected>&nbsp;@item</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@item">&nbsp;@item</option>
-                                                                    }
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                foreach (var item in Model.rational)
-                                                                {
-                                                                    <option value="@item">&nbsp;@item</option>
-                                                                }
+                                                                <option value="@item">&nbsp;@item</option>
                                                             }
                                                         </select>
+                                                        <input id="Rational"  value="@Model.ethicsApproval.Rational" placeholder="What is the rational for approval" class="modifiedselect"   onfocus="this.select()" type="text">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label" for="AprrovingInstititionalReviewBoard">Aprroving Instititional Review Board</label>
                                                     <div class="col-sm-5">
-                                                        <select id="AprrovingInstititionalReviewBoard" class="form-control">
-                                                            <option value="" disabled selected>select approval baord</option>
-                                                            @if (Model.ethicsApproval != null)
+                                                        <select class="form-control" onchange="document.getElementById('AprrovingInstititionalReviewBoard').value=this.options[this.selectedIndex].text;">
+                                                            <option value="" disabled>please specify if not on the list</option>
+                                                            @foreach (var item in Model.reviewBoard)
                                                             {
-                                                                foreach (var item in Model.reviewBoard)
-                                                                {
-                                                                    if (@item == Model.ethicsApproval.AprrovingInstititionalReviewBoard)
-                                                                    {
-                                                                        <option value="@item" selected>&nbsp;@item</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@item">&nbsp;@item</option>
-                                                                    }
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                foreach (var item in Model.reviewBoard)
-                                                                {
-                                                                    <option value="@item">&nbsp;@item</option>
-                                                                }
+                                                                <option value="@item">&nbsp;@item</option>
                                                             }
                                                         </select>
+                                                        <input id="AprrovingInstititionalReviewBoard" value="@Model.ethicsApproval.AprrovingInstititionalReviewBoard" placeholder="Select approving board" class="modifiedselect" onfocus="this.select()" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -555,23 +526,17 @@
                                             <div class="panel-body">
                                                 <div class="form-horizontal">
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="ProjectEquipments">ProjectEquipments</label>
+                                                        <label class="col-sm-3 control-label" for="ProjectEquipments">Project equipments</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide details of equipments available for this project"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <select id="ProjectEquipments" class="form-control">
-                                                                <option value="" disabled selected>Provide details of equipments available for this project</option>
+                                                            <select class="form-control" onchange="document.getElementById('ProjectEquipments').value=this.options[this.selectedIndex].text;">
+                                                                <option value="" disabled>please specify if not on the list</option>
                                                                 @foreach (var item in Model.equipment)
                                                                 {
-                                                                    if (Model.Equipment != null && Model.Equipment.ProjectEquipments == item)
-                                                                    {
-                                                                        <option value="@item" selected>@item</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@item">@item</option>
-                                                                    }
+                                                                    <option value="@item">&nbsp;@item</option>
                                                                 }
-                                                            </select> 
+                                                            </select>
+                                                            <input id="ProjectEquipments" value="@Model.Equipment.ProjectEquipments" placeholder="Provide details of equipments available for this project" class="modifiedselect" onfocus="this.select()" type="text">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -588,11 +553,10 @@
                                                         <label class="col-sm-3 control-label" for="StatesCoveredByImplementingPartners">States covered by implementing partners</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Check all states covered by IP"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <select id="StatesCoveredByImplementingPartners" class="form-control">
-                                                                <option value="" disabled selected>Check all states covered by IP</option>
+                                                            <select id="StatesCoveredByImplementingPartners" class="select2 form-control" data-placeholder="Select all states covered by IP" multiple>
                                                                 @foreach (var item in Model.states)
                                                                 {
-                                                                    if (Model.Environment != null && Model.Environment.StatesCoveredByImplementingPartners == item)
+                                                                    if (!string.IsNullOrEmpty(Model.Environment.StatesCoveredByImplementingPartners) && Model.Environment.StatesCoveredByImplementingPartners.Contains(item))
                                                                     {
                                                                         <option value="@item" selected>@item</option>
                                                                     }
@@ -704,11 +668,10 @@
                                                 <label for="DataSourceCollectionAndReportingTools" class="col-sm-3 control-label">Data source, collection and reporting tools</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What are your data source  and the tools used for data collection and reporting? "><i class="icon-help"></i></button>
                                                 <div class="col-sm-7">
-                                                    <select id="DataSourceCollectionAndReportingTools" class="form-control">
-                                                        <option value="" disabled selected>What are your data source  and the tools used for data collection and reporting?</option>
+                                                    <select id="DataSourceCollectionAndReportingTools" class="select2 form-control" multiple data-placeholder="What are your data source  and the tools used for data collection and reporting?">
                                                         @foreach (var item in Model.dataSourcesTypes)
                                                         {
-                                                            if (Model.dataCollection != null && item == Model.dataCollection.DataSourceCollectionAndReportingTools)
+                                                            if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataSourceCollectionAndReportingTools) && Model.dataCollection.DataSourceCollectionAndReportingTools.Contains(item))
                                                             {
                                                                 <option value="@item" selected>@item</option>
                                                             }
@@ -963,24 +926,16 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataStorageFormat">Data Storage format</label>
                                                 <div class="col-sm-8">
-                                                    <select id="DataStorageFormat" class="form-control">
-                                                        <option value="" disabled selected>Select Storage type</option>
+                                                    <select id="DataStorageFormat" class="select2 form-control" data-placeholder="Select Storage type" multiple>                                                         
                                                         @foreach (var item in Model.storageformats)
                                                         {
-                                                            if (Model.digital != null)
+                                                            if (!string.IsNullOrEmpty(Model.digital.DataStorageFormat) && Model.digital.DataStorageFormat.Contains(item))
                                                             {
-                                                                if (@item == Model.digital.StorageType)
-                                                                {
                                                                     <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                                    <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1044,11 +999,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" value="@Model.digital.DataSecurity" class="form-control">
+                                                        <textarea type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control">@Model.digital.DataSecurity</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control">
+                                                        <textarea type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1058,11 +1013,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" value="@Model.digital.PatientConfidentialityPolicies" id="Patientconfidentialitypolicies" class="form-control">
+                                                        <textarea type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control">@Model.digital.PatientConfidentialityPolicies</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control">
+                                                        <textarea type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1095,24 +1050,16 @@
                                                 <label class="col-sm-4 control-label" for="NonDigitalDataTypes">Non-Digital Data Types</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of non-digital data will be collected and stored?"><i class="icon-help"></i></button>
                                                 <div class="col-sm-6">
-                                                    <select id="NonDigitalDataTypes" class="form-control">
-                                                        <option value="" disabled>What types of non-digital data will be collected and stored</option>
+                                                    <select id="NonDigitalDataTypes" class="select2 form-control" data-placeholder="What types of non-digital data will be collected and stored" multiple>
                                                         @foreach (var item in Model.nonDigitalDataTypes)
                                                         {
-                                                            if (Model.nonDigital != null)
+                                                            if (Model.nonDigital != null && !string.IsNullOrEmpty(Model.nonDigital.NonDigitalDataTypes) && Model.nonDigital.NonDigitalDataTypes.Contains(item))
                                                             {
-                                                                if (@item == Model.nonDigital.NonDigitalDataTypes)
-                                                                {
                                                                     <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                                    <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1481,6 +1428,9 @@
     <script>
         $(document).ready(function () {
 
+            $(".select2.select2-container.select2-container--default").css("width", "100%");
+            $(".select2-search__field").css("width", "100%");
+
             $(function() {
                 $('.chosen-select').chosen();
                 $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
@@ -1537,7 +1487,32 @@
                 viewModel["Trainings"] = trainingArray; 
                 //viewModel["DataCollection"] = datacollectionArray; 
                 viewModel["dataVerification"] = DataVerificationArray; 
-                
+               
+                let selectedStates = '';
+                $("#StatesCoveredByImplementingPartners option:selected").each(function(){
+                    selectedStates +=$(this).val()+',';
+                });
+                viewModel["StatesCoveredByImplementingPartners"] = selectedStates;
+
+                let selectedTools='';
+                $("#DataSourceCollectionAndReportingTools option:selected").each(function(){
+                    selectedTools +=$(this).val()+',';
+                });
+                viewModel["DataSourceCollectionAndReportingTools"] = selectedTools;
+
+                let selectedDataStorageFormat ='';
+                $("#DataStorageFormat option:selected").each(function(){
+                    selectedDataStorageFormat +=$(this).val()+',';
+                });
+                viewModel["DataStorageFormat"] = selectedDataStorageFormat;
+
+                let selectednondigitaltypes = '';
+                $("#NonDigitalDataTypes option:selected").each(function(){
+                    selectednondigitaltypes +=$(this).val()+',';
+                });
+                viewModel["NonDigitalDataTypes"] = selectednondigitaltypes;
+
+
                 $.ajax({
                     type: "POST",
                     url: updateUrl,
@@ -1546,8 +1521,6 @@
                     dataType: 'json',
                     cache: false,
                 }).done(function (result) {
-                    
-
                     if (result != undefined && result.documentId != undefined) {
                         documentID = result.documentId;
                         updateUrl = '@Url.Action("EditDocumentNext", "DMPDocument")'

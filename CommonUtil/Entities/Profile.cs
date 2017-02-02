@@ -5,7 +5,7 @@ namespace CommonUtil.Entities
 {
     public class Profile
     {
-        [XmlIgnore]
+        //[XmlIgnore]
         public virtual Guid Id { get; set; }
 
         public virtual string Title { get; set; }
@@ -14,7 +14,7 @@ namespace CommonUtil.Entities
         {
             get
             {
-                return string.Format("{0} {1} {2} {3}", Title, Surname, OtherNames, FirstName);
+                return string.Format("{0} {1} {2} {3}", Title, FirstName, OtherNames, Surname);
             }
         }
         public virtual string Password { get; set; }
@@ -28,7 +28,8 @@ namespace CommonUtil.Entities
 
        
         public virtual string ContactEmailAddress { get; set; }
-
+                
+       
         public virtual Organizations Organization { get; set; }
 
         

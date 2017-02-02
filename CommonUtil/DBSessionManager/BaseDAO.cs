@@ -25,9 +25,8 @@ namespace CommonUtil.DBSessionManager
                 tran.Rollback();
                 throw ex;
             }
-
         }
-
+        
 
         public virtual void Save(T obj)
         {
