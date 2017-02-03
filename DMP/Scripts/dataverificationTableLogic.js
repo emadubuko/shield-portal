@@ -15,6 +15,7 @@ if (DataVerificationArrayFromServer !=null && DataVerificationArrayFromServer.le
                 }
             }
             dataverification.TimelinesForDataVerification = timeLines;
+            dataverification.Id = c + 1;
         }
         
         DataVerificationArray.push(dataverification);
@@ -25,7 +26,8 @@ if (DataVerificationArrayFromServer !=null && DataVerificationArrayFromServer.le
 
 $("#addDataVerificationbtn").click(function (e) {
     var dataverification = {};
-    dataverification["Id"] = DataVerificationArray.length + 1;
+    
+    dataverification["Id"] = DataVerificationArray[DataVerificationArray.length - 1].Id + 1;  //DataVerificationArray.length + 1;
     var dateStringArray = [];
 
     $("#dataVerificationForm input, select").each(function () {
@@ -61,16 +63,18 @@ $("#addDataVerificationbtn").click(function (e) {
                 case "Months":
                     duration = inputValue * 30; break;
                 case "Years":
-                    duration = inputValue * 365; break;
-                default:
-                    duration = 1; break;
+                    duration = inputValue * 365; break; 
+            }
+            if (duration == "") {
+                alert("please specify duration");
+                return;
             }
             dataverification["DurationOfDataVerificaion"] = duration; // $(this)[0].value;
             $(this).val("");
         }        
     });
 
-    if (dataverification.TimelinesForDataVerification != null) {
+    if (dataverification.TimelinesForDataVerification != null && dataverification.DurationOfDataVerificaion !=null) {
         DataVerificationArray.push(dataverification);
         CreatedataverificationTable(dataverification);
     }

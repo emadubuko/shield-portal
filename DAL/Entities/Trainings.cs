@@ -9,9 +9,9 @@ namespace DAL.Entities
 {
     public class Trainings
     {
-        [XmlIgnore]
-        public virtual string DataHandlingAndEntry { get; set; }
-
+        //[XmlIgnore]
+        //public virtual string DataHandlingAndEntry { get; set; }
+        
         public virtual int Id { get; set; }
         public virtual string NameOfTraining { get; set; }
         public virtual List<DateTime> TimelinesForTrainings { get; set; }

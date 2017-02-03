@@ -15,6 +15,7 @@ if (ReportArrayFromServer!=null && ReportArrayFromServer.length > 0) {
             }
         }
         report.TimelinesForReporting = timeLines;
+        report.Id = c + 1;
         reportArray.push(report);
         CreateReportTable(report);
     }
@@ -23,7 +24,7 @@ if (ReportArrayFromServer!=null && ReportArrayFromServer.length > 0) {
 
 $("#addReportbtn").click(function (e) {
     var report={};
-    report["Id"] = reportArray.length + 1;
+    report["Id"] = reportArray[reportArray.length - 1].Id + 1; // reportArray.length + 1;
     var dateStringArray = [];
 
     $("#reportdatadiv input, select").each(function(){
@@ -67,9 +68,11 @@ $("#addReportbtn").click(function (e) {
                 case "Months":
                     duration = inputValue * 30; break;
                 case "Years":
-                    duration = inputValue * 365; break;
-                default:
-                    duration = 1; break; //assume one day
+                    duration = inputValue * 365; break; 
+            }
+            if (duration == "") {
+                alert("please specify duration");
+                return;
             }
             report["DurationOfReporting"] = duration;
             $(this).val("");
@@ -79,7 +82,7 @@ $("#addReportbtn").click(function (e) {
             $(this).val("");
         }
     });
-    if (report.TimelinesForReporting != null) {
+    if (report.TimelinesForReporting != null && report.DurationOfReporting !=null) {
         reportArray.push(report);
         CreateReportTable(report);
     }

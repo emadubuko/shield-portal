@@ -11,6 +11,8 @@ using ShieldPortal.Services;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using CommonUtil.Entities;
+using CommonUtil.DAO;
+using CommonUtil.DBSessionManager;
 
 namespace ShieldPortal.Controllers
 {
@@ -311,6 +313,7 @@ namespace ShieldPortal.Controllers
 
                 doc.Close();
             }
+            
             return Json(fileName);
         }
 

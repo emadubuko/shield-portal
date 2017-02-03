@@ -257,6 +257,7 @@
     <Content Include="images\alarm.jpg" />
     <Content Include="images\background-image.jpg" />
     <Content Include="images\background-image_old.jpg" />
+    <Content Include="images\backgroung_image.png" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\imac-40.jpg" />
     <Content Include="Content\images\animated-overlay.gif" />

@@ -16,6 +16,7 @@ if (TrainingArrayFromServer !=null && TrainingArrayFromServer.length > 0) {
                 }
             }
             training.TimelinesForTrainings = timeLines;
+            training.Id = c + 1;
         }        
 
         trainingArray.push(training);
@@ -26,7 +27,7 @@ if (TrainingArrayFromServer !=null && TrainingArrayFromServer.length > 0) {
 
 $("#addtrainingbtn").click(function (e) {
     var training = {};
-    training["Id"] = trainingArray.length + 1;
+    training["Id"] = trainingArray[trainingArray.length - 1].Id + 1; //trainingArray.length + 1;
     var dateStringArray = [];
 
     $("#trainingForm input, select").each(function () {
@@ -58,16 +59,18 @@ $("#addtrainingbtn").click(function (e) {
                 case "Months":
                     duration = inputValue * 30; break;
                 case "Years":
-                    duration = inputValue * 365; break;
-                default:
-                    duration = 1; break;
+                    duration = inputValue * 365; break;                
+            }
+            if (duration == "") {
+                alert("please specify duration");
+                return;
             }
             training["DurationOfTrainings"] = duration; // $(this)[0].value;
             $(this).val("");
         }
     });
 
-    if (training.TimelinesForTrainings != null) {
+    if (training.TimelinesForTrainings != null && training.DurationOfTrainings !=null) {
         trainingArray.push(training);
         CreatetrainingTable(training);
     }    

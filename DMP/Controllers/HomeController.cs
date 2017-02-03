@@ -27,7 +27,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult Index()
         {
-            return RedirectToAction("index", "ShieldPortal");
+            return RedirectToAction("index", "DMP");
         }
 
 
@@ -47,7 +47,7 @@ namespace ShieldPortal.Controllers
 
             if (doc.Document.MonitoringAndEvaluationSystems == null || doc.Document.QualityAssurance == null || doc.Document.DataProcesses.Reports == null)
             {
-                return new HttpStatusCodeResult(400, "ShieldPortal document is not yet completed");
+                return new HttpStatusCodeResult(400, "DMP document is not yet completed");
             }
             var trainings = doc.Document.MonitoringAndEvaluationSystems.People.Trainings;
             var dataCollection = doc.Document.DataProcesses.DataCollection;

@@ -1,6 +1,4 @@
 ﻿using CommonUtil.Entities;
-using DAL.Entities;
-using System;
 using System.Collections.Generic;
 
 namespace ShieldPortal.ViewModel
@@ -11,7 +9,7 @@ namespace ShieldPortal.ViewModel
 
         public Dictionary<string, string> ToolTip = new Dictionary<string, string>
         {
-            { "DMPTitle", "Provide a title for the ShieldPortal" },
+            { "DMPTitle", "Provide a title for the DMP" },
         };
     }
             

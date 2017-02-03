@@ -54,11 +54,11 @@ namespace ShieldPortal.Controllers
             {
                 dmpDoc = MyDMP.DMPDocuments.LastOrDefault();
             }
-                      
+            var states = ExcelHelper.RetrieveStatesName();
             if (dmpDoc != null)
             {                
                 var thepageDoc = dmpDoc.Document;
-                var states = ExcelHelper.RetrieveStatesName();
+               
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
                     states = states,
@@ -94,6 +94,7 @@ namespace ShieldPortal.Controllers
             { 
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
+                    states = states,
                     Organization = MyDMP.Organization,
                     Initiator = new Utils().GetloggedInProfile(),  
                     EditMode = false,
@@ -204,15 +205,15 @@ namespace ShieldPortal.Controllers
 
             try
             {
-                projDAO.Save(ProjDetails);
-                projDAO.CommitChanges();
-
                 MyDMP.TheProject = ProjDetails;
-                dmpDAO.Update(MyDMP);
+                projDAO.Save(MyDMP.TheProject);
+                projDAO.CommitChanges();
+                               
+                //dmpDAO.Update(MyDMP);
                 var theDoc = SaveDMPDocument(page, Guid.Empty); // MyDMP.Id);
                 dmpDocDAO.CommitChanges();
 
-                var data = new { documentId = theDoc.Id, projectId = ProjDetails.Id };
+                var data = new { documentId = theDoc.Id, projectId = MyDMP.TheProject.Id };
 
                 return Json(data, JsonRequestBehavior.AllowGet);
 

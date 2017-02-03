@@ -81,7 +81,7 @@
         <div class="col-lg-12">
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
-                    <h4 class="panel-title">Complete the ShieldPortal Document</h4>
+                    <h4 class="panel-title">Complete the DMP Document</h4>
                 </div>
                 <div class="panel-body">
                     <form id="rootwizard-2" class="form-wizard validate-form-wizard validate" novalidate="novalidate">
@@ -90,10 +90,10 @@
                                 <li class="active"><a href="#ProjectProfile" data-toggle="tab" aria-expanded="false"><span>1</span> Project Profile</a></li>
                                 <li><a href="#ProgramObjectives" data-toggle="tab"><span>2</span>Program Objectives</a></li>
                                 <li><a href="#MonitoringEvaluationSystems" data-toggle="tab"><span>3</span>M & E Systems</a></li>
-                                <li><a href="#DataProcesses" data-toggle="tab"><span>4</span>Data Processes</a></li> 
-                                <li><a href="#QualityAssurance" data-toggle="tab"><span>5</span>Quality Assurance</a></li> 
+                                <li><a href="#DataProcesses" data-toggle="tab"><span>4</span>Data Processes</a></li>
+                                <li><a href="#QualityAssurance" data-toggle="tab"><span>5</span>Quality Assurance</a></li>
                                 <li><a href="#DataStorageAccessAndSharing" data-toggle="tab"><span>6</span>Data Storage</a></li>
-                                <li><a href="#IntellectualPropertyCopyrightAndOwnership" data-toggle="tab"><span>7</span>Copyright</a></li>                                 
+                                <li><a href="#IntellectualPropertyCopyrightAndOwnership" data-toggle="tab"><span>7</span>Copyright</a></li>
                                 <li><a href="#PostProjectDataRetentionSharingAndDestruction" data-toggle="tab"><span>8</span>Data Retention</a></li>
                             </ul>
                         </div>
@@ -246,13 +246,13 @@
                                                     <label class="col-sm-4 control-label" for="Rational">Rational</label>
                                                     <div class="col-sm-5">
                                                         <select class="form-control" onchange="document.getElementById('Rational').value=this.options[this.selectedIndex].text;">
-                                                            <option value="" disabled>please specify if not on the list</option>    
+                                                            <option value="" disabled>please specify if not on the list</option>
                                                             @foreach (var item in Model.rational)
                                                             {
                                                                 <option value="@item">&nbsp;@item</option>
                                                             }
                                                         </select>
-                                                        <input id="Rational"  value="@Model.ethicsApproval.Rational" placeholder="What is the rational for approval" class="modifiedselect"   onfocus="this.select()" type="text">
+                                                        <input id="Rational" value="@(Model.ethicsApproval!=null ? Model.ethicsApproval.Rational : "")" placeholder="What is the rational for approval" class="modifiedselect" onfocus="this.select()" type="text">
                                                     </div>
                                                 </div>
 
@@ -266,7 +266,7 @@
                                                                 <option value="@item">&nbsp;@item</option>
                                                             }
                                                         </select>
-                                                        <input id="AprrovingInstititionalReviewBoard" value="@Model.ethicsApproval.AprrovingInstititionalReviewBoard" placeholder="Select approving board" class="modifiedselect" onfocus="this.select()" type="text">
+                                                        <input id="AprrovingInstititionalReviewBoard" value="@(Model.ethicsApproval!=null ? Model.ethicsApproval.AprrovingInstititionalReviewBoard : "")" placeholder="Select approving board" class="modifiedselect" onfocus="this.select()" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -366,7 +366,7 @@
                                                             <label class="col-sm-3 control-label" for="Staffing">Staffing</label>
                                                             <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide details of Staffing including qualifications, function & quantity "><i class="icon-help"></i></button>
                                                             <div class="col-sm-7">
-                                                                <textarea type="text" rows="3" id="Staffing" placeholder="Provide details of Staffing including qualifications, function & quantity" class="form-control">@Model.People.Staffing</textarea>
+                                                                <textarea type="text" rows="3" id="Staffing" placeholder="Provide details of Staffing including qualifications, function & quantity" class="form-control">@(Model.People != null ? Model.People.Staffing : "")</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -375,7 +375,7 @@
                                                             <label class="col-sm-3 control-label" for="RoleAndResponsibilities">Role & Responsibilities</label>
                                                             <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe roles and responsibility of each Staff as detailed above  "><i class="icon-help"></i></button>
                                                             <div class="col-sm-7">
-                                                                <textarea type="text" rows="3" id="RoleAndResponsibilities" placeholder="Describe roles and responsibility of each Staff as detailed above " class="form-control">@Model.People.RoleAndResponsibilities</textarea>
+                                                                <textarea type="text" rows="3" id="RoleAndResponsibilities" placeholder="Describe roles and responsibility of each Staff as detailed above " class="form-control">@(Model.People != null ? Model.People.RoleAndResponsibilities : "")</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -388,7 +388,7 @@
                                                                     <option value="" disabled selected>Are your data entry personnels trained and certified to handle data?</option>
                                                                     @foreach (var item in Model.YesNoOption)
                                                                     {
-                                                                        if (item == Model.People.DataHandlingAndEntry)
+                                                                        if (Model.People != null && item == Model.People.DataHandlingAndEntry)
                                                                         {
                                                                             <option value="@item" selected>@item</option>
                                                                         }
@@ -397,7 +397,7 @@
                                                                             <option value="@item">@item</option>
                                                                         }
                                                                     }
-                                                                </select> 
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -405,7 +405,7 @@
                                                 <div class="panel panel-warning" id="Trainings">
                                                     <div class="panel-heading clearfix">
                                                         <h4 class="panel-title">Trainings</h4>
-                                                       &nbsp; <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide details of trainings/ capacity building carried out and trainings to be carried out for this project"><i class="icon-help"></i></button>
+                                                        &nbsp; <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide details of trainings/ capacity building carried out and trainings to be carried out for this project"><i class="icon-help"></i></button>
                                                     </div>
                                                     <div class="panel-body">
                                                         <div class="form-horizontal" id="trainingForm">
@@ -444,7 +444,7 @@
                                                                     <select id="trDurationdrpdwn" class="form-control">
                                                                         <option value="" disabled selected>Select</option>
                                                                         @foreach (var item in Model.Duration)
-                                                                        {
+            {
                                                                             <option value="@item">@item</option>
                                                                         }
                                                                     </select>
@@ -456,7 +456,7 @@
                                                                     <a class="btn btn-black btn-sm btn-outline" id="addtrainingbtn">Add to list</a>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                         </div>
                                                         <div class="table-responsive">
                                                             <table class="table table-striped">
@@ -491,28 +491,28 @@
                                                         <label class="col-sm-3 control-label" for="ImplementingPartnerMEProcess">Implementing partner M & E process</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe your monitoring & evaluation processes including site visits & trainings, timelines"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="ImplementingPartnerMEProcess" placeholder="Describe your monitoring & evaluation processes including site visits & trainings, timelines" class="form-control">@Model.processes.ImplementingPartnerMEProcess</textarea>
+                                                            <textarea type="text" rows="3" id="ImplementingPartnerMEProcess" placeholder="Describe your monitoring & evaluation processes including site visits & trainings, timelines" class="form-control">@(Model.processes != null ? Model.processes.ImplementingPartnerMEProcess : "")</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="SiteVisits">Site visits</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe site vists procedures including responsible persons"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="SiteVisits" placeholder="Describe site vists procedures including responsible persons" class="form-control">@Model.processes.SiteVisits</textarea>
+                                                            <textarea type="text" rows="3" id="SiteVisits" placeholder="Describe site vists procedures including responsible persons" class="form-control">@(Model.processes != null ? Model.processes.SiteVisits : "")</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="Audits">Audits</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe audit procedures including responsible persons"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="Audits" placeholder="Describe audit procedures including responsible persons" class="form-control">@Model.processes.Audits</textarea>
+                                                            <textarea type="text" rows="3" id="Audits" placeholder="Describe audit procedures including responsible persons" class="form-control">@(Model.processes != null ? Model.processes.Audits : "")</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="DataCollationAndAnalysis">Data collation & analysis</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe data collation and analysis procedures including responsible persons"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="DataCollationAndAnalysis" placeholder="Describe data collation and analysis procedures including responsible persons" class="form-control">@Model.processes.DataCollationAndAnalysis</textarea>
+                                                            <textarea type="text" rows="3" id="DataCollationAndAnalysis" placeholder="Describe data collation and analysis procedures including responsible persons" class="form-control">@(Model.processes != null ? Model.processes.DataCollationAndAnalysis : "")</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -532,11 +532,11 @@
                                                             <select class="form-control" onchange="document.getElementById('ProjectEquipments').value=this.options[this.selectedIndex].text;">
                                                                 <option value="" disabled>please specify if not on the list</option>
                                                                 @foreach (var item in Model.equipment)
-                                                                {
+            {
                                                                     <option value="@item">&nbsp;@item</option>
                                                                 }
                                                             </select>
-                                                            <input id="ProjectEquipments" value="@Model.Equipment.ProjectEquipments" placeholder="Provide details of equipments available for this project" class="modifiedselect" onfocus="this.select()" type="text">
+                                                            <input id="ProjectEquipments" value="@(Model.Equipment !=null ?Model.Equipment.ProjectEquipments:"")" placeholder="Provide details of equipments available for this project" class="modifiedselect" onfocus="this.select()" type="text">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -556,7 +556,7 @@
                                                             <select id="StatesCoveredByImplementingPartners" class="select2 form-control" data-placeholder="Select all states covered by IP" multiple>
                                                                 @foreach (var item in Model.states)
                                                                 {
-                                                                    if (!string.IsNullOrEmpty(Model.Environment.StatesCoveredByImplementingPartners) && Model.Environment.StatesCoveredByImplementingPartners.Contains(item))
+                                                                    if (Model.Environment != null && !string.IsNullOrEmpty(Model.Environment.StatesCoveredByImplementingPartners) && Model.Environment.StatesCoveredByImplementingPartners.Contains(item))
                                                                     {
                                                                         <option value="@item" selected>@item</option>
                                                                     }
@@ -565,46 +565,46 @@
                                                                         <option value="@item">@item</option>
                                                                     }
                                                                 }
-                                                            </select>  
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="panel-heading clearfix">
                                                         <h4 class="panel-title">Number of sites covered by implementing partners</h4>
-                                                        <hr />  
+                                                        <hr />
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="ART">ART</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="number site on ART Program"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <input type="number" id="ART" value="@Model.Environment.NumberOfSitesCoveredByImplementingPartners.ART" placeholder="number site on ART Program" />
+                                                            <input type="number" id="ART" value="@(Model.Environment!=null && Model.Environment.NumberOfSitesCoveredByImplementingPartners!=null ? Model.Environment.NumberOfSitesCoveredByImplementingPartners.ART :0)" placeholder="number site on ART Program" />
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="PMTCT">PMTCT</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="number of site on PMTCT program"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <input type="number" id="PMTCT" value="@Model.Environment.NumberOfSitesCoveredByImplementingPartners.PMTCT" placeholder="number of site on PMTCT program" />
+                                                            <input type="number" id="PMTCT" value="@(Model.Environment!=null && Model.Environment.NumberOfSitesCoveredByImplementingPartners!=null ? Model.Environment.NumberOfSitesCoveredByImplementingPartners.PMTCT :0)" placeholder="number of site on PMTCT program" />
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="HTC">HTC</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="number of site on HTC program"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <input type="number" id="HTC" value="@Model.Environment.NumberOfSitesCoveredByImplementingPartners.HTC" placeholder="number of site on HTC program" />
+                                                            <input type="number" id="HTC" value="@(Model.Environment!=null && Model.Environment.NumberOfSitesCoveredByImplementingPartners!=null ? Model.Environment.NumberOfSitesCoveredByImplementingPartners.HTC :0)" placeholder="number of site on HTC program" />
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="OVC">OVC</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="number of site on OVC program"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <input type="number" id="OVC" value="@Model.Environment.NumberOfSitesCoveredByImplementingPartners.OVC" placeholder="number of site on OVC program" />
+                                                            <input type="number" id="OVC" value="@(Model.Environment!=null && Model.Environment.NumberOfSitesCoveredByImplementingPartners!=null ? Model.Environment.NumberOfSitesCoveredByImplementingPartners.OVC :0)" placeholder="number of site on OVC program" />
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="Commmunity">Commmunity</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="number of site on Commmunity program"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <input type="number" id="Commmunity" value="@Model.Environment.NumberOfSitesCoveredByImplementingPartners.Commmunity" placeholder="number of site on Commmunity program" />
+                                                            <input type="number" id="Commmunity" value="@(Model.Environment!=null && Model.Environment.NumberOfSitesCoveredByImplementingPartners!=null ? Model.Environment.NumberOfSitesCoveredByImplementingPartners.Commmunity :0)" placeholder="number of site on Commmunity program" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -625,7 +625,7 @@
                                 </div>
                             </div>
                             <!-- end of Data M&E page-->
-                            
+
                             <div class="tab-pane" id="DataProcesses">
                                 <h4 class="panel-title" style="margin-left: 70px;">
                                     <b>Data Processes</b>
@@ -636,13 +636,13 @@
                                         <h4 class="panel-title">Data</h4>
                                     </div>
                                     <div class="panel-body">
-                                        <div class="form-horizontal">                                             
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label" for="DataCollectionProcessess">Data Collection Processes</label>
-                                            <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe how data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)"><i class="icon-help"></i></button>
-                                            <div class="col-sm-7">
-                                                <textarea id="DataCollectionProcessess" placeholder="Describe how data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)" class="form-control" rows="3">@(Model.dataCollection != null ? Model.dataCollection.DataCollectionProcessess : "")</textarea>
-                                            </div>
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="DataCollectionProcessess">Data Collection Processes</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe how data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)"><i class="icon-help"></i></button>
+                                                <div class="col-sm-7">
+                                                    <textarea id="DataCollectionProcessess" placeholder="Describe how data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)" class="form-control" rows="3">@(Model.dataCollection != null ? Model.dataCollection.DataCollectionProcessess : "")</textarea>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="DataFormat" class="col-sm-3 control-label">Data Format</label>
@@ -652,7 +652,7 @@
                                                         <option value="" disabled selected>What format is data collected in?</option>
                                                         @foreach (var item in Model.reportDataType)
                                                         {
-                                                            if (Model.dataCollection !=null && item == Model.dataCollection.DataFormat)
+                                                            if (Model.dataCollection != null && item == Model.dataCollection.DataFormat)
                                                             {
                                                                 <option value="@item" selected>@item</option>
                                                             }
@@ -670,9 +670,9 @@
                                                 <div class="col-sm-7">
                                                     <select id="DataSourceCollectionAndReportingTools" class="select2 form-control" multiple data-placeholder="What are your data source  and the tools used for data collection and reporting?">
                                                         @foreach (var item in Model.dataSourcesTypes)
-                                                        {
-                                                            if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataSourceCollectionAndReportingTools) && Model.dataCollection.DataSourceCollectionAndReportingTools.Contains(item))
-                                                            {
+            {
+                if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataSourceCollectionAndReportingTools) && Model.dataCollection.DataSourceCollectionAndReportingTools.Contains(item))
+                {
                                                                 <option value="@item" selected>@item</option>
                                                             }
                                                             else
@@ -684,8 +684,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        </div>
                                     </div>
+                                </div>
 
                                 <div class="panel panel-warning" id="ReportData">
                                     <div class="panel-heading clearfix">
@@ -700,10 +700,10 @@
                                                     <select id="ReportsType" class="form-control">
                                                         <option value="" disabled selected>What types of data are collected  & reported on?</option>
                                                         @foreach (var item in Model.reportTypes)
-                                                        {
+            {
                                                             <option value="@item">@item</option>
                                                         }
-                                                    </select> 
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -713,10 +713,10 @@
                                                     <select id="ReportsCollated" class="form-control">
                                                         <option value="" disabled selected>Data is reported to?</option>
                                                         @foreach (var item in Model.datareported)
-                                                        {
+            {
                                                             <option value="@item">@item</option>
                                                         }
-                                                    </select>  
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -732,7 +732,7 @@
                                                     <select id="ThematicArea" class="form-control">
                                                         <option value="" disabled selected>What thematic areas are reported on?</option>
                                                         @foreach (var item in Model.thematicAreas)
-                                                        {
+            {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
@@ -744,7 +744,7 @@
                                                     <select id="FrequencyOfReporting" class="form-control">
                                                         <option value="" disabled selected>State the frquency of reporting</option>
                                                         @foreach (var item in Model.dataFrequency)
-                                                        {
+            {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
@@ -766,7 +766,7 @@
                                                     <select id="rptDurationdrpdwn" class="form-control">
                                                         <option value="" disabled selected>Select</option>
                                                         @foreach (var item in Model.Duration)
-                                                        {
+            {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
@@ -778,7 +778,7 @@
                                                     <a class="btn btn-black btn-sm btn-outline" id='addReportbtn'>Add to list</a>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                         <div class="table-responsive">
                                             <table class="table table-striped">
@@ -786,7 +786,7 @@
                                                     <tr>
                                                         <th>Name</th>
                                                         <th>Reports Type</th>
-                                                        <th>Reports Collated</th>                                                        
+                                                        <th>Reports Collated</th>
                                                         <th>Thematic Area</th>
                                                         <th>Frequency</th>
                                                         <th>Duration(days)</th>
@@ -801,108 +801,108 @@
                                     </div>
                                 </div>
 
-                                </div>
-                                        <!-- end of Data Processes page-->
+                            </div>
+                            <!-- end of Data Processes page-->
 
                             <div class="tab-pane" id="QualityAssurance">
-                                            <h4 class="panel-title" style="margin-left: 70px;">
-                                                <b>Quality Assurance</b>
-                                            </h4>
-                                            <hr />
-                                            <div class="panel panel-warning" id="DataVerification">
-                                                <div class="panel-heading clearfix">
-                                                    <h4 class="panel-title">Data Validation</h4>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <div class="form-horizontal" id="dataVerificationForm">
-                                                        <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
-                                                            <div class="col-sm-6">
-                                                                <select id="DataVerificationApproach" class="form-control">
-                                                                    <option value="" disabled selected>What methodology is employed for data validation ? </option>
-                                                                    @foreach (var item in Model.DataVerificationApproach)
-                                                                    {
-                                                                        <option value="@item">@item</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="TypesOfDataVerification">Types of Data validation</label>
-                                                            <button type="button" class="btn btn-black btn-outline btn-sm" title="Soft - checks &#013; Cross - checks of data sources &#013; Document reviews &#013; Trace verification &#013; Rountine Data Quality Assessment &#013; Data Quality Audit &#013 Others"><i class="icon-help"></i></button>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" placeholder="What forms and tools are used for validating data sources" id="TypesOfDataVerification" value="" class="form-control">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="FrequencyOfDataVerification">Frequency of data validation</label>
-                                                            <div class="col-sm-6">
-                                                                <select id="FrequencyOfDataVerification" class="form-control">
-                                                                    <option value="" disabled selected>How frequent will data validation be carried out?</option>
-                                                                    @foreach (var item in Model.dataFrequency)
-                                                                    {
-                                                                        <option value="@item">@item</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="TimelinesForDataVerification">Milestones</label>
-                                                            <button type="button" class="btn btn-black btn-outline btn-sm" title="Select the applicable timelines for this data validation"><i class="icon-help"></i></button>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" placeholder="What are the timelines for this data validation" id="TimelinesForDataVerification" value="" class="form-control">
-                                                                <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="DurationOfDataVerificaion">Duration</label>
-                                                            <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration of this data validation excercise? numbers only"><i class="icon-help"></i></button>
-                                                            <div class="col-sm-2">
-                                                                <select id="dvDurationdrpdwn" class="form-control">
-                                                                    <option value="" disabled selected>Select</option>
-                                                                    @foreach (var item in Model.Duration)
-                                                                    {
-                                                                        <option value="@item">@item</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-2">
-                                                                <input type="number" id="dvDurationField" placeholder="" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-1 col-sm-push-2">
-                                                                <a class="btn btn-black btn-sm btn-outline" id="addDataVerificationbtn">Add to List</a>
-                                                            </div>
-                                                        </div>                                                        
-                                                    </div>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Verification Approach</th>
-                                                                    <th>Types</th>
-                                                                    <th>Frequency</th>
-                                                                    <th>Duration</th>
-                                                                    <th>Timelines</th>
-                                                                    <th></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="dataVerificationTable"> </tbody>
-                                                        </table>
-                                                    </div>
-
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Quality Assurance</b>
+                                </h4>
+                                <hr />
+                                <div class="panel panel-warning" id="DataVerification">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Data Validation</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal" id="dataVerificationForm">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
+                                                <div class="col-sm-6">
+                                                    <select id="DataVerificationApproach" class="form-control">
+                                                        <option value="" disabled selected>What methodology is employed for data validation ? </option>
+                                                        @foreach (var item in Model.DataVerificationApproach)
+            {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <!--End of Data verificaton section-->
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="TypesOfDataVerification">Types of Data validation</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Soft - checks &#013; Cross - checks of data sources &#013; Document reviews &#013; Trace verification &#013; Rountine Data Quality Assessment &#013; Data Quality Audit &#013 Others"><i class="icon-help"></i></button>
+                                                <div class="col-sm-6">
+                                                    <input type="text" placeholder="What forms and tools are used for validating data sources" id="TypesOfDataVerification" value="" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="FrequencyOfDataVerification">Frequency of data validation</label>
+                                                <div class="col-sm-6">
+                                                    <select id="FrequencyOfDataVerification" class="form-control">
+                                                        <option value="" disabled selected>How frequent will data validation be carried out?</option>
+                                                        @foreach (var item in Model.dataFrequency)
+            {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="TimelinesForDataVerification">Milestones</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Select the applicable timelines for this data validation"><i class="icon-help"></i></button>
+                                                <div class="col-sm-6">
+                                                    <input type="text" placeholder="What are the timelines for this data validation" id="TimelinesForDataVerification" value="" class="form-control">
+                                                    <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="DurationOfDataVerificaion">Duration</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration of this data validation excercise? numbers only"><i class="icon-help"></i></button>
+                                                <div class="col-sm-2">
+                                                    <select id="dvDurationdrpdwn" class="form-control">
+                                                        <option value="" disabled selected>Select</option>
+                                                        @foreach (var item in Model.Duration)
+            {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <input type="number" id="dvDurationField" placeholder="" class="form-control">
+                                                </div>
+                                                <div class="col-sm-1 col-sm-push-2">
+                                                    <a class="btn btn-black btn-sm btn-outline" id="addDataVerificationbtn">Add to List</a>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!-- end of Quality Assurance page-->
-                             
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Verification Approach</th>
+                                                        <th>Types</th>
+                                                        <th>Frequency</th>
+                                                        <th>Duration</th>
+                                                        <th>Timelines</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="dataVerificationTable"> </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--End of Data verificaton section-->
+                            </div>
+                            <!-- end of Quality Assurance page-->
+
                             <div class="tab-pane" id="DataStorageAccessAndSharing">
                                 <h4 class="panel-title" style="margin-left: 70px;">
                                     <b>Data Storage, Access & Sharing</b>
                                 </h4>
                                 <hr />
-                                 
+
                                 <div class="panel panel-warning" id="Digital">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Digital</h4>
@@ -914,7 +914,7 @@
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide an estimated figure for the volume of digital data"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
-                                                    {
+            {
                                                         <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfDigitalData" class="form-control">
                                                     }
                                                     else
@@ -926,16 +926,16 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataStorageFormat">Data Storage format</label>
                                                 <div class="col-sm-8">
-                                                    <select id="DataStorageFormat" class="select2 form-control" data-placeholder="Select Storage type" multiple>                                                         
+                                                    <select id="DataStorageFormat" class="select2 form-control" data-placeholder="Select Storage type" multiple>
                                                         @foreach (var item in Model.storageformats)
                                                         {
-                                                            if (!string.IsNullOrEmpty(Model.digital.DataStorageFormat) && Model.digital.DataStorageFormat.Contains(item))
+                                                            if (Model.digital != null && !string.IsNullOrEmpty(Model.digital.DataStorageFormat) && Model.digital.DataStorageFormat.Contains(item))
                                                             {
-                                                                    <option value="@item" selected>@item</option>
+                                                                <option value="@item" selected>@item</option>
                                                             }
                                                             else
                                                             {
-                                                                    <option value="@item">@item</option>
+                                                                <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1055,11 +1055,11 @@
                                                         {
                                                             if (Model.nonDigital != null && !string.IsNullOrEmpty(Model.nonDigital.NonDigitalDataTypes) && Model.nonDigital.NonDigitalDataTypes.Contains(item))
                                                             {
-                                                                    <option value="@item" selected>@item</option>
+                                                                <option value="@item" selected>@item</option>
                                                             }
                                                             else
                                                             {
-                                                                    <option value="@item">@item</option>
+                                                                <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1163,13 +1163,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        </div>
                                     </div>
+                                </div>
 
                                 <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
                                     <div class="panel-heading clearfix">
                                         <h4 class="panel-title">Data Documentation Management and Entry</h4>
-                                    </div> 
+                                    </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal">
                                             <div class="form-group">
@@ -1201,199 +1201,199 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                                <!-- end of Data Documentation Management and Entry page-->                                       
-                           </div>
-                          <!-- end of Data Storage, Access and Sharing page-->
+                                <!-- end of Data Documentation Management and Entry page-->
+                            </div>
+                            <!-- end of Data Storage, Access and Sharing page-->
 
-                             
+
                             <div class="tab-pane" id="IntellectualPropertyCopyrightAndOwnership">
-                                        <h4 class="panel-title" style="margin-left: 70px;">
-                                            <b>Intellectual Property Copyright and Ownership</b>
-                                        </h4>
-                                        <hr />
-                                        <div class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="ContractsAndAgreements">Contracts and Agreements</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Identify any agreements or contracts that apply to this project"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (Model.intelProp != null)
-                                                        {
-                                                        <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control">@Model.intelProp.ContractsAndAgreements</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control"></textarea>
-                                                        }
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="Ownership">Ownership</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="State who will own the copyright and other IP of any data that you will collect "><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (Model.intelProp != null)
-                                                        {
-                                                        <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control">@Model.intelProp.Ownership</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control"></textarea>
-                                                        }
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="UseOfThirdPartyDataSources">Use of Third Party Data Sources</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe guidelines for use of 3rd party data sources"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (Model.intelProp != null)
-                                                        {
-                                                        <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control">@Model.intelProp.UseOfThirdPartyDataSources</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control"></textarea>
-                                                        }
-                                                </div>
-                                            </div>
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Intellectual Property Copyright and Ownership</b>
+                                </h4>
+                                <hr />
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="ContractsAndAgreements">Contracts and Agreements</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Identify any agreements or contracts that apply to this project"><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (Model.intelProp != null)
+                                            {
+                                                <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control">@Model.intelProp.ContractsAndAgreements</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control"></textarea>
+                                            }
                                         </div>
                                     </div>
-                                    <!-- end of Intellectual Property Copyright And Ownership page-->
-
-                           <div class="tab-pane" id="PostProjectDataRetentionSharingAndDestruction">
-                                        <h4 class="panel-title" style="margin-left: 70px;">
-                                            <b>Post Project Data Retention Sharing and Destruction</b>
-                                        </h4>
-                                        <hr />
-                                        <div class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="DataToRetain">Data To Retain</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Have you thought about a long term archive for your data? Indicate archiving processes Describe "><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (Model.ppData != null)
-                                                        {
-                                                        <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control">@Model.ppData.DataToRetain</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control"></textarea>
-                                                        }
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="PreExistingData">Pre-Existing Data</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (@Model.ppData != null)
-                                                        {
-                                                        <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control">@Model.ppData.PreExistingData</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control"></textarea>
-                                                        }
-
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="Duration">Duration</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (@Model.ppData != null)
-                                                        {
-                                                        <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control">@Model.ppData.Duration</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control"></textarea>
-                                                        }
-
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="Licensing">Licensing</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Under what licensing will you share the data? If applicable describe"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    @if (@Model.ppData != null)
-                                                        {
-                                                        <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control">@Model.ppData.Licensing</textarea>
-                                                        }
-                                                        else
-                                                        {
-                                                        <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control"></textarea>
-                                                        }
-
-                                                </div>
-                                            </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="Ownership">Ownership</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="State who will own the copyright and other IP of any data that you will collect "><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (Model.intelProp != null)
+                                            {
+                                                <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control">@Model.intelProp.Ownership</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control"></textarea>
+                                            }
                                         </div>
-
-                                        <div class="panel panel-warning" id="DigitalDataRetention">
-                                            <div class="panel-heading clearfix">
-                                                <h4 class="panel-title">Digital Data Retention</h4>
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="DataRetention">Data Retention</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Indicate storage type,  repository name, location and estimated cost of archiving"><i class="icon-help"></i></button>
-                                                        <div class="col-sm-7">
-                                                            @if (@Model.ppData != null)
-                                                                {
-                                                                <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control">@Model.ppData.DigitalDataRetention.DataRetention</textarea>
-                                                                }
-                                                                else
-                                                                {
-                                                                <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control"></textarea>
-                                                                }
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end of digital data retention-->
-
-                                        <div class="panel panel-warning" id="NonDigitalDataRetention">
-                                            <div class="panel-heading clearfix">
-                                                <h4 class="panel-title">Non Digital Data Retention</h4>
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="nonDigitalDataRetention">Data Retention</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Indicate storage type,  repository name, location and estimated cost of archiving"><i class="icon-help"></i></button>
-                                                        <div class="col-sm-7">
-                                                            @if (@Model.ppData != null)
-                                                                {
-                                                                <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control">@Model.ppData.NonDigitalRentention.DataRention</textarea>
-                                                                }
-                                                                else
-                                                                {
-                                                                <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control"></textarea>
-                                                                }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--End of non digital data rentention-->
                                     </div>
-                                    <!-- end of Post Project Data Retention Sharing and Destruction page-->
 
-
-                                    <ul class="pager wizard">
-                                        <li class="previous"><a href="javascript:void(0)"><i class="icon-left-open"></i>Previous</a></li>
-                                        <li id="nextbtn" class="next"><a id="SaveNext" href="javascript:void(0)">Save and Next<i class="icon-right-open"></i></a> </li>
-                                        <li id="finish" style="float: right;" class="removeVisibility">
-                                            <a id="finishbtn" href="javascript:void(0)">
-                                                Finish and Preview<i class="icon-right-open"></i>
-                                            </a>
-                                            <img id="finishSpinner" style=" display:none" class="center" src="~/images/spinner.gif" width="36">
-                                        </li>
-                                    </ul>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="UseOfThirdPartyDataSources">Use of Third Party Data Sources</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe guidelines for use of 3rd party data sources"><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (Model.intelProp != null)
+                                            {
+                                                <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control">@Model.intelProp.UseOfThirdPartyDataSources</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control"></textarea>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
-</form>
+                            </div>
+                            <!-- end of Intellectual Property Copyright And Ownership page-->
+
+                            <div class="tab-pane" id="PostProjectDataRetentionSharingAndDestruction">
+                                <h4 class="panel-title" style="margin-left: 70px;">
+                                    <b>Post Project Data Retention Sharing and Destruction</b>
+                                </h4>
+                                <hr />
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="DataToRetain">Data To Retain</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Have you thought about a long term archive for your data? Indicate archiving processes Describe "><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (Model.ppData != null)
+                                            {
+                                                <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control">@Model.ppData.DataToRetain</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control"></textarea>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="PreExistingData">Pre-Existing Data</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe"><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (@Model.ppData != null)
+                                            {
+                                                <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control">@Model.ppData.PreExistingData</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control"></textarea>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="Duration">Duration</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe"><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (@Model.ppData != null)
+                                            {
+                                                <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control">@Model.ppData.Duration</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control"></textarea>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="Licensing">Licensing</label>
+                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Under what licensing will you share the data? If applicable describe"><i class="icon-help"></i></button>
+                                        <div class="col-sm-7">
+                                            @if (@Model.ppData != null)
+                                            {
+                                                <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control">@Model.ppData.Licensing</textarea>
+                                            }
+                                            else
+                                            {
+                                                <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control"></textarea>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-warning" id="DigitalDataRetention">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Digital Data Retention</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="DataRetention">Data Retention</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Indicate storage type,  repository name, location and estimated cost of archiving"><i class="icon-help"></i></button>
+                                                <div class="col-sm-7">
+                                                    @if (@Model.ppData != null)
+                                                    {
+                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control">@Model.ppData.DigitalDataRetention.DataRetention</textarea>
+                                                    }
+                                                    else
+                                                    {
+                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control"></textarea>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of digital data retention-->
+
+                                <div class="panel panel-warning" id="NonDigitalDataRetention">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Non Digital Data Retention</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="nonDigitalDataRetention">Data Retention</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Indicate storage type,  repository name, location and estimated cost of archiving"><i class="icon-help"></i></button>
+                                                <div class="col-sm-7">
+                                                    @if (@Model.ppData != null)
+                                                    {
+                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control">@Model.ppData.NonDigitalRentention.DataRention</textarea>
+                                                    }
+                                                    else
+                                                    {
+                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control"></textarea>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of non digital data rentention-->
+                            </div>
+                            <!-- end of Post Project Data Retention Sharing and Destruction page-->
+
+
+                            <ul class="pager wizard">
+                                <li class="previous"><a href="javascript:void(0)"><i class="icon-left-open"></i>Previous</a></li>
+                                <li id="nextbtn" class="next"><a id="SaveNext" href="javascript:void(0)">Save and Next<i class="icon-right-open"></i></a> </li>
+                                <li id="finish" style="float: right;" class="removeVisibility">
+                                    <a id="finishbtn" href="javascript:void(0)">
+                                        Finish and Preview<i class="icon-right-open"></i>
+                                    </a>
+                                    <img id="finishSpinner" style=" display:none" class="center" src="~/images/spinner.gif" width="36">
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
 
                 </div>
             </div>

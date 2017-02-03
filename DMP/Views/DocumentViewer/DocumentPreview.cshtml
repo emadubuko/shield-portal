@@ -420,6 +420,10 @@
                                             </div>
                                             @foreach (var field in typeof(DAL.Entities.AreaCoveredByIP).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                             {
+                                                if (field.Name == "NoOfSitesCoveredByIP")
+                                                {
+                                                    continue;
+                                                }
                                                 <div class="form-group">
                                                     <label class="col-sm-3 control-label">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
                                                     <div class="col-sm-3">
@@ -483,7 +487,7 @@
                                             <div class="form-group">
                                                 <label>Data source, collection and reporting tools</label>
                                                 <div class="col-sm-offset-1">
-                                                    <span id="DataSourceCollectionAndReportingTools"> 
+                                                    <span id="DataSourceCollectionAndReportingTools">
                                                         @if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataSourceCollectionAndReportingTools))
                                                         {
                                                             foreach (var t in Model.dataCollection.DataSourceCollectionAndReportingTools.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
@@ -491,230 +495,261 @@
                                                                 @t <br />
                                                             }
                                                         }
-                                                </span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="panel panel-warning" id="ReportData">
-                                <div>
-                                    <h4 class="Adjusted-header">Reports </h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Thematic Area</th>
-                                                    <th>Frequency</th>
-                                                    <th>Duration</th>
-                                                    <th>Timelines</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="reportdataTable"> </tbody>
-                                        </table>
+                                <div class="panel panel-warning" id="ReportData">
+                                    <div>
+                                        <h4 class="Adjusted-header">Reports </h4>
                                     </div>
-                                    <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
-                                </div>
-                            </div>
-                            <!--End of Report Data section -->
-                        </div>
-                    </div>
-
-
-                    <div class="panel panel-warning" id="QualityAssurance">
-                        <div class="panel-heading clearfix">
-                            <h4 class="panel-title">
-                                <b>Quality Assurance</b>
-                            </h4>
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="panel panel-warning" id="DataVerification">
-                                <div>
-                                    <h4 class="Adjusted-header">Data Verification</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
+                                    <div class="panel-body">
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
                                                     <tr>
-                                                        <th>Verification Approach</th>
-                                                        <th>Types</th>
+                                                        <th>Name</th>
+                                                        <th>Thematic Area</th>
                                                         <th>Frequency</th>
                                                         <th>Duration</th>
                                                         <th>Timelines</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="dataVerificationTable"> </tbody>
+                                                <tbody id="reportdataTable"> </tbody>
                                             </table>
                                         </div>
-                                        <span id="DataVerificationscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
+                                        <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
                                     </div>
                                 </div>
+                                <!--End of Report Data section -->
                             </div>
-                            <!--End of Data verificaton section-->
                         </div>
-                    </div>
-                    <!-- end of Quality Assurance page-->
 
 
-                    <div class="panel panel-warning" id="DataStorage">
-                        <div class="panel-heading clearfix">
-                            <h4 class="panel-title">
-                                <b>Data Storage, Access & Sharing</b>
-                            </h4>
+                        <div class="panel panel-warning" id="QualityAssurance">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Quality Assurance</b>
+                                </h4>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="panel panel-warning" id="DataVerification">
+                                    <div>
+                                        <h4 class="Adjusted-header">Data Verification</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Verification Approach</th>
+                                                            <th>Types</th>
+                                                            <th>Frequency</th>
+                                                            <th>Duration</th>
+                                                            <th>Timelines</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="dataVerificationTable"> </tbody>
+                                                </table>
+                                            </div>
+                                            <span id="DataVerificationscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of Data verificaton section-->
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            <div class="panel panel-warning" id="Digital">
-                                <div>
-                                    <h4 class="Adjusted-header">Digital Data</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        @foreach (var field in typeof(DAL.Entities.DigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                        {
-                                            <div class="form-group">
-                                                <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                <div class="col-sm-offset-1">
-                                                    <span id="@field.Name">
-                                                        @if (field.GetValue(Model.digital) != null)
-                                                        {
-                                                            foreach (var t in field.GetValue(Model.digital).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                        <!-- end of Quality Assurance page-->
+
+
+                        <div class="panel panel-warning" id="DataStorage">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Data Storage, Access & Sharing</b>
+                                </h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel panel-warning" id="Digital">
+                                    <div>
+                                        <h4 class="Adjusted-header">Digital Data</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.DigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div class="col-sm-offset-1">
+                                                        <span id="@field.Name">
+                                                            @if (field.GetValue(Model.digital) != null)
                                                             {
-                                                                @t <br />
+                                                                foreach (var t in field.GetValue(Model.digital).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                {
+                                                                    @t <br />
+                                                                }
                                                             }
-                                                        }
-                                                    </span>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        }
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!--end of Digital data section-->
+                                <!--end of Digital data section-->
 
-                            <div class="panel panel-warning" id="NonDigital">
-                                <div>
-                                    <h4 class="Adjusted-header">Non-Digital Data</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        @foreach (var field in typeof(DAL.Entities.NonDigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                        {
-                                            <div class="form-group">
-                                                <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                <div class="col-sm-offset-1">
-                                                    <span id="@field.Name">
-                                                        @if (field.GetValue(Model.nonDigital) != null)
-                                                        {
-                                                            foreach (var t in field.GetValue(Model.nonDigital).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                <div class="panel panel-warning" id="NonDigital">
+                                    <div>
+                                        <h4 class="Adjusted-header">Non-Digital Data</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.NonDigitalData).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div class="col-sm-offset-1">
+                                                        <span id="@field.Name">
+                                                            @if (field.GetValue(Model.nonDigital) != null)
                                                             {
-                                                                @t <br />
+                                                                foreach (var t in field.GetValue(Model.nonDigital).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                {
+                                                                    @t <br />
+                                                                }
                                                             }
-                                                        }
-                                                    </span>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        }
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!--end of non digital data section -->
+                                <!--end of non digital data section -->
 
-                            <div class="panel panel-warning" id="DataAccessAndSharing">
-                                <div>
-                                    <h4 class="Adjusted-header">
-                                        Data Access and Sharing
-                                    </h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        @foreach (var field in typeof(DAL.Entities.DataAccessAndSharing).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                        {
-                                            <div class="form-group">
-                                                <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                <div class="col-sm-offset-1">
-                                                    <span id="@field.Name">
-                                                        @if (field.GetValue(Model.dataSharing) != null)
-                                                        {
-                                                            foreach (var t in field.GetValue(Model.dataSharing).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                <div class="panel panel-warning" id="DataAccessAndSharing">
+                                    <div>
+                                        <h4 class="Adjusted-header">
+                                            Data Access and Sharing
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.DataAccessAndSharing).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div class="col-sm-offset-1">
+                                                        <span id="@field.Name">
+                                                            @if (field.GetValue(Model.dataSharing) != null)
                                                             {
-                                                                @t <br />
+                                                                foreach (var t in field.GetValue(Model.dataSharing).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                {
+                                                                    @t <br />
+                                                                }
                                                             }
-                                                        }
-                                                    </span>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        }
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- end of Data Access and Sharing page-->
+                                <!-- end of Data Access and Sharing page-->
 
-                            <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
-                                <div>
-                                    <h4 class="Adjusted-header">
-                                        Data Documentation Management and Entry
-                                    </h4>
-                                </div>
+                                <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
+                                    <div>
+                                        <h4 class="Adjusted-header">
+                                            Data Documentation Management and Entry
+                                        </h4>
+                                    </div>
 
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        @foreach (var field in typeof(DAL.Entities.DataDocumentationManagementAndEntry).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                        {
-                                            <div class="form-group">
-                                                <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                <div class="col-sm-offset-1">
-                                                    <span id="@field.Name">
-                                                        @if (field.GetValue(Model.dataDocMgt) != null)
-                                                        {
-                                                            foreach (var t in field.GetValue(Model.dataDocMgt).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.DataDocumentationManagementAndEntry).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
+                                                <div class="form-group">
+                                                    <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div class="col-sm-offset-1">
+                                                        <span id="@field.Name">
+                                                            @if (field.GetValue(Model.dataDocMgt) != null)
                                                             {
-                                                                @t <br />
+                                                                foreach (var t in field.GetValue(Model.dataDocMgt).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                {
+                                                                    @t <br />
+                                                                }
                                                             }
-                                                        }
-                                                    </span>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        }
+                                            }
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- end of Data Documentation Management and Entry page-->
                             </div>
-                            <!-- end of Data Documentation Management and Entry page-->
                         </div>
-                    </div>
-                    <!-- end of Data Storage page-->
+                        <!-- end of Data Storage page-->
 
 
-                    <div class="panel panel-warning" id="IntellectualPropertyCopyrightAndOwnership">
-                        <div class="panel-heading clearfix">
-                            <h4 class="panel-title">
-                                <b>Intellectual Property Copyright and Ownership</b>
-                            </h4>
+                        <div class="panel panel-warning" id="IntellectualPropertyCopyrightAndOwnership">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Intellectual Property Copyright and Ownership</b>
+                                </h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-horizontal">
+                                    @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                    {
+                                        <div class="form-group">
+                                            <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                            <div class="col-sm-offset-1">
+                                                <span id="@field.Name">
+                                                    @if (field.GetValue(Model.intelProp) != null)
+                                                    {
+                                                        foreach (var t in field.GetValue(Model.intelProp).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                        {
+                                                            @t <br />
+                                                        }
+                                                    }
+                                                </span>
+                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            <div class="form-horizontal">
-                                @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                {
+                        <!-- end of Intellectual Property Copyright And Ownership page-->
+
+
+                        <div class="panel panel-warning" id="PostProjectDataRetentionSharingAndDestruction">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">
+                                    <b>Post Project Data Retention Sharing and Destruction</b>
+                                </h4>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="form-horizontal">
                                     <div class="form-group">
-                                        <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <label>Data To Retain</label>
                                         <div class="col-sm-offset-1">
-                                            <span id="@field.Name">
-                                                @if (field.GetValue(Model.intelProp) != null)
+                                            <span id="DataToRetain">
+                                                @if (!string.IsNullOrEmpty(Model.ppData.DataToRetain))
                                                 {
-                                                    foreach (var t in field.GetValue(Model.intelProp).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                    foreach (var t in Model.ppData.DataToRetain.Split('\n'))
                                                     {
                                                         @t <br />
                                                     }
@@ -723,140 +758,109 @@
                                             <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
                                     </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end of Intellectual Property Copyright And Ownership page-->
-
-
-                    <div class="panel panel-warning" id="PostProjectDataRetentionSharingAndDestruction">
-                        <div class="panel-heading clearfix">
-                            <h4 class="panel-title">
-                                <b>Post Project Data Retention Sharing and Destruction</b>
-                            </h4>
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label>Data To Retain</label>
-                                    <div class="col-sm-offset-1">
-                                        <span id="DataToRetain">
-                                            @if (!string.IsNullOrEmpty(Model.ppData.DataToRetain))
-                                            {
-                                                foreach (var t in Model.ppData.DataToRetain.Split('\n'))
+                                    <div class="form-group">
+                                        <label>Pre-Existing Data</label>
+                                        <div class="col-sm-offset-1">
+                                            <span id="PreExistingData">
+                                                @if (!string.IsNullOrEmpty(Model.ppData.PreExistingData))
                                                 {
-                                                    @t <br />
-                                                }
-                                            }
-                                        </span>
-                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Pre-Existing Data</label>
-                                    <div class="col-sm-offset-1">
-                                        <span id="PreExistingData">
-                                            @if (!string.IsNullOrEmpty(Model.ppData.PreExistingData))
-                                            {
-                                                foreach (var t in Model.ppData.PreExistingData.Split('\n'))
-                                                {
-                                                    @t <br />
-                                                }
-                                            }
-                                        </span>
-                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Duration</label>
-                                    <div class="col-sm-offset-1">
-                                        <span id="Duration">
-                                            @if (!string.IsNullOrEmpty(Model.ppData.Duration))
-                                            {
-                                                foreach (var t in Model.ppData.Duration.Split('\n'))
-                                                {
-                                                    @t <br />
-                                                }
-                                            }
-                                        </span>
-                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Licensing</label>
-                                    <div class="col-sm-offset-1">
-                                        <span id="Licensing">
-                                            @if (!string.IsNullOrEmpty(Model.ppData.Licensing))
-                                            {
-                                                foreach (var t in Model.ppData.Licensing.Split('\n'))
-                                                {
-                                                    @t <br />
-                                                }
-                                            }
-                                        </span>
-                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="panel panel-warning" id="DigitalDataRetention">
-                                <div>
-                                    <h4 class="Adjusted-header">Digital Data Retention</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label>Data Retention</label>
-                                            <div class="col-sm-offset-1">
-                                                <span id="DataRetention">
-                                                    @if (!string.IsNullOrEmpty(Model.ppData.DigitalDataRetention.DataRetention))
+                                                    foreach (var t in Model.ppData.PreExistingData.Split('\n'))
                                                     {
-                                                        foreach (var t in Model.ppData.DigitalDataRetention.DataRetention.Split('\n'))
-                                                        {
-                                                            @t <br />
-                                                        }
+                                                        @t <br />
                                                     }
-                                                </span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                }
+                                            </span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Duration</label>
+                                        <div class="col-sm-offset-1">
+                                            <span id="Duration">
+                                                @if (!string.IsNullOrEmpty(Model.ppData.Duration))
+                                                {
+                                                    foreach (var t in Model.ppData.Duration.Split('\n'))
+                                                    {
+                                                        @t <br />
+                                                    }
+                                                }
+                                            </span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Licensing</label>
+                                        <div class="col-sm-offset-1">
+                                            <span id="Licensing">
+                                                @if (!string.IsNullOrEmpty(Model.ppData.Licensing))
+                                                {
+                                                    foreach (var t in Model.ppData.Licensing.Split('\n'))
+                                                    {
+                                                        @t <br />
+                                                    }
+                                                }
+                                            </span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-warning" id="DigitalDataRetention">
+                                    <div>
+                                        <h4 class="Adjusted-header">Digital Data Retention</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label>Data Retention</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="DataRetention">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.DigitalDataRetention.DataRetention))
+                                                        {
+                                                            foreach (var t in Model.ppData.DigitalDataRetention.DataRetention.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
+                                                        }
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!--end of digital data retention-->
+                                <!--end of digital data retention-->
 
-                            <div class="panel panel-warning" id="NonDigitalDataRetention">
-                                <div>
-                                    <h4 class="Adjusted-header">Non Digital Data Retention</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label>Data Retention</label>
-                                            <div class="col-sm-offset-1">
-                                                <span id="nonDigitalDataRetention">
-                                                    @if (!string.IsNullOrEmpty(Model.ppData.NonDigitalRentention.DataRention))
-                                                    {
-                                                        foreach (var t in Model.ppData.NonDigitalRentention.DataRention.Split('\n'))
+                                <div class="panel panel-warning" id="NonDigitalDataRetention">
+                                    <div>
+                                        <h4 class="Adjusted-header">Non Digital Data Retention</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label>Data Retention</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="nonDigitalDataRetention">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.NonDigitalRentention.DataRention))
                                                         {
-                                                            @t <br />
+                                                            foreach (var t in Model.ppData.NonDigitalRentention.DataRention.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
                                                         }
-                                                    }
-                                                </span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!--End of non digital data rentention-->
                             </div>
-                            <!--End of non digital data rentention-->
                         </div>
-                    </div>
-                    <!-- end of Post Project Data Retention Sharing and Destruction page-->
-                    <a href="javascript:history.back()"><i class="icon-left-open"></i><b>Go Back</b></a>
-                </form>
+                        <!-- end of Post Project Data Retention Sharing and Destruction page-->
+                        <a href="javascript:history.back()"><i class="icon-left-open"></i><b>Go Back</b></a>
+                    </form>
 
 
 

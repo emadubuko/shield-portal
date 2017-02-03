@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Xml.Serialization;
 
 namespace ShieldPortal.Services
 {
     public class PDFUtilities
     {
         BaseColor fadedBlue = new BaseColor(79, 129, 189);
-        public void GeneratePDFDocument(DMPDocument  dmpDoc, ref Document doc)
+        public void GeneratePDFDocument(DMPDocument dmpDoc, ref Document doc)
         {
             WizardPage pageData = dmpDoc.Document;
 
@@ -20,10 +21,10 @@ namespace ShieldPortal.Services
 
             Font istPageFont20 = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD, fadedBlue);
             Font istPageFont26 = new Font(Font.FontFamily.TIMES_ROMAN, 26, Font.NORMAL, fadedBlue);
-            Font istPageFont18 = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.NORMAL, new BaseColor(System.Drawing.Color.DarkBlue));
+            Font istPageFont16 = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.NORMAL, fadedBlue);
             Font istPageFont14 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.NORMAL, new BaseColor(System.Drawing.Color.Black));
             Font istPageFont10 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL, new BaseColor(System.Drawing.Color.Black));
-            
+
 
             Paragraph istPage = new Paragraph("NOVEMBER 1, 2017", istPageFont20);
             istPage.Alignment = Element.ALIGN_RIGHT;
@@ -31,22 +32,23 @@ namespace ShieldPortal.Services
             doc.Add(istPage);
 
             WriteLines(8, ref doc);
-            
-            Image docLogo = GeneratePDFImage(dmpDoc.TheDMP.Organization.Logo);
+
+            Image docLogo = GeneratePDFImage(dmpDoc.TheDMP.Organization.Logo, 0.15f);
+            docLogo.Alignment = Element.ALIGN_CENTER;
             doc.Add(docLogo);
-            
+
             istPage = new Paragraph(dmpDoc.TheDMP.Organization.Name, istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
             doc.Add(istPage);
 
-            WriteLines(3, ref doc); 
+            WriteLines(3, ref doc);
 
             istPage = new Paragraph("DATA MANAGEMENT PLAN", istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
             doc.Add(istPage);
 
-       
-            WriteLines(6, ref doc); 
+
+            WriteLines(6, ref doc);
 
             istPage = new Paragraph("SI LEAD", istPageFont14);
             istPage.Alignment = Element.ALIGN_RIGHT;
@@ -78,110 +80,93 @@ namespace ShieldPortal.Services
             header.IndentationLeft = 55f;
             doc.Add(header);// add paragraph to the document
             doc.Add(CreateProjectProfileTable(pageData.ProjectProfile)); // add pdf table to the document
-
+            doc.Add(GenericPageTable(pageData.ProjectProfile.EthicalApproval, "Ethical Approval"));
 
 
             doc.NewPage();//Planning
-            header = new Paragraph("PLANNING", istPageFont14);
+            header = new Paragraph("Project Objectives", istPageFont16);
             header.IndentationLeft = 55;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.Planning.Summary, "Project Objectives"));
-            
+            WriteLines(1, ref doc);
+            var aparagraph = new Paragraph(pageData.Planning.Summary.ProjectObjectives, istPageFont14);
+            aparagraph.IndentationLeft = 70f;
+            doc.Add(aparagraph);
+            // doc.Add(GenericPageTable(pageData.Planning.Summary, "Project Objectives"));
 
-            doc.NewPage(); //DataCollectionProcesses
-            header = new Paragraph("DATA COLLECTION PROCESS", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-           // doc.Add(GenericPageTable(pageData.DataCollectionProcesses, "Data Collection Processes"));
-
-            doc.NewPage();//DataCollection
-            header = new Paragraph("DATA COLLECTION", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-            //foreach (var dt in pageData.DataCollection)
-            //{
-            //    doc.Add(GenericPageTable(dt, "Data"));
-            //}
-            
 
             doc.NewPage();// MonitoringAndEvaluationSystems
-             header = new Paragraph("MONITORING AND EVALUATION SYSTEMS", istPageFont14);
+            header = new Paragraph("MONITORING AND EVALUATION SYSTEMS", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            WriteLines(1, ref doc);           
+            WriteLines(1, ref doc);
 
             header = new Paragraph("Data Flow Chart", pageFont);
             header.Alignment = Element.ALIGN_LEFT;
             header.IndentationLeft = 55f;
             doc.Add(header);
+            string dataflowchart = pageData.MonitoringAndEvaluationSystems != null && !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.People.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.People.DataFlowChart.Split(',')[1] : null;
+            if (dataflowchart != null)
+            {
+                byte[] imageByte = Convert.FromBase64String(dataflowchart);
+                docLogo = GeneratePDFImage(imageByte, 0.85f);
+                docLogo.Alignment = Element.ALIGN_CENTER;
 
-            //string dataflowchart = pageData.MonitoringAndEvaluationSystems !=null && !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.DataFlowChart.Split(',')[1] : null;
-            //if(dataflowchart != null)
-            //{
-            //    byte[] imageByte = Convert.FromBase64String(dataflowchart);
-            //    docLogo = GeneratePDFImage(imageByte);
-            //    doc.Add(docLogo);
-            //}
+                doc.Add(docLogo);
+            }
 
-            //var roleNrsp = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.RoleAndResponsibilities : new RolesAndResponsiblities();
-           // doc.Add(GenericPageTable(roleNrsp, "Role and responsibilities"));
+            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.People, "People"));
             WriteLines(1, ref doc);
             header = new Paragraph("Trainings", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            //var trn = pageData.MonitoringAndEvaluationSystems != null ? pageData.MonitoringAndEvaluationSystems.Trainings : new List<Trainings>();
-            //foreach (var tr in trn)
-            //{
-            //    doc.Add(GenericPageTable(tr, "Training"));
-            //}
+            var trn = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Trainings : new List<Trainings>();
+            doc.Add(MultiColumn(trn));             
+
+            doc.NewPage();
+            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Process, "Process"));
+            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Equipment, "Equipment"));
+            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Environment, "Environment"));
+            //doc.NewPage();
+            //doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Organization, "Organization"));
+
+
+            doc.NewPage();
+            header = new Paragraph("Data Processes", istPageFont14);
+            header.IndentationLeft = 55;
+            doc.Add(header);
+            doc.Add(GenericPageTable(pageData.DataProcesses.DataCollection, "Data"));
+            WriteLines(1, ref doc);
+            header = new Paragraph("REPORTS", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            var reportList = pageData.DataProcesses.Reports != null ? pageData.DataProcesses.Reports.ReportData : new List<ReportData>();
+            doc.Add(MultiColumn(reportList));
+
 
             doc.NewPage();// QualityAssurance
             header = new Paragraph("Quality Assurance", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            foreach(var dv in pageData.QualityAssurance.DataVerification)
-            {
-                doc.Add(GenericPageTable(dv, "Data Verification"));
-            }
-
-            doc.NewPage();// Report
-            header = new Paragraph("REPORTS", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-            //var reportList = pageData.Reports != null ? pageData.Reports.ReportData : new List<ReportData>();
-            //foreach (var rpt in reportList)
-            //{
-            //    doc.Add(GenericPageTable(rpt, "Data Report"));
-            //}
-            
-
-            doc.NewPage(); // DataStorage
-            header = new Paragraph("Data Storage", istPageFont14);
+            doc.Add(MultiColumn(pageData.QualityAssurance.DataVerification));
+           
+             
+            doc.NewPage(); // Data Storage, Access & Sharing
+            header = new Paragraph("Data Storage, Access & Sharing", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Digital Data"));
             doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Non Digital Data"));
+            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.DataAccessAndSharing, "Data Access and Sharing"));
+            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
+
 
             doc.NewPage();// IntellectualPropertyCopyrightAndOwnership
             header = new Paragraph("Intellectual Property, Copyright and Ownership", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             doc.Add(GenericPageTable(pageData.IntellectualPropertyCopyrightAndOwnership, "Intellectual Property, Copyright and Ownership"));
-
-
-            doc.NewPage();// DataAccessAndSharing
-            header = new Paragraph("Data Access and Sharing", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-            //doc.Add(GenericPageTable(pageData.DataAccessAndSharing, "Data Access and Sharing"));
-
-            doc.NewPage();// DataDocumentationManagementAndEntry
-            header = new Paragraph("Data Documentation Management and Entry", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-           // doc.Add(GenericPageTable(pageData.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
-
-
+              
+             
             doc.NewPage();// PostProjectDataRetentionSharingAndDestruction
             header = new Paragraph("Post Project Data Retention Sharing and Destruction", istPageFont14);
             header.IndentationLeft = 55f;
@@ -189,7 +174,7 @@ namespace ShieldPortal.Services
             doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction, "Post Project Data Retention Sharing and Destruction"));
             doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention, "Digital Data Retention"));
             doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention, "Non Digital Data Rentention"));
-            
+
             #region ////******Correction*************
             /*
             doc.NewPage(); // DataStorage
@@ -220,7 +205,7 @@ namespace ShieldPortal.Services
                 doc.Add(new Paragraph(" "));
             }
         }
-        private Image GeneratePDFImage(byte[] imageBytes)
+        private Image GeneratePDFImage(byte[] imageBytes, float scale)
         {
             iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(imageBytes, true); // System.Drawing.Imaging.ImageFormat.Jpeg);
 
@@ -234,9 +219,11 @@ namespace ShieldPortal.Services
             else
             {
                 //Maximum width is 600 pixels.
-                float percentage = 0.0f;
-                percentage = 540 / pic.Width;
-                pic.ScalePercent(percentage * 100);
+                //float percentage = 0.0f;
+                //percentage = 540 / pic.Width;
+                //pic.ScalePercent(percentage * 100);
+
+                pic.ScalePercent(scale * 100);
             }
 
             //pic.Border = iTextSharp.text.Rectangle.BOX;
@@ -263,106 +250,92 @@ namespace ShieldPortal.Services
             return table;
         }
 
-        private PdfPTable AccessAndSharing(DataAccessAndSharing dataSharing)
+
+
+        PdfPTable MultiColumn<T>(List<T> dataList)
         {
-            PdfPTable table = new PdfPTable(1);
+            var infos = typeof(T).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(XmlIgnoreAttribute)));
 
-            PdfPCell hd = GenerateHeaderCell("Access and sharing");
-            table.AddCell(hd); //add header
+            PdfPTable table = new PdfPTable(infos.Count() - 1);
+            table.SpacingAfter = 10f;
+            table.SpacingBefore = 10f;
 
-            PdfPTable body = new PdfPTable(2);
-            GenerateTable(dataSharing, ref body);
+            BaseColor whiteColor = new BaseColor(255, 255, 255);
+            Font fontheader = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLDITALIC, whiteColor);
 
-            PdfPCell bodyCell = new PdfPCell(body); bodyCell.BorderWidth = 0; table.AddCell(bodyCell);
+            BaseColor blackColor = new BaseColor(0, 0, 0);
+            Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL, blackColor);
+           
+
+            PdfPCell PdfPCell = null;
+            Paragraph pp = null;
+
+            foreach (var name in infos.Select(x => x.Name))
+            {
+                if (name == "Id")
+                    continue;
+
+                string header = CommonUtil.Utilities.Utilities.PasCaseConversion(name);
+                if (header.ToLower().Contains("timelines"))
+                {
+                    header = "Timelines\n(day-month-year)";
+                }
+                else if (header.ToLower().Contains("frequency") || header.ToLower().Contains("fequency"))
+                {
+                    header = "Frequency";
+                }
+                else if (header.ToLower().Contains("duration"))
+                {
+                    header = "Duration (days)";
+                }
+
+                PdfPCell hd = GenerateMultiTableHeaderCell(header);
+                table.AddCell(hd);
+            }
+
+            foreach(var dt in dataList)
+            {
+                foreach (var info in infos)
+                {
+                    if (info.Name == "Id")
+                        continue;
+
+                    string datavalue = "";
+                    if (info.PropertyType == typeof(List<DateTime>))
+                    {
+                        List<DateTime> timelines = info.GetValue(dt) as List<DateTime>;
+                        timelines.ForEach(x =>
+                        {
+                            datavalue += string.Format("{0:dd-MM-yyyy} \n", x);
+                        });
+                    }
+                    else
+                    {
+                        datavalue = Convert.ToString(info.GetValue(dt));                         
+                    }
+                     
+                    pp = new Paragraph(new Chunk(datavalue, fontValue));
+                    PdfPCell = new PdfPCell();
+                    pp.IndentationLeft = 10;
+                    PdfPCell = new PdfPCell();
+                    PdfPCell.AddElement(pp);
+                    PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
+                    PdfPCell.DisableBorderSide(Rectangle.RIGHT_BORDER);
+                    table.AddCell(PdfPCell);
+                }
+            }
+            
+
             return table;
         }
-
-        PdfPTable DataDocumentEntry(DataDocumentationManagementAndEntry DataDocumentMgt)
-        {
-            PdfPTable table = new PdfPTable(1);
-
-            PdfPCell hd = GenerateHeaderCell(" Data documentation and management");
-            table.AddCell(hd); //add header
-
-            PdfPTable body = new PdfPTable(2);
-            GenerateTable(DataDocumentMgt, ref body);
-
-            PdfPCell bodyCell = new PdfPCell(body); bodyCell.BorderWidth = 0; table.AddCell(bodyCell);
-            return table;
-        }
-
-
-        PdfPTable IntellectualPropertyCopyright(IntellectualPropertyCopyrightAndOwnership intelllectualProperty)
-        {
-            PdfPTable table = new PdfPTable(1);
-
-            PdfPCell hd = GenerateHeaderCell(" Intellectual Property, Copyright and Ownership");
-            table.AddCell(hd); //add header
-
-            PdfPTable body = new PdfPTable(2);
-            GenerateTable(intelllectualProperty, ref body);
-
-            PdfPCell bodyCell = new PdfPCell(body); bodyCell.BorderWidth = 0; table.AddCell(bodyCell);
-            return table;
-        }
-
-
-        PdfPTable DigitalDataStorage(DataStorage storage)
-        {
-            PdfPTable table = new PdfPTable(1);
-
-            PdfPCell hd = GenerateHeaderCell(" Data Storage – Digital Data");
-            table.AddCell(hd); //add header
-
-            PdfPTable body = new PdfPTable(2);
-            GenerateTable(storage.Digital, ref body);
-            //GenerateTable(storage.NonDigital, ref body);
-
-            PdfPCell bodyCell = new PdfPCell(body); bodyCell.BorderWidth = 0; table.AddCell(bodyCell);
-            return table;
-        }
-
-        PdfPTable NonDigitalDataStorage(DataStorage storage)
-        {
-            PdfPTable table = new PdfPTable(1);
-
-            PdfPCell hd = GenerateHeaderCell(" Data Storage – Non Digital Data");
-            table.AddCell(hd); //add header
-
-            PdfPTable body = new PdfPTable(2);
-            GenerateTable(storage.NonDigital, ref body);
-
-            PdfPCell bodyCell = new PdfPCell(body); bodyCell.BorderWidth = 0; table.AddCell(bodyCell);
-            return table;
-        }
-
-
-        PdfPTable DataCollection(Processes DCP, DataCollection dCollection, QualityAssurance QA)
-        {
-            PdfPTable table = new PdfPTable(1);
-
-            PdfPCell hd = GenerateHeaderCell("Data Collection and Analysis");
-            table.AddCell(hd); //add header
-
-            PdfPTable body = new PdfPTable(2);
-
-            GenerateTable(DCP, ref body);
-            //GenerateTable(dCollection.Report.ReportData, ref body);
-            //GenerateTable(dCollection.Report.RoleAndResponsibilities, ref body);
-            GenerateTable(QA, ref body);
-
-            PdfPCell bodyCell = new PdfPCell(body);
-            bodyCell.BorderWidth = 0;
-            table.AddCell(bodyCell);
-            return table;
-        }
+         
 
         List<PdfPTable> CreateDocumentRevisionPage(List<DAL.Entities.DocumentRevisions> documentRevisions)
         {
             List<PdfPTable> docTable = new List<PdfPTable>();
 
             bool firstVersion = true;
-            foreach(DocumentRevisions revisions in documentRevisions)
+            foreach (DocumentRevisions revisions in documentRevisions)
             {
                 docTable.Add(CreateDocumentRevision(revisions.Version, firstVersion));
                 firstVersion = false;
@@ -371,17 +344,17 @@ namespace ShieldPortal.Services
             return docTable;
         }
 
-        PdfPTable CreateDocumentRevision(DAL.Entities.Version version,  bool firstVersion)
+        PdfPTable CreateDocumentRevision(DAL.Entities.Version version, bool firstVersion)
         {
-            PdfPTable docTable = new PdfPTable(2);            
+            PdfPTable docTable = new PdfPTable(2);
 
             PdfPCell PdfPCell = null;
             Paragraph pp = null;
             BaseColor blackColor = new BaseColor(0, 0, 0);
-            Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor); 
+            Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
             //FontFactory.GetFont("Corbel", 11, (int)System.Drawing.FontStyle.Italic, blackColor);
-            
-            Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11,Font.ITALIC, fadedBlue);
+
+            Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.ITALIC, fadedBlue);
 
             string title = firstVersion ? "Initial date of ShieldPortal completion" : "Review date of ShieldPortal completion";
 
@@ -492,46 +465,24 @@ namespace ShieldPortal.Services
             return docTable;
         }
 
-        void GenerateInnerTable(string elementName, string value)
-        {
-            BaseColor fadedBlue = new BaseColor(79, 129, 189);
-            Font fontValue = FontFactory.GetFont("Corbel", 11, fadedBlue);
-
-            PdfPTable innerTable = new PdfPTable(2);
-            Paragraph pp = null;
-            PdfPCell PdfPCell = null;
-
-            pp = new Paragraph(new Chunk(elementName, fontValue));
-            PdfPCell = new PdfPCell();
-            pp.IndentationLeft = 10;
-            PdfPCell = new PdfPCell();
-            PdfPCell.AddElement(pp);
-            PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
-            PdfPCell.DisableBorderSide(Rectangle.TOP_BORDER);
-            innerTable.AddCell(PdfPCell);
-
-            pp = new Paragraph(new Chunk(value));
-            PdfPCell = new PdfPCell();
-            pp.IndentationLeft = 10;
-            PdfPCell = new PdfPCell();
-            PdfPCell.AddElement(pp);
-            PdfPCell.DisableBorderSide(Rectangle.RIGHT_BORDER);
-            PdfPCell.DisableBorderSide(Rectangle.TOP_BORDER);
-            innerTable.AddCell(PdfPCell);
-        }
+      
 
 
         private PdfPTable CreateProjectProfileTable(ProjectProfile ProjectProfile)
         {
-              BaseColor blackColor = new BaseColor(0, 0, 0);
+            BaseColor blackColor = new BaseColor(0, 0, 0);
             Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
 
             BaseColor fadedBlue = new BaseColor(79, 129, 189);
             Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL, fadedBlue);
+            var tanColor = System.Drawing.Color.FromArgb(40, System.Drawing.Color.Tan);
 
             PdfPTable projectProfileTable = new PdfPTable(2);
             PdfPCell PdfPCell = null;
             Paragraph pp = null;
+
+            PdfPTable bodyTable = new PdfPTable(1);
+            bodyTable.AddCell(GenerateHeaderCell("Project Details")); 
 
             pp = new Paragraph(new Chunk("Programme title", font8));
             pp.IndentationLeft = 20;
@@ -540,6 +491,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectTitle, fontValue));
@@ -557,6 +509,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.NameOfImplementingPartner, fontValue));
@@ -574,6 +527,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.AbreviationOfImplementingPartner, fontValue));
@@ -584,13 +538,14 @@ namespace ShieldPortal.Services
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
-            
+
             pp = new Paragraph(new Chunk("Mission Partner", font8));
             pp.IndentationLeft = 20;
             pp.SpacingAfter = 5f;
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.MissionPartner, fontValue));
@@ -608,6 +563,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             string leadActivityMgr = ProjectProfile.ProjectDetails.LeadActivityManager != null ? ProjectProfile.ProjectDetails.LeadActivityManager.FullName : "";
@@ -625,6 +581,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.AddressOfOrganization, fontValue));
@@ -641,6 +598,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.PhoneNumber, fontValue));
@@ -658,6 +616,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectStartDate, fontValue));
@@ -675,6 +634,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectEndDate, fontValue));
@@ -685,23 +645,7 @@ namespace ShieldPortal.Services
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
-
-            //pp = new Paragraph(new Chunk("Project summary", font8));
-            //pp.IndentationLeft = 20;
-            //pp.SpacingAfter = 5f;
-            //pp.SpacingBefore = 5f;
-            //PdfPCell = new PdfPCell();
-            //PdfPCell.AddElement(pp);
-            //projectProfileTable.AddCell(PdfPCell);
-
-            //pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectSummary, fontValue));
-            //PdfPCell = new PdfPCell();
-            //pp.IndentationLeft = 10;
-            //pp.SpacingAfter = 0.1f;
-            //pp.SpacingBefore = 1f;
-            //PdfPCell = new PdfPCell();
-            //PdfPCell.AddElement(pp);
-            //projectProfileTable.AddCell(PdfPCell);
+             
 
             pp = new Paragraph(new Chunk("Grant reference number", font8));
             pp.IndentationLeft = 20;
@@ -709,6 +653,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
             pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.GrantReferenceNumber, fontValue));
@@ -719,29 +664,20 @@ namespace ShieldPortal.Services
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
             projectProfileTable.AddCell(PdfPCell);
+             
+            //projectProfileTable.SpacingAfter = 10f;
+            //projectProfileTable.SpacingBefore = 10f; // Give some space after the text or it may overlap the table
 
-            pp = new Paragraph(new Chunk("Ethics Approval", font8));
-            pp.IndentationLeft = 20;
-            pp.SpacingAfter = 5f;
-            pp.SpacingBefore = 5f;
-            PdfPCell = new PdfPCell();
-            PdfPCell.AddElement(pp);
-            projectProfileTable.AddCell(PdfPCell);
+           // bodyTable.AddCell(projectProfileTable);
 
-            string ethicalApproval = ProjectProfile.EthicalApproval.EthicalApprovalForTheProject == null ? ProjectProfile.EthicalApproval.TypeOfEthicalApproval : ProjectProfile.EthicalApproval.EthicalApprovalForTheProject;
-            pp = new Paragraph(new Chunk(ethicalApproval, fontValue));
-            PdfPCell = new PdfPCell();
-            pp.IndentationLeft = 10;
-            pp.SpacingAfter = 0.1f;
-            pp.SpacingBefore = 1f;
-            PdfPCell = new PdfPCell();
-            PdfPCell.AddElement(pp);
-            projectProfileTable.AddCell(PdfPCell);
+            PdfPCell bodyCell = new PdfPCell(projectProfileTable);
+            bodyCell.BorderWidth = 0;
+            bodyTable.AddCell(bodyCell);
 
-            projectProfileTable.SpacingAfter = 10f;
-            projectProfileTable.SpacingBefore = 10f; // Give some space after the text or it may overlap the table
+            bodyTable.SpacingAfter = 10f;
+            bodyTable.SpacingBefore = 10f;
 
-            return projectProfileTable; 
+            return bodyTable;
         }
 
         public void GenerateTable<T>(T data, ref PdfPTable table)
@@ -753,10 +689,14 @@ namespace ShieldPortal.Services
             PdfPCell PdfPCell = null;
             Paragraph pp = null;
 
-            var infos = typeof(T).GetProperties().Where(x => x.PropertyType == typeof(string));
+            var infos = typeof(T).GetProperties().Where(x => (x.PropertyType == typeof(string) || x.PropertyType == typeof(int)) && !Attribute.IsDefined(x, typeof(XmlIgnoreAttribute)));
 
             foreach (var info in infos)
             {
+                if (info.Name == "DataFlowChart")
+                {
+                    continue;
+                }
                 pp = new Paragraph(new Chunk(CommonUtil.Utilities.Utilities.PasCaseConversion(info.Name), font8));
                 pp.IndentationLeft = 20;
                 pp.PaddingTop = 10f;
@@ -770,6 +710,7 @@ namespace ShieldPortal.Services
                 table.AddCell(PdfPCell);
                 //table.AddElement(PdfPCell);
 
+
                 pp = new Paragraph(new Chunk(Convert.ToString(info.GetValue(data)), fontValue));
                 PdfPCell = new PdfPCell();
                 pp.IndentationLeft = 10;
@@ -777,11 +718,35 @@ namespace ShieldPortal.Services
                 PdfPCell.AddElement(pp);
                 PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
                 PdfPCell.DisableBorderSide(Rectangle.RIGHT_BORDER);
-
                 table.AddCell(PdfPCell);
                 //table.AddElement(PdfPCell);
             }
+
+        }
+
+        private PdfPCell GenerateMultiTableHeaderCell(string header)
+        {
+            PdfPCell PdfPCell = null;
+            Paragraph pp = null;
+
+            BaseColor whiteColor = new BaseColor(255, 255, 255);
+
+            Font fontheader = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLDITALIC, whiteColor);
              
+            pp = new Paragraph(new Chunk(header, fontheader));
+            pp.IndentationLeft = 5f;// 20;
+            pp.PaddingTop = 5f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BackgroundColor = fadedBlue; // new BaseColor(System.Drawing.Color.FromArgb(130, System.Drawing.Color.DarkBlue));
+            PdfPCell.DisableBorderSide(Rectangle.BOTTOM_BORDER);
+            PdfPCell.DisableBorderSide(Rectangle.TOP_BORDER);
+            //PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
+            PdfPCell.DisableBorderSide(Rectangle.RIGHT_BORDER); 
+
+            return PdfPCell;
         }
 
         private PdfPCell GenerateHeaderCell(string header)
@@ -801,7 +766,7 @@ namespace ShieldPortal.Services
             pp.SpacingBefore = 5f;
             PdfPCell = new PdfPCell();
             PdfPCell.AddElement(pp);
-            PdfPCell.BackgroundColor = new BaseColor(System.Drawing.Color.FromArgb(130, System.Drawing.Color.DarkBlue));
+            PdfPCell.BackgroundColor = fadedBlue;// new BaseColor(System.Drawing.Color.FromArgb(130, System.Drawing.Color.DarkBlue));
             PdfPCell.DisableBorderSide(Rectangle.BOTTOM_BORDER);
             PdfPCell.DisableBorderSide(Rectangle.TOP_BORDER);
             PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
@@ -839,7 +804,34 @@ namespace ShieldPortal.Services
             return hd;
         }
 
-        
+        void GenerateInnerTable(string elementName, string value)
+        {
+            BaseColor fadedBlue = new BaseColor(79, 129, 189);
+            Font fontValue = FontFactory.GetFont("Corbel", 11, fadedBlue);
+
+            PdfPTable innerTable = new PdfPTable(2);
+            Paragraph pp = null;
+            PdfPCell PdfPCell = null;
+
+            pp = new Paragraph(new Chunk(elementName, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
+            PdfPCell.DisableBorderSide(Rectangle.TOP_BORDER);
+            innerTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(value));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.DisableBorderSide(Rectangle.RIGHT_BORDER);
+            PdfPCell.DisableBorderSide(Rectangle.TOP_BORDER);
+            innerTable.AddCell(PdfPCell);
+        }
+
 
         /// <summary>
         /// not yet working
@@ -858,7 +850,7 @@ namespace ShieldPortal.Services
             PdfPTable body = new PdfPTable(2);
             var tanColor = System.Drawing.Color.FromArgb(40, System.Drawing.Color.Tan);
 
-            GenerateTable(data, ref body);             
+            GenerateTable(data, ref body);
 
             PdfPCell bodyCell = new PdfPCell(body);
             bodyCell.BorderWidth = 0;
