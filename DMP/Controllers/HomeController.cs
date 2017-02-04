@@ -119,7 +119,7 @@ namespace ShieldPortal.Controllers
                             from = z,
                             to = z.AddDays(rpt.DurationOfReporting),
                             label = Labels.reportLabelName,
-                            dataObj = rpt.NameOfReport,
+                            dataObj = rpt.ReportsType,
                         });
                     }
                 });

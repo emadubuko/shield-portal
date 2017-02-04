@@ -9,6 +9,7 @@ namespace DAL.Entities
     public class People
     {
         public virtual string DataFlowChart { get; set; }
+        public virtual string StaffingInformation { get; set; }
         public virtual string Staffing { get; set; }
         public virtual string RoleAndResponsibilities { get; set; }
         public virtual string DataHandlingAndEntry { get; set; }

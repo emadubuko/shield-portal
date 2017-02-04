@@ -17,8 +17,15 @@
     input[type="number"] {
         -moz-appearance: textfield;
     }
-    .modifiedselect{
-        position:absolute;top:0px;width:85%;height:31px;padding-left: 12px;color: black;
+    .modifiedselect {
+        position: absolute;
+        top: 0px;
+        width: 85%;
+        height: 31px;
+        padding-left: 12px;
+        color: black;
+        border-right-style: none;
+        border-top-width: thin;
     }
     </style>
 
@@ -272,30 +279,14 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label" for="TypeOfEthicalApproval">Type of Ethical Approval</label>
                                                     <div class="col-sm-5">
-                                                        <select id="TypeOfEthicalApproval" class="form-control">
-                                                            <option value="" disabled selected>What type of ethical approval applies to this project.</option>
-                                                            @if (Model.ethicsApproval != null)
+                                                        <select class="form-control" onchange="document.getElementById('TypeOfEthicalApproval').value=this.options[this.selectedIndex].text;">
+                                                            <option value="" disabled>please specify if not on the list</option>
+                                                            @foreach (var item in Model.ethicalApprovalTypes)
                                                             {
-                                                                foreach (var item in Model.ethicalApprovalTypes)
-                                                                {
-                                                                    if (@item == Model.ethicsApproval.TypeOfEthicalApproval)
-                                                                    {
-                                                                        <option value="@item" selected>&nbsp;@item</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@item">&nbsp;@item</option>
-                                                                    }
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                foreach (var item in Model.ethicalApprovalTypes)
-                                                                {
-                                                                    <option value="@item">&nbsp;@item</option>
-                                                                }
+                                                                <option value="@item">&nbsp;@item</option>
                                                             }
                                                         </select>
+                                                        <input id="TypeOfEthicalApproval" value="@(Model.ethicsApproval!=null ? Model.ethicsApproval.TypeOfEthicalApproval : "")" placeholder="Select approving board" class="modifiedselect" onfocus="this.select()" type="text">
                                                     </div>
                                                 </div>
                                             </div>
@@ -670,9 +661,9 @@
                                                 <div class="col-sm-7">
                                                     <select id="DataSourceCollectionAndReportingTools" class="select2 form-control" multiple data-placeholder="What are your data source  and the tools used for data collection and reporting?">
                                                         @foreach (var item in Model.dataSourcesTypes)
-            {
-                if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataSourceCollectionAndReportingTools) && Model.dataCollection.DataSourceCollectionAndReportingTools.Contains(item))
-                {
+                                                        {
+                                                            if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataSourceCollectionAndReportingTools) && Model.dataCollection.DataSourceCollectionAndReportingTools.Contains(item))
+                                                            {
                                                                 <option value="@item" selected>@item</option>
                                                             }
                                                             else
@@ -697,42 +688,37 @@
                                                 <label class="col-sm-3 control-label" for="ReportsType">Reports type</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of data are collected  & reported on? "><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
-                                                    <select id="ReportsType" class="form-control">
-                                                        <option value="" disabled selected>What types of data are collected  & reported on?</option>
+                                                    <select class="form-control" onchange="document.getElementById('ReportsType').value=this.options[this.selectedIndex].text;">
+                                                        <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.reportTypes)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
+                                                    <input id="ReportsType" placeholder="What types of data are collected  & reported on?" class="modifiedselect" onfocus="this.select()" type="text">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="ReportsCollated">Reports collated</label>
+                                                <label class="col-sm-3 control-label" for="ReportsCollated">Reported To</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Data is reported to?"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
-                                                    <select id="ReportsCollated" class="form-control">
-                                                        <option value="" disabled selected>Data is reported to?</option>
+                                                    <select class="form-control" onchange="document.getElementById('ReportedTo').value=this.options[this.selectedIndex].text;">
+                                                        <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.datareported)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
+                                                    <input id="ReportedTo" placeholder="Data is reported to?" class="modifiedselect" onfocus="this.select()" type="text">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="NameOfReport">Name of Report</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of reports are collated from data?"><i class="icon-help"></i></button>
+                                                <label class="col-sm-3 control-label" for="ProgramArea">Program Area</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" placeholder="What types of reports are collated from data?" value="" id="NameOfReport" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label" for="ThematicArea">Thematic Area</label>
-                                                <div class="col-sm-8">
-                                                    <select id="ThematicArea" class="form-control">
-                                                        <option value="" disabled selected>What thematic areas are reported on?</option>
+                                                    <select id="ProgramArea" class="form-control">
+                                                        <option value="" disabled selected>select program area</option>
                                                         @foreach (var item in Model.thematicAreas)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
@@ -744,7 +730,7 @@
                                                     <select id="FrequencyOfReporting" class="form-control">
                                                         <option value="" disabled selected>State the frquency of reporting</option>
                                                         @foreach (var item in Model.dataFrequency)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
@@ -784,10 +770,9 @@
                                             <table class="table table-striped">
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
                                                         <th>Reports Type</th>
-                                                        <th>Reports Collated</th>
-                                                        <th>Thematic Area</th>
+                                                        <th>Reported To</th>
+                                                        <th>Program Area</th>
                                                         <th>Frequency</th>
                                                         <th>Duration(days)</th>
                                                         <th>Timelines</th>
@@ -818,20 +803,21 @@
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
                                                 <div class="col-sm-6">
-                                                    <select id="DataVerificationApproach" class="form-control">
-                                                        <option value="" disabled selected>What methodology is employed for data validation ? </option>
+                                                    <select class="form-control" onchange="document.getElementById('DataVerificationApproach').value=this.options[this.selectedIndex].text;">
+                                                        <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.DataVerificationApproach)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
+                                                    <input id="DataVerificationApproach" placeholder="What methodology is employed for data validation?" class="modifiedselect" onfocus="this.select()" type="text">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="TypesOfDataVerification">Types of Data validation</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Soft - checks &#013; Cross - checks of data sources &#013; Document reviews &#013; Trace verification &#013; Rountine Data Quality Assessment &#013; Data Quality Audit &#013 Others"><i class="icon-help"></i></button>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What forms and tools are used for verifying data sources"><i class="icon-help"></i></button>
                                                 <div class="col-sm-6">
-                                                    <input type="text" placeholder="What forms and tools are used for validating data sources" id="TypesOfDataVerification" value="" class="form-control">
+                                                    <input type="text" placeholder="What forms and tools are used for verifying data sources" id="TypesOfDataVerification" value="" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -911,16 +897,9 @@
                                         <div class="form-horizontal">
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="VolumeOfdigitalData">Volume of Digital Data</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide an estimated figure for the volume of digital data"><i class="icon-help"></i></button>
-                                                <div class="col-sm-8">
-                                                    @if (Model.digital != null)
-            {
-                                                        <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="@Model.digital.VolumeOfDigitalData" class="form-control">
-                                                    }
-                                                    else
-                                                    {
-                                                        <input type="text" placeholder="Provide an estimated figure for the volume of digital data" id="VolumeOfdigitalData" value="" class="form-control">
-                                                    }
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Provide an estimated figure for the volume of digital data (e.g 20GB)"><i class="icon-help"></i></button>
+                                                <div class="col-sm-8">                                                    
+                                                    <input type="text" placeholder="Provide an estimated figure for the volume of digital data (e.g 20GB)" id="VolumeOfdigitalData" value="@(Model.digital != null ? Model.digital.VolumeOfDigitalData:"")" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -943,28 +922,16 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="Storagelocation">Storage Location</label>
+                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Do you have a specified location for storing data collected ?"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
-                                                    <select id="Storagelocation" class="form-control">
-                                                        <option value="" disabled selected>Do you have a specified location for storing data collected?</option>
-                                                        @foreach (var item in Model.YesNoOption)
+                                                    <select class="form-control" onchange="document.getElementById('Storagelocation').value=this.options[this.selectedIndex].text;">
+                                                        <option value="" disabled>please specify if not on the list</option>
+                                                        @foreach (var item in Model.storageLoation)
                                                         {
-                                                            if (Model.digital != null)
-                                                            {
-                                                                if (@item == Model.digital.StorageLocation)
-                                                                {
-                                                                    <option value="@item" selected>@item</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@item">@item</option>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
+                                                    <input id="Storagelocation" value="@(Model.digital!=null ? Model.digital.StorageLocation : "")" placeholder="Do you have a specified location for storing data collected?" class="modifiedselect" onfocus="this.select()" type="text">
                                                 </div>
                                             </div>
                                             <div class="form-group">

@@ -26,8 +26,12 @@ if (DataVerificationArrayFromServer !=null && DataVerificationArrayFromServer.le
 
 $("#addDataVerificationbtn").click(function (e) {
     var dataverification = {};
+    if (DataVerificationArray == undefined || DataVerificationArray.length == 0) {
+        dataverification["Id"] = 1;
+    } else {
+        dataverification["Id"] = DataVerificationArray[DataVerificationArray.length - 1].Id + 1;  //DataVerificationArray.length + 1;
+    }
     
-    dataverification["Id"] = DataVerificationArray[DataVerificationArray.length - 1].Id + 1;  //DataVerificationArray.length + 1;
     var dateStringArray = [];
 
     $("#dataVerificationForm input, select").each(function () {
