@@ -1052,6 +1052,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="DMPFileUploads\" />
     <Folder Include="Downloads\" />
     <Folder Include="Models\Data\" />
     <Folder Include="Report\Downloads\" />

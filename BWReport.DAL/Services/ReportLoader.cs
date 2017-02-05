@@ -8,21 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CommonUtil.Utilities;
 
 namespace BWReport.DAL.Services
 {
     public class ReportLoader
     {
-        private string ReadCell(ExcelWorksheet sheet, int row, int column)
-        {
-            var range = sheet.Cells[row, column] as ExcelRange;
-            if (range.Value != null)
-            {
-                return range.Value.ToString();
-            }
-            return "";
-        }
-
         public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, string ImplementingPartner, Stream ReportStream, string loggedinUser)
         {
             List<PerformanceData> ActualPerformanceMeasures = new List<PerformanceData>();
@@ -66,7 +57,7 @@ namespace BWReport.DAL.Services
                         if (name.ToLower().Contains("dashboard"))
                             continue;
 
-                        string sheetTitle = ReadCell(sheet, 1, 1);
+                        string sheetTitle = ExcelHelper.ReadCell(sheet, 1, 1);
 
                         LGA theLGA = null;
                         LGADictionary.TryGetValue("NIE " + sheetTitle, out theLGA);
@@ -78,13 +69,13 @@ namespace BWReport.DAL.Services
 
                         while (true)
                         {
-                            string facilityName = ReadCell(sheet, row, 3);
+                            string facilityName = ExcelHelper.ReadCell(sheet, row, 3);
                             if (string.IsNullOrEmpty(facilityName))
                             {
                                 break;
                             }
 
-                            string facilityType = ReadCell(sheet, row, 4);
+                            string facilityType = ExcelHelper.ReadCell(sheet, row, 4);
                             string fType = !string.IsNullOrEmpty(facilityType) ? facilityType.Substring(0, 1) : "F";
                             string facilityCode = GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
 
@@ -108,9 +99,9 @@ namespace BWReport.DAL.Services
                             int HTC_TST = 0;
                             int HTC_TST_pos = 0;
                             int Tx_NEW = 0;
-                            int.TryParse(ReadCell(sheet, row, columnStart), out HTC_TST);
-                            int.TryParse(ReadCell(sheet, row, columnStart + 1), out HTC_TST_pos);
-                            int.TryParse(ReadCell(sheet, row, columnStart + 2), out Tx_NEW);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart), out HTC_TST);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 1), out HTC_TST_pos);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 2), out Tx_NEW);
 
                             var performanceMeasure = new PerformanceData
                             {
@@ -151,7 +142,7 @@ namespace BWReport.DAL.Services
         private string GetFacilityCode(ExcelWorksheet sheet, int row, string IP, LGA lga, string FacilityType)
         {
 
-            string facilityCode = ReadCell(sheet, row, 1);
+            string facilityCode = ExcelHelper.ReadCell(sheet, row, 1);
             if (string.IsNullOrEmpty(facilityCode))
             {
                 string[] lgaArr = lga.lga_code.Split(' ');
@@ -233,7 +224,7 @@ namespace BWReport.DAL.Services
             ExcelWorksheet sheet = null;
             foreach (var sh in worksheets)
             {
-                string sheet_lga = ReadCell(sh, 1, 1);
+                string sheet_lga = ExcelHelper.ReadCell(sh, 1, 1);
 
                 LGA theLGA = null;
                 lGADictionary.TryGetValue("NIE " + sheet_lga, out theLGA);

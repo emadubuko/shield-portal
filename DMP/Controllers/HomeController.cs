@@ -57,23 +57,23 @@ namespace ShieldPortal.Controllers
 
             List<GanttChartData> chartData = new List<GanttChartData>();
             List<ChartValues> values = new List<ChartValues>();
-            foreach (var tr in trainings)
-            {
-                tr.TimelinesForTrainings.ForEach(z =>
-                {
-                    if (z > DateTime.MinValue)
-                    {
-                        values.Add(new ChartValues
-                        {
-                            customClass = Labels.trainingLabelClass,
-                            from = z,
-                            to = z.AddDays(tr.DurationOfTrainings),
-                            label = Labels.trainingLabelName,
-                            dataObj = tr.NameOfTraining,
-                        });
-                    }
-                });
-            }
+            //foreach (var tr in trainings)
+            //{
+            //    tr.TimelinesForTrainings.ForEach(z =>
+            //    {
+            //        if (z > DateTime.MinValue)
+            //        {
+            //            values.Add(new ChartValues
+            //            {
+            //                customClass = Labels.trainingLabelClass,
+            //                from = z,
+            //                to = z.AddDays(tr.DurationOfTrainings),
+            //                label = Labels.trainingLabelName,
+            //                dataObj = tr.NameOfTraining,
+            //            });
+            //        }
+            //    });
+            //}
             chartData.Add(
                    new GanttChartData
                    {

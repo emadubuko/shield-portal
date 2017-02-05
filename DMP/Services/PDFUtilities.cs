@@ -114,13 +114,26 @@ namespace ShieldPortal.Services
                 doc.Add(docLogo);
             }
 
-            doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.People, "People"));
-            WriteLines(1, ref doc);
+            //doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.People, "People"));
+            //WriteLines(1, ref doc);
+            header = new Paragraph("Roles", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            var rls = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Roles : new List<StaffGrouping>();
+            doc.Add(MultiColumn(rls));
+
+            header = new Paragraph("Responsibilities", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            var rsps = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Responsibilities : new List<StaffGrouping>();
+            doc.Add(MultiColumn(rsps));
+
+            doc.NewPage();
             header = new Paragraph("Trainings", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             var trn = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Trainings : new List<Trainings>();
-            doc.Add(MultiColumn(trn));             
+            doc.Add(MultiColumn(trn, 6));             
 
             doc.NewPage();
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Process, "Process"));
@@ -140,14 +153,14 @@ namespace ShieldPortal.Services
             header.IndentationLeft = 55f;
             doc.Add(header);
             var reportList = pageData.DataProcesses.Reports != null ? pageData.DataProcesses.Reports.ReportData : new List<ReportData>();
-            doc.Add(MultiColumn(reportList));
+            doc.Add(MultiColumn(reportList,1));
 
 
             doc.NewPage();// QualityAssurance
             header = new Paragraph("Quality Assurance", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(MultiColumn(pageData.QualityAssurance.DataVerification));
+            doc.Add(MultiColumn(pageData.QualityAssurance.DataVerification, 1));
            
              
             doc.NewPage(); // Data Storage, Access & Sharing
@@ -155,7 +168,7 @@ namespace ShieldPortal.Services
             header.IndentationLeft = 55f;
             doc.Add(header);
             doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Digital Data"));
-            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Non Digital Data"));
+            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.NonDigital, "Data Storage - Non Digital Data"));
             doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.DataAccessAndSharing, "Data Access and Sharing"));
             doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
 
@@ -205,11 +218,15 @@ namespace ShieldPortal.Services
                 doc.Add(new Paragraph(" "));
             }
         }
-        private Image GeneratePDFImage(byte[] imageBytes, float scale)
+        private Image GeneratePDFImage(byte[] imageBytes, float scale = 0)
         {
             iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(imageBytes, true); // System.Drawing.Imaging.ImageFormat.Jpeg);
 
-            if (pic.Height > pic.Width)
+            if (scale != 0)
+            {
+                pic.ScalePercent(scale * 100);
+            }
+            else if (pic.Height > pic.Width)
             {
                 //Maximum height is 800 pixels.
                 float percentage = 0.0f;
@@ -218,12 +235,11 @@ namespace ShieldPortal.Services
             }
             else
             {
-                //Maximum width is 600 pixels.
-                //float percentage = 0.0f;
-                //percentage = 540 / pic.Width;
-                //pic.ScalePercent(percentage * 100);
+                // Maximum width is 600 pixels.
+                float percentage = 0.0f;
+                percentage = 540 / pic.Width;
+                pic.ScalePercent(percentage * 100);
 
-                pic.ScalePercent(scale * 100);
             }
 
             //pic.Border = iTextSharp.text.Rectangle.BOX;
@@ -252,11 +268,11 @@ namespace ShieldPortal.Services
 
 
 
-        PdfPTable MultiColumn<T>(List<T> dataList)
+        PdfPTable MultiColumn<T>(List<T> dataList, int noOfFieldsToExclude = 0)
         {
             var infos = typeof(T).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(XmlIgnoreAttribute)));
 
-            PdfPTable table = new PdfPTable(infos.Count() - 1);
+            PdfPTable table = new PdfPTable(infos.Count() - noOfFieldsToExclude);
             table.SpacingAfter = 10f;
             table.SpacingBefore = 10f;
 
@@ -272,13 +288,13 @@ namespace ShieldPortal.Services
 
             foreach (var name in infos.Select(x => x.Name))
             {
-                if (name == "Id")
+                if (name == "Id" || name.Contains("StartDate") || name.Contains("EndDate"))
                     continue;
 
                 string header = CommonUtil.Utilities.Utilities.PasCaseConversion(name);
                 if (header.ToLower().Contains("timelines"))
                 {
-                    header = "Timelines\n(day-month-year)";
+                    header = "Timelines";
                 }
                 else if (header.ToLower().Contains("frequency") || header.ToLower().Contains("fequency"))
                 {
@@ -288,6 +304,31 @@ namespace ShieldPortal.Services
                 {
                     header = "Duration (days)";
                 }
+                else if (header.ToLower().Contains("site display date"))
+                {
+                    header = "Site";
+                }
+                else if (header.ToLower().Contains("hqdisplay date"))
+                {
+                    header = "HQ";
+                }
+                else if (header.ToLower().Contains("region display date"))
+                {
+                    header = "Region/State";
+                }
+                else if (header.ToLower().Contains("site count"))
+                {
+                    header = "Site";
+                }
+                else if (header.ToLower().Contains("region count"))
+                {
+                    header = "Region/State";
+                }
+                else if (header.ToLower().Contains("hqcount"))
+                {
+                    header = "HQ";
+                }
+
 
                 PdfPCell hd = GenerateMultiTableHeaderCell(header);
                 table.AddCell(hd);
@@ -297,7 +338,7 @@ namespace ShieldPortal.Services
             {
                 foreach (var info in infos)
                 {
-                    if (info.Name == "Id")
+                    if (info.Name == "Id" || info.Name.Contains("StartDate") || info.Name.Contains("EndDate"))
                         continue;
 
                     string datavalue = "";
@@ -306,12 +347,17 @@ namespace ShieldPortal.Services
                         List<DateTime> timelines = info.GetValue(dt) as List<DateTime>;
                         timelines.ForEach(x =>
                         {
-                            datavalue += string.Format("{0:dd-MM-yyyy} \n", x);
+                            datavalue += string.Format("{0:dd-MMM-yyyy} \n", x);
                         });
                     }
                     else
                     {
-                        datavalue = Convert.ToString(info.GetValue(dt));                         
+                        datavalue = Convert.ToString(info.GetValue(dt));  
+                        //special line break
+                        if(datavalue.Contains(" - "))
+                        {
+                            datavalue = datavalue.Replace(" - ", "\n");
+                        }                       
                     }
                      
                     pp = new Paragraph(new Chunk(datavalue, fontValue));

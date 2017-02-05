@@ -8,10 +8,13 @@ namespace DAL.Entities
 {
     public class DataCollection
     {
-        public virtual string DataCollectionProcessess { get; set; }
-        public virtual string DataFormat { get; set; }
-        public virtual string DataSourceCollectionAndReportingTools { get; set; }
+        public virtual string QuantitativeDataCollectionProcessess { get; set; }
+        //public virtual string DataFormat { get; set; }
+        public virtual string QuantitativeDataSourceCollectionAndReportingTools { get; set; }
 
+
+        public virtual string QualitativeDataCollectionProcessess { get; set; }
+        public virtual string QualitativeDataSourceCollectionAndReportingTools { get; set; }
 
         //public virtual int Id { get; set; }
         //public virtual string FrequencyOfDataCollection { get; set; }

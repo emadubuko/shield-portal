@@ -7,7 +7,9 @@ using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -64,8 +66,7 @@ namespace ShieldPortal.Controllers
                     states = states,
                     People = thepageDoc.MonitoringAndEvaluationSystems.People,
                     Equipment = thepageDoc.MonitoringAndEvaluationSystems.Equipment,
-                    Environment = thepageDoc.MonitoringAndEvaluationSystems.Environment,
-                    //versionAuthor = thepageDoc.DocumentRevisions.LastOrDefault().Version.VersionAuthor,
+                    Environment = thepageDoc.MonitoringAndEvaluationSystems.Environment, 
                     processes = thepageDoc.MonitoringAndEvaluationSystems.Process,
                     dataDocMgt = thepageDoc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry,
                     dataSharing = thepageDoc.DataStorageAccessAndSharing.DataAccessAndSharing,
@@ -80,7 +81,9 @@ namespace ShieldPortal.Controllers
                     projectDetails =  thepageDoc.ProjectProfile.ProjectDetails,
                     summary = thepageDoc.Planning.Summary, 
                     reportDataList = thepageDoc.DataProcesses.Reports.ReportData,
-                    Trainings = thepageDoc.MonitoringAndEvaluationSystems.People.Trainings,
+                    Trainings = thepageDoc.MonitoringAndEvaluationSystems.People!=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Trainings : new List<Trainings>(),
+                    roles = thepageDoc.MonitoringAndEvaluationSystems.People !=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Roles : new List<StaffGrouping>(),
+                    responsibilities = thepageDoc.MonitoringAndEvaluationSystems.People !=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Responsibilities : new List<StaffGrouping>(),
                     documentID = dmpDoc.Id.ToString(),
                     EditMode = true,
                     Profiles = profileDAO.RetrieveAll().ToDictionary(x => x.Id),
@@ -109,15 +112,34 @@ namespace ShieldPortal.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult SaveFileUpload(string documentId = "")
+        {
+            var files = Request.Files;
+            if (files == null || files.Count == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
+            }            
+            string filepath = System.Web.Hosting.HostingEnvironment.MapPath("~/DMPFileUploads/_" + files[0].FileName + "_" + documentId);
+            files[0].SaveAs(filepath);
+
+            List<StaffGrouping> roles = null, responsibility = null;
+            List<Trainings> training = null;
+            new DAL.Services.DMPExcelFile().ExtractRoles(files[0].InputStream, out roles, out responsibility, out training);
+
+            return Json(new { filelocation = filepath, roles = roles, responsibility = responsibility, trainings = training }, JsonRequestBehavior.AllowGet);
+        }
+
 
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
-            Summary summary, Equipment equipment, DataCollection DataCollection,
+            Summary summary, Equipment equipment, DataCollection DataCollection, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
             ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
             Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, AreaCoveredByIP siteCount,
             DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<Trainings> Trainings,
             DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention, List<ReportData> reportDataList)
-        {
+        { 
+
             //incase session has timed out
             if (MyDMP == null)
             {
@@ -162,9 +184,12 @@ namespace ShieldPortal.Controllers
                     {
                         Trainings = Trainings,
                         DataFlowChart = doc.DataFlowChart,
-                        DataHandlingAndEntry = doc.DataHandlingAndEntry,
-                        RoleAndResponsibilities = doc.RoleAndResponsibilities,
-                        Staffing = doc.Staffing
+                        StaffingInformation = doc.StaffingInformation,
+                        Roles = roles,
+                        Responsibilities = responsibilities
+                        //DataHandlingAndEntry = doc.DataHandlingAndEntry,
+                        //RoleAndResponsibilities = doc.RoleAndResponsibilities,
+                        //Staffing = doc.Staffing
                     },
                     Equipment = equipment,
                     Environment = new DAL.Entities.Environment
@@ -227,7 +252,7 @@ namespace ShieldPortal.Controllers
 
         [HttpPost]
         public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
-           AreaCoveredByIP siteCount, Equipment equipment, Summary summary,
+           AreaCoveredByIP siteCount, Equipment equipment, Summary summary, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
            Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp,
            DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
@@ -280,9 +305,12 @@ namespace ShieldPortal.Controllers
                     {
                         Trainings = Trainings,
                         DataFlowChart = doc.DataFlowChart,
-                        DataHandlingAndEntry = doc.DataHandlingAndEntry,
-                        RoleAndResponsibilities = doc.RoleAndResponsibilities,
-                        Staffing = doc.Staffing
+                        StaffingInformation = doc.StaffingInformation,
+                        Roles = roles,
+                        Responsibilities = responsibilities,
+                        //DataHandlingAndEntry = doc.DataHandlingAndEntry,
+                        //RoleAndResponsibilities = doc.RoleAndResponsibilities,
+                        //Staffing = doc.Staffing
                     },
                     Equipment = equipment,
                     Environment = new DAL.Entities.Environment

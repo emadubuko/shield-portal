@@ -46,6 +46,7 @@ namespace ShieldPortal.ViewModel
         public string DataCollectionAndReportingTools { get; set; }
         public string DataFlowChart { get; set; }
         public string Staffing { get; set; }
+        public string StaffingInformation { get; set; }
         public string RoleAndResponsibilities { get; set; }
         public string DataHandlingAndEntry { get; set; }
 
@@ -97,7 +98,11 @@ namespace ShieldPortal.ViewModel
     {
         public List<DocumentRevisions> documentRevisions { get; set; }
         public DataCollection dataCollection { get; set; }
-        // public List<DataCollection> dataCollection { get; set; }
+
+         public List<StaffGrouping> roles { get; set; }
+        public List<StaffGrouping> responsibilities { get; set; }
+        
+
         public string DataFlowChart { get; set; }
         public string AdditionalInformation { get; set; }
         public List<Trainings> Trainings { get; set; }
