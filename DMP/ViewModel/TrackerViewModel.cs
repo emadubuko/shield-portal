@@ -20,15 +20,16 @@ namespace ShieldPortal.ViewModel
         public const string dataCollectionLabelClass = "ganttOrange";
         public const string reportLabelClass = "ganttGreen";
 
-        public const string trainingLabelName = "T"; //"Training";
-        public const string dataVerificationLabelName = "DV"; //"Data Verification";
-        public const string dataCollectionLabelName = "DC"; //"Data Collection";
-        public const string reportLabelName = "RPT"; // "Report";
+        //public const string trainingLabelName = "T"; //"Training";
+        //public const string dataVerificationLabelName = "DV"; //"Data Verification";
+        //public const string dataCollectionLabelName = "DC"; //"Data Collection";
+        //public const string reportLabelName = "RPT"; // "Report";
     }
 
     public class GanttChartData
     {
         public string name { get; set; }
+        public  string desc { get; set; }
         public List<ChartValues> values { get; set; }
     }
 

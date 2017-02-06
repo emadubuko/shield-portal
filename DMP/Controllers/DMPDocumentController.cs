@@ -68,6 +68,7 @@ namespace ShieldPortal.Controllers
                     Equipment = thepageDoc.MonitoringAndEvaluationSystems.Equipment,
                     Environment = thepageDoc.MonitoringAndEvaluationSystems.Environment, 
                     processes = thepageDoc.MonitoringAndEvaluationSystems.Process,
+                    dataCollation = thepageDoc.MonitoringAndEvaluationSystems.Process !=null ? thepageDoc.MonitoringAndEvaluationSystems.Process.DataCollation : new List<DataCollation>(),
                     dataDocMgt = thepageDoc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry,
                     dataSharing = thepageDoc.DataStorageAccessAndSharing.DataAccessAndSharing,
                     dataVerification = thepageDoc.QualityAssurance.DataVerification,
@@ -115,26 +116,41 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public ActionResult SaveFileUpload(string documentId = "")
         {
-            var files = Request.Files;
-            if (files == null || files.Count == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
-            }            
-            string filepath = System.Web.Hosting.HostingEnvironment.MapPath("~/DMPFileUploads/_" + files[0].FileName + "_" + documentId);
-            files[0].SaveAs(filepath);
+                var files = Request.Files;
+                if (files == null || files.Count == 0)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
+                }
+                string filepath = System.Web.Hosting.HostingEnvironment.MapPath("~/DMPFileUploads/_" + files[0].FileName + "_" + documentId);
+                files[0].SaveAs(filepath);
 
-            List<StaffGrouping> roles = null, responsibility = null;
-            List<Trainings> training = null;
-            new DAL.Services.DMPExcelFile().ExtractRoles(files[0].InputStream, out roles, out responsibility, out training);
+                List<StaffGrouping> roles = null, responsibility = null;
+                List<Trainings> training = null;
+                new DAL.Services.DMPExcelFile().ExtractRoles(files[0].InputStream, out roles, out responsibility, out training);
 
-            return Json(new { filelocation = filepath, roles = roles, responsibility = responsibility, trainings = training }, JsonRequestBehavior.AllowGet);
+                if(roles == null || roles.Count ==0 || responsibility ==null || responsibility.Count == 0 || training==null || training.Count == 0)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid file uploaded");
+                }
+                else
+                {
+                    return Json(new { filelocation = filepath, roles = roles, responsibility = responsibility, trainings = training }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return new HttpStatusCodeResult(400, ex.Message);
+            }
         }
 
 
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
             Summary summary, Equipment equipment, DataCollection DataCollection, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
-            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
+            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital, List<DataCollation> dataCollation,
             Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, AreaCoveredByIP siteCount,
             DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<Trainings> Trainings,
             DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention, List<ReportData> reportDataList)
@@ -158,6 +174,8 @@ namespace ShieldPortal.Controllers
             ProjDetails.AddressOfOrganization = MyDMP.Organization.Address;
             ProjDetails.PhoneNumber = MyDMP.Organization.PhoneNumber;
             ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
+
+            processes.DataCollation = dataCollation;
 
             WizardPage page = new WizardPage
             {
@@ -186,10 +204,7 @@ namespace ShieldPortal.Controllers
                         DataFlowChart = doc.DataFlowChart,
                         StaffingInformation = doc.StaffingInformation,
                         Roles = roles,
-                        Responsibilities = responsibilities
-                        //DataHandlingAndEntry = doc.DataHandlingAndEntry,
-                        //RoleAndResponsibilities = doc.RoleAndResponsibilities,
-                        //Staffing = doc.Staffing
+                        Responsibilities = responsibilities 
                     },
                     Equipment = equipment,
                     Environment = new DAL.Entities.Environment
@@ -246,6 +261,7 @@ namespace ShieldPortal.Controllers
             catch (Exception ex)
             {
                 projDAO.RollbackChanges();
+                Logger.LogError(ex);
                 return new HttpStatusCodeResult(400, ex.Message);
             }
         }
@@ -254,11 +270,11 @@ namespace ShieldPortal.Controllers
         public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
            AreaCoveredByIP siteCount, Equipment equipment, Summary summary, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
-           Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp,
+           Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, List<DataCollation> dataCollation,
            DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
            DigitalDataRetention digitalDataRetention, List<Trainings> Trainings, List<ReportData> reportDataList)
         {
-
+            processes.DataCollation = dataCollation;
             Guid dGuid = new Guid(doc.documentID);
             var previousDoc = dmpDocDAO.Retrieve(dGuid);
             ProjectDetails ProjDetails = projDTF;
@@ -371,6 +387,7 @@ namespace ShieldPortal.Controllers
             catch(Exception ex)
             {
                 projDAO.RollbackChanges();
+                Logger.LogError(ex);
                 return new HttpStatusCodeResult(400, ex.Message);
             }            
         }

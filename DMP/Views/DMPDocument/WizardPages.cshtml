@@ -55,15 +55,16 @@
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var editMode = true;
 
-        var rolesArray =  @Html.Raw(Json.Encode(Model.roles))
-        var responsibilityArray =  @Html.Raw(Json.Encode(Model.responsibilities))
-        //var TrainingArrayFromServer = @Html.Raw(Json.Encode(Model.Trainings));
+        var rolesArray =  @Html.Raw(Json.Encode(Model.roles));
+        var responsibilityArray =  @Html.Raw(Json.Encode(Model.responsibilities));
         var trainingArray =  @Html.Raw(Json.Encode(Model.Trainings));
 
+        var datacollationArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollation));
+        var datacollationArray = [];
 
         var DataVerificationArrayFromServer = @Html.Raw(Json.Encode(Model.dataVerification));
         var DataVerificationArray =[];
-       var ReportArrayFromServer =  @Html.Raw(Json.Encode(Model.reportDataList));//to be discarded
+       var ReportArrayFromServer =  @Html.Raw(Json.Encode(Model.reportDataList));
         var reportArray = [];
 
         function DeleteRow(row) {
@@ -73,10 +74,10 @@
                 $(row).remove();
                 reportArray.splice(rowid-1, 1);
             }
-            else  if(row.id.indexOf('datacollection') !==-1){
+            else  if(row.id.indexOf('datacollation') !==-1){
                 $(row).remove();
                 var rowid = row.id.split('x')[1];
-                datacollectionArray.splice(row-1, 1);
+                datacollationArray.splice(row-1, 1);
             }
             else  if(row.id.indexOf('dataverification') !==-1){
                 $(row).remove();
@@ -491,25 +492,84 @@
                                                             <textarea type="text" rows="3" id="ImplementingPartnerMEProcess" placeholder="Describe your monitoring & evaluation processes including site visits & trainings, timelines" class="form-control">@(Model.processes != null ? Model.processes.ImplementingPartnerMEProcess : "")</textarea>
                                                         </div>
                                                     </div>
+
+                                                    <div style="display:flex; flex-direction:column; justify-content:center;width: 80%; margin-left: 10%;">
+                                                        <h4 style="display:flex; justify-content:center">Data Collation</h4>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label" for="DataType">Type of data</label>
+                                                            <button type="button" class="btn btn-black btn-outline btn-sm" title="specify data type"><i class="icon-help"></i></button>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" placeholder="specify data type" id="DataType" value="" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label" for="CollationFrequency">Frequency of data validation</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="CollationFrequency" class="form-control">
+                                                                    <option value="" disabled selected>How frequent will data validation be carried out?</option>
+                                                                    @foreach (var item in Model.dataFrequency)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                            <a class="btn btn-black btn-sm btn-outline" id="adddatacollationbtn">Add to List</a>
+                                                        </div>
+                                                        
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Types</th>
+                                                                        <th>Frequency</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="datacollationdataTable"> </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div> 
+
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="SiteVisits">Site visits</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe site vists procedures including responsible persons"><i class="icon-help"></i></button>
+                                                        <label class="col-sm-3 control-label" for="SiteSupport">Site support/Visit</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="select frequency of site support/visits"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="SiteVisits" placeholder="Describe site vists procedures including responsible persons" class="form-control">@(Model.processes != null ? Model.processes.SiteVisits : "")</textarea>
+                                                            <select id="SiteSupport" class="form-control">
+                                                                <option value="" selected disabled>select frequency of site support</option>
+                                                                @foreach (var item in Model.dataFrequency)
+                                                                {
+                                                                    if (Model.processes != null && Model.processes.SiteSupport == item)
+                                                                    {
+                                                                        <option value="@item" selected>&nbsp;@item</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@item">&nbsp;@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div> 
+                                                    
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label" for="DataGarnering">Data Garnering</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe your data processing, transformation etc"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-7">
+                                                            <textarea type="text" rows="3" id="DataGarnering" placeholder="Describe your data processing, transformation etc" class="form-control">@(Model.processes != null ? Model.processes.DataGarnering : "")</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="Audits">Audits</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe audit procedures including responsible persons"><i class="icon-help"></i></button>
+                                                        <label class="col-sm-3 control-label" for="DataUse">Data use</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe data use policies"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="Audits" placeholder="Describe audit procedures including responsible persons" class="form-control">@(Model.processes != null ? Model.processes.Audits : "")</textarea>
+                                                            <textarea type="text" rows="3" id="DataUse" placeholder="Describe data use policies" class="form-control">@(Model.processes != null ? Model.processes.DataUse : "")</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="DataCollationAndAnalysis">Data collation & analysis</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe data collation and analysis procedures including responsible persons"><i class="icon-help"></i></button>
+                                                        <label class="col-sm-3 control-label" for="DataImprovementApproach">Data improvement approach</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe data improvement approach"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="DataCollationAndAnalysis" placeholder="Describe data collation and analysis procedures including responsible persons" class="form-control">@(Model.processes != null ? Model.processes.DataCollationAndAnalysis : "")</textarea>
+                                                            <textarea type="text" rows="3" id="DataImprovementApproach" placeholder="Describe data improvement approach" class="form-control">@(Model.processes != null ? Model.processes.DataImprovementApproach : "")</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -529,7 +589,7 @@
                                                             <select class="form-control" onchange="document.getElementById('ProjectEquipments').value=this.options[this.selectedIndex].text;">
                                                                 <option value="" disabled>please specify if not on the list</option>
                                                                 @foreach (var item in Model.equipment)
-            {
+                                                                {
                                                                     <option value="@item">&nbsp;@item</option>
                                                                 }
                                                             </select>
@@ -643,26 +703,6 @@
                                                     <textarea id="QualitativeDataCollectionProcessess" placeholder="Describe how qualitative data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)" class="form-control" rows="3">@(Model.dataCollection != null ? Model.dataCollection.QualitativeDataCollectionProcessess : "")</textarea>
                                                 </div>
                                             </div>
-                                            @*<div class="form-group">
-                                    <label for="DataFormat" class="col-sm-3 control-label">Data Format</label>
-                                    <button type="button" class="btn btn-black btn-outline btn-sm" title="What format is data collected in?"><i class="icon-help"></i></button>
-                                    <div class="col-sm-7">
-                                        <select id="DataFormat" class="form-control">
-                                            <option value="" disabled selected>What format is data collected in?</option>
-                                            @foreach (var item in Model.reportDataType)
-                                            {
-                                                if (Model.dataCollection != null && item == Model.dataCollection.DataFormat)
-                                                {
-                                                    <option value="@item" selected>@item</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item">@item</option>
-                                                }
-                                            }
-                                        </select>
-                                    </div>
-                                </div>*@
                                             <div class="form-group">
                                                 <label for="QualitativeDataSourceCollectionAndReportingTools" class="col-sm-4 control-label">Data source, collection and reporting tools</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What are your data source  and the tools used for data collection and reporting? "><i class="icon-help"></i></button>
@@ -862,12 +902,13 @@
                                                     <select id="FrequencyOfDataVerification" class="form-control">
                                                         <option value="" disabled selected>How frequent will data validation be carried out?</option>
                                                         @foreach (var item in Model.dataFrequency)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
+
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="TimelinesForDataVerification">Milestones</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Select the applicable timelines for this data validation"><i class="icon-help"></i></button>
@@ -1489,6 +1530,8 @@
                 viewModel["roles"] = rolesArray;
                 viewModel["responsibilities"]= responsibilityArray;
 
+                viewModel["dataCollation"] = datacollationArray;
+
                 let selectedStates = '';
                 $("#StatesCoveredByImplementingPartners option:selected").each(function(){
                     selectedStates +=$(this).val()+',';
@@ -1549,22 +1592,18 @@
         });
 
         $('#TimelinesForReporting').multiDatesPicker();
-        $("#DataCollectionTimelines").multiDatesPicker();
-        $("#TimelinesForTrainings").multiDatesPicker();
+        //$("#DataCollectionTimelines").multiDatesPicker();
+        //$("#TimelinesForTrainings").multiDatesPicker();
         $("#TimelinesForDataVerification").multiDatesPicker();
 
          
-        $("#ProjectStartDate").multiDatesPicker({maxPicks: 1,
-           // addDates: [new Date(@Model.projectDetails.ProjectStartDate)]
-        });
-        $("#ProjectEndDate").multiDatesPicker({maxPicks: 1,
-           // addDates: [new Date(@Model.projectDetails.ProjectEndDate)]
-            });
+        $("#ProjectStartDate").multiDatesPicker({maxPicks: 1 });
+        $("#ProjectEndDate").multiDatesPicker({maxPicks: 1 });
              
         });
     </script>
 
 <script src="~/Scripts/ReportTableLogic.js"></script>
 <script src="~/Scripts/dataverificationTableLogic.js"></script> 
-
+<script src="~/Scripts/datacollationTableLogic.js"></script>
 }

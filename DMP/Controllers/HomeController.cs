@@ -1,4 +1,5 @@
 ﻿using CommonUtil.DAO;
+using CommonUtil.Utilities;
 using DAL.DAO;
 using ShieldPortal.ViewModel;
 using System;
@@ -49,114 +50,144 @@ namespace ShieldPortal.Controllers
             {
                 return new HttpStatusCodeResult(400, "DMP document is not yet completed");
             }
-            var trainings = doc.Document.MonitoringAndEvaluationSystems.People.Trainings;
-            var dataCollection = doc.Document.DataProcesses.DataCollection;
-            var dataVerification = doc.Document.QualityAssurance.DataVerification;
-            var reports = doc.Document.DataProcesses.Reports.ReportData;
-
 
             List<GanttChartData> chartData = new List<GanttChartData>();
             List<ChartValues> values = new List<ChartValues>();
-            //foreach (var tr in trainings)
-            //{
-            //    tr.TimelinesForTrainings.ForEach(z =>
-            //    {
-            //        if (z > DateTime.MinValue)
-            //        {
-            //            values.Add(new ChartValues
-            //            {
-            //                customClass = Labels.trainingLabelClass,
-            //                from = z,
-            //                to = z.AddDays(tr.DurationOfTrainings),
-            //                label = Labels.trainingLabelName,
-            //                dataObj = tr.NameOfTraining,
-            //            });
-            //        }
-            //    });
-            //}
-            chartData.Add(
-                   new GanttChartData
-                   {
-                       name = "Training",
-                       values = values
-                   });
 
-            values = new List<ChartValues>();
-            //foreach (var dt in dataCollection)
-            //{
-            //    dt.DataCollectionTimelines.ForEach(z =>
-            //    {
-            //        if (z > DateTime.MinValue)
-            //        {
-            //            values.Add(new ChartValues
-            //            {
-            //                customClass = Labels.dataCollectionLabelClass,
-            //                from = z,
-            //                to = z.AddDays(dt.DurationOfDataCollection),
-            //                label = Labels.dataCollectionLabelName,
-            //                dataObj = dt.DataType,
-            //            });
-            //        }
-            //    });
-            //}
-            chartData.Add(
-                    new GanttChartData
-                    {
-                        name = "Data Collection",
-                        values = values
-                    });
-
-            values = new List<ChartValues>();
-            foreach (var rpt in reports)
+            try
             {
-                rpt.TimelinesForReporting.ForEach(z =>
-                {
-                    if (z > DateTime.MinValue)
-                    {
-                        values.Add(new ChartValues
-                        {
-                            customClass = Labels.reportLabelClass,
-                            from = z,
-                            to = z.AddDays(rpt.DurationOfReporting),
-                            label = Labels.reportLabelName,
-                            dataObj = rpt.ReportsType,
-                        });
-                    }
-                });
-            }
-            chartData.Add(
-                    new GanttChartData
-                    {
-                        name = "Report",
-                        values = values
-                    });
+                var trainings = doc.Document.MonitoringAndEvaluationSystems.People.Trainings;
+                var dataCollection = doc.Document.DataProcesses.DataCollection;
+                var dataVerification = doc.Document.QualityAssurance.DataVerification;
+                var reports = doc.Document.DataProcesses.Reports.ReportData;
 
-            values = new List<ChartValues>();
-            foreach (var dv in dataVerification)
+                var trainingGntChart = new List<GanttChartData>();
+
+                foreach (var tr in trainings)
+                {
+                    DateTime siteStartdt = new DateTime();
+                    DateTime siteEndDate = new DateTime();
+
+                    var aTr = new GanttChartData();
+                    aTr.desc = tr.NameOfTraining;
+                    aTr.values = new List<ChartValues>();
+
+                    DateTime.TryParse(tr.SiteStartDate, out siteStartdt);
+                    DateTime.TryParse(tr.SiteEndDate, out siteEndDate);
+
+                    if (siteStartdt > DateTime.MinValue && siteEndDate > DateTime.MinValue)
+                    {
+                        aTr.values.Add(
+                            new ChartValues
+                            {
+                                customClass = Labels.trainingLabelClass,
+                                from = siteStartdt,
+                                to = siteEndDate,
+                                label = "Site training", //Labels.trainingLabelName,
+                                dataObj = "Site training date",
+                            });
+                    }
+
+                    DateTime regionStartdt = new DateTime();
+                    DateTime regionndDate = new DateTime();
+
+                    DateTime.TryParse(tr.RegionStartDate, out regionStartdt);
+                    DateTime.TryParse(tr.RegionEndDate, out regionndDate);
+
+                    if (regionStartdt > DateTime.MinValue && regionndDate > DateTime.MinValue)
+                    {
+                        aTr.values.Add(
+                            new ChartValues
+                            {
+                                customClass = Labels.trainingLabelClass,
+                                from = regionStartdt,
+                                to = regionndDate,
+                                label = "Region training", //Labels.trainingLabelName,
+                                dataObj = "Region training date",
+                            });
+                    }
+
+                    DateTime hqStartdt = new DateTime();
+                    DateTime hqEndDate = new DateTime();
+
+                    DateTime.TryParse(tr.HQStartDate, out hqStartdt);
+                    DateTime.TryParse(tr.HQEndDate, out hqEndDate);
+
+                    if (hqStartdt > DateTime.MinValue && hqEndDate > DateTime.MinValue)
+                    {
+                        aTr.values.Add(
+                            new ChartValues
+                            {
+                                customClass = Labels.trainingLabelClass,
+                                from = hqStartdt,
+                                to = hqEndDate,
+                                label = "HQ training", //Labels.trainingLabelName,
+                                dataObj = "HQ training date",
+                            });
+                    }
+
+                    trainingGntChart.Add(aTr);
+                }
+
+                trainingGntChart.FirstOrDefault().name = "Training";
+                chartData.AddRange(trainingGntChart);
+
+                values = new List<ChartValues>();
+                foreach (var rpt in reports)
+                {
+                    rpt.TimelinesForReporting.ForEach(z =>
+                    {
+                        if (z > DateTime.MinValue)
+                        {
+                            values.Add(new ChartValues
+                            {
+                                customClass = Labels.reportLabelClass,
+                                from = z,
+                                to = z.AddDays(rpt.DurationOfReporting),
+                                label = rpt.ReportsType, //Labels.reportLabelName,
+                                dataObj = rpt.ReportsType,
+                            });
+                        }
+                    });
+                }
+                chartData.Add(
+                        new GanttChartData
+                        {
+                            name = "Report",
+                            values = values
+                        });
+
+                values = new List<ChartValues>();
+                foreach (var dv in dataVerification)
+                {
+                    dv.TimelinesForDataVerification.ForEach(z =>
+                    {
+                        if (z > DateTime.MinValue)
+                        {
+                            values.Add(new ChartValues
+                            {
+                                customClass = Labels.dataVerificationLabelClass,
+                                from = z,
+                                to = z.AddDays(dv.DurationOfDataVerificaion),
+                                label = dv.DataVerificationApproach,  //Labels.dataVerificationLabelName,
+                                dataObj = dv.TypesOfDataVerification + "\n " + dv.DataVerificationApproach,
+                            });
+                        }
+                    });
+                }
+                chartData.Add(
+                        new GanttChartData
+                        {
+                            name = "Data validation",
+                            values = values
+                        });
+            }
+            catch (Exception ex)
             {
-                dv.TimelinesForDataVerification.ForEach(z =>
-                {
-                    if (z > DateTime.MinValue)
-                    {
-                        values.Add(new ChartValues
-                        {
-                            customClass = Labels.dataVerificationLabelClass,
-                            from = z,
-                            to = z.AddDays(dv.DurationOfDataVerificaion),
-                            label = Labels.dataVerificationLabelName,
-                            dataObj = dv.TypesOfDataVerification + "\n " + dv.DataVerificationApproach,
-                        });
-                    }
-                });
+                Logger.LogError(ex);
+                return new HttpStatusCodeResult(400, ex.Message);
             }
-            chartData.Add(
-                    new GanttChartData
-                    {
-                        name = "Data Verification",
-                        values = values
-                    });
-
-
+            
             TrackerViewModel vM = new TrackerViewModel
             {
                 data = chartData,

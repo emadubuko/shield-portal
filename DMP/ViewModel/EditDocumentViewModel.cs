@@ -101,7 +101,8 @@ namespace ShieldPortal.ViewModel
 
          public List<StaffGrouping> roles { get; set; }
         public List<StaffGrouping> responsibilities { get; set; }
-        
+
+        public List<DataCollation> dataCollation { get; set; }
 
         public string DataFlowChart { get; set; }
         public string AdditionalInformation { get; set; }

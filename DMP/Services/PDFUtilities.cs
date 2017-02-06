@@ -33,7 +33,7 @@ namespace ShieldPortal.Services
 
             WriteLines(8, ref doc);
 
-            Image docLogo = GeneratePDFImage(dmpDoc.TheDMP.Organization.Logo, 0.15f);
+            Image docLogo = GeneratePDFImage(dmpDoc.TheDMP.Organization.Logo, 0.5f);
             docLogo.Alignment = Element.ALIGN_CENTER;
             doc.Add(docLogo);
 
@@ -90,9 +90,7 @@ namespace ShieldPortal.Services
             WriteLines(1, ref doc);
             var aparagraph = new Paragraph(pageData.Planning.Summary.ProjectObjectives, istPageFont14);
             aparagraph.IndentationLeft = 70f;
-            doc.Add(aparagraph);
-            // doc.Add(GenericPageTable(pageData.Planning.Summary, "Project Objectives"));
-
+            doc.Add(aparagraph); 
 
             doc.NewPage();// MonitoringAndEvaluationSystems
             header = new Paragraph("MONITORING AND EVALUATION SYSTEMS", istPageFont14);
@@ -137,6 +135,12 @@ namespace ShieldPortal.Services
 
             doc.NewPage();
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Process, "Process"));
+            header = new Paragraph("Data collation", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            var dt = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.Process != null ? pageData.MonitoringAndEvaluationSystems.Process.DataCollation : new List<DataCollation>();
+            doc.Add(MultiColumn(dt, 1));
+
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Equipment, "Equipment"));
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Environment, "Environment"));
             //doc.NewPage();
@@ -354,7 +358,7 @@ namespace ShieldPortal.Services
                     {
                         datavalue = Convert.ToString(info.GetValue(dt));  
                         //special line break
-                        if(datavalue.Contains(" - "))
+                        if(datavalue.Contains(" - ") && !datavalue.Contains("Bi - "))
                         {
                             datavalue = datavalue.Replace(" - ", "\n");
                         }                       
@@ -397,8 +401,7 @@ namespace ShieldPortal.Services
             PdfPCell PdfPCell = null;
             Paragraph pp = null;
             BaseColor blackColor = new BaseColor(0, 0, 0);
-            Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
-            //FontFactory.GetFont("Corbel", 11, (int)System.Drawing.FontStyle.Italic, blackColor);
+            Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor); 
 
             Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.ITALIC, fadedBlue);
 
@@ -743,7 +746,15 @@ namespace ShieldPortal.Services
                 {
                     continue;
                 }
-                pp = new Paragraph(new Chunk(CommonUtil.Utilities.Utilities.PasCaseConversion(info.Name), font8));
+
+                if(info.Name == "ImplementingPartnerMEProcess")
+                {
+                    pp = new Paragraph(new Chunk("Implementing partner M&E process", font8));
+                }
+                else
+                {
+                    pp = new Paragraph(new Chunk(CommonUtil.Utilities.Utilities.PasCaseConversion(info.Name), font8));
+                }
                 pp.IndentationLeft = 20;
                 pp.PaddingTop = 10f;
                 pp.SpacingAfter = 5f;
@@ -754,9 +765,8 @@ namespace ShieldPortal.Services
                 PdfPCell.DisableBorderSide(Rectangle.LEFT_BORDER);
                 PdfPCell.DisableBorderSide(Rectangle.RIGHT_BORDER);
                 table.AddCell(PdfPCell);
-                //table.AddElement(PdfPCell);
 
-
+                //add value
                 pp = new Paragraph(new Chunk(Convert.ToString(info.GetValue(data)), fontValue));
                 PdfPCell = new PdfPCell();
                 pp.IndentationLeft = 10;

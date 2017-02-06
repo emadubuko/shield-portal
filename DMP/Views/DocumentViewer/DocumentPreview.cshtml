@@ -42,8 +42,11 @@
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var editMode = false;
 
+        var datacollationArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollation));
+        var datacollationArray = [];
+
         var ReportArrayFromServer =  @Html.Raw(Json.Encode(Model.reportDataList));
-        var reportArray = [];       
+        var reportArray = [];
         var DataVerificationArrayFromServer = @Html.Raw(Json.Encode(Model.dataVerification));
         var DataVerificationArray =[];
 
@@ -285,7 +288,7 @@
                                                 <div>
                                                     <img id="DataFlowChart">
                                                 </div>
-                                            </div> 
+                                            </div>
 
                                             <div class="panel panel-warning" id="roles">
                                                 <div class="panel-heading clearfix">
@@ -403,21 +406,45 @@
                                         <div class="form-horizontal">
                                             @foreach (var field in typeof(DAL.Entities.Processes).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                             {
-                                                <div class="form-group">
-                                                    <label>@(field.Name == "ImplementingPartnerMEProcess" ? "Implementing partner M & E process" : CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name))</label>
-                                                    <div class="col-sm-offset-1">
-                                                        <span id="@field.Name">
-                                                            @if (field.GetValue(Model.processes) != null)
-                                                            {
-                                                                foreach (var t in field.GetValue(Model.processes).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                if (field.Name == "DataCollation")
+                                                {
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Data Collation</label>
+                                                        <div class="col-sm-6 col-sm-offset-1">                                                             
+                                                                <table class="table">
+                                                                    <thead style="background-color: steelblue;color: white;">
+                                                                        <tr>
+                                                                            <th>Types</th>
+                                                                            <th>Frequency</th>
+                                                                            <th></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="datacollationdataTable"> </tbody>
+                                                                </table>
+                                                            <span id="DataCollation"></span>                                                             
+                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>                                                    
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-group">
+                                                        <label>@(field.Name == "ImplementingPartnerMEProcess" ? "Implementing partner M & E process" : CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name))</label>
+                                                        <div class="col-sm-offset-1">
+                                                            <span id="@field.Name">
+                                                                @if (field.GetValue(Model.processes) != null)
                                                                 {
-                                                                    @t <br />
+                                                                    foreach (var t in field.GetValue(Model.processes).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                    {
+                                                                        @t <br />
+                                                                    }
                                                                 }
-                                                            }
-                                                        </span>
-                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                            </span>
+                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
+
                                             }
                                         </div>
                                     </div>
@@ -510,21 +537,6 @@
                                                     <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
-                                            @*<div class="form-group">
-                                                <label>Data Format</label>
-                                                <div class="col-sm-offset-1">
-                                                    <span id="DataFormat">
-                                                        @if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.DataFormat))
-                                                        {
-                                                            foreach (var t in Model.dataCollection.DataFormat.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                                                            {
-                                                                @t <br />
-                                                            }
-                                                        }
-                                                    </span>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>*@
                                             <div class="form-group">
                                                 <label>Data source, collection and reporting tools</label>
                                                 <div class="col-sm-offset-1">
@@ -908,7 +920,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                 
+
                             </div>
                         </div>
                         <!-- end of Post Project Data Retention Sharing and Destruction page-->
@@ -1172,5 +1184,6 @@
         });
     </script>
     <script src="~/Scripts/ReportTableLogic.js"></script> 
-    <script src="~/Scripts/dataverificationTableLogic.js"></script> 
+    <script src="~/Scripts/dataverificationTableLogic.js"></script>
+    <script src="~/Scripts/datacollationTableLogic.js"></script> 
 }
