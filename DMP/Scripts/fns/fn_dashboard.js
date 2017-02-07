@@ -1,6 +1,6 @@
 ﻿function getCounts(id) {
     $.ajax({
-        url: baseUrl() + "dashboard/GetIpCounts/"+id,
+        url: baseUrl() + "dashboard/GetIpCounts/" + id + "/November",
         method: "GET",
         contentType: "application/json",
         success: function (data) {
@@ -15,7 +15,7 @@
 
 function getStateSummary(id) {
     $.ajax({
-        url: baseUrl() + "dashboard/GetStateSummary/" + id,
+        url: baseUrl() + "dashboard/GetStateSummary/" + id+"/November",
         method: "GET",
         contentType: "application/json",
         success: function (data) {
@@ -44,7 +44,7 @@ function getStateSummary(id) {
 
 function getPending(ip) {
     $.ajax({
-        url: baseUrl() + "dashboard/GetPendingFacilities/" + ip,
+        url: baseUrl() + "dashboard/GetPendingFacilities/" + ip + "/November",
         method: "GET",
         contentType: "application/json",
         success: function (data) {
