@@ -25,42 +25,83 @@ function BindPureBase64StringToControl(control, base64ImageString) {
 }
 
 
-//function imagePreview(options) {
-    
+function uploadfileToServer(e, control, url, controlToUpdate) {   
+    var data = new FormData();
+    try {
+        var file = $(control)[0].files[0];
+        data.append('file', file);
+    }
+    catch (err) {
+        alert(err);
+        return false;
+    }
 
-//    var defaults = {};
-//    if (options) {
-//        $.extend(true, defaults, options);
-//    }
-//    $.each(this, function () {
-//        var $this = $(this);
-//        $this.bind('change', function (evt) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        contentType: false,
+        processData: false,
+        data: data,
+        cache: false,
+    }).done(function (result) {
+        try{
+            CreateRolesTable(result.roles);
+            CreateRespTable(result.responsibility);
+            CreateTrainingTable(result.trainings);
+            controlToUpdate.val(result.filelocation);
+        }
+        catch (er) {
+            console.log(er);
+        }
+    }).error(function (xhr, status, err) {
+        alert(err);
+    });
+    return false;
+}
 
-//            var files = evt.target.files; // FileList object
-//            // Loop through the FileList and render image files as thumbnails.
-//            if (files.length > 0) {
-//                for (var i = 0, f; f = files[i]; i++) {
-//                    // Only process image files.
-//                    if (!f.type.match('image.*')) {
-//                        continue;
-//                    }
-//                    var reader = new FileReader();
-//                    // Closure to capture the file information.
-//                    reader.onload = (function (theFile) {
-//                        return function (e) {
-//                            // Render thumbnail.
-//                            base64Image = e.target.result;
-//                            //$('#imageURL').attr('src', e.target.result);
-//                        };
-//                    })(f);
-//                    // Read in the image file as a data URL.
-//                    reader.readAsDataURL(f);
-//                    return base64Image;
-//                }
-//            }
-//        });
-//    });
-//}
+function CreateRolesTable(roles) {
+    $('#rolesTable').children().remove();
 
+    rolesArray = roles;
+    for (var i = 0; i < roles.length; i++) {
+        var html = '<tr>';
+        html += '<td>' + roles[i].Name + '</td>';
+        html += '<td>' + roles[i].SiteCount + '</td>';
+        html += '<td>' + roles[i].RegionCount + '</td>';
+        html += '<td>' + roles[i].HQCount + '</td>';
+        html += '</tr>';
+        $('#rolesTable').append(html);
+    }    
+}
 
+function CreateRespTable(resps) {
+    $('#respsTable').children().remove();
 
+    responsibilityArray = resps;
+    for (var i = 0; i < resps.length; i++) {
+        var html = '<tr>';
+        html += '<td>' + resps[i].Name + '</td>';
+        html += '<td>' + resps[i].SiteCount + '</td>';
+        html += '<td>' + resps[i].RegionCount + '</td>';
+        html += '<td>' + resps[i].HQCount + '</td>';
+        html += '</tr>';
+        $('#respsTable').append(html);
+    }
+}
+
+function CreateTrainingTable(trainings) {
+    $('#trainingTable').children().remove();
+
+    trainingArray = trainings;
+    for (var i = 0; i < trainings.length; i++) {
+        var html = '<tr>';
+
+        html += '<td>' + trainings[i].NameOfTraining + '</td>';
+        html += '<td>' + trainings[i].SiteDisplayDate + '</td>';
+        html += '<td>' + trainings[i].RegionDisplayDate + '</td>';
+        html += '<td>' + trainings[i].HQDisplayDate + '</td>';
+        html += '</tr>';
+        $('#trainingTable').append(html);
+    }
+}
+ 

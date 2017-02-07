@@ -1,10 +1,5 @@
 ﻿using DAL.Entities;
 using FluentNHibernate.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Mapping
 {
@@ -22,7 +17,7 @@ namespace DAL.Mapping
             Map(x => x.EndDate);
             References(x => x.CreatedBy).Not.LazyLoad();
             Map(x => x.DateCreated);
-            HasMany(x => x.DMPDocuments)
+            HasMany(x => x.DMPDocuments).Cascade.All()
             .Inverse().KeyColumns.Add("DMPId", mapping => mapping.Name("DMPId"));
         }
     }

@@ -20,7 +20,7 @@ namespace CommonUtil.Mapping
             Map(x => x.LastLoginDate);
             Map(x => x.Status);
             Map(x => x.Title);
-            References(x => x.Organization).Column("OrganizationId");
+            References(x => x.Organization).Column("OrganizationId").Not.LazyLoad();
             Map(x => x.RoleName);
         }
     }

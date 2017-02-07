@@ -21,6 +21,7 @@ namespace DAL.Mapping
             Map(x => x.ProjectSummary);
             References(x => x.LeadActivityManager).Column("LeadActivityManagerId").Not.LazyLoad();
             References(x => x.Organization).Column("OrganizationId");
+
         }
     }
 }

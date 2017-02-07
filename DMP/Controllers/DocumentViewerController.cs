@@ -11,6 +11,9 @@ using ShieldPortal.Services;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using CommonUtil.Entities;
+using CommonUtil.DAO;
+using CommonUtil.DBSessionManager;
+using CommonUtil.Utilities;
 
 namespace ShieldPortal.Controllers
 {
@@ -62,6 +65,7 @@ namespace ShieldPortal.Controllers
                 documentRevisions = Doc.Document.DocumentRevisions,
                 versionAuthor = versionAuthor,
                 processes = thepageDoc.MonitoringAndEvaluationSystems.Process,
+                 dataCollation = thepageDoc.MonitoringAndEvaluationSystems.Process !=null ? thepageDoc.MonitoringAndEvaluationSystems.Process.DataCollation : new List<DataCollation>(),
                 dataCollection = thepageDoc.DataProcesses.DataCollection,
                 dataDocMgt = thepageDoc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry,
                 dataSharing = thepageDoc.DataStorageAccessAndSharing.DataAccessAndSharing,
@@ -110,6 +114,7 @@ namespace ShieldPortal.Controllers
                 catch (Exception ex)
                 {
                     commentDAO.RollbackChanges();
+                    Logger.LogError(ex);
                     return new HttpStatusCodeResult(400, ex.Message);
                 }
             }
@@ -151,6 +156,7 @@ namespace ShieldPortal.Controllers
             catch (Exception ex)
             {
                 dmpDocumentDAO.RollbackChanges();
+                Logger.LogError(ex);
                 return new HttpStatusCodeResult(400, ex.Message);
             }
         }
@@ -182,6 +188,7 @@ namespace ShieldPortal.Controllers
             catch (Exception ex)
             {
                 dmpDocumentDAO.RollbackChanges();
+                Logger.LogError(ex);
                 return new HttpStatusCodeResult(400, ex.Message);
             }
         }
@@ -220,6 +227,7 @@ namespace ShieldPortal.Controllers
             catch (Exception ex)
             {
                 dmpDocumentDAO.RollbackChanges();
+                Logger.LogError(ex);
                 return new HttpStatusCodeResult(400, ex.Message);
             }
         }
@@ -311,6 +319,7 @@ namespace ShieldPortal.Controllers
 
                 doc.Close();
             }
+            
             return Json(fileName);
         }
 

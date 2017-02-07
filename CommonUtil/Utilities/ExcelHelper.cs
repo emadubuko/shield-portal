@@ -6,11 +6,22 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using OfficeOpenXml;
 
 namespace CommonUtil.Utilities
 {
    public class ExcelHelper
     {
+        public static string ReadCell(ExcelWorksheet sheet, int row, int column)
+        {
+            var range = sheet.Cells[row, column] as ExcelRange;
+            if (range.Value != null)
+            {
+                return range.Value.ToString();
+            }
+            return "";
+        }
+
         public static Dictionary<string, int> GenerateIndexedPeriods()
         {
             Dictionary<string, int> indexedPeriod = new Dictionary<string, int>();

@@ -15,6 +15,7 @@ if (ReportArrayFromServer!=null && ReportArrayFromServer.length > 0) {
             }
         }
         report.TimelinesForReporting = timeLines;
+        report.Id = c + 1;
         reportArray.push(report);
         CreateReportTable(report);
     }
@@ -22,25 +23,26 @@ if (ReportArrayFromServer!=null && ReportArrayFromServer.length > 0) {
          
 
 $("#addReportbtn").click(function (e) {
-    var report={};
-    report["Id"] = reportArray.length + 1;
+    var report = {};
+    if (reportArray == undefined || reportArray.length == 0) {
+        report["Id"] = 1
+    }
+    else {
+        report["Id"] = reportArray[reportArray.length - 1].Id + 1; // reportArray.length + 1;
+    }
     var dateStringArray = [];
 
     $("#reportdatadiv input, select").each(function(){
-        if($(this)[0].id == "NameOfReport"){
-            report["NameOfReport"] =  $(this)[0].value;
-            $(this).val("");
-        }
-        else if ($(this)[0].id == "ReportsType") {
+          if ($(this)[0].id == "ReportsType") {
             report["ReportsType"] = $(this)[0].value;
             $(this).val("");
         }
-        else if ($(this)[0].id == "ReportsCollated") {
-            report["ReportsCollated"] = $(this)[0].value;
+          else if ($(this)[0].id == "ReportedTo") {
+            report["ReportedTo"] = $(this)[0].value;
             $(this).val("");
         }
-        else if($(this)[0].id == "ThematicArea"){
-            report["ThematicArea"] =  $(this)[0].value;
+        else if ($(this)[0].id == "ProgramArea") {
+            report["ProgramArea"] =  $(this)[0].value;
             $(this).val("");
         }
         else if ($(this)[0].id == "TimelinesForReporting") {
@@ -67,9 +69,11 @@ $("#addReportbtn").click(function (e) {
                 case "Months":
                     duration = inputValue * 30; break;
                 case "Years":
-                    duration = inputValue * 365; break;
-                default:
-                    duration = 1; break; //assume one day
+                    duration = inputValue * 365; break; 
+            }
+            if (duration == "") {
+                alert("please specify duration");
+                return;
             }
             report["DurationOfReporting"] = duration;
             $(this).val("");
@@ -79,7 +83,7 @@ $("#addReportbtn").click(function (e) {
             $(this).val("");
         }
     });
-    if (report.TimelinesForReporting != null) {
+    if (report.TimelinesForReporting != null && report.DurationOfReporting !=null) {
         reportArray.push(report);
         CreateReportTable(report);
     }
@@ -104,10 +108,9 @@ function CreateReportTable(report){
 
     var reportId = "reportx" + report.Id;
     var html = '<tr id=' + reportId + '>';
-    html += '<td>' + report.NameOfReport + '</td>';
     html += '<td>' + report.ReportsType + '</td>';
-    html += '<td>' + report.ReportsCollated + '</td>';
-    html += '<td>' + report.ThematicArea + '</td>';
+    html += '<td>' + report.ReportedTo + '</td>';
+    html += '<td>' + report.ProgramArea + '</td>';
     html += '<td>' + report.FrequencyOfReporting + '</td>';
     html += '<td>' + report.DurationOfReporting + '</td>';
     html += '<td><a class="btn btn-info btn-sm btn-outline" title=' + JSON.stringify(timelines) + '>View</a></td>';

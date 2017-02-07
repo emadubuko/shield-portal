@@ -257,6 +257,7 @@
     <Content Include="images\alarm.jpg" />
     <Content Include="images\background-image.jpg" />
     <Content Include="images\background-image_old.jpg" />
+    <Content Include="images\backgroung_image.png" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\imac-40.jpg" />
     <Content Include="Content\images\animated-overlay.gif" />
@@ -915,6 +916,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dashboard.js" />
+    <Content Include="Scripts\datacollationTableLogic.js" />
     <Content Include="Scripts\datacollectionTableLogic.js" />
     <Content Include="Scripts\dataverificationTableLogic.js" />
     <Content Include="Scripts\fns\base.js" />
@@ -1051,6 +1053,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="DMPFileUploads\" />
     <Folder Include="Downloads\" />
     <Folder Include="Models\Data\" />
     <Folder Include="Report\Downloads\" />

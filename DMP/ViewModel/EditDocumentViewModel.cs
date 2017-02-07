@@ -46,6 +46,7 @@ namespace ShieldPortal.ViewModel
         public string DataCollectionAndReportingTools { get; set; }
         public string DataFlowChart { get; set; }
         public string Staffing { get; set; }
+        public string StaffingInformation { get; set; }
         public string RoleAndResponsibilities { get; set; }
         public string DataHandlingAndEntry { get; set; }
 
@@ -97,7 +98,12 @@ namespace ShieldPortal.ViewModel
     {
         public List<DocumentRevisions> documentRevisions { get; set; }
         public DataCollection dataCollection { get; set; }
-        // public List<DataCollection> dataCollection { get; set; }
+
+         public List<StaffGrouping> roles { get; set; }
+        public List<StaffGrouping> responsibilities { get; set; }
+
+        public List<DataCollation> dataCollation { get; set; }
+
         public string DataFlowChart { get; set; }
         public string AdditionalInformation { get; set; }
         public List<Trainings> Trainings { get; set; }
@@ -149,6 +155,14 @@ namespace ShieldPortal.ViewModel
             }
         }
 
+        public List<string> storageLoation
+        {
+            get
+            {
+                return new List<string> { "Online", "Offline", "Compact disk", "Hard drives", "Vault" };
+            }
+        }
+
         public List<string> Duration
         {
             get
@@ -170,14 +184,14 @@ namespace ShieldPortal.ViewModel
             get
             {
                 return new List<string> { "Community enrollment form","Household enumeration forms","Household enumeration sticker",
-"Mobile ART card","Referral forms","HIV request result form","Mobile appointment diary","Others(Please List)"  };
+                    "Mobile ART card","Referral forms","HIV request result form","Mobile appointment diary","Others(Please List)"  };
             }
         }
         public ICollection<string> ethicalApprovalTypes
         {
             get
             {
-                return new string[] { "Research", "Experimental", "Observational", "Simulated" };
+                return new string[] { "Non Research Determination", "Non- human subject research", "Human subject research", "Other" };
             }
         }
 
@@ -201,9 +215,10 @@ namespace ShieldPortal.ViewModel
         {
             get
             { 
-                return new string[] { "Prevention", "Treatment", "Suppression" };
+                return new string[] { "Prevention", "Treatment" };
             }
         }
+
         public ICollection<string> dataSourcesTypes
         {
             get
@@ -231,8 +246,8 @@ namespace ShieldPortal.ViewModel
         public ICollection<string> DataVerificationApproach
         {
             get
-            { 
-                return new string[] { "Auditing Approach", "Verification Actors", "Others" };
+            {
+                return new string[] { "Data Qualiity Assurance", "Data Quality Assessments", "Data Quality Audits" };
             }
         }
        

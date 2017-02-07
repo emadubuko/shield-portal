@@ -11,11 +11,11 @@
         <div class="col-lg-12">
             <div class="panel panel-warning">
                 <div class="panel-heading clearfix">
-                    <h4 class="panel-title">ShieldPortal Dashboard &nbsp;&nbsp;&nbsp;</h4>
+                    <h4 class="panel-title">DMP Dashboard &nbsp;&nbsp;&nbsp;</h4>
 
                     <div class="col-sm-offset-12">
-                        <a id="dmpCreate" href='@Url.Action("CreateDMP","ShieldPortal")' class="btn btn-black btn-sm btn-outline">
-                            <i class="fa fa-plus"></i> Create New ShieldPortal
+                        <a id="dmpCreate" href='@Url.Action("CreateDMP","DMP")' class="btn btn-black btn-sm btn-outline">
+                            <i class="fa fa-plus"></i> Create New DMP
                         </a>
                         <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                         </div>                      
@@ -35,7 +35,7 @@
                             <tbody>
                                 @foreach (ShieldPortal.ViewModel.DMPViewModel item in Model)
                                 {
-                                    <tr onclick="window.document.location='@Url.Action("DMPDetails","ShieldPortal", new RouteValueDictionary(item))';" style="cursor: pointer;">
+                                    <tr onclick="window.document.location='@Url.Action("DMPDetails","DMP", new RouteValueDictionary(item))';" style="cursor: pointer;">
                                         <td>@item.Title</td>
                                         <td>@item.ProjectTitle</td>
                                         <td>@item.Owner</td>
@@ -57,9 +57,7 @@
     <script>
         $("#dmpCreate").click(function (e, n) {
             $("#loadImg").show();
-            $('#dmpCreate').disabled = true;
-
-
+            $('#dmpCreate').disabled = true; 
         });
 
     </script>

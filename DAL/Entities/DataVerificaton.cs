@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DAL.Entities
 {
     public class DataVerificaton
-    {
+    {       
         public virtual int Id { get; set; }
         public virtual string DataVerificationApproach { get; set; }
         public virtual string TypesOfDataVerification { get; set; }

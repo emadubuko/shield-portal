@@ -28,8 +28,8 @@ namespace CommonUtil.Entities
 
        
         public virtual string ContactEmailAddress { get; set; }
-                
-       
+
+        [XmlIgnore]
         public virtual Organizations Organization { get; set; }
 
         
