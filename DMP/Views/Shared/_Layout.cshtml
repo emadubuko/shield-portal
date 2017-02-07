@@ -85,11 +85,10 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href='#/'>  <i class="fa fa-check-square-o">
-                            </i><span class="title">Data Quality Assesment</span>
+                    <li class="has-sub">
+                        <a href='@Url.Action("index", "DQA")'>  <i class="fa fa-check-square-o"></i><span class="title">Data Quality Assesment</span>
                         </a>
-                        <ul class="nav collapse in">
+                        <ul class="nav collapse">
                             <li>
                                 <a href=@Url.Action("index", "DQA")>
                                     <i class="fa fa-area-chart"></i><span class="title">DQA DashBoard</span>
@@ -108,9 +107,9 @@
                         </ul>
                     </li>
 
-                    <li>
-                        <a href="#/"><i class="icon-clock"></i><span class="title">Semi-Monthly LGA Scale up Reports</span></a>
-                        <ul class="nav collapse in">
+                    <li class="has-sub">
+                        <a href="#/"><i class="icon-clock"></i><span class="title">Semi-Monthly Scale up Reports</span></a>
+                        <ul class="nav collapse">
                             <li>
                                 <a href=@Url.Action("index", "BiWeeklyReport")>
                                     <i class="fa fa-area-chart"></i><span class="title">LGA Level DashBoard</span>
@@ -140,9 +139,9 @@
 
                     @if (HttpContext.Current.User.IsInRole("sys_admin") || HttpContext.Current.User.IsInRole("shield_team"))
                     {
-                        <li>
+                        <li class="has-sub">
                             <a href="#/"><i class="icon-layout"></i><span class="title">Admin</span></a>
-                            <ul class="nav collapse in">
+                            <ul class="nav collapse">
                                 <li>
                                     <a href=@Url.Action("index", "Organization")><i class="fa fa-bank"></i><span class="title">Implementing partners</span></a>
                                 </li>
