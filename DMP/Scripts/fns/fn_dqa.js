@@ -22,7 +22,7 @@
 
 function getIPDQA(ip) {
     $.ajax({
-        url: baseUrl()+"dqa/GetIpDQA/"+ip,
+        url: baseUrl()+"dqaapi/GetIpDQA/"+ip,
         method: "GET",
         contentType: "application/json",
         success: function (data) {
@@ -44,7 +44,7 @@ function getIPDQA(ip) {
 }
 function deleteDQA(metadataId) {
     $.ajax({
-        url: baseUrl() + "dqa/delete/" + metadataId,
+        url: baseUrl() + "dqaapi/delete/" + metadataId,
         method: "DELETE",
         success: function (data) {
             $("#tr_" + metadataId).remove();
@@ -55,7 +55,7 @@ function deleteDQA(metadataId) {
 
 function getDQA(metadataId) {
     $.ajax({
-        url: baseUrl() + "dqa/GetDQAReport/" + metadataId,
+        url: baseUrl() + "dqaapi/GetDQAReport/" + metadataId,
         method: "GET",
         contentType:"application/json",
         success: function (data) {
