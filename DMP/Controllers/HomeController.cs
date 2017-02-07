@@ -28,7 +28,8 @@ namespace ShieldPortal.Controllers
 
         public ActionResult Index()
         {
-            return RedirectToAction("index", "DMP");
+            return View();
+            //return RedirectToAction("index", "DMP");
         }
 
 
@@ -41,7 +42,8 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
-
+        [AllowAnonymous]
+        [HttpGet]
         public ActionResult Tracker(Guid documnentId)
         {
             var doc = dmpDocDAO.Retrieve(documnentId);
