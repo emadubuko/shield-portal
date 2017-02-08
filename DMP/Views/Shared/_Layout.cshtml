@@ -130,13 +130,7 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href=@Url.Action("index","Home")>
-                            <i class="fa fa-calendar-check-o">
-                            </i><span class="title">Activity Tracker</span>
-                        </a>
-                    </li>
-
+                   
                     @if (HttpContext.Current.User.IsInRole("sys_admin") || HttpContext.Current.User.IsInRole("shield_team"))
                     {
                         <li class="has-sub">
