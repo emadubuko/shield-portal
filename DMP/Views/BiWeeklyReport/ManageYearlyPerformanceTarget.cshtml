@@ -39,7 +39,8 @@
                 <table style="width:100%" class="table table-striped table-bordered table-hover" id="dataTables">
                     <thead>
                         <tr>
-                            <th>ShortName</th>
+                            <th>IP</th>
+                            <th>LGA</th>
                             <th>Facilty</th>
                             <th>HTC_TST </th>
                             <th>HTC_TST_pos</th>
@@ -51,6 +52,7 @@
                         {
                             <tr>
                                 <td>@item.HealthFacilty.Organization.ShortName</td> 
+                                <td>@item.HealthFacilty.LGA.DisplayName</td> 
                                 <td>@item.HealthFacilty.Name</td>
                                 <td>@item.HTC_TST</td>
                                 <td>@item.HTC_TST_POS</td>
