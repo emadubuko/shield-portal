@@ -1,5 +1,6 @@
 ﻿using DQA.DAL.Business;
 using DQA.DAL.Model;
+using DQA.ViewModel;
 using ShieldPortal.Service;
 using System;
 using System.Collections.Generic;
@@ -80,11 +81,15 @@ namespace ShieldPortal.Controllers
         public List<ReportMetadata> GetIpDQA(int id)
         {
             var metas = metadataService.GetIpMetaData(id);
+            var facilities = new List<Facility>();
             var metadatas = new List<ReportMetadata>();
             foreach (var metadata in metas)
             {
+                //facilities.Add(new Facility(Utility.GetFacility(metadata.SiteId)))
                 metadatas.Add(new ReportMetadata(metadata));
             }
+
+
             return metadatas;
         }
 

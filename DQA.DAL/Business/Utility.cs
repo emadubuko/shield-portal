@@ -96,7 +96,22 @@ namespace DQA.DAL.Business
             return entity.dqa_facility.Where(x => !facility_ids.Contains(x.Id)).ToList();
         }
 
+        public static dqa_facility GetFacility(int facilityId)
+        {
+            return entity.dqa_facility.FirstOrDefault(e => e.Id == facilityId);
+        }
 
+        public static string GetLgaName(int lgaId)
+        {
+            var lga = entity.dqa_lga.Find(lgaId);
+            return lga !=null? lga.lga_name : "";
+        }
+
+        public static string GetStateName(int stateId)
+        {
+            var state = entity.dqa_states.Find(stateId);
+            return state != null ? state.state_name : "";
+        }
 
         public static decimal? GetDecimal(object value)
         {
