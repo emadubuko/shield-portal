@@ -23,9 +23,14 @@
                 <div class="panel-body">
                     <form id="mainform" class="validate">
                         <div class="form-horizontal">
-                            @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties().Where(x => x.CanWrite && !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                            @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties())
                             {
-                                if (field.Name == "Id") { continue; }
+                                if (field.Name == "Id" || field.Name == "Password"
+                                || field.Name == "OrganizationId" || field.Name == "CreationDate"
+                                || field.Name == "LastLoginDate"  || field.Name == "Status")
+                                {
+                                    continue;
+                                }
                                 if (field.Name == "Organization")
                                 {
                                     <div class="form-group">
@@ -123,6 +128,7 @@
                         </div>
                     </form>
 
+
                 </div>
             </div>
 
@@ -131,7 +137,7 @@
 </div>
 @section Scripts
 { 
-    @Scripts.Render("~/bundles/dataTables") 
+    @Scripts.Render("~/bundles/CreateDMPJs")
     <script>
 
     $("#dmpSubmit").click(function (e, n) {

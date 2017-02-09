@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CommonUtil.DBSessionManager;
+using NHibernate;
+using NHibernate.Engine;
+using System;
+using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 
 namespace CommonUtil.Utilities
@@ -19,6 +23,29 @@ namespace CommonUtil.Utilities
                 return PasCaseConversion(Convert.ToString(PascalWord));
             else
                 return "";
+        }
+
+        public static string RetrieveBiWeeklyDashboard(string role, string IPShortname)
+        {
+            string iframe = "";
+            string script = string.Format("SELECT [DashboardFrame] FROM [PowerBiDashboard] where rolename='{0}' and dashboardscope='{1}'", role, IPShortname);
+
+            ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
+
+            using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
+            {
+                SqlConnection s = (SqlConnection)connection;
+                SqlCommand selectCommand = new SqlCommand(script, s);
+                SqlDataReader reader = null;
+                reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    iframe = reader[0] as string;
+                }
+                reader.Dispose();
+            }
+            return iframe;
         }
     }
 }

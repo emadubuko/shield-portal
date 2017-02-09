@@ -8,7 +8,7 @@
 }
 
 <div class="main-content">
-    
+
     <div class="row">
         <div class="col-lg-1"></div>
         <div class="col-lg-10">
@@ -27,10 +27,16 @@
                 <div class="panel-body">
                     <div class="form-horizontal">
 
-                        @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                        @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties())
                         {
-                            if(field.Name== "Id") { continue; }
-                            if (field.Name == "Organization" && Model.Organization != null)
+                            if (field.Name == "Id" || field.Name == "Password"
+                                || field.Name == "OrganizationId" || field.Name == "Title"
+                                || field.Name == "CreationDate" || field.Name == "LastLoginDate"
+                                || field.Name == "Status")
+                            {
+                                continue;
+                            }
+                            else if (field.Name == "Organization" && Model.Organization != null)
                             {
                                 <div class="form-group">
                                     <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
@@ -38,10 +44,6 @@
                                         <span>@Model.Organization.Name</span>
                                     </div>
                                 </div>
-                            }
-                            else if (field.Name == "Password" || field.Name == "OrganizationId" || field.Name == "Title")
-                            {
-                                continue;
                             }
                             else
                             {
@@ -52,15 +54,14 @@
                                     </div>
                                 </div>
                             }
-
                         }
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@section Scripts
-{ 
-    @Scripts.Render("~/bundles/dataTables") 
-}
+    </div>
+    @section Scripts
+        {
+                 @Scripts.Render("~/bundles/CreateDMPJs")
+         }

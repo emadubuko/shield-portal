@@ -9,23 +9,26 @@
                 <form id="mainform" class="form-horizontal" role="form">
     @Html.AntiForgeryToken()
     <h4 style="text-align: center">Create New Profile</h4>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="OrganizationId">Organization</label>
+                        <div class="col-sm-6">
+                            <select id="OrganizationId" class="form-control" required>
+                                <option value="" disabled selected>select organization</option>
+                                @foreach (var item in Model.Organization)
+                                {
+                                    <option value="@item.Id">@item.ShortName</option>
+                                }
+                            </select>
+                            </div>
+                        </div>
+                    
     @foreach (var field in Model.FieldCollection)
     {
         if (field.Key == "Id") { continue; }
         <div class="form-group">
             <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
             <div class="col-sm-6">
-                @if ((string)field.Value == "Organizations")
-                {
-                    <select id="OrganizationId" class="form-control" required>
-                        <option value="" disabled selected>select organization</option>
-                        @foreach (var item in Model.Organization)
-                        {
-                            <option value="@item.Id">@item.ShortName</option>
-                        }
-                    </select>
-                }
-                else if (field.Key == "Role name")
+                @if (field.Key == "Role name")
                 {
                     <select id="RoleName" class="form-control" required>
                         <option value="" disabled selected>select Role</option>
@@ -68,6 +71,7 @@
 
 @section Scripts
 { 
+@Scripts.Render("~/bundles/CreateDMPJs")
     <script>
         $(document).ready(function () {
             $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {

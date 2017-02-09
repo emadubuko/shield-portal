@@ -28,6 +28,19 @@ namespace ShieldPortal.Controllers
 
         public ActionResult Index()
         {
+            string iframe = "";
+            var loggedinProfile = new Services.Utils().GetloggedInProfile();
+
+            if (loggedinProfile.RoleName == "ip")
+            {
+                iframe = Utilities.RetrieveBiWeeklyDashboard(loggedinProfile.RoleName, loggedinProfile.Organization.ShortName);
+            }
+            else
+            {
+                iframe = Utilities.RetrieveBiWeeklyDashboard("shield_team", "national");
+            }
+
+            ViewBag.Iframe = iframe;
             return View();
             //return RedirectToAction("index", "DMP");
         }
