@@ -5,28 +5,31 @@
 }
 
 <div class="main-content">
-     <h4>Bi-Monthly Visualization</h4>
+     
+    @foreach (var item in ViewData)
+    {
+        <h4>@item.Key.Replace("_", " ")</h4> 
+       <div id='@item.Key'>            
+       </div> 
+    }
 
-    <div id="iframe">
+</div>
 
-    </div>
-        
-
-    </div>
-       
 
 @section Scripts
 {
-    @Scripts.Render("~/bundles/CreateDMPJs") 
+    @Scripts.Render("~/bundles/CreateDMPJs")
 
-<script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
 
-        var raw = '@ViewBag.Iframe';
-        var html = $.parseHTML(raw); 
-        $("#iframe").html(html[0].textContent);
+            var data = @Html.Raw(Json.Encode(ViewData));
 
-
-    });
-</script>
+            $.each(data, function(index, chart){                
+                var iframe = $.parseHTML(chart.Value);
+                $("#"+chart.Key).html(iframe);
+            });
+             
+        });
+    </script>
 }

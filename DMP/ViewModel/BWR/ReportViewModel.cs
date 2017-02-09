@@ -19,6 +19,8 @@ namespace ShieldPortal.ViewModel.BWR
             DateTime.Now.Year.ToString(),
             (DateTime.Now.Year + 1).ToString()
         };
+ 
+        public IList<string> ImplementingPartner { get; set; }
     }
 
 

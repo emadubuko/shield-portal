@@ -31,18 +31,22 @@ namespace ShieldPortal.Controllers
         {
             ViewBag.Title = "Home Page";
             PerformanceDataDao pDao = new PerformanceDataDao();
-             
-            var GroupedLGAAcheivement = pDao.GenerateLGALevelAchievementPerTarget(fYear);
 
-            var positivityRates = pDao.ComputePositivityRateByFacilityType(fYear);
+            var loggedinProfile = new Services.Utils().GetloggedInProfile();
+
+            var GroupedLGAAcheivement = pDao.GenerateLGALevelAchievementPerTarget(fYear, loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
+
+            var positivityRates = pDao.ComputePositivityRateByFacilityType(fYear, loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
 
             ReportViewModel reportList = new ReportViewModel
-            {  
-                 SelectedYear = fYear.ToString(),
+            {
+                SelectedYear = fYear.ToString(),
                 LGAReports = GroupedLGAAcheivement,
                 CommunityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.CommunityBasedOrganization),
                 FacilityPositivty = positivityRates.ToList().FindAll(x => x.FacilityType == CommonUtil.Enums.OrganizationType.HealthFacilty),
+                ImplementingPartner = loggedinProfile.RoleName == "ip" ? new List<string> { loggedinProfile.Organization.ShortName } : new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList(),
             };
+            ViewBag.IndexPeriods = IndexPeriods.Keys.ToList();
 
             return View(reportList);
         }

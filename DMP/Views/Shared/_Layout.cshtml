@@ -115,11 +115,15 @@
                                     <i class="fa fa-area-chart"></i><span class="title">LGA Level DashBoard</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href=@Url.Action("BiWeeklyReportUploads", "BiWeeklyReport")>
-                                    <i class="fa fa-newspaper-o"></i><span class="title">IP Upload Reports</span>
-                                </a>
-                            </li>
+                            @if (HttpContext.Current.User.IsInRole("ip") == false)
+                            {
+                                <li>
+                                    <a href=@Url.Action("BiWeeklyReportUploads", "BiWeeklyReport")>
+                                        <i class="fa fa-newspaper-o"></i><span class="title">IP Upload Reports</span>
+                                    </a>
+                                </li>
+                            }
+                            
                         </ul>
                     </li>
 
@@ -176,7 +180,7 @@
                     <ul class="user-info pull-left">
                         <li class="profile-info dropdown">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
-                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.LoggedinProfileName</span> <span class="caret"></span>
+                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.DisplayBadge </span> <span class="caret"></span>
                             </a>
                             <!-- User action menu -->
                             <ul class="dropdown-menu">

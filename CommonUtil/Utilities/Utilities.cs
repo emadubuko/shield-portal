@@ -2,6 +2,7 @@
 using NHibernate;
 using NHibernate.Engine;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 
@@ -25,11 +26,19 @@ namespace CommonUtil.Utilities
                 return "";
         }
 
-        public static string RetrieveBiWeeklyDashboard(string role, string IPShortname)
+        public static Dictionary<string, string> RetrieveDashboard(string role, string IPShortname, List<string> dashboardtype =null)
         {
-            string iframe = "";
-            string script = string.Format("SELECT [DashboardFrame] FROM [PowerBiDashboard] where rolename='{0}' and dashboardscope='{1}'", role, IPShortname);
-
+            Dictionary<string, string> iframe = new Dictionary<string, string>();
+            string script = "";
+            if(dashboardtype != null)
+            {
+                script = string.Format("SELECT [DashboardFrame], [DashBoardType] FROM [PowerBiDashboard] where DashBoardType in '({0})' and rolename='{1}' and dashboardscope='{2}'", string.Join(",", dashboardtype), role, IPShortname);
+            }
+            else
+            {
+                script = string.Format("SELECT [DashboardFrame], [DashBoardType] FROM [PowerBiDashboard] where rolename='{0}' and dashboardscope='{1}'", role, IPShortname);
+            }
+            
             ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
 
             using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
@@ -41,11 +50,13 @@ namespace CommonUtil.Utilities
 
                 while (reader.Read())
                 {
-                    iframe = reader[0] as string;
+                    iframe.Add(reader[1] as string, reader[0] as string);
                 }
                 reader.Dispose();
             }
             return iframe;
         }
+
+
     }
 }

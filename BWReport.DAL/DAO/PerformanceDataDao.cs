@@ -22,14 +22,17 @@ namespace BWReport.DAL.DAO
 
         }
 
-        public IList<LGALevelAchievementPerTarget> GenerateLGALevelAchievementPerTarget(int  fYear)
+        public IList<LGALevelAchievementPerTarget> GenerateLGALevelAchievementPerTarget(int fYear, int orgId = 0)
         {
-            
             ICriteria criteria = BuildSession()
                 .CreateCriteria<PerformanceData>("pd").Add(Restrictions.Eq("FY", fYear))
-                .CreateCriteria("HealthFacility")
+                .CreateCriteria("HealthFacility", "hf")
                 .CreateCriteria("LGA", "l", NHibernate.SqlCommand.JoinType.InnerJoin);
 
+            if (orgId != 0)
+            {
+                criteria.Add(Restrictions.Eq("hf.Organization.Id", orgId));
+            }
 
             criteria.SetProjection(
                 Projections.Alias(Projections.GroupProperty("l.lga_name"), "lga_name"),
@@ -57,13 +60,17 @@ namespace BWReport.DAL.DAO
             return lgaMeasures;
         }
 
-        public IList<Facility_Community_Postivity> ComputePositivityRateByFacilityType(int fYear)
+        public IList<Facility_Community_Postivity> ComputePositivityRateByFacilityType(int fYear, int orgId = 0)
         {
             ICriteria criteria = BuildSession()
                 .CreateCriteria<PerformanceData>("pd").Add(Restrictions.Eq("FY", fYear))
-                .CreateCriteria("HealthFacility","hf")
+                .CreateCriteria("HealthFacility", "hf")
                 .CreateCriteria("LGA", "l", NHibernate.SqlCommand.JoinType.InnerJoin);
 
+            if (orgId != 0)
+            {
+                criteria.Add(Restrictions.Eq("hf.Organization.Id", orgId));
+            }
 
             criteria.SetProjection(
                 Projections.Alias(Projections.GroupProperty("l.lga_name"), "lga_name"),
@@ -84,7 +91,7 @@ namespace BWReport.DAL.DAO
                 .CreateCriteria<PerformanceData>("pd").Add(Restrictions.Eq("FY", fYear))
                 .CreateCriteria("HealthFacility", "hf")
                 .CreateCriteria("Organization", "org", NHibernate.SqlCommand.JoinType.InnerJoin);
-            
+
             criteria.SetProjection(
                 Projections.Alias(Projections.GroupProperty("org.Name"), "IPName"),
                  Projections.Alias(Projections.GroupProperty("pd.ReportPeriod"), "ReportPeriod")
@@ -110,7 +117,7 @@ namespace BWReport.DAL.DAO
             dt.Columns.Add(new DataColumn("Tx_NEW", typeof(int)));
             dt.Columns.Add(new DataColumn("HealthFacilityId", typeof(int)));
             dt.Columns.Add(new DataColumn("ReportId", typeof(int)));
-            
+
 
             foreach (var tx in TargetMeasures)
             {
@@ -125,7 +132,7 @@ namespace BWReport.DAL.DAO
                 row["Tx_NEW"] = GetDBValue(tx.Tx_NEW);
                 row["HealthFacilityId"] = GetDBValue(tx.HealthFacility.Id);
                 row["ReportId"] = GetDBValue(tx.ReportUpload.Id);
-                
+
                 dt.Rows.Add(row);
             }
             DirectDBPost(dt, tableName);

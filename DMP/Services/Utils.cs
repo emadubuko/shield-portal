@@ -73,6 +73,37 @@ namespace ShieldPortal.Services
             return profile;
         }
 
+
+        public static string DisplayBadge
+        {
+            get
+            {
+                Profile profile = null;
+                if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
+                {
+                    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
+                }
+                else
+                {
+                    ProfileDAO dao = new ProfileDAO();
+                    var user = HttpContext.Current.User;
+                    if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
+                    {
+                        profile = dao.GetProfileByUsername(user.Identity.Name);
+                    }
+                }
+                if (profile != null && profile.RoleName == "ip")
+                {
+                    return string.Format("{0} - Implementing partner ({1})", profile.FullName, profile.Organization.ShortName);
+                }
+                else
+                {
+                    return string.Format("{0}", profile.FullName);
+                }
+                 
+            }
+        }
+
         public static string LoggedinProfileName
         {
             get
