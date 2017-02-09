@@ -712,10 +712,8 @@
     <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.bootstrap.css" />
     <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.bootstrap.min.css" />
     <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.dataTables.css" />
-    <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.dataTables.min.css" />
     <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.foundation.css" />
     <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.foundation.min.css" />
-    <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.jqueryui.css" />
     <Content Include="plugins\datatables\extensions\RowReorder\css\rowReorder.jqueryui.min.css" />
     <Content Include="plugins\datatables\extensions\RowReorder\examples\index.html" />
     <Content Include="plugins\datatables\extensions\RowReorder\examples\initialisation\defaults.html" />
@@ -727,13 +725,6 @@
     <Content Include="plugins\datatables\extensions\RowReorder\examples\initialisation\selector.html" />
     <Content Include="plugins\datatables\extensions\RowReorder\examples\initialisation\simple.html" />
     <Content Include="plugins\datatables\extensions\RowReorder\examples\styling\bootstrap.html" />
-    <Content Include="plugins\datatables\extensions\RowReorder\examples\styling\foundation.html" />
-    <Content Include="plugins\datatables\extensions\RowReorder\examples\styling\index.html" />
-    <Content Include="plugins\datatables\extensions\RowReorder\examples\styling\jqueryui.html" />
-    <Content Include="plugins\datatables\extensions\RowReorder\examples\styling\reorderClass.html" />
-    <Content Include="plugins\datatables\extensions\RowReorder\examples\styling\snapX.html" />
-    <Content Include="plugins\datatables\extensions\RowReorder\js\dataTables.rowReorder.js" />
-    <Content Include="plugins\datatables\extensions\RowReorder\js\dataTables.rowReorder.min.js" />
     <Content Include="plugins\datatables\extensions\RowReorder\License.txt" />
     <Content Include="plugins\datatables\extensions\Scroller\css\dataTables.scroller.css" />
     <Content Include="plugins\datatables\extensions\Scroller\css\dataTables.scroller.min.css" />
@@ -799,7 +790,6 @@
     <Content Include="plugins\datatables\extensions\Select\examples\styling\jqueryui.html" />
     <Content Include="plugins\datatables\extensions\Select\js\dataTables.select.js" />
     <Content Include="plugins\datatables\extensions\Select\js\dataTables.select.min.js" />
-    <Content Include="plugins\datatables\extensions\Select\License.txt" />
     <Content Include="plugins\datatables\extensions\TableTools\css\dataTables.tableTools.css" />
     <Content Include="plugins\datatables\extensions\TableTools\css\dataTables.tableTools.min.css" />
     <Content Include="plugins\datatables\extensions\TableTools\examples\ajax.html" />
@@ -1057,6 +1047,7 @@
     <Folder Include="DMPFileUploads\" />
     <Folder Include="Downloads\" />
     <Folder Include="Models\Data\" />
+    <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\" />
     <Folder Include="Report\Template\" />
     <Folder Include="Report\Uploads\" />
