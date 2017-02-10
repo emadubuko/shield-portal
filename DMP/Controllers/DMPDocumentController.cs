@@ -298,6 +298,8 @@ namespace ShieldPortal.Controllers
 
                 projDAO.ExplicitUpdate(previousDoc.TheDMP.TheProject);
 
+               // dmpDAO.Update(previousDoc.TheDMP);
+
                 ProjDetails = previousDoc.TheDMP.TheProject;
             }
 

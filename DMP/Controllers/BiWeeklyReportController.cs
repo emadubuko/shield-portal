@@ -83,8 +83,9 @@ namespace ShieldPortal.Controllers
         {
             ViewBag.IndexPeriods = IndexPeriods.Keys.ToList();
             PerformanceDataDao pDao = new PerformanceDataDao();
-                       
-            var reports = pDao.GenerateIPUploadReports(fYear).GroupBy(x => x.IPName);
+            var loggedinProfile = new Services.Utils().GetloggedInProfile();
+
+            var reports = pDao.GenerateIPUploadReports(fYear, loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0).GroupBy(x => x.IPName);
 
             List<BiWeeklyReportUploadViewModel> vMReport = new List<BiWeeklyReportUploadViewModel>();
             var vm = new BiWeeklyReportUploadViewModel();
@@ -107,7 +108,8 @@ namespace ShieldPortal.Controllers
             }
 
             vm.IndexPeriods = IndexPeriods;
-            vm.ImplementingPartner = new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
+            
+            vm.ImplementingPartner = loggedinProfile.RoleName == "ip" ? new List<string> { loggedinProfile.Organization.ShortName } :  new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
             vm.SelectedYear = fYear.ToString();
             return View(vm);
         }

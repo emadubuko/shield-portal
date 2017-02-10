@@ -85,12 +85,17 @@ namespace BWReport.DAL.DAO
         }
 
 
-        public IList<IPUploadReport> GenerateIPUploadReports(int fYear)
+        public IList<IPUploadReport> GenerateIPUploadReports(int fYear, int OrgId)
         {
             ICriteria criteria = BuildSession()
                 .CreateCriteria<PerformanceData>("pd").Add(Restrictions.Eq("FY", fYear))
                 .CreateCriteria("HealthFacility", "hf")
                 .CreateCriteria("Organization", "org", NHibernate.SqlCommand.JoinType.InnerJoin);
+
+            if(OrgId != 0)
+            {
+                criteria.Add(Restrictions.Eq("hf.Organization.Id", OrgId));
+            }
 
             criteria.SetProjection(
                 Projections.Alias(Projections.GroupProperty("org.Name"), "IPName"),

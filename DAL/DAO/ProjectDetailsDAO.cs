@@ -4,11 +4,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Engine;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.DAO
 {
@@ -30,19 +26,36 @@ namespace DAL.DAO
             if (obj == null)
                 return obj;
 
-            string orgid = obj.Organization ==null ? "NULL": obj.Organization.Id.ToString();
-            string leadMgr = obj.LeadActivityManager == null ? "NULL" : obj.LeadActivityManager.Id.ToString();
+            object orgid = DBNull.Value;
+            if (obj.Organization != null)
+            {
+                orgid = obj.Organization.Id;
+            }
 
-            string updatescript = string.Format("Update [dmp_projectdetails] set ProjectTitle='{0}', GrantReferenceNumber='{1}', ProjectStartDate='{2}', ProjectEndDate='{3}', LeadActivityManagerId='{4}', OrganizationId='{5}' where id='{6}' ",
-                                                                       obj.ProjectTitle, obj.GrantReferenceNumber,obj.ProjectStartDate, obj.ProjectEndDate, leadMgr, orgid, obj.Id);
-            
+            object leadMgr = DBNull.Value;
+            if (obj.LeadActivityManager != null)
+            {
+                leadMgr = obj.LeadActivityManager.Id;
+            }
+             
+            string updatescript = string.Format("Update [dmp_projectdetails] set ProjectTitle=@ProjectTitle, GrantReferenceNumber=@GrantReferenceNumber, ProjectStartDate=@ProjectStartDate, ProjectEndDate=@ProjectEndDate, LeadActivityManagerId=@LeadActivityManagerId, OrganizationId=@OrganizationId where id=@id ");
+           
             ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
 
             using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
             {
                 SqlConnection s = (SqlConnection)connection;
-                SqlCommand selectCommand = new SqlCommand(updatescript, s);                
-                int i = selectCommand.ExecuteNonQuery();                
+                SqlCommand command = new SqlCommand(updatescript, s);
+
+                command.Parameters.AddWithValue("ProjectTitle", GetDBValue(obj.ProjectTitle));
+                command.Parameters.AddWithValue("GrantReferenceNumber", GetDBValue(obj.GrantReferenceNumber));
+                command.Parameters.AddWithValue("ProjectStartDate", GetDBValue(obj.ProjectStartDate));
+                command.Parameters.AddWithValue("ProjectEndDate", (obj.ProjectEndDate));
+                command.Parameters.AddWithValue("LeadActivityManagerId", leadMgr);
+                command.Parameters.AddWithValue("OrganizationId", orgid);
+                command.Parameters.AddWithValue("id", obj.Id);
+
+                int i = command.ExecuteNonQuery();                
             }
             return obj;            
         }
