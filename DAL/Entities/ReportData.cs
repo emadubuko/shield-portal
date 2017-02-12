@@ -12,6 +12,7 @@ namespace DAL.Entities
         public virtual List<DateTime> TimelinesForReporting { get; set; }
         public virtual string FrequencyOfReporting { get; set; }
         public virtual int DurationOfReporting { get; set; }
+        public virtual string ReportingLevel { get; set; }
     }
 }
 

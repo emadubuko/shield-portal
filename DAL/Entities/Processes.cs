@@ -6,6 +6,9 @@ namespace DAL.Entities
     {
         public virtual string ImplementingPartnerMEProcess { get; set; }
         public virtual string SiteSupport { get; set; }
+
+        public virtual List<string> ReportLevel { get; set; }
+
         //public virtual string Audits { get; set; }
         //public virtual string DataCollationAndAnalysis { get; set; }
 
@@ -20,6 +23,7 @@ namespace DAL.Entities
     {
         public int Id { get; set; }
         public string DataType { get; set; }
+        public string ReportingLevel { get; set; }
         public string CollationFrequency { get; set; }
 
     }

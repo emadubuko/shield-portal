@@ -36,54 +36,60 @@ $("#addReportbtn").click(function (e) {
           if ($(this)[0].id == "ReportsType") {
             report["ReportsType"] = $(this)[0].value;
             $(this).val("");
-        }
+          }
+
+          else if ($(this)[0].id == "rptReportingLevel") {
+              report["ReportingLevel"] = $(this)[0].value;
+              $(this).val("");
+          }
+
           else if ($(this)[0].id == "ReportedTo") {
-            report["ReportedTo"] = $(this)[0].value;
-            $(this).val("");
-        }
-        else if ($(this)[0].id == "ProgramArea") {
-            report["ProgramArea"] =  $(this)[0].value;
-            $(this).val("");
-        }
-        else if ($(this)[0].id == "TimelinesForReporting") {
-            if ($(this)[0].value == "") {
-                alert("please select timelines")
-                return;
-            }
-            dateStringArray = $(this)[0].value.split(',');            
-            report["TimelinesForReporting"]  = dateStringArray;
-            $(this).val("");
-            $('#TimelinesForReporting').multiDatesPicker('resetDates', 'picked'); 
-        }
-        else if($(this)[0].id == "FrequencyOfReporting"){
-            report["FrequencyOfReporting"] =  $(this)[0].value;
-            $(this).val("");
-        }
-        else if ($(this)[0].id == "rptDurationdrpdwn") {
-            var durationDrpDwn = $(this)[0].value;
-            var inputValue = $("#rptDurationField")[0].value;
-            var duration = inputValue;
-            switch (durationDrpDwn) {
-                case "Weeks":
-                    duration = inputValue * 7; break;
-                case "Months":
-                    duration = inputValue * 30; break;
-                case "Years":
-                    duration = inputValue * 365; break; 
-            }
-            if (duration == "") {
-                alert("please specify duration");
-                return;
-            }
-            report["DurationOfReporting"] = duration;
-            $(this).val("");
-        }
-        else if($(this)[0].id == "justdate"){
-            report["justdate"] =  $(this)[0].value;
-            $(this).val("");
-        }
+              report["ReportedTo"] = $(this)[0].value;
+              $(this).val("");
+          }
+          else if ($(this)[0].id == "ProgramArea") {
+              report["ProgramArea"] = $(this)[0].value;
+              $(this).val("");
+          }
+          else if ($(this)[0].id == "TimelinesForReporting") {
+              if ($(this)[0].value == "") {
+                  alert("please select timelines")
+                  return;
+              }
+              dateStringArray = $(this)[0].value.split(',');
+              report["TimelinesForReporting"] = dateStringArray;
+              $(this).val("");
+              $('#TimelinesForReporting').multiDatesPicker('resetDates', 'picked');
+          }
+          else if ($(this)[0].id == "FrequencyOfReporting") {
+              report["FrequencyOfReporting"] = $(this)[0].value;
+              $(this).val("");
+          }
+          else if ($(this)[0].id == "rptDurationdrpdwn") {
+              var durationDrpDwn = $(this)[0].value;
+              var inputValue = $("#rptDurationField")[0].value;
+              var duration = inputValue;
+              switch (durationDrpDwn) {
+                  case "Weeks":
+                      duration = inputValue * 7; break;
+                  case "Months":
+                      duration = inputValue * 30; break;
+                  case "Years":
+                      duration = inputValue * 365; break;
+              }
+              if (duration == "") {
+                  alert("please specify duration");
+                  return;
+              }
+              report["DurationOfReporting"] = duration;
+              $(this).val("");
+          }
+          else if ($(this)[0].id == "justdate") {
+              report["justdate"] = $(this)[0].value;
+              $(this).val("");
+          }
     });
-    if (report.TimelinesForReporting != null && report.DurationOfReporting !=null) {
+    if (report.TimelinesForReporting != null && report.DurationOfReporting != null && report.ReportingLevel !=null) {
         reportArray.push(report);
         CreateReportTable(report);
     }
@@ -108,6 +114,7 @@ function CreateReportTable(report){
 
     var reportId = "reportx" + report.Id;
     var html = '<tr id=' + reportId + '>';
+    html += '<td>' + report.ReportingLevel + '</td>';
     html += '<td>' + report.ReportsType + '</td>';
     html += '<td>' + report.ReportedTo + '</td>';
     html += '<td>' + report.ProgramArea + '</td>';

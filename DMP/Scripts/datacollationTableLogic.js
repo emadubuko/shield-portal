@@ -14,6 +14,10 @@ $("#adddatacollationbtn").click(function (e) {
     datacollation["Id"] = datacollationArray.length + 1;
     var dateStringArray = [];
     
+    var rl = $("#dtReportingLevel")[0].value;
+    datacollation["ReportingLevel"] = rl;
+    $("#dtReportingLevel").val("");
+
     var cf = $("#CollationFrequency")[0].value;
     datacollation["CollationFrequency"] = cf;
     $("#CollationFrequency").val("");
@@ -22,7 +26,7 @@ $("#adddatacollationbtn").click(function (e) {
     datacollation["DataType"] =dtype;
     $("#DataType").val("");
      
-    if (dtype != "" && cf != "") {
+    if (dtype != "" && cf != "" && rl !="") {
         datacollationArray.push(datacollation);
         CreatedatacollationTable(datacollation);
     }    
@@ -31,7 +35,8 @@ $("#adddatacollationbtn").click(function (e) {
 function CreatedatacollationTable(datacollation) {
    
     var datacollationId = "datacollationx" + datacollation.Id;
-    var html = '<tr id=' + datacollationId + '>'; 
+    var html = '<tr id=' + datacollationId + '>';
+    html += '<td>' + datacollation.ReportingLevel + '</td>';
     html += '<td>' + datacollation.DataType + '</td>'; 
     html += '<td>' + datacollation.CollationFrequency + '</td>';     
     if (editMode) {

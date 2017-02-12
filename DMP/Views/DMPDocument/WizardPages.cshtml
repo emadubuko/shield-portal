@@ -27,6 +27,10 @@
         border-right-style: none;
         border-top-width: thin;
     }
+    .reportingleveldrpdn{
+        font-weight:bold;
+    }
+     
     </style>
 
     <script src="~/Scripts/Ultilities.js"></script>
@@ -55,6 +59,9 @@
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var editMode = true;
 
+        let reportingLevelArrayFromServer = @Html.Raw(Json.Encode(Model.reportingLevel));
+        let reportingLevelArray = [];
+
         var rolesArray =  @Html.Raw(Json.Encode(Model.roles));
         var responsibilityArray =  @Html.Raw(Json.Encode(Model.responsibilities));
         var trainingArray =  @Html.Raw(Json.Encode(Model.Trainings));
@@ -62,14 +69,16 @@
         var datacollationArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollation));
         var datacollationArray = [];
 
+        var DataCollectionArrayFromServer = @Html.Raw(Json.Encode(Model.dataCollection));
+        var datacollectionArray = [];
+
         var DataVerificationArrayFromServer = @Html.Raw(Json.Encode(Model.dataVerification));
         var DataVerificationArray =[];
        var ReportArrayFromServer =  @Html.Raw(Json.Encode(Model.reportDataList));
         var reportArray = [];
 
         function DeleteRow(row) {
-
-            if(row.id.indexOf("report") !== -1){
+              if(row.id.indexOf("report") !== -1){
             var rowid = row.id.split('x')[1];
                 $(row).remove();
                 reportArray.splice(rowid-1, 1);
@@ -355,7 +364,7 @@
                                             <div class="panel-body">
                                                 <div class="form-horizontal">
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="DataFlowChart">Data Flow Chart</label>
+                                                        <label class="col-sm-3 control-label" for="DataFlowChart">Data flow chart</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe the levels of data flow using a Flow Chart diagram  e.g Facility--LGA--State--National"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
                                                             <input type="file" onchange="imageSelected(this)" accept="image/*" id="DataFlowChart" class="form-control">
@@ -484,29 +493,57 @@
                                                 <h4 class="panel-title">Process</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <div class="form-horizontal">
+                                                <div class="form-horizontal">                                                   
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="ImplementingPartnerMEProcess">Implementing partner M & E process</label>
-                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe your monitoring & evaluation processes including site visits & trainings, timelines"><i class="icon-help"></i></button>
-                                                        <div class="col-sm-7">
-                                                            <textarea type="text" rows="3" id="ImplementingPartnerMEProcess" placeholder="Describe your monitoring & evaluation processes including site visits & trainings, timelines" class="form-control">@(Model.processes != null ? Model.processes.ImplementingPartnerMEProcess : "")</textarea>
+                                                        <label class="col-sm-3 control-label">Reporting level</label>
+                                                        <button type="button" class="btn btn-black btn-outline btn-sm" title="Specify all the reporting levels"><i class="icon-help"></i></button>
+                                                        <div class="col-sm-4">
+                                                            <input type="text" id="reportingLeveltxt" placeholder="Specify all the reporting levels" class="form-control">
                                                         </div>
+                                                        <div class="col-sm-3">
+                                                            <a id="reportingLevelbtn" class="btn btn-sm btn-black btn-outline"><i class="icon-list-add"></i>Add to List</a>
+                                                        </div>  
                                                     </div>
 
-                                                    <div style="display:flex; flex-direction:column; justify-content:center;width: 80%; margin-left: 10%;">
+                                                    <div class="form-group"> 
+                                                        <div class="col-sm-offset-3 col-sm-4">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                        <tr style="font-size: 10px;color: #FFF;background-color: steelblue;border-color: steelblue;">
+                                                                            <th>Reporting Levels</th>
+                                                                            <th></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="reportingLevelTable"> </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>                                                        
+                                                    </div>
+                                                    <hr />
+
+                                                    <div style="display:flex; flex-direction:column; justify-content:center;width: 80%; margin-left: 3%;">
                                                         <h4 style="display:flex; justify-content:center">Data Collation</h4>
                                                         <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="DataType">Type of data</label>
+                                                            <label class="col-sm-3 control-label">Reporting level</label>
+                                                            <div class="col-sm-7">
+                                                                <select id="dtReportingLevel" class="form-control reportingleveldrpdn">
+                                                                    <option value="" disabled selected>select applicable level</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label" for="DataType">Type of data</label>
                                                             <button type="button" class="btn btn-black btn-outline btn-sm" title="specify data type"><i class="icon-help"></i></button>
-                                                            <div class="col-sm-6">
+                                                            <div class="col-sm-7">
                                                                 <input type="text" placeholder="specify data type" id="DataType" value="" class="form-control">
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-sm-4 control-label" for="CollationFrequency">Frequency of data validation</label>
-                                                            <div class="col-sm-6">
+                                                            <label class="col-sm-3 control-label" for="CollationFrequency">Frequency of data collection</label>
+                                                            <div class="col-sm-7">
                                                                 <select id="CollationFrequency" class="form-control">
-                                                                    <option value="" disabled selected>How frequent will data validation be carried out?</option>
+                                                                    <option value="" disabled selected>How frequent will data collation be carried out?</option>
                                                                     @foreach (var item in Model.dataFrequency)
                                                                     {
                                                                         <option value="@item">@item</option>
@@ -515,20 +552,23 @@
                                                             </div>
                                                             <a class="btn btn-black btn-sm btn-outline" id="adddatacollationbtn">Add to List</a>
                                                         </div>
-                                                        
-                                                        <div class="table-responsive">
-                                                            <table class="table table-striped">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Types</th>
-                                                                        <th>Frequency</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody id="datacollationdataTable"> </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div> 
+                                                        <div class="col-sm-offset-3 col-sm-8">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                        <tr style="color: #FFF;background-color: steelblue;border-color: steelblue; font-size: 10px;">
+                                                                            <th>Level</th>
+                                                                            <th>Types</th>                                                                            
+                                                                            <th>Frequency</th>
+                                                                            <th></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="datacollationdataTable"> </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>                                                        
+                                                    </div>
+                                                    <hr />
 
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label" for="SiteSupport">Site support/Visit</label>
@@ -549,10 +589,10 @@
                                                                 }
                                                             </select>
                                                         </div>
-                                                    </div> 
-                                                    
+                                                    </div>
+
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label" for="DataGarnering">Data Garnering</label>
+                                                        <label class="col-sm-3 control-label" for="DataGarnering">Data garnering</label>
                                                         <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe your data processing, transformation etc"><i class="icon-help"></i></button>
                                                         <div class="col-sm-7">
                                                             <textarea type="text" rows="3" id="DataGarnering" placeholder="Describe your data processing, transformation etc" class="form-control">@(Model.processes != null ? Model.processes.DataGarnering : "")</textarea>
@@ -615,11 +655,11 @@
                                                                 {
                                                                     if (Model.Environment != null && !string.IsNullOrEmpty(Model.Environment.StatesCoveredByImplementingPartners) && Model.Environment.StatesCoveredByImplementingPartners.Contains(item))
                                                                     {
-                                                                        <option value="@item" selected>@item</option>
+                                                                <option value="@item" selected>@item</option>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <option value="@item">@item</option>
+                                                                <option value="@item">@item</option>
                                                                     }
                                                                 }
                                                             </select>
@@ -693,66 +733,66 @@
                                         <h4 class="panel-title">Data</h4>
                                     </div>
                                     <div class="panel-body">
-                                        <h4 style="display:flex; justify-content:center">Qualitative Data</h4>
-                                        <hr />
-                                        <div class="form-horizontal">
+                                        <div class="form-horizontal" id="datacollectionForm">
                                             <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="DataCollectionProcessess">Data Collection Processes</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe how qualitative data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    <textarea id="QualitativeDataCollectionProcessess" placeholder="Describe how qualitative data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)" class="form-control" rows="3">@(Model.dataCollection != null ? Model.dataCollection.QualitativeDataCollectionProcessess : "")</textarea>
+                                                <label class="col-sm-3 control-label">Reporting level</label>
+                                                <div class="col-sm-8">
+                                                    <select id="dcReportingLevel" class="form-control reportingleveldrpdn">
+                                                        <option value="" disabled selected>select applicable level</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="QualitativeDataSourceCollectionAndReportingTools" class="col-sm-4 control-label">Data source, collection and reporting tools</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What are your data source  and the tools used for data collection and reporting? "><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    <select id="QualitativeDataSourceCollectionAndReportingTools" class="select2 form-control" multiple data-placeholder="What are your data source  and the tools used for data collection and reporting?">
-                                                        @foreach (var item in Model.dataSourcesTypes)
+                                                <label class="col-sm-3 control-label" for="DataType">Data Type</label>
+                                                <div class="col-sm-8">
+                                                    <select id="DataType" class="form-control">
+                                                        <option value="" disabled selected>What types of data are collected ?</option>
+                                                        @foreach (var item in Model.reportDataType)
                                                         {
-                                                            if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.QualitativeDataSourceCollectionAndReportingTools) && Model.dataCollection.QualitativeDataSourceCollectionAndReportingTools.Contains(item))
-                                                            {
-                                                                <option value="@item" selected>@item</option>
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
                                             </div>
-                                            <hr />
-                                            <h4 style="display:flex; justify-content:center"> Quantitative Data</h4>
                                             <div class="form-group">
-                                                <label class="col-sm-4 control-label" for="QuantitativeDataCollectionProcessess">Data Collection Processes</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="Describe how quantitative data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)"><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    <textarea id="QuantitativeDataCollectionProcessess" placeholder="Describe how quantitative data is collected, processed and reported including reporting periods, timelines for reporting (Not more than 500 words)" class="form-control" rows="3">@(Model.dataCollection != null ? Model.dataCollection.QuantitativeDataCollectionProcessess : "")</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="QuantitativeDataSourceCollectionAndReportingTools" class="col-sm-4 control-label">Data source, collection and reporting tools</label>
-                                                <button type="button" class="btn btn-black btn-outline btn-sm" title="What are your data source  and the tools used for data collection and reporting? "><i class="icon-help"></i></button>
-                                                <div class="col-sm-7">
-                                                    <select id="QuantitativeDataSourceCollectionAndReportingTools" class="select2 form-control" multiple data-placeholder="What are your data source  and the tools used for data collection and reporting?">
+                                                <label class="col-sm-3 control-label" for="DataCollectionAndReportingTools">Data collection and reporting tools</label>
+                                                <div class="col-sm-8">
+                                                    <select id="DataCollectionAndReportingTools" class="select2 form-control" multiple data-placeholder="What are the sources of your of data?">
                                                         @foreach (var item in Model.dataSourcesTypes)
                                                         {
-                                                            if (Model.dataCollection != null && !string.IsNullOrEmpty(Model.dataCollection.QuantitativeDataSourceCollectionAndReportingTools) && Model.dataCollection.QuantitativeDataSourceCollectionAndReportingTools.Contains(item))
-                                                            {
-                                                                <option value="@item" selected>@item</option>
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@item">@item</option>
-                                                            }
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                 </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="DataCollectionProcess">Data collection process</label>
+                                                <div class="col-sm-8">
+                                                     <textarea id="DataCollectionProcess" rows="3"class="form-control"  placeholder="Describe the data collection process"></textarea>
+                                                </div>
+                                            </div>   
+                                            <div class="col-sm-offset-9">
+                                                <a class="btn btn-black btn-sm btn-outline" id="adddatacollectionbtn">Add to list</a>
                                             </div>
                                         </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
+                                                        <th>Level</th>
+                                                        <th>Data Type</th>
+                                                        <th>Reporting Tool</th>
+                                                        <th>Process</th>                                                                                                                
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="datacollectiondataTable"> </tbody>
+                                            </table>
+                                        </div>
+                                    </div>                                        
                                     </div>
-                                </div>
+                               
 
                                 <div class="panel panel-warning" id="ReportData">
                                     <div class="panel-heading clearfix">
@@ -760,6 +800,14 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal" id="reportdatadiv">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Reporting level</label>
+                                                <div class="col-sm-8">
+                                                    <select id="rptReportingLevel" class="form-control reportingleveldrpdn">
+                                                        <option value="" disabled selected>select applicable level</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="ReportsType">Reports type</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of data are collected  & reported on? "><i class="icon-help"></i></button>
@@ -845,7 +893,8 @@
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
-                                                    <tr>
+                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
+                                                        <th>Level</th>
                                                         <th>Reports Type</th>
                                                         <th>Reported To</th>
                                                         <th>Program Area</th>
@@ -876,6 +925,15 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="form-horizontal" id="dataVerificationForm">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Reporting level</label>
+                                                <div class="col-sm-6">
+                                                    <select id="dvReportingLevel" class="form-control reportingleveldrpdn">
+                                                        <option value="" disabled selected>select applicable level</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
                                                 <div class="col-sm-6">
@@ -925,7 +983,7 @@
                                                     <select id="dvDurationdrpdwn" class="form-control">
                                                         <option value="" disabled selected>Select</option>
                                                         @foreach (var item in Model.Duration)
-            {
+                                                        {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
@@ -941,7 +999,8 @@
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
-                                                    <tr>
+                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
+                                                        <th>Level</th>
                                                         <th>Verification Approach</th>
                                                         <th>Types</th>
                                                         <th>Frequency</th>
@@ -987,11 +1046,11 @@
                                                         {
                                                             if (Model.digital != null && !string.IsNullOrEmpty(Model.digital.DataStorageFormat) && Model.digital.DataStorageFormat.Contains(item))
                                                             {
-                                                                <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1005,7 +1064,7 @@
                                                         <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.storageLoation)
                                                         {
-                                                            <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                     <input id="Storagelocation" value="@(Model.digital!=null ? Model.digital.StorageLocation : "")" placeholder="Do you have a specified location for storing data collected?" class="modifiedselect" onfocus="this.select()" type="text">
@@ -1022,16 +1081,16 @@
                                                             {
                                                                 if (@item == Model.digital.Backup)
                                                                 {
-                                                                    <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1043,11 +1102,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <textarea type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control">@Model.digital.DataSecurity</textarea>
+                                                    <textarea type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control">@Model.digital.DataSecurity</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="What security measures are in-place to protect data." id="Datasecurity" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1057,11 +1116,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <textarea type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control">@Model.digital.PatientConfidentialityPolicies</textarea>
+                                                    <textarea type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control">@Model.digital.PatientConfidentialityPolicies</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="What guidelines or policies are in-place for patient confidentiality protection" id="Patientconfidentialitypolicies" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1071,11 +1130,11 @@
                                                 <div class="col-sm-8">
                                                     @if (Model.digital != null)
                                                     {
-                                                        <textarea type="text" value="@Model.digital.StorageOfPreExistingData" id="StorageOfPreExistingData" class="form-control"></textarea>
+                                                    <textarea type="text" value="@Model.digital.StorageOfPreExistingData" id="StorageOfPreExistingData" class="form-control"></textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" id="StorageOfPreExistingData" class="form-control"></textarea>
+                                                    <textarea type="text" id="StorageOfPreExistingData" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1099,11 +1158,11 @@
                                                         {
                                                             if (Model.nonDigital != null && !string.IsNullOrEmpty(Model.nonDigital.NonDigitalDataTypes) && Model.nonDigital.NonDigitalDataTypes.Contains(item))
                                                             {
-                                                                <option value="@item" selected>@item</option>
+                                                        <option value="@item" selected>@item</option>
                                                             }
                                                             else
                                                             {
-                                                                <option value="@item">@item</option>
+                                                        <option value="@item">@item</option>
                                                             }
                                                         }
                                                     </select>
@@ -1115,11 +1174,11 @@
                                                 <div class="col-sm-6">
                                                     @if (Model.nonDigital != null)
                                                     {
-                                                        <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" value="@Model.nonDigital.SafeguardsAndRequirements" id="NonDigitalStorageLocation" class="form-control">
+                                                    <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" value="@Model.nonDigital.SafeguardsAndRequirements" id="NonDigitalStorageLocation" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" id="NonDigitalStorageLocation" class="form-control">
+                                                    <input type="text" placeholder="Do you have a specified location for storing non-digital data collected? Describe" id="NonDigitalStorageLocation" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -1129,11 +1188,11 @@
                                                 <div class="col-sm-6">
                                                     @if (Model.nonDigital != null)
                                                     {
-                                                        <input type="text" placeholder="Safeguards and Requirements" value="@Model.nonDigital.SafeguardsAndRequirements" id="SafeguardsAndRequirements" class="form-control">
+                                                    <input type="text" placeholder="Safeguards and Requirements" value="@Model.nonDigital.SafeguardsAndRequirements" id="SafeguardsAndRequirements" class="form-control">
                                                     }
                                                     else
                                                     {
-                                                        <input type="text" placeholder="Safeguards and Requirements" id="SafeguardsAndRequirements" class="form-control">
+                                                    <input type="text" placeholder="Safeguards and Requirements" id="SafeguardsAndRequirements" class="form-control">
                                                     }
                                                 </div>
                                             </div>
@@ -1154,11 +1213,11 @@
                                                 <div class="col-sm-7">
                                                     @if (Model.dataSharing != null)
                                                     {
-                                                        <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control">@Model.dataSharing.DataAccess</textarea>
+                                                    <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control">@Model.dataSharing.DataAccess</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="Indicate whom you will share the data with, and under what conditions include formal agreement" id="DataAccess" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1169,11 +1228,11 @@
                                                 <div class="col-sm-7">
                                                     @if (Model.dataSharing != null)
                                                     {
-                                                        <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control">@Model.dataSharing.DataSharingPolicies</textarea>
+                                                    <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control">@Model.dataSharing.DataSharingPolicies</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="What data sharing policies are in-place? Describe" id="DataSharingPolicies" class="form-control"></textarea>
                                                     }
 
                                                 </div>
@@ -1184,11 +1243,11 @@
                                                 <div class="col-sm-7">
                                                     @if (Model.dataSharing != null)
                                                     {
-                                                        <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control">@Model.dataSharing.DataTransmissionPolicies</textarea>
+                                                    <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control">@Model.dataSharing.DataTransmissionPolicies</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="Describe policies for data transimission" id="DataTransmissionPolicies" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1198,11 +1257,11 @@
                                                 <div class="col-sm-7">
                                                     @if (Model.dataSharing != null)
                                                     {
-                                                        <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control">@Model.dataSharing.SharingPlatForms</textarea>
+                                                    <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control">@Model.dataSharing.SharingPlatForms</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="How will data be shared during the active stage of the project?" id="SharingPlatForms" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1222,11 +1281,11 @@
                                                 <div class="col-sm-6">
                                                     @if (Model.dataDocMgt != null)
                                                     {
-                                                        <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control">@Model.dataDocMgt.StoredDocumentationAndDataDescriptors</textarea>
+                                                    <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control">@Model.dataDocMgt.StoredDocumentationAndDataDescriptors</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control"></textarea>
+                                                    <textarea type="text" rows="4" placeholder="Do you have any documentation that will accompany any data to help secondary users understand and reuse it? Describe" id="StoredDocumentationAndDataDescriptors" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1236,11 +1295,11 @@
                                                 <div class="col-sm-6">
                                                     @if (Model.dataDocMgt != null)
                                                     {
-                                                        <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control">@Model.dataDocMgt.NamingStructureAndFilingStructures</textarea>
+                                                    <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control">@Model.dataDocMgt.NamingStructureAndFilingStructures</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control"></textarea>
+                                                    <textarea type="text" rows="4" placeholder="Do you have a specific filing structure in-place? Describe the file and folder, naming conventions and systems, codes labellings and/or identifiers " id="NamingStructureAndFilingStructures" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1264,11 +1323,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.intelProp != null)
                                             {
-                                                <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control">@Model.intelProp.ContractsAndAgreements</textarea>
+                                            <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control">@Model.intelProp.ContractsAndAgreements</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Identify any agreements or contracts that apply to this project" id="ContractsAndAgreements" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1278,11 +1337,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.intelProp != null)
                                             {
-                                                <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control">@Model.intelProp.Ownership</textarea>
+                                            <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control">@Model.intelProp.Ownership</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="State who will own the copyright and other IP of any data that you will collect " id="Ownership" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1293,11 +1352,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.intelProp != null)
                                             {
-                                                <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control">@Model.intelProp.UseOfThirdPartyDataSources</textarea>
+                                            <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control">@Model.intelProp.UseOfThirdPartyDataSources</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Describe guidelines for use of 3rd party data sources" id="UseOfThirdPartyDataSources" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1317,11 +1376,11 @@
                                         <div class="col-sm-7">
                                             @if (Model.ppData != null)
                                             {
-                                                <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control">@Model.ppData.DataToRetain</textarea>
+                                            <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control">@Model.ppData.DataToRetain</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Have you thought about a long term archive for your data? Indicate archiving processes Describe" rows="4" id="DataToRetain" class="form-control"></textarea>
                                             }
                                         </div>
                                     </div>
@@ -1331,11 +1390,11 @@
                                         <div class="col-sm-7">
                                             @if (@Model.ppData != null)
                                             {
-                                                <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control">@Model.ppData.PreExistingData</textarea>
+                                            <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control">@Model.ppData.PreExistingData</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="How long do curators/agencies of pre-existing data intend data to be archieved for?  If applicable describe" rows="4" id="PreExistingData" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1346,11 +1405,11 @@
                                         <div class="col-sm-7">
                                             @if (@Model.ppData != null)
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control">@Model.ppData.Duration</textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control">@Model.ppData.Duration</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control"></textarea>
+                                            <textarea type="text" rows="4" placeholder="Do you have a specified duration for data retention? How will the data be destroyed if applicable? Describe" id="Duration" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1361,11 +1420,11 @@
                                         <div class="col-sm-7">
                                             @if (@Model.ppData != null)
                                             {
-                                                <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control">@Model.ppData.Licensing</textarea>
+                                            <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control">@Model.ppData.Licensing</textarea>
                                             }
                                             else
                                             {
-                                                <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control"></textarea>
+                                            <textarea type="text" placeholder="Under what licensing will you share the data? If applicable describe" id="Licensing" class="form-control"></textarea>
                                             }
 
                                         </div>
@@ -1384,11 +1443,11 @@
                                                 <div class="col-sm-7">
                                                     @if (@Model.ppData != null)
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control">@Model.ppData.DigitalDataRetention.DataRetention</textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control">@Model.ppData.DigitalDataRetention.DataRetention</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="DataRetention" class="form-control"></textarea>
                                                     }
 
                                                 </div>
@@ -1410,11 +1469,11 @@
                                                 <div class="col-sm-7">
                                                     @if (@Model.ppData != null)
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control">@Model.ppData.NonDigitalRentention.DataRention</textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control">@Model.ppData.NonDigitalRentention.DataRention</textarea>
                                                     }
                                                     else
                                                     {
-                                                        <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control"></textarea>
+                                                    <textarea type="text" placeholder="Indicate storage type,  repository name, location and estimated cost of archiving" id="nonDigitalDataRetention" class="form-control"></textarea>
                                                     }
                                                 </div>
                                             </div>
@@ -1463,21 +1522,17 @@
 
 
 @section Scripts
-{
-    @*@Scripts.Render("~/bundles/CreateDMPJs")*@
+{     
 @Scripts.Render("~/bundles/MultiDatePickerCss")
  
 
     <script>
         $(document).ready(function () {
+             
 
             $(".select2.select2-container.select2-container--default").css("width", "100%");
-            $(".select2-search__field").css("width", "100%");
-
-            //$(function() {
-            //    $('.chosen-select').chosen();
-            //    $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
-            //});
+            $(".select2-search__field").css("width", "200%");
+                      
 
             base64Image = '@Model.DataFlowChart';
             if(base64Image !=undefined){
@@ -1489,18 +1544,7 @@
             if (EthicalApprovalForTheProject == "No") {
                 $("#EthicalApprovalDiv").hide()
             }
-
-
-            $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
-                if (key.charCode < 48 || key.charCode > 57)
-                    if (key.charCode != 43) {
-                        $('#my_modal').on('show.bs.modal', function (e) {
-                            $('#warningbox').val('invalid input');
-                        });
-                        $('#myModal').modal('show');
-                        return false;
-                    }
-            });
+             
 
             $("input").attr("autocomplete", "off");
          
@@ -1530,7 +1574,11 @@
                 viewModel["roles"] = rolesArray;
                 viewModel["responsibilities"]= responsibilityArray;
 
+                viewModel["DataCollection"] = datacollectionArray;
+
                 viewModel["dataCollation"] = datacollationArray;
+
+                viewModel["reportingLevel"] = reportingLevelArray;
 
                 let selectedStates = '';
                 $("#StatesCoveredByImplementingPartners option:selected").each(function(){
@@ -1591,9 +1639,7 @@
                 SaveAndContinue(e);
         });
 
-        $('#TimelinesForReporting').multiDatesPicker();
-        //$("#DataCollectionTimelines").multiDatesPicker();
-        //$("#TimelinesForTrainings").multiDatesPicker();
+        $('#TimelinesForReporting').multiDatesPicker(); 
         $("#TimelinesForDataVerification").multiDatesPicker();
 
          
@@ -1606,4 +1652,6 @@
 <script src="~/Scripts/ReportTableLogic.js"></script>
 <script src="~/Scripts/dataverificationTableLogic.js"></script> 
 <script src="~/Scripts/datacollationTableLogic.js"></script>
+<script src="~/Scripts/reportingLevel.js"></script>
+<script src="~/Scripts/datacollectionTableLogic.js"></script>
 }

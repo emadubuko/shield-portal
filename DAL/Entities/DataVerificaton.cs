@@ -12,9 +12,8 @@ namespace DAL.Entities
         public virtual int Id { get; set; }
         public virtual string DataVerificationApproach { get; set; }
         public virtual string TypesOfDataVerification { get; set; }
-
-        [XmlIgnore]
-        public virtual string FormsOfDataVerification { get; set; }
+         
+        public virtual string ReportingLevel { get; set; }
         public virtual List<DateTime> TimelinesForDataVerification { get; set; }
         public virtual string FrequencyOfDataVerification { get; set; }
         public virtual int DurationOfDataVerificaion { get; set; }

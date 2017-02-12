@@ -39,6 +39,12 @@ $("#addDataVerificationbtn").click(function (e) {
             dataverification["DataVerificationApproach"] = $(this)[0].value;
             $(this).val("");
         }
+
+        else if ($(this)[0].id == "dvReportingLevel") {
+            dataverification["ReportingLevel"] = $(this)[0].value;
+            $(this).val("");
+        }
+
         else if ($(this)[0].id == "TypesOfDataVerification") {
             dataverification["TypesOfDataVerification"] = $(this)[0].value;
             $(this).val("");
@@ -78,7 +84,7 @@ $("#addDataVerificationbtn").click(function (e) {
         }        
     });
 
-    if (dataverification.TimelinesForDataVerification != null && dataverification.DurationOfDataVerificaion !=null) {
+    if (dataverification.TimelinesForDataVerification != null && dataverification.DurationOfDataVerificaion != null && dataverification.ReportingLevel !=null) {
         DataVerificationArray.push(dataverification);
         CreatedataverificationTable(dataverification);
     }
@@ -104,6 +110,7 @@ function CreatedataverificationTable(dataverification) {
    
     var dataverificationId = "dataverificationx" + dataverification.Id;
     var html = '<tr id=' + dataverificationId + '>';
+    html += '<td>' + dataverification.ReportingLevel + '</td>';
     html += '<td>' + dataverification.DataVerificationApproach + '</td>';
     html += '<td>' + dataverification.TypesOfDataVerification + '</td>';
     html += '<td>' + dataverification.FrequencyOfDataVerification + '</td>';

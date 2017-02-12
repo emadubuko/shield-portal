@@ -97,10 +97,11 @@ namespace ShieldPortal.ViewModel
     public class EditDocumentViewModel2
     {
         public List<DocumentRevisions> documentRevisions { get; set; }
-        public DataCollection dataCollection { get; set; }
+        public List<DataCollection> dataCollection { get; set; }
 
          public List<StaffGrouping> roles { get; set; }
         public List<StaffGrouping> responsibilities { get; set; }
+        public List<string> reportingLevel { get; set; }
 
         public List<DataCollation> dataCollation { get; set; }
 
@@ -239,7 +240,7 @@ namespace ShieldPortal.ViewModel
         {
             get
             {
-                return new string[] { "Qualitative", "Quantitative", "Both", "Others" };
+                return new string[] { "Qualitative", "Quantitative" };
             }
         }
 

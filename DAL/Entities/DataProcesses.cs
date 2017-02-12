@@ -1,8 +1,10 @@
-﻿namespace DAL.Entities
+﻿using System.Collections.Generic;
+
+namespace DAL.Entities
 {
     public class DataProcesses
     {
-        public virtual DataCollection DataCollection { get; set; }
+        public virtual List<DataCollection> DataCollection { get; set; }
         public virtual Report Reports { get; set; }
     }
 }

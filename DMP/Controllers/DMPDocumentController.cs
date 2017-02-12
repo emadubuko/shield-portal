@@ -63,6 +63,7 @@ namespace ShieldPortal.Controllers
                
                 EditDocumentViewModel2 docVM = new EditDocumentViewModel2
                 {
+                    reportingLevel = thepageDoc.MonitoringAndEvaluationSystems.Process !=null ? thepageDoc.MonitoringAndEvaluationSystems.Process.ReportLevel : new List<string>(),
                     states = states,
                     People = thepageDoc.MonitoringAndEvaluationSystems.People,
                     Equipment = thepageDoc.MonitoringAndEvaluationSystems.Equipment,
@@ -149,9 +150,9 @@ namespace ShieldPortal.Controllers
 
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
-            Summary summary, Equipment equipment, DataCollection DataCollection, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
+            Summary summary, Equipment equipment, List<DataCollection> DataCollection, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
             ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital, List<DataCollation> dataCollation,
-            Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, AreaCoveredByIP siteCount,
+            Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, AreaCoveredByIP siteCount, List<string> reportingLevel,
             DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<Trainings> Trainings,
             DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention, List<ReportData> reportDataList)
         {
@@ -172,7 +173,7 @@ namespace ShieldPortal.Controllers
             ProjDetails.LeadActivityManager = new ProfileDAO().Retrieve(doc.leadactivitymanagerId);
 
             processes.DataCollation = dataCollation;
-
+            processes.ReportLevel = reportingLevel;
             WizardPage page = new WizardPage
             {
                 ProjectProfile = new ProjectProfile
@@ -263,14 +264,16 @@ namespace ShieldPortal.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF, Approval approval,
+        public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
            AreaCoveredByIP siteCount, Equipment equipment, Summary summary, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
-           Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, List<DataCollation> dataCollation,
-           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, DataCollection DataCollection,
+           Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, List<DataCollation> dataCollation, List<string> reportingLevel,
+           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<DataCollection> DataCollection,
            DigitalDataRetention digitalDataRetention, List<Trainings> Trainings, List<ReportData> reportDataList)
         {
             processes.DataCollation = dataCollation;
+            processes.ReportLevel = reportingLevel;
+
             Guid dGuid = new Guid(doc.documentID);
             var previousDoc = dmpDocDAO.Retrieve(dGuid);
             ProjectDetails ProjDetails = projDTF;
@@ -297,9 +300,7 @@ namespace ShieldPortal.Controllers
                 previousDoc.TheDMP.TheProject.DocumentTitle = projDTF.DocumentTitle;
 
                 projDAO.ExplicitUpdate(previousDoc.TheDMP.TheProject);
-
-               // dmpDAO.Update(previousDoc.TheDMP);
-
+                 
                 ProjDetails = previousDoc.TheDMP.TheProject;
             }
 
@@ -321,10 +322,7 @@ namespace ShieldPortal.Controllers
                         DataFlowChart = doc.DataFlowChart,
                         StaffingInformation = doc.StaffingInformation,
                         Roles = roles,
-                        Responsibilities = responsibilities,
-                        //DataHandlingAndEntry = doc.DataHandlingAndEntry,
-                        //RoleAndResponsibilities = doc.RoleAndResponsibilities,
-                        //Staffing = doc.Staffing
+                        Responsibilities = responsibilities, 
                     },
                     Equipment = equipment,
                     Environment = new DAL.Entities.Environment
