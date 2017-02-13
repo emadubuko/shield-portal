@@ -151,8 +151,12 @@ namespace ShieldPortal.Services
             header = new Paragraph("Data Processes", istPageFont14);
             header.IndentationLeft = 55;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataProcesses.DataCollection, "Data"));
             WriteLines(1, ref doc);
+            header = new Paragraph("Data", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(MultiColumn(pageData.DataProcesses.DataCollection, 1));
+           
             header = new Paragraph("REPORTS", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
@@ -226,11 +230,12 @@ namespace ShieldPortal.Services
         {
             iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(imageBytes, true); // System.Drawing.Imaging.ImageFormat.Jpeg);
 
-            if (scale != 0)
-            {
-                pic.ScalePercent(scale * 100);
-            }
-            else if (pic.Height > pic.Width)
+            //if (scale != 0)
+            //{
+            //    pic.ScalePercent(scale * 100);
+            //}
+            //else 
+            if (pic.Height > pic.Width)
             {
                 //Maximum height is 800 pixels.
                 float percentage = 0.0f;

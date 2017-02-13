@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAL.Entities
+﻿namespace DAL.Entities
 {
     public class DataDocumentationManagementAndEntry
     {
+        public virtual int Id { get; set; }
+        public virtual string ReportingLevel { get; set; }
+        public virtual string ThematicArea { get; set; }
         public virtual string StoredDocumentationAndDataDescriptors { get; set; }
         public virtual string NamingStructureAndFilingStructures { get; set; }
     }

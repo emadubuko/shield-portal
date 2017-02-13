@@ -135,11 +135,11 @@ namespace ShieldPortal.ViewModel
         public DAL.Entities.Environment Environment { get; set; }
         
         public DataProcesses dataProcess { get; set; }
-        public DigitalData digital { get; set; }
-        public NonDigitalData nonDigital { get; set; }
+        public List<DigitalData> digital { get; set; }
+        public List<NonDigitalData> nonDigital { get; set; }
         public IntellectualPropertyCopyrightAndOwnership intelProp { get; set; }
-        public DataAccessAndSharing dataSharing { get; set; }
-        public DataDocumentationManagementAndEntry dataDocMgt { get; set; }
+        public List<DataAccessAndSharing> dataSharing { get; set; }
+        public List<DataDocumentationManagementAndEntry> dataDocMgt { get; set; }
         public PostProjectDataRetentionSharingAndDestruction ppData { get; set; }
         public DigitalDataRetention digitalDataRetention { get; set; }
         public NonDigitalDataRetention nonDigitalRetention { get; set; }
@@ -212,7 +212,7 @@ namespace ShieldPortal.ViewModel
             }
         }
 
-        public ICollection<string> thematicAreas
+        public ICollection<string> programArea
         {
             get
             { 
@@ -260,6 +260,13 @@ namespace ShieldPortal.ViewModel
             }
         }
 
+        public ICollection<string> thematicAreas
+        {
+            get
+            {
+                return new string[] { "ART", "PMTCT", "HTC" };
+            }
+        }
         public ICollection<string> datareported
         {
             get

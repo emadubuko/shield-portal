@@ -8,6 +8,13 @@ namespace ShieldPortal
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            bundles.Add(new ScriptBundle("~/bundles/dmpScripts").Include(
+               "~/Scripts/dmpScripts/datadocumentationTableLogic.js",
+              "~/Scripts/dmpScripts/dataSharingTableLogic.js",
+               "~/Scripts/dmpScripts/digitaldatacollectionTableLogic.js",
+                "~/Scripts/dmpScripts/nondigitaldataCollectionTableLogic.js"
+               ));
+            
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                     //"~/Scripts/jquery.min.js",
                     "~/plugins/metismenu/js/jquery.metisMenu.js",

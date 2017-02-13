@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DAL.Entities
 {
     public class DataStorage
     {
-        public virtual DigitalData Digital { get; set; }
-        public virtual NonDigitalData NonDigital { get; set; }
-        public virtual DataAccessAndSharing DataAccessAndSharing { get; set; }
-        public virtual DataDocumentationManagementAndEntry DataDocumentationManagementAndEntry { get; set; }
+        public virtual List<DigitalData> Digital { get; set; }
+        public virtual List<NonDigitalData> NonDigital { get; set; }
+        public virtual List<DataAccessAndSharing> DataAccessAndSharing { get; set; }
+        public virtual List<DataDocumentationManagementAndEntry> DataDocumentationManagementAndEntry { get; set; }
     }
 }

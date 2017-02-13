@@ -151,9 +151,9 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public ActionResult SaveNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
             Summary summary, Equipment equipment, List<DataCollection> DataCollection, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
-            ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital, List<DataCollation> dataCollation,
+            ReportData reportData, List<DataVerificaton> dataVerification, List<DigitalData> digital, List<NonDigitalData> nonDigital, List<DataCollation> dataCollation,
             Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, AreaCoveredByIP siteCount, List<string> reportingLevel,
-            DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<Trainings> Trainings,
+            List<DataAccessAndSharing> dataSharing, List<DataDocumentationManagementAndEntry> dataDocMgt, List<Trainings> Trainings,
             DigitalDataRetention digitalDataRetention, NonDigitalDataRetention nonDigitalRetention, List<ReportData> reportDataList)
         {
 
@@ -266,9 +266,9 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public ActionResult EditDocumentNext(EditDocumentViewModel doc, EthicsApproval ethicsApproval, ProjectDetails projDTF,
            AreaCoveredByIP siteCount, Equipment equipment, Summary summary, List<StaffGrouping> roles, List<StaffGrouping> responsibilities,
-           ReportData reportData, List<DataVerificaton> dataVerification, DigitalData digital, NonDigitalData nonDigital,
+           ReportData reportData, List<DataVerificaton> dataVerification, List<DigitalData> digital, List<NonDigitalData> nonDigital,
            Processes processes, IntellectualPropertyCopyrightAndOwnership intelProp, List<DataCollation> dataCollation, List<string> reportingLevel,
-           DataAccessAndSharing dataSharing, DataDocumentationManagementAndEntry dataDocMgt, List<DataCollection> DataCollection,
+           List<DataAccessAndSharing> dataSharing, List<DataDocumentationManagementAndEntry> dataDocMgt, List<DataCollection> DataCollection,
            DigitalDataRetention digitalDataRetention, List<Trainings> Trainings, List<ReportData> reportDataList)
         {
             processes.DataCollation = dataCollation;

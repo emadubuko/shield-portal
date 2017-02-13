@@ -2,6 +2,9 @@
 {
     public class DigitalData
     {
+        public virtual int Id { get; set; }
+        public virtual string ReportingLevel { get; set; }
+        public virtual string ThematicArea { get; set; }
         public virtual string VolumeOfDigitalData { get; set; }
         public virtual string DataStorageFormat { get; set; }
         public virtual string StorageLocation { get; set; }

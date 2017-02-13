@@ -906,6 +906,10 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dashboard.js" />
+    <Content Include="Scripts\dmpScripts\datadocumentationTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\dataSharingTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\digitaldatacollectionTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\nondigitaldataCollectionTableLogic.js" />
     <Content Include="Scripts\reportingLevel.js" />
     <Content Include="Scripts\datacollationTableLogic.js" />
     <Content Include="Scripts\datacollectionTableLogic.js" />
