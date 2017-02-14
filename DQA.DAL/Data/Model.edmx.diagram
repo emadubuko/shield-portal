@@ -12,11 +12,11 @@
         <EntityTypeShape EntityType="shield_dmpModel.dqa_funder" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_indicator" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_lga" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="0.75" PointY="6.5" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_report_value" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_states" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
         <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_indicator" ManuallyRouted="false" />
-        <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="0.75" PointY="9" />
+        <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

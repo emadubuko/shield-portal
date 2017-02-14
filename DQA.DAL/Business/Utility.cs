@@ -41,7 +41,7 @@ namespace DQA.DAL.Business
         /// <returns>Number of facilities</returns>
         public static int GetIpSubmitted(int partnerId,string month)
         {
-            return entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.Month == month).Count();
+            return entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == month).Count();
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace DQA.DAL.Business
                 summary.Name = state.state_name;
 
                 //get the facilities submitted for the state
-                summary.Submitted = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.StateId == stateId && e.Month == reporting_period).Count();
+                summary.Submitted = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.StateId == stateId && e.ReportPeriod == reporting_period).Count();
                 var total_state_facilities = entity.dqa_facility.Count(e => e.Partners == partnerId && e.State == stateId);
                 summary.Pending = total_state_facilities - summary.Submitted;
                 if (total_state_facilities > 0)
@@ -85,14 +85,14 @@ namespace DQA.DAL.Business
 
         public static List<dqa_facility> GetSubmittedFacilities(int partnerId,string reporting_period)
         {
-            var facility_ids= entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId  && e.Month == reporting_period).Select(e=>e.Id).ToList();
+            var facility_ids= entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId  && e.ReportPeriod == reporting_period).Select(e=>e.Id).ToList();
             return entity.dqa_facility.Where(x => facility_ids.Contains(x.Id)).ToList();
         }
 
 
         public static List<dqa_facility> GetPendingFacilities(int partnerId, string reporting_period)
         {
-            var facility_ids = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.Month == reporting_period).Select(e => e.Id).ToList();
+            var facility_ids = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == reporting_period).Select(e => e.Id).ToList();
             return entity.dqa_facility.Where(x => !facility_ids.Contains(x.Id)).ToList();
         }
 

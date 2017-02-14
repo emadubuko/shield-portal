@@ -32,8 +32,8 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_funder> dqa_funder { get; set; }
         public virtual DbSet<dqa_indicator> dqa_indicator { get; set; }
         public virtual DbSet<dqa_lga> dqa_lga { get; set; }
-        public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
         public virtual DbSet<dqa_report_value> dqa_report_value { get; set; }
         public virtual DbSet<dqa_states> dqa_states { get; set; }
+        public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
     }
 }

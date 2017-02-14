@@ -31,7 +31,7 @@ namespace DQA.DAL.Data
         public int AssessmentWeek { get; set; }
         public System.DateTime CreateDate { get; set; }
         public string CreatedBy { get; set; }
-        public string Month { get; set; }
+        public string ReportPeriod { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dqa_report_value> dqa_report_value { get; set; }

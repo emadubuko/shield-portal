@@ -15,5 +15,10 @@ namespace ShieldPortal.Service
         {
             return entity.dqa_report_metadata.Where(e => e.ImplementingPartner == ip).ToList();
         }
+
+        public List<dqa_report_metadata> SearchIpMetaData(int ip,string period,int lga,int state,string site_name)
+        {
+            return entity.dqa_report_metadata.Where(e => e.ImplementingPartner == ip && (e.ReportPeriod == period || e.LgaId==lga || e.StateId==state)).ToList();
+        }
     }
 }

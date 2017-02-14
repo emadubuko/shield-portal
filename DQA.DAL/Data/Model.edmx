@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="shield_dmpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="shield_dmpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="dmp_Organizations">
           <Key>
             <PropertyRef Name="Id" />
@@ -127,7 +127,7 @@
           <Property Name="AssessmentWeek" Type="int" Nullable="false" />
           <Property Name="CreateDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Month" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ReportPeriod" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="dqa_report_value">
           <Key>
@@ -193,8 +193,7 @@
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="shield_dmpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -306,24 +305,6 @@
           <Property Name="state_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="state_id" Type="Int32" />
         </EntityType>
-        <EntityType Name="dqa_report_metadata">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SiteId" Type="Int32" Nullable="false" />
-          <Property Name="LgaId" Type="Int32" Nullable="false" />
-          <Property Name="StateId" Type="Int32" Nullable="false" />
-          <Property Name="LgaLevel" Type="Int32" Nullable="false" />
-          <Property Name="FundingAgency" Type="Int32" Nullable="false" />
-          <Property Name="ImplementingPartner" Type="Int32" Nullable="false" />
-          <Property Name="FiscalYear" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AssessmentWeek" Type="Int32" Nullable="false" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Month" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="dqa_report_value" Relationship="Self.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_metadata" ToRole="dqa_report_value" />
-        </EntityType>
         <EntityType Name="dqa_report_value">
           <Key>
             <PropertyRef Name="Id" />
@@ -335,7 +316,7 @@
           <Property Name="IndicatorValueMonth2" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="IndicatorValueMonth3" Type="Decimal" Precision="18" Scale="0" />
           <NavigationProperty Name="dqa_indicator" Relationship="Self.FK_dqa_report_value_dqa_indicator" FromRole="dqa_report_value" ToRole="dqa_indicator" />
-          <NavigationProperty Name="dqa_report_metadata" Relationship="Self.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_value" ToRole="dqa_report_metadata" />
+          <NavigationProperty Name="dqa_report_metadata" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_value" ToRole="dqa_report_metadata" />
         </EntityType>
         <EntityType Name="dqa_states">
           <Key>
@@ -358,9 +339,47 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="shield_dmpEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dmp_Organizations" EntityType="Self.dmp_Organizations" />
+          <EntitySet Name="dqa_facility" EntityType="Self.dqa_facility" />
+          <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" />
+          <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" />
+          <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" />
+          <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" />
+          <EntitySet Name="dqa_lga" EntityType="Self.dqa_lga" />
+          <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" />
+          <EntitySet Name="dqa_states" EntityType="Self.dqa_states" />
+          <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
+            <End Role="dqa_indicator" EntitySet="dqa_indicator" />
+            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          </AssociationSet>
+          <EntitySet Name="dqa_report_metadata" EntityType="shield_dmpModel.dqa_report_metadata" />
+          <AssociationSet Name="FK_dqa_report_value_dqa_report_metadata" Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata">
+            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
+            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="dqa_report_metadata">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SiteId" Type="Int32" Nullable="false" />
+          <Property Name="LgaId" Type="Int32" Nullable="false" />
+          <Property Name="StateId" Type="Int32" Nullable="false" />
+          <Property Name="LgaLevel" Type="Int32" Nullable="false" />
+          <Property Name="FundingAgency" Type="Int32" Nullable="false" />
+          <Property Name="ImplementingPartner" Type="Int32" Nullable="false" />
+          <Property Name="FiscalYear" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentWeek" Type="Int32" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReportPeriod" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dqa_report_value" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_metadata" ToRole="dqa_report_value" />
+        </EntityType>
         <Association Name="FK_dqa_report_value_dqa_report_metadata">
-          <End Role="dqa_report_metadata" Type="Self.dqa_report_metadata" Multiplicity="1" />
-          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
+          <End Type="shield_dmpModel.dqa_report_metadata" Role="dqa_report_metadata" Multiplicity="1" />
+          <End Type="shield_dmpModel.dqa_report_value" Role="dqa_report_value" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="dqa_report_metadata">
               <PropertyRef Name="Id" />
@@ -370,26 +389,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="shield_dmpEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="dmp_Organizations" EntityType="Self.dmp_Organizations" />
-          <EntitySet Name="dqa_facility" EntityType="Self.dqa_facility" />
-          <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" />
-          <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" />
-          <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" />
-          <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" />
-          <EntitySet Name="dqa_lga" EntityType="Self.dqa_lga" />
-          <EntitySet Name="dqa_report_metadata" EntityType="Self.dqa_report_metadata" />
-          <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" />
-          <EntitySet Name="dqa_states" EntityType="Self.dqa_states" />
-          <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
-            <End Role="dqa_indicator" EntitySet="dqa_indicator" />
-            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dqa_report_value_dqa_report_metadata" Association="Self.FK_dqa_report_value_dqa_report_metadata">
-            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
-            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -510,24 +509,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="dqa_report_metadata">
-            <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_metadata">
-              <MappingFragment StoreEntitySet="dqa_report_metadata">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="SiteId" ColumnName="SiteId" />
-                <ScalarProperty Name="LgaId" ColumnName="LgaId" />
-                <ScalarProperty Name="StateId" ColumnName="StateId" />
-                <ScalarProperty Name="LgaLevel" ColumnName="LgaLevel" />
-                <ScalarProperty Name="FundingAgency" ColumnName="FundingAgency" />
-                <ScalarProperty Name="ImplementingPartner" ColumnName="ImplementingPartner" />
-                <ScalarProperty Name="FiscalYear" ColumnName="FiscalYear" />
-                <ScalarProperty Name="AssessmentWeek" ColumnName="AssessmentWeek" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Month" ColumnName="Month" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="dqa_report_value">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_value">
               <MappingFragment StoreEntitySet="dqa_report_value">
@@ -547,6 +528,24 @@
                 <ScalarProperty Name="state_name" ColumnName="state_name" />
                 <ScalarProperty Name="state_code" ColumnName="state_code" />
                 <ScalarProperty Name="geo_polictical_region" ColumnName="geo_polictical_region" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_report_metadata">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_metadata">
+              <MappingFragment StoreEntitySet="dqa_report_metadata">
+                <ScalarProperty Name="ReportPeriod" ColumnName="ReportPeriod" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="AssessmentWeek" ColumnName="AssessmentWeek" />
+                <ScalarProperty Name="FiscalYear" ColumnName="FiscalYear" />
+                <ScalarProperty Name="ImplementingPartner" ColumnName="ImplementingPartner" />
+                <ScalarProperty Name="FundingAgency" ColumnName="FundingAgency" />
+                <ScalarProperty Name="LgaLevel" ColumnName="LgaLevel" />
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="LgaId" ColumnName="LgaId" />
+                <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
