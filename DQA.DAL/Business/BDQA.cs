@@ -42,7 +42,7 @@ namespace DQA.DAL.Business
                 excel_value = worksheet.Cells["S3"].Value.ToString();
                 var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == excel_value);
 
-                if (lga == null)
+                if (facility == null)
                 {
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
                 }
