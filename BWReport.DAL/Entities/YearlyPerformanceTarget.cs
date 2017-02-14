@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CommonUtil.Entities;
 using System.Xml.Serialization;
 
 namespace BWReport.DAL.Entities

@@ -1,6 +1,6 @@
-﻿using CommonUtil.Enums;
+﻿using CommonUtil.Entities;
+using CommonUtil.Enums;
 using System;
-using System.Collections.Generic;
 
 namespace BWReport.DAL.Entities
 {

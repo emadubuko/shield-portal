@@ -2,12 +2,12 @@
 using NHibernate;
 using NHibernate.Criterion;
 using System.Collections.Generic;
-using BWReport.DAL.Entities;
 using System.Data;
 using System;
 using System.Linq;
+using CommonUtil.Entities;
 
-namespace BWReport.DAL.DAO
+namespace CommonUtil.DAO
 {
     public class HealthFacilityDAO : BaseDAO<HealthFacility, int>
     {
@@ -36,17 +36,7 @@ namespace BWReport.DAL.DAO
         public void BulkInsert(List<HealthFacility> facilities)
         {
             var toSave = facilities.Where(x => x.Id == 0);
-
-            //foreach (var tx in toSave)
-            //{
-            //    var sdf = RetrievebyCode(tx.Name);
-            //    if (sdf == null)
-            //        Save(tx);
-            //    //else
-            //    //    tx.Id = sdf.Id;
-            //}
-
-
+             
             string tableName = "HealthFacility";
 
             var dt = new DataTable(tableName);
