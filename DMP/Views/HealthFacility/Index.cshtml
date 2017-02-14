@@ -1,4 +1,4 @@
-﻿@model List<BWReport.DAL.Entities.HealthFacility>
+﻿@model List<CommonUtil.Entities.HealthFacility>
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
@@ -84,7 +84,7 @@
 
 @section Scripts
 {
-
+@Scripts.Render("~/bundles/CreateDMPJs")
     @Scripts.Render("~/bundles/dataTables")
     <script>
         $(document).ready(function () {

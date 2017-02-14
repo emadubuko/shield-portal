@@ -1,16 +1,9 @@
-﻿using BWReport.DAL.DAO;
-using BWReport.DAL.Entities;
-using CommonUtil.DAO;
+﻿using CommonUtil.DAO;
 using CommonUtil.Entities;
-using ShieldPortal.ViewModel;
 using ShieldPortal.ViewModel.BWR;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers

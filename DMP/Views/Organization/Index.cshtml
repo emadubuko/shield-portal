@@ -22,19 +22,17 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-hover dataTables-example">
                             <thead>
-                                <tr>
-                                    <th>Unique Id</th>
+                                <tr style="color: steelblue;">
+                                    <th>Name</th>
                                     <th>Short Name</th>
-                                    <th>Mission Partner</th> 
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model)
                                 {
                                     <tr onclick="window.document.location='/Organization/OrganizationDetail?OrgId=@item.Id'" style="cursor: pointer;">
-                                        <td>@item.Id</td>
-                                        <td>@item.ShortName</td>
-                                        <td>@item.MissionPartner</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.ShortName</td>                                        
                                     </tr>
                                 }
                             </tbody>
@@ -47,8 +45,7 @@
 </div>
 @section Scripts
 {
-    
-    @Scripts.Render("~/bundles/dataTables") 
+    @Scripts.Render("~/bundles/CreateDMPJs")   
     <script>
         $("#dmpCreate").click(function (e, n) {
             $("#loadImg").show();

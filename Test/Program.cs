@@ -1,6 +1,4 @@
-﻿using BWReport.DAL.DAO;
-using BWReport.DAL.Entities;
-using CommonUtil.DAO;
+﻿using CommonUtil.DAO;
 using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
 using DAL.DAO;
