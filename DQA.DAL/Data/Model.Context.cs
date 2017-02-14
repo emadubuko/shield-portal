@@ -35,5 +35,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_report_value> dqa_report_value { get; set; }
         public virtual DbSet<dqa_states> dqa_states { get; set; }
         public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
+        public virtual DbSet<HealthFacility> HealthFacilities { get; set; }
     }
 }

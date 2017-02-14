@@ -39,7 +39,13 @@ namespace DQA.DAL.Business
                 {
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The LGA is incorrect</td></tr>";
                 }
+                excel_value = worksheet.Cells["S3"].Value.ToString();
+                var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == excel_value);
 
+                if (lga == null)
+                {
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
+                }
                 //get the metadata of the report
                 var metadata = new dqa_report_metadata();
                 metadata.AssessmentWeek = 1;//Convert.ToInt32(worksheet.Cells["Q8"].Value.ToString());
@@ -51,7 +57,7 @@ namespace DQA.DAL.Business
                 metadata.LgaId = lga.id;
                 metadata.LgaLevel = 2;
                 metadata.ReportPeriod = worksheet.Cells["Q8"].Value.ToString();
-                metadata.SiteId = 1;//worksheet.Cells["Z3"].Value.ToString();
+                metadata.SiteId = Convert.ToInt32(facility.Id);//worksheet.Cells["Z3"].Value.ToString();
                 metadata.StateId = state.id;
 
                 //var worksheet = package.Workbook.Worksheets["Data entry"];

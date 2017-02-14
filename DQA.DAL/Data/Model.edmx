@@ -99,6 +99,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IndicatorCode" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="IndicatorName" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="ThematicArea" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Readonly" Type="nvarchar" MaxLength="1" />
         </EntityType>
         <EntityType Name="dqa_lga">
@@ -149,8 +150,23 @@
           <Property Name="state_code" Type="nvarchar" MaxLength="255" />
           <Property Name="geo_polictical_region" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="HealthFacility">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="FacilityCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="LGAId" Type="nvarchar" MaxLength="50" />
+          <Property Name="OrganizationType" Type="nvarchar" MaxLength="255" />
+          <Property Name="ImplementingPartnerId" Type="int" />
+        </EntityType>
         <Association Name="FK_dqa_report_value_dqa_indicator">
-          <End Role="dqa_indicator" Type="Self.dqa_indicator" Multiplicity="1" />
+          <End Role="dqa_indicator" Type="Self.dqa_indicator" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="dqa_indicator">
@@ -184,6 +200,7 @@
           <EntitySet Name="dqa_report_metadata" EntityType="Self.dqa_report_metadata" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_states" EntityType="Self.dqa_states" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HealthFacility" EntityType="Self.HealthFacility" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
             <End Role="dqa_indicator" EntitySet="dqa_indicator" />
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
@@ -293,6 +310,7 @@
           <Property Name="IndicatorName" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Readonly" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="dqa_report_value" Relationship="Self.FK_dqa_report_value_dqa_indicator" FromRole="dqa_indicator" ToRole="dqa_report_value" />
+          <Property Name="ThematicArea" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="dqa_lga">
           <Key>
@@ -358,6 +376,7 @@
             <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
           </AssociationSet>
+          <EntitySet Name="HealthFacilities" EntityType="shield_dmpModel.HealthFacility" />
         </EntityContainer>
         <EntityType Name="dqa_report_metadata">
           <Key>
@@ -389,6 +408,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="HealthFacility">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FacilityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LGAId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrganizationType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ImplementingPartnerId" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -490,6 +522,7 @@
           <EntitySetMapping Name="dqa_indicator">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_indicator">
               <MappingFragment StoreEntitySet="dqa_indicator">
+                <ScalarProperty Name="ThematicArea" ColumnName="ThematicArea" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IndicatorCode" ColumnName="IndicatorCode" />
                 <ScalarProperty Name="IndicatorName" ColumnName="IndicatorName" />
@@ -545,6 +578,20 @@
                 <ScalarProperty Name="StateId" ColumnName="StateId" />
                 <ScalarProperty Name="LgaId" ColumnName="LgaId" />
                 <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HealthFacilities">
+            <EntityTypeMapping TypeName="shield_dmpModel.HealthFacility">
+              <MappingFragment StoreEntitySet="HealthFacility">
+                <ScalarProperty Name="ImplementingPartnerId" ColumnName="ImplementingPartnerId" />
+                <ScalarProperty Name="OrganizationType" ColumnName="OrganizationType" />
+                <ScalarProperty Name="LGAId" ColumnName="LGAId" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="FacilityCode" ColumnName="FacilityCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

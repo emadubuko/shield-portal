@@ -17,6 +17,7 @@
         <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_indicator" ManuallyRouted="false" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="0.75" PointY="9" />
         <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" />
+        <EntityTypeShape EntityType="shield_dmpModel.HealthFacility" Width="1.5" PointX="9.375" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
