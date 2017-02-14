@@ -27,7 +27,7 @@ namespace DQA.DAL.Model
             AssessmentWeek = metadata.AssessmentWeek;
             CreateDate = metadata.CreateDate;
             CreatedBy = metadata.CreatedBy;
-            Month = metadata.Month;
+            Month = metadata.ReportPeriod;
 
         }
 

@@ -170,6 +170,8 @@ namespace Test
             //{
             //    DataCollectionProcessess = "Collected by hand"
             //},
+
+            /*
             DataStorageAccessAndSharing = new DataStorage
             {
                 Digital = new DigitalData
@@ -182,7 +184,7 @@ namespace Test
                     NonDigitalDataTypes = "Registers",
                     StorageLocation = "File Cabinet"
                 }
-            },
+            },*/
             IntellectualPropertyCopyrightAndOwnership = new IntellectualPropertyCopyrightAndOwnership
             {
                 ContractsAndAgreements = "None",

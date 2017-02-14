@@ -36,12 +36,12 @@ namespace ShieldPortal.Controllers
                     var postedFile = httpRequest.Files[file];
                     string ext = Path.GetExtension(postedFile.FileName).Substring(1);
 
-                    if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX")
+                    if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM")
                     {
                         
                         var filePath = HttpContext.Current.Server.MapPath("~/Report/Uploads" + postedFile.FileName);
                         postedFile.SaveAs(filePath);
-                        new BDQA().ReadWorkbook(filePath);
+                        messages+= new BDQA().ReadWorkbook(filePath,User.Identity.Name);
                     }
                     else
                     {
@@ -81,6 +81,22 @@ namespace ShieldPortal.Controllers
         public List<ReportMetadata> GetIpDQA(int id)
         {
             var metas = metadataService.GetIpMetaData(id);
+            var facilities = new List<Facility>();
+            var metadatas = new List<ReportMetadata>();
+            foreach (var metadata in metas)
+            {
+                //facilities.Add(new Facility(Utility.GetFacility(metadata.SiteId)))
+                metadatas.Add(new ReportMetadata(metadata));
+            }
+
+
+            return metadatas;
+        }
+
+        [HttpPost]
+        public List<ReportMetadata> SearchIPDQA(int ip,int lga,int state,string facility,string period)
+        {
+            var metas = metadataService.SearchIpMetaData(ip, period, lga, state, facility);
             var facilities = new List<Facility>();
             var metadatas = new List<ReportMetadata>();
             foreach (var metadata in metas)
