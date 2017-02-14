@@ -910,10 +910,10 @@
     <Content Include="Scripts\dmpScripts\dataSharingTableLogic.js" />
     <Content Include="Scripts\dmpScripts\digitaldatacollectionTableLogic.js" />
     <Content Include="Scripts\dmpScripts\nondigitaldataCollectionTableLogic.js" />
-    <Content Include="Scripts\reportingLevel.js" />
-    <Content Include="Scripts\datacollationTableLogic.js" />
-    <Content Include="Scripts\datacollectionTableLogic.js" />
-    <Content Include="Scripts\dataverificationTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\reportingLevel.js" />
+    <Content Include="Scripts\dmpScripts\datacollationTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\datacollectionTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\dataverificationTableLogic.js" />
     <Content Include="Scripts\fns\base.js" />
     <Content Include="Scripts\fns\fn_dashboard.js" />
     <Content Include="Scripts\fns\fn_dqa.js" />
@@ -931,9 +931,9 @@
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\loader.js" />
-    <Content Include="Scripts\ReportTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\ReportTableLogic.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\trainingreportTableLogic.js" />
+    <Content Include="Scripts\dmpScripts\trainingreportTableLogic.js" />
     <Content Include="Scripts\Ultilities.js" />
     <Content Include="Scripts\_old\bootstrap.js" />
     <Content Include="Scripts\_old\bootstrap.min.js" />

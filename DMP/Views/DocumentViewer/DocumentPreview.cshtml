@@ -271,7 +271,7 @@
                                                         {
                                                             foreach (var t in Model.summary.ProjectObjectives.Split('\n'))
                                                             {
-                                                                @t <br />
+                                                    @t <br />
                                                             }
                                                         }
                                                     </span> <a class="btn btn-default btn-sm commentBox"> comment</a>
@@ -425,21 +425,39 @@
                                                 {
                                                     <div class="form-group">
                                                         <label class="col-sm-6">Data Collation</label>
-                                                        <div class="col-sm-6 col-sm-offset-1">                                                             
-                                                                <table class="table">
-                                                                    <thead style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                                        <tr>
-                                                                            <th>Types</th>
-                                                                            <th>Frequency</th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody id="datacollationdataTable"> </tbody>
-                                                                </table>
-                                                            <span id="DataCollation"></span>                                                             
+                                                        <div class="col-sm-6 col-sm-offset-1">
+                                                            <table class="table">
+                                                                <thead style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
+                                                                    <tr>
+                                                                        <th>Types</th>
+                                                                        <th>Frequency</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="datacollationdataTable"> </tbody>
+                                                            </table>
+                                                            <span id="DataCollation"></span>
                                                             <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                         </div>
-                                                    </div>                                                    
+                                                    </div>
+                                                }
+                                                else if (field.Name == "ReportLevel")
+                                                {
+                                                    <div class="form-group">
+                                                        <label>Report level</label>
+                                                        <div class="col-sm-offset-1">
+                                                            <span id="@field.Name">
+                                                                @if (field.GetValue(Model.processes) != null)
+                                                                {
+                                                                    foreach (var t in Model.processes.ReportLevel)
+                                                                    {
+                                                                        @t <br />
+                                                                    }
+                                                                }
+                                                            </span>
+                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
                                                 }
                                                 else
                                                 {
@@ -533,7 +551,7 @@
                                     <div>
                                         <h4 class="Adjusted-header">Data</h4>
                                     </div>
-                                    <div class="panel-body"> 
+                                    <div class="panel-body">
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
@@ -542,13 +560,12 @@
                                                         <th>Data Type</th>
                                                         <th>Reporting Tool</th>
                                                         <th>Process</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="datacollectiondataTable"> </tbody>
                                             </table>
                                         </div>
-                                      
+
                                     </div>
                                 </div>
 
@@ -561,12 +578,13 @@
                                             <table class="table table-striped">
                                                 <thead>
                                                     <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                        <th>Name</th>
-                                                        <th>Thematic Area</th>
+                                                        <th>Level</th>
+                                                        <th>Reports Type</th>
+                                                        <th>Reported To</th>
+                                                        <th>Program Area</th>
                                                         <th>Frequency</th>
-                                                        <th>Duration</th>
+                                                        <th>Duration(days)</th>
                                                         <th>Timelines</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="reportdataTable"> </tbody>
@@ -598,12 +616,13 @@
                                                 <table class="table table-striped">
                                                     <thead>
                                                         <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
+                                                            <th>Level</th>
+                                                            <th>Thematic area</th>
                                                             <th>Verification Approach</th>
                                                             <th>Types</th>
                                                             <th>Frequency</th>
                                                             <th>Duration</th>
                                                             <th>Timelines</th>
-                                                            <th></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="dataVerificationTable"> </tbody>
@@ -630,7 +649,7 @@
                                     <div>
                                         <h4 class="Adjusted-header">Digital Data</h4>
                                     </div>
-                                    <div class="panel-body"> 
+                                    <div class="panel-body">
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
@@ -644,7 +663,6 @@
                                                         <th>Security</th>
                                                         <th>Confidentiality Policies</th>
                                                         <th>Pre-existing Data</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="digitaldataTable"> </tbody>
@@ -658,7 +676,7 @@
                                     <div>
                                         <h4 class="Adjusted-header">Non-Digital Data</h4>
                                     </div>
-                                    <div class="panel-body"> 
+                                    <div class="panel-body">
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
@@ -668,7 +686,6 @@
                                                         <th>Data types</th>
                                                         <th>Storage location</th>
                                                         <th>Safeguards and requirement</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="ndigitaldataTable"> </tbody>
@@ -695,7 +712,6 @@
                                                         <th>Sharing Policies</th>
                                                         <th>Transmission policies</th>
                                                         <th>Sharing platform</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="dasTable"> </tbody>
@@ -720,7 +736,6 @@
                                                         <th>Thematic Area</th>
                                                         <th>Descriptors</th>
                                                         <th>Naming Structure</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="ddocTable"> </tbody>
@@ -744,21 +759,21 @@
                                 <div class="form-horizontal">
                                     @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                                     {
-                                        <div class="form-group">
-                                            <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                            <div class="col-sm-offset-1">
-                                                <span id="@field.Name">
-                                                    @if (field.GetValue(Model.intelProp) != null)
+                                    <div class="form-group">
+                                        <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                        <div class="col-sm-offset-1">
+                                            <span id="@field.Name">
+                                                @if (field.GetValue(Model.intelProp) != null)
                                                     {
                                                         foreach (var t in field.GetValue(Model.intelProp).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
                                                         {
-                                                            @t <br />
+                                                    @t <br />
                                                         }
                                                     }
-                                                </span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                            </div>
+                                            </span>
+                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
                                         </div>
+                                    </div>
                                     }
                                 </div>
                             </div>
@@ -783,7 +798,7 @@
                                                 {
                                                     foreach (var t in Model.ppData.DataToRetain.Split('\n'))
                                                     {
-                                                        @t <br />
+                                                @t <br />
                                                     }
                                                 }
                                             </span>
@@ -798,7 +813,7 @@
                                                 {
                                                     foreach (var t in Model.ppData.PreExistingData.Split('\n'))
                                                     {
-                                                        @t <br />
+                                                @t <br />
                                                     }
                                                 }
                                             </span>
@@ -813,7 +828,7 @@
                                                 {
                                                     foreach (var t in Model.ppData.Duration.Split('\n'))
                                                     {
-                                                        @t <br />
+                                                @t <br />
                                                     }
                                                 }
                                             </span>
@@ -828,7 +843,7 @@
                                                 {
                                                     foreach (var t in Model.ppData.Licensing.Split('\n'))
                                                     {
-                                                        @t <br />
+                                                @t <br />
                                                     }
                                                 }
                                             </span>
@@ -843,7 +858,7 @@
                                                 {
                                                     foreach (var t in Model.ppData.DigitalDataRetention.DataRetention.Split('\n'))
                                                     {
-                                                        @t <br />
+                                                @t <br />
                                                     }
                                                 }
                                             </span>
@@ -859,7 +874,7 @@
                                                 {
                                                     foreach (var t in Model.ppData.NonDigitalRentention.DataRention.Split('\n'))
                                                     {
-                                                        @t <br />
+                                                @t <br />
                                                     }
                                                 }
                                             </span>
@@ -873,6 +888,7 @@
                         <!-- end of Post Project Data Retention Sharing and Destruction page-->
                         <a href="javascript:history.back()"><i class="icon-left-open"></i><b>Go Back</b></a>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -1123,11 +1139,6 @@
              
         });
     </script>
-
-    <script src="~/Scripts/ReportTableLogic.js"></script> 
-    <script src="~/Scripts/dataverificationTableLogic.js"></script>
-    <script src="~/Scripts/datacollationTableLogic.js"></script> 
-    <script src="~/Scripts/datacollectionTableLogic.js"></script>
-
+    
  @Scripts.Render("~/bundles/dmpScripts")
 }

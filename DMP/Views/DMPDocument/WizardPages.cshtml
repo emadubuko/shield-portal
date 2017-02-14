@@ -901,7 +901,6 @@
                                                     <a class="btn btn-black btn-sm btn-outline" id='addReportbtn'>Add to list</a>
                                                 </div>
                                             </div>
-
                                         </div>
                                         <div class="table-responsive">
                                             <table class="table table-striped">
@@ -946,7 +945,17 @@
                                                     </select>
                                                 </div>
                                             </div>
-
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Thematic area</label>
+                                                <div class="col-sm-6">
+                                                    <select id="dvThematicArea" class="select2 form-control" multiple data-placeholder="select applicable level">
+                                                        @foreach (var item in Model.thematicAreas)
+                                                        {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
                                                 <div class="col-sm-6">
@@ -1014,6 +1023,7 @@
                                                 <thead>
                                                     <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
                                                         <th>Level</th>
+                                                        <th>Thematic area</th>
                                                         <th>Verification Approach</th>
                                                         <th>Types</th>
                                                         <th>Frequency</th>
@@ -1708,19 +1718,12 @@
 
         $('#TimelinesForReporting').multiDatesPicker(); 
         $("#TimelinesForDataVerification").multiDatesPicker();
-
-         
+                     
         $("#ProjectStartDate").multiDatesPicker({maxPicks: 1 });
         $("#ProjectEndDate").multiDatesPicker({maxPicks: 1 });
              
         });
     </script>
-
-<script src="~/Scripts/ReportTableLogic.js"></script>
-<script src="~/Scripts/dataverificationTableLogic.js"></script> 
-<script src="~/Scripts/datacollationTableLogic.js"></script>
-<script src="~/Scripts/reportingLevel.js"></script>
-<script src="~/Scripts/datacollectionTableLogic.js"></script>
 
 @Scripts.Render("~/bundles/dmpScripts")
 }

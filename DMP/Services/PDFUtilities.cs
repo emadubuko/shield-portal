@@ -12,7 +12,10 @@ namespace ShieldPortal.Services
 {
     public class PDFUtilities
     {
-        BaseColor fadedBlue = new BaseColor(79, 129, 189);
+        static BaseColor fadedBlue = new BaseColor(79, 129, 189);
+        static BaseColor blackColor = new BaseColor(0, 0, 0);
+        Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL, blackColor);
+
         public void GeneratePDFDocument(DMPDocument dmpDoc, ref Document doc)
         {
             WizardPage pageData = dmpDoc.Document;
@@ -46,8 +49,7 @@ namespace ShieldPortal.Services
             istPage = new Paragraph("DATA MANAGEMENT PLAN", istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
             doc.Add(istPage);
-
-
+            
             WriteLines(6, ref doc);
 
             istPage = new Paragraph("SI LEAD", istPageFont14);
@@ -81,8 +83,7 @@ namespace ShieldPortal.Services
             doc.Add(header);// add paragraph to the document
             doc.Add(CreateProjectProfileTable(pageData.ProjectProfile)); // add pdf table to the document
             doc.Add(GenericPageTable(pageData.ProjectProfile.EthicalApproval, "Ethical Approval"));
-
-
+            
             doc.NewPage();//Planning
             header = new Paragraph("Project Objectives", istPageFont16);
             header.IndentationLeft = 55;
@@ -152,6 +153,19 @@ namespace ShieldPortal.Services
             header.IndentationLeft = 55;
             doc.Add(header);
             WriteLines(1, ref doc);
+            header = new Paragraph("Reporting levels", istPageFont14);
+            header.IndentationLeft = 55;
+            doc.Add(header);
+            string concateddata = "";
+            pageData.MonitoringAndEvaluationSystems.Process.ReportLevel.ForEach(x => {
+                concateddata += x + " --> ";
+            });
+            concateddata = concateddata.TrimEnd(new char[] { '-', '>', ' ' });
+            header = new Paragraph(concateddata, fontValue);
+            header.IndentationLeft = 55;
+            doc.Add(header);
+
+            WriteLines(1, ref doc);
             header = new Paragraph("Data", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
@@ -161,25 +175,38 @@ namespace ShieldPortal.Services
             header.IndentationLeft = 55f;
             doc.Add(header);
             var reportList = pageData.DataProcesses.Reports != null ? pageData.DataProcesses.Reports.ReportData : new List<ReportData>();
-            doc.Add(MultiColumn(reportList,1));
+            doc.Add(LateralMultiColumn(reportList));
 
 
             doc.NewPage();// QualityAssurance
             header = new Paragraph("Quality Assurance", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(MultiColumn(pageData.QualityAssurance.DataVerification, 1));
+            doc.Add(LateralMultiColumn(pageData.QualityAssurance.DataVerification));
            
              
             doc.NewPage(); // Data Storage, Access & Sharing
             header = new Paragraph("Data Storage, Access & Sharing", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
-            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.Digital, "Data Storage - Digital Data"));
-            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.NonDigital, "Data Storage - Non Digital Data"));
-            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.DataAccessAndSharing, "Data Access and Sharing"));
-            doc.Add(GenericPageTable(pageData.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry, "Data Documentation Management and Entry"));
+            WriteLines(1, ref doc);
+            header = new Paragraph("Digital Data Storage", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.Digital));
 
+            header = new Paragraph("Non Digital Data Storage", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.NonDigital));
+            header = new Paragraph("Data Access and Sharing", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.DataAccessAndSharing));
+            header = new Paragraph("Data Documentation Management and Entry", istPageFont14);
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+            doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry));
 
             doc.NewPage();// IntellectualPropertyCopyrightAndOwnership
             header = new Paragraph("Intellectual Property, Copyright and Ownership", istPageFont14);
@@ -379,11 +406,50 @@ namespace ShieldPortal.Services
                     table.AddCell(PdfPCell);
                 }
             }
-            
-
             return table;
         }
-         
+
+        PdfPTable LateralMultiColumn<T>(List<T> dataList)
+        {
+            string tableHeader = "";
+            PdfPTable table = new PdfPTable(1);
+
+            PropertyInfo reportytype = (typeof(T)).GetProperty("ReportsType");
+            PropertyInfo reportlevel = (typeof(T)).GetProperty("ReportingLevel");
+            PropertyInfo thematicinfo = (typeof(T)).GetProperty("ThematicArea");
+            List<PropertyInfo> excludedinfo = new List<PropertyInfo> { reportlevel, thematicinfo, reportytype };
+
+            for (int i=0; i < dataList.Count(); i++)
+            {
+                var data = dataList[i];
+                if (typeof(T).Name == "ReportData")
+                {
+                    tableHeader = ToRoman(i+1).ToLower() + ". " + reportlevel.GetValue(data) + " - " + reportytype.GetValue(data);
+                }
+                else
+                {
+                    tableHeader = ToRoman(i+1).ToLower() + ". " + reportlevel.GetValue(data) + " - " + thematicinfo.GetValue(data);
+                }
+               
+
+                PdfPCell hd = GenerateHeaderCell(tableHeader);
+                hd.BackgroundColor = new BaseColor(System.Drawing.Color.FromArgb(130, System.Drawing.Color.SteelBlue)); 
+                table.AddCell(hd); //add header
+
+                PdfPTable body = new PdfPTable(2);
+                GenerateTable(data, ref body, excludedinfo);
+
+                PdfPCell bodyCell = new PdfPCell(body);
+                bodyCell.BorderWidth = 0;
+                table.AddCell(bodyCell);
+            }
+             
+            table.SpacingAfter = 10f;
+            table.SpacingBefore = 10f;
+            return table;
+             
+        }
+
 
         List<PdfPTable> CreateDocumentRevisionPage(List<DAL.Entities.DocumentRevisions> documentRevisions)
         {
@@ -734,20 +800,24 @@ namespace ShieldPortal.Services
             return bodyTable;
         }
 
-        public void GenerateTable<T>(T data, ref PdfPTable table)
+        public void GenerateTable<T>(T data, ref PdfPTable table, List<PropertyInfo> excludedProperty = null)
         {
-            BaseColor blackColor = new BaseColor(0, 0, 0);
+            
             Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
-            Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL, blackColor);
+            
             var tanColor = System.Drawing.Color.FromArgb(40, System.Drawing.Color.Tan);
             PdfPCell PdfPCell = null;
             Paragraph pp = null;
 
-            var infos = typeof(T).GetProperties().Where(x => (x.PropertyType == typeof(string) || x.PropertyType == typeof(int)) && !Attribute.IsDefined(x, typeof(XmlIgnoreAttribute)));
-
+            IEnumerable<PropertyInfo> infos = typeof(T).GetProperties().Where(x => (x.PropertyType == typeof(string) || x.PropertyType == typeof(int) || x.PropertyType == typeof(List<DateTime>)) && !Attribute.IsDefined(x, typeof(XmlIgnoreAttribute)));
+            
             foreach (var info in infos)
             {
-                if (info.Name == "DataFlowChart")
+                if(excludedProperty !=null && excludedProperty.Contains(info))
+                {
+                    continue;
+                }
+                if (info.Name == "DataFlowChart" || info.Name == "Id")
                 {
                     continue;
                 }
@@ -755,6 +825,10 @@ namespace ShieldPortal.Services
                 if(info.Name == "ImplementingPartnerMEProcess")
                 {
                     pp = new Paragraph(new Chunk("Implementing partner M&E process", font8));
+                }
+                else if (info.Name.ToLower().Contains("duration"))
+                {
+                    pp = new Paragraph(new Chunk("Duration (days)", font8));
                 }
                 else
                 {
@@ -772,7 +846,20 @@ namespace ShieldPortal.Services
                 table.AddCell(PdfPCell);
 
                 //add value
-                pp = new Paragraph(new Chunk(Convert.ToString(info.GetValue(data)), fontValue));
+                string datavalue = "";
+                if (info.PropertyType == typeof(List<DateTime>))
+                {
+                    List<DateTime> timelines = info.GetValue(data) as List<DateTime>;
+                    timelines.ForEach(x =>
+                    {
+                        datavalue += string.Format("{0:dd-MMM-yyyy} \n", x);
+                    });
+                }
+                else
+                {
+                    datavalue = Convert.ToString(info.GetValue(data));
+                }                
+                pp = new Paragraph(new Chunk(datavalue, fontValue));
                 PdfPCell = new PdfPCell();
                 pp.IndentationLeft = 10;
                 PdfPCell = new PdfPCell();
@@ -921,6 +1008,26 @@ namespace ShieldPortal.Services
             table.SpacingBefore = 10f;
 
             return table;
+        }
+
+        public string ToRoman(int number)
+        {
+            if ((number < 0) || (number > 3999)) throw new ArgumentOutOfRangeException("insert value betwheen 1 and 3999");
+            if (number < 1) return string.Empty;
+            if (number >= 1000) return "M" + ToRoman(number - 1000);
+            if (number >= 900) return "CM" + ToRoman(number - 900); //EDIT: i've typed 400 instead 900
+            if (number >= 500) return "D" + ToRoman(number - 500);
+            if (number >= 400) return "CD" + ToRoman(number - 400);
+            if (number >= 100) return "C" + ToRoman(number - 100);
+            if (number >= 90) return "XC" + ToRoman(number - 90);
+            if (number >= 50) return "L" + ToRoman(number - 50);
+            if (number >= 40) return "XL" + ToRoman(number - 40);
+            if (number >= 10) return "X" + ToRoman(number - 10);
+            if (number >= 9) return "IX" + ToRoman(number - 9);
+            if (number >= 5) return "V" + ToRoman(number - 5);
+            if (number >= 4) return "IV" + ToRoman(number - 4);
+            if (number >= 1) return "I" + ToRoman(number - 1);
+            throw new ArgumentOutOfRangeException("something bad happened");
         }
     }
 }
