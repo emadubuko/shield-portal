@@ -15,7 +15,7 @@ namespace CommonUtil.Mapping
             Map(x => x.Longitude);
             Map(x => x.Latitude);
             Map(x => x.OrganizationType);
-            References(x => x.Organization).Column("OrganizationId").Not.Nullable();
+            References(x => x.Organization).Column("ImplementingPartnerId").Not.Nullable();
         }
     }
 }

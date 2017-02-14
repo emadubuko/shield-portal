@@ -1,4 +1,4 @@
-﻿@model  BWReport.DAL.Entities.HealthFacility
+﻿@model  CommonUtil.Entities.HealthFacility
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
@@ -25,7 +25,7 @@
                 <div class="panel-body">
                     <div class="form-horizontal">
 
-                        @foreach (var field in typeof(BWReport.DAL.Entities.HealthFacility).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                        @foreach (var field in typeof(CommonUtil.Entities.HealthFacility).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
                         {
                             <div class="form-group">
                                 <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
@@ -42,8 +42,6 @@
                                     {
                                         <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
                                     }
-
-
                                 </div>
                             </div>
                         }
@@ -53,3 +51,7 @@
         </div>
     </div>
 </div>
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+}
