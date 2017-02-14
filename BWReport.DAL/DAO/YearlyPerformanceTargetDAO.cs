@@ -10,6 +10,8 @@ using System.Data;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
+using CommonUtil.DAO;
+using CommonUtil.Entities;
 
 namespace BWReport.DAL.DAO
 {

@@ -72,14 +72,11 @@
   <ItemGroup>
     <Compile Include="DAO\ReportUploadsDao.cs" />
     <Compile Include="DAO\PerformanceDataDao.cs" />
-    <Compile Include="DAO\HealthFacilityDAO.cs" />
     <Compile Include="DAO\YearlyPerformanceTargetDAO.cs" />
-    <Compile Include="Entities\HealthFacility.cs" />
     <Compile Include="Entities\ReportUploads.cs" />
     <Compile Include="Entities\PerformanceData.cs" />
     <Compile Include="Entities\YearlyPerformanceTarget.cs" />
     <Compile Include="Mapping\ReportUploadMap.cs" />
-    <Compile Include="Mapping\HealthFacilityMap.cs" />
     <Compile Include="Mapping\PerformanceDataMap.cs" />
     <Compile Include="Mapping\YearlyPerformanceTargetMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

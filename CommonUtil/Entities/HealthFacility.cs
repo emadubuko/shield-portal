@@ -1,9 +1,7 @@
-﻿using CommonUtil.Entities;
-using CommonUtil.Enums;
-using System.Collections.Generic;
+﻿using CommonUtil.Enums;
 using System.Xml.Serialization;
 
-namespace BWReport.DAL.Entities
+namespace CommonUtil.Entities
 {
     public class HealthFacility
     {
@@ -19,10 +17,6 @@ namespace BWReport.DAL.Entities
         public virtual string Longitude { get; set; }
         public virtual Organizations Organization { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }
-
-        [XmlIgnore]
-        public virtual IList<YearlyPerformanceTarget> YearlyPerformanceTarget { get; set; }
-        [XmlIgnore]
-        public virtual IList<PerformanceData> PerfomanceData { get; set; }
+         
     }
 }

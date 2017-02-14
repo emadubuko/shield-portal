@@ -1,10 +1,14 @@
-﻿using CommonUtil.DAO;
+﻿using BWReport.DAL.DAO;
+using BWReport.DAL.Entities;
+using CommonUtil.DAO;
 using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
 using DAL.DAO;
 using DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Test
 {
@@ -13,12 +17,45 @@ namespace Test
         static void Main(string[] args)
         {
             Console.WriteLine("Press enter to begin");
-
-            new Program().CreateNewDMP();
+            new Program().InsertFacility();
+            //new Program().CreateNewDMP();
             //new Program().QuerySystem();
 
             Console.ReadLine();
 
+        }
+
+
+        public void InsertFacility()
+        {
+            StreamReader reader = new StreamReader(@"C:\Users\Somadina Mbadiwe\AppData\Roaming\Skype\My Skype Received Files\Facility_List(1).csv");
+           string header= reader.ReadLine();
+            string[] content = reader.ReadToEnd().Split(new string[] { "\n\r", System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            reader.Close();
+            reader.Dispose();
+            HealthFacilityDAO hfdao = new HealthFacilityDAO();
+            IList<LGA> lgas = new LGADao().RetrieveAll();
+            IList<Organizations> orgs = new OrganizationDAO().RetrieveAll();
+
+            foreach (var item in content)
+            {
+                string[] theline = item.Split(',');
+
+                LGA lga = lgas.FirstOrDefault(x => x.lga_name.Trim().ToUpper() == theline[2].Trim().ToUpper() && x.State.state_name.Trim().ToUpper() == theline[1].Trim().ToUpper());
+                if (lga == null)
+                    continue;                
+
+                HealthFacility hf = new HealthFacility
+                {
+                    FacilityCode = theline[4],
+                    Name = theline[3],
+                    LGA = lga,
+                    Organization = orgs.FirstOrDefault(x => x.ShortName == theline[5]),
+                    OrganizationType = CommonUtil.Enums.OrganizationType.HealthFacilty
+                };
+                hfdao.Save(hf);
+            }
+            hfdao.CommitChanges();
         }
 
         public void CreateNewDMP()
@@ -170,19 +207,19 @@ namespace Test
             //{
             //    DataCollectionProcessess = "Collected by hand"
             //},
-            DataStorageAccessAndSharing = new DataStorage
-            {
-                Digital = new DigitalData
-                {
-                    Backup = "None",
-                    //StorageType = "DBs"
-                },
-                NonDigital = new NonDigitalData
-                {
-                    NonDigitalDataTypes = "Registers",
-                    StorageLocation = "File Cabinet"
-                }
-            },
+            //DataStorageAccessAndSharing = new DataStorage
+            //{
+            //    Digital = new DigitalData
+            //    {
+            //        Backup = "None",
+            //        //StorageType = "DBs"
+            //    },
+            //    NonDigital = new NonDigitalData
+            //    {
+            //        NonDigitalDataTypes = "Registers",
+            //        StorageLocation = "File Cabinet"
+            //    }
+            //},
             IntellectualPropertyCopyrightAndOwnership = new IntellectualPropertyCopyrightAndOwnership
             {
                 ContractsAndAgreements = "None",

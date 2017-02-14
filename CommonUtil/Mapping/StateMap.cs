@@ -11,6 +11,7 @@ namespace CommonUtil.Mapping
             Id(x => x.state_code);
             Map(x => x.state_name); 
             Map(x => x.geo_polictical_region);
+            //HasMany(x => x.LgaList).Inverse().Cascade.All();
         }
     }
 }
