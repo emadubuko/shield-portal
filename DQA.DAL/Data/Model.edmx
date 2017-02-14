@@ -5,21 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="shield_dmpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="dmp_Organizations">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="255" />
-          <Property Name="ShortName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Address" Type="nvarchar" MaxLength="255" />
-          <Property Name="OrganizationType" Type="nvarchar" MaxLength="255" />
-          <Property Name="MissionPartner" Type="nvarchar" MaxLength="255" />
-          <Property Name="Logo" Type="varbinary(max)" />
-          <Property Name="WebSite" Type="nvarchar" MaxLength="255" />
-          <Property Name="Fax" Type="nvarchar" MaxLength="255" />
-          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="255" />
-        </EntityType>
         <EntityType Name="dqa_facility">
           <Key>
             <PropertyRef Name="Id" />
@@ -163,6 +148,20 @@
           <Property Name="OrganizationType" Type="nvarchar" MaxLength="255" />
           <Property Name="ImplementingPartnerId" Type="int" />
         </EntityType>
+        <EntityType Name="ImplementingPartners">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="ShortName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="MissionPartner" Type="nvarchar" MaxLength="255" />
+          <Property Name="Logo" Type="varbinary(max)" />
+          <Property Name="WebSite" Type="nvarchar" MaxLength="255" />
+          <Property Name="Fax" Type="nvarchar" MaxLength="255" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <Association Name="FK_dqa_report_value_dqa_indicator">
           <End Role="dqa_indicator" Type="Self.dqa_indicator" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -189,8 +188,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FKA9A8FFC7CC15123B">
+          <End Role="ImplementingPartners" Type="Self.ImplementingPartners" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="ImplementingPartnerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="shield_dmpModelStoreContainer">
-          <EntitySet Name="dmp_Organizations" EntityType="Self.dmp_Organizations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_facility" EntityType="Self.dqa_facility" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" Schema="dbo" store:Type="Tables" />
@@ -201,6 +211,7 @@
           <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_states" EntityType="Self.dqa_states" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HealthFacility" EntityType="Self.HealthFacility" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImplementingPartners" EntityType="Self.ImplementingPartners" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
             <End Role="dqa_indicator" EntitySet="dqa_indicator" />
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
@@ -209,26 +220,15 @@
             <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
           </AssociationSet>
+          <AssociationSet Name="FKA9A8FFC7CC15123B" Association="Self.FKA9A8FFC7CC15123B">
+            <End Role="ImplementingPartners" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="shield_dmpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="dmp_Organizations">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ShortName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="OrganizationType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MissionPartner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Logo" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="WebSite" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="dqa_facility">
           <Key>
             <PropertyRef Name="Id" />
@@ -358,7 +358,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="shield_dmpEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="dmp_Organizations" EntityType="Self.dmp_Organizations" />
           <EntitySet Name="dqa_facility" EntityType="Self.dqa_facility" />
           <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" />
           <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" />
@@ -377,6 +376,11 @@
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
           </AssociationSet>
           <EntitySet Name="HealthFacilities" EntityType="shield_dmpModel.HealthFacility" />
+          <EntitySet Name="ImplementingPartners" EntityType="shield_dmpModel.ImplementingPartner" />
+          <AssociationSet Name="FKA9A8FFC7CC15123B" Association="shield_dmpModel.FKA9A8FFC7CC15123B">
+            <End Role="ImplementingPartner" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacilities" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="dqa_report_metadata">
           <Key>
@@ -420,29 +424,41 @@
           <Property Name="LGAId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OrganizationType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ImplementingPartnerId" Type="Int32" />
+          <NavigationProperty Name="ImplementingPartner" Relationship="shield_dmpModel.FKA9A8FFC7CC15123B" FromRole="HealthFacility" ToRole="ImplementingPartner" />
         </EntityType>
+        <EntityType Name="ImplementingPartner">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShortName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MissionPartner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Logo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="WebSite" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="HealthFacilities" Relationship="shield_dmpModel.FKA9A8FFC7CC15123B" FromRole="ImplementingPartner" ToRole="HealthFacility" />
+        </EntityType>
+        <Association Name="FKA9A8FFC7CC15123B">
+          <End Type="shield_dmpModel.ImplementingPartner" Role="ImplementingPartner" Multiplicity="0..1" />
+          <End Type="shield_dmpModel.HealthFacility" Role="HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartner">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="ImplementingPartnerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="shield_dmpModelStoreContainer" CdmEntityContainer="shield_dmpEntities">
-          <EntitySetMapping Name="dmp_Organizations">
-            <EntityTypeMapping TypeName="shield_dmpModel.dmp_Organizations">
-              <MappingFragment StoreEntitySet="dmp_Organizations">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="OrganizationType" ColumnName="OrganizationType" />
-                <ScalarProperty Name="MissionPartner" ColumnName="MissionPartner" />
-                <ScalarProperty Name="Logo" ColumnName="Logo" />
-                <ScalarProperty Name="WebSite" ColumnName="WebSite" />
-                <ScalarProperty Name="Fax" ColumnName="Fax" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="dqa_facility">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_facility">
               <MappingFragment StoreEntitySet="dqa_facility">
@@ -591,6 +607,21 @@
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="FacilityCode" ColumnName="FacilityCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImplementingPartners">
+            <EntityTypeMapping TypeName="shield_dmpModel.ImplementingPartner">
+              <MappingFragment StoreEntitySet="ImplementingPartners">
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="WebSite" ColumnName="WebSite" />
+                <ScalarProperty Name="Logo" ColumnName="Logo" />
+                <ScalarProperty Name="MissionPartner" ColumnName="MissionPartner" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

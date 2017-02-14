@@ -22,5 +22,7 @@ namespace DQA.DAL.Data
         public string LGAId { get; set; }
         public string OrganizationType { get; set; }
         public Nullable<int> ImplementingPartnerId { get; set; }
+    
+        public virtual ImplementingPartner ImplementingPartner { get; set; }
     }
 }

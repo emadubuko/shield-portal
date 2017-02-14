@@ -25,7 +25,6 @@ namespace DQA.DAL.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<dmp_Organizations> dmp_Organizations { get; set; }
         public virtual DbSet<dqa_facility> dqa_facility { get; set; }
         public virtual DbSet<dqa_facility_level> dqa_facility_level { get; set; }
         public virtual DbSet<dqa_facility_type> dqa_facility_type { get; set; }
@@ -36,5 +35,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_states> dqa_states { get; set; }
         public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
         public virtual DbSet<HealthFacility> HealthFacilities { get; set; }
+        public virtual DbSet<ImplementingPartner> ImplementingPartners { get; set; }
     }
 }

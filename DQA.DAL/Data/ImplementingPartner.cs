@@ -12,17 +12,25 @@ namespace DQA.DAL.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class dmp_Organizations
+    public partial class ImplementingPartner
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ImplementingPartner()
+        {
+            this.HealthFacilities = new HashSet<HealthFacility>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
         public string Address { get; set; }
-        public string OrganizationType { get; set; }
         public string MissionPartner { get; set; }
         public byte[] Logo { get; set; }
         public string WebSite { get; set; }
         public string Fax { get; set; }
         public string PhoneNumber { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<HealthFacility> HealthFacilities { get; set; }
     }
 }
