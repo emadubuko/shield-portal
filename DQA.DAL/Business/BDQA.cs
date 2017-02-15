@@ -39,7 +39,7 @@ namespace DQA.DAL.Business
                 {
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The LGA is incorrect</td></tr>";
                 }
-                excel_value = worksheet.Cells["S3"].Value.ToString();
+                excel_value = worksheet.Cells["U3"].Value.ToString();
                 var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == excel_value);
 
                 if (facility == null)
