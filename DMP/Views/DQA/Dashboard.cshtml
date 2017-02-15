@@ -45,10 +45,10 @@
                 
                 <div class="col-lg-6">
                     <select class="form-control" id="selected_period">
-                        <option value="1">October - December</option>
-                        <option value="2">January - March</option>
-                        <option value="3">April - June</option>
-                        <option value="4">July - September</option>
+                        <option value="Q1 (Oct-Dec)">October - December</option>
+                        <option value="Q2 (Jan-Mar)">January - March</option>
+                        <option value="Q3 (Apr-Jun)">April - June</option>
+                        <option value="Q4 (Jul-Sep)">July - September</option>
                     </select>
                 </div>
                 <div class="col-lg-2">
@@ -211,9 +211,9 @@
 
         $(document).ready(function () {
             loadSettings();
-            getPending(3);
-            getCounts(3);
-            getStateSummary(3);
+            getPending(@ViewBag.ip_id);
+            getCounts(@ViewBag.ip_id);
+            getStateSummary(@ViewBag.ip_id);
             
         });
     </script>

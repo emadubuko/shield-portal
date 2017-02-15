@@ -1,6 +1,7 @@
 ﻿function getCounts(id) {
+    var period = $("#selected_period").val()
     $.ajax({
-        url: baseUrl() + "dashboard/GetIpCounts/" + id + "/November",
+        url: baseUrl() + "dashboard/GetIpCounts/" + id + "/"+period,
         method: "GET",
         contentType: "application/json",
         success: function (data) {
@@ -14,8 +15,9 @@
 }
 
 function getStateSummary(id) {
+    var period = $("#selected_period").val()
     $.ajax({
-        url: baseUrl() + "dashboard/GetStateSummary/" + id+"/November",
+        url: baseUrl() + "dashboard/GetStateSummary/" + id+"/"+period,
         method: "GET",
         contentType: "application/json",
         success: function (data) {
@@ -43,8 +45,9 @@ function getStateSummary(id) {
 
 
 function getPending(ip) {
+    var period = $("#selected_period").val()
     $.ajax({
-        url: baseUrl() + "dashboard/GetPendingFacilities/" + ip + "/November",
+        url: baseUrl() + "dashboard/GetPendingFacilities/" + ip + "/"+period,
         method: "GET",
         contentType: "application/json",
         success: function (data) {
@@ -70,16 +73,16 @@ function loadSettings() {
     $("#selected_year").val(d.getFullYear());
     
     if ($.inArray(n, [9,10,11])==0) {
-        $("#selected_period").val(1);
+        $("#selected_period").val("Q1 (Oct-Dec)");
     }
     else if ($.inArray(n, [0, 1, 2])==0) {
-        $("#selected_period").val(2);
+        $("#selected_period").val("Q2 (Jan-Mar)");
     }
     else if ($.inArray(n, [3, 4, 5])==0) {
-        $("#selected_period").val(4);
+        $("#selected_period").val("Q3 (Apr-Jun)");
     }
     else if ($.inArray(n, [6, 7, 8])==0) {
-        $("#selected_period").val(4);
+        $("#selected_period").val("Q4 (Jul-Sep)");
     }
 }
 

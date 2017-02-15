@@ -51,7 +51,7 @@ namespace DQA.DAL.Business
         /// <returns>Number of facilities</returns>
         public static int GetIpFacilitycount(int partnerId)
         {
-            return entity.dqa_facility.Count(e => e.Partners == partnerId);
+            return entity.HealthFacilities.Count(e => e.ImplementingPartnerId == partnerId);
         }
 
 
