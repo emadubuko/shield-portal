@@ -5,7 +5,6 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="fc90e455f8dc46bd8e75336315d376e6" Name="Diagram1">
-        <EntityTypeShape EntityType="shield_dmpModel.dmp_Organizations" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_facility" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_facility_level" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_facility_type" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
@@ -18,6 +17,8 @@
         <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="0.75" PointY="9" />
         <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" />
         <EntityTypeShape EntityType="shield_dmpModel.HealthFacility" Width="1.5" PointX="9.375" PointY="6.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.ImplementingPartner" Width="1.5" PointX="7.125" PointY="9.625" />
+        <AssociationConnector Association="shield_dmpModel.FKA9A8FFC7CC15123B" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

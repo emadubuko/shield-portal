@@ -20,7 +20,7 @@ namespace DQA.DAL.Business
                 var worksheet = package.Workbook.Worksheets["Worksheet"];
                 //var metaSheet = package.Workbook.Worksheets["CDC DQA"];
                 var excel_value = worksheet.Cells["O3"].Value.ToString();
-                var partner = entity.dmp_Organizations.FirstOrDefault(e => e.ShortName == excel_value);
+                var partner = entity.ImplementingPartners.FirstOrDefault(e => e.ShortName == excel_value);
                 if (partner==null)
                 {
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The partner does not exist.</td></tr>";
