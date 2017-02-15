@@ -28,6 +28,8 @@ namespace ShieldPortal.Controllers
 
         public ActionResult Index()
         {
+            return RedirectToAction("index", "DMP");
+
             Dictionary<string, string> iframe = null;
             var loggedinProfile = new Services.Utils().GetloggedInProfile();
              
