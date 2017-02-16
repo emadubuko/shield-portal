@@ -42,6 +42,9 @@
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var editMode = false;
 
+        let reportingLevelArrayFromServer = @Html.Raw(Json.Encode(Model.reportingLevel));
+        let reportingLevelArray = [];
+
         var digitalDataCollectionArrayFromServer = @Html.Raw(Json.Encode(Model.digital));
         var digitalDatacollectionArray = [];
 

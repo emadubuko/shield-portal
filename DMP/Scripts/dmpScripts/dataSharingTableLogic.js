@@ -15,12 +15,20 @@ $("#adddasbtn").click(function (e) {
 
     $("#DataAccessansSharing input, select, textarea").each(function () {
         if ($(this)[0].id == "dasThematicArea") {
-            dataSharing["ThematicArea"] = $(this)[0].value;
-            $(this).val("");
+            let th = '';
+            $("#dasThematicArea option:selected").each(function () {
+                th += $(this).val() + ',';
+            });
+            dataSharing["ThematicArea"] = th;
+            $("#dasThematicArea").select2('val', 'All');
         }
         else if ($(this)[0].id == "dasReportingLevel") {
-            dataSharing["ReportingLevel"] = $(this)[0].value;
-            $(this).val("");
+            let reportinglevel = '';
+            $("#dasReportingLevel option:selected").each(function () {
+                reportinglevel += $(this).val() + ',';
+            });
+            dataSharing["ReportingLevel"] = reportinglevel;
+            $("#dasReportingLevel").select2('val', 'All');
         }
         else if ($(this)[0].id == "DataAccess") {
             dataSharing["DataAccess"] = $(this)[0].value;

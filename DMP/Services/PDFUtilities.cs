@@ -3,6 +3,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -13,6 +14,7 @@ namespace ShieldPortal.Services
     public class PDFUtilities
     {
         static BaseColor fadedBlue = new BaseColor(79, 129, 189);
+        static BaseColor whiteColor = new BaseColor(255,255, 255);
         static BaseColor blackColor = new BaseColor(0, 0, 0);
         Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL, blackColor);
 
@@ -255,7 +257,18 @@ namespace ShieldPortal.Services
         }
         private Image GeneratePDFImage(byte[] imageBytes, float scale = 0)
         {
-            iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(imageBytes, true); // System.Drawing.Imaging.ImageFormat.Jpeg);
+            string imgStr = Convert.ToBase64String(imageBytes);
+            byte[] img = Convert.FromBase64String(imgStr);
+
+            System.Drawing.Image drimage = null;
+            Image pic = null;
+            using (var ms = new MemoryStream(img, 0, img.Length))
+            {
+                drimage = System.Drawing.Image.FromStream(ms, true);
+                pic = Image.GetInstance(drimage, whiteColor); //System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+
+            
 
             //if (scale != 0)
             //{

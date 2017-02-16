@@ -15,12 +15,20 @@ $("#addddocbtn").click(function (e) {
 
     $("#DataDocumentationManagementAndEntry input, select, textarea").each(function () {
         if ($(this)[0].id == "ddocThematicArea") {
-            datadocumentation["ThematicArea"] = $(this)[0].value;
-            $(this).val("");
+            let th = '';
+            $("#ddocThematicArea option:selected").each(function () {
+                th += $(this).val() + ',';
+            });
+            datadocumentation["ThematicArea"] = th;
+            $("#ddocThematicArea").select2('val', 'All');
         }
         else if ($(this)[0].id == "ddocReportingLevel") {
-            datadocumentation["ReportingLevel"] = $(this)[0].value;
-            $(this).val("");
+            let reportinglevel = '';
+            $("#ddocReportingLevel option:selected").each(function () {
+                reportinglevel += $(this).val() + ',';
+            });
+            datadocumentation["ReportingLevel"] = reportinglevel;
+            $("#ddocReportingLevel").select2('val', 'All');
         }
         else if ($(this)[0].id == "StoredDocumentationAndDataDescriptors") {
             datadocumentation["StoredDocumentationAndDataDescriptors"] = $(this)[0].value;

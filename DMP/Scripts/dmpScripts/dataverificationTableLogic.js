@@ -40,12 +40,21 @@ $("#addDataVerificationbtn").click(function (e) {
             $(this).val("");
         }
         else if ($(this)[0].id == "dvReportingLevel") {
-            dataverification["ReportingLevel"] = $(this)[0].value;
-            $(this).val("");
+            let reportinglevel = '';
+            $("#dvReportingLevel option:selected").each(function () {
+                reportinglevel += $(this).val() + ',';
+            });
+            dataverification["ReportingLevel"] = reportinglevel;
+            $("#dvReportingLevel").select2('val', 'All');
         }
+
         else if ($(this)[0].id == "dvThematicArea") {
-            dataverification["ThematicArea"] = $(this)[0].value;
-            $(this).val("");
+            let th = '';
+            $("#dvThematicArea option:selected").each(function () {
+                th += $(this).val() + ',';
+            });
+            dataverification["ThematicArea"] = th;
+            $("#dvThematicArea").select2('val', 'All');
         }
 
         else if ($(this)[0].id == "TypesOfDataVerification") {
@@ -76,7 +85,7 @@ $("#addDataVerificationbtn").click(function (e) {
                 case "Months":
                     duration = inputValue * 30; break;
                 case "Years":
-                    duration = inputValue * 365; break; 
+                    duration = inputValue * 365; break;
             }
             if (duration == "") {
                 alert("please specify duration");
@@ -84,7 +93,7 @@ $("#addDataVerificationbtn").click(function (e) {
             }
             dataverification["DurationOfDataVerificaion"] = duration; // $(this)[0].value;
             $(this).val("");
-        }        
+        }
     });
 
     if (dataverification.TimelinesForDataVerification != null && dataverification.DurationOfDataVerificaion != null && dataverification.ReportingLevel !=null) {

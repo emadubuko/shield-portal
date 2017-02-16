@@ -1,5 +1,6 @@
 ﻿using DAL.Entities;
 using FluentNHibernate.Mapping;
+using NHibernate.Mapping.ByCode;
 
 namespace DAL.Mapping
 {
@@ -17,8 +18,13 @@ namespace DAL.Mapping
             Map(x => x.EndDate);
             References(x => x.CreatedBy).Not.LazyLoad();
             Map(x => x.DateCreated);
-            HasMany(x => x.DMPDocuments).Cascade.All()
-            .Inverse().KeyColumns.Add("DMPId", mapping => mapping.Name("DMPId"));
+            //HasMany(x => x.DMPDocuments).Cascade.All()
+            //.Inverse().KeyColumns.Add("DMPId", mapping => mapping.Name("DMPId"));
+
+            HasMany(x => x.DMPDocuments)
+                .Cascade.None()
+                .Inverse()
+                .KeyColumns.Add("DMPId", mapping => mapping.Name("DMPId"));
         }
     }
 }

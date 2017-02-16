@@ -89,7 +89,8 @@
 
             $.each(formdata, function (name, formElements) {
                 if(formElements.id == "Logo" && base64Image != undefined){
-                    viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,","");
+
+                    viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,","").replace("data:image/png;base64,","");
                 }else{
                     viewModel[formElements.id] = formElements.value;
                 }

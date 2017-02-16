@@ -92,7 +92,7 @@
                         viewModel[formElements.id] = formElements.value;
                     });
                     if (base64Image != undefined)
-                        viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,", "");
+                        viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "");
 
                     var someUrl = '@Url.Action("CreateNewOrganization", "Organization")';
                     $.ajax({

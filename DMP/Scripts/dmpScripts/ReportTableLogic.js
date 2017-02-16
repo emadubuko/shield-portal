@@ -39,8 +39,12 @@ $("#addReportbtn").click(function (e) {
           }
 
           else if ($(this)[0].id == "rptReportingLevel") {
-              report["ReportingLevel"] = $(this)[0].value;
-              $(this).val("");
+              let reportinglevel = '';
+              $("#rptReportingLevel option:selected").each(function () {
+                  reportinglevel += $(this).val() + ',';
+              });
+              report["ReportingLevel"] = reportinglevel;
+              $("#rptReportingLevel").select2('val', 'All');
           }
 
           else if ($(this)[0].id == "ReportedTo") {

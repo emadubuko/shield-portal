@@ -54,6 +54,10 @@ namespace ShieldPortal.Controllers
             var orgDao = new OrganizationDAO();
             orgDao.Update(org);
             orgDao.CommitChanges();
+
+            //update the global cache for organizations
+            HttpContext.Session["OrganizationList"] = orgDao.RetrieveAll();
+
             return RedirectToAction("Index");
         }
 

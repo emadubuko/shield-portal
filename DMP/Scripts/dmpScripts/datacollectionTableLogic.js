@@ -20,8 +20,12 @@ $("#adddatacollectionbtn").click(function (e) {
             $(this).val("");
         }
         else if ($(this)[0].id == "dcReportingLevel") {
-            datacollection["ReportingLevel"] = $(this)[0].value;
-            $(this).val("");
+            let reportinglevel = '';
+            $("#dcReportingLevel option:selected").each(function () {
+                reportinglevel += $(this).val() + ',';
+            });
+            datacollection["ReportingLevel"] = reportinglevel;
+            $("#dcReportingLevel").select2('val', 'All');
         }
         else if ($(this)[0].id == "DataCollectionProcess") {
             datacollection["DataCollectionProcess"] = $(this)[0].value;
@@ -34,7 +38,7 @@ $("#adddatacollectionbtn").click(function (e) {
                 selectedTools += $(this).val() + ',';
             });
             datacollection["DataCollectionAndReportingTools"] = selectedTools;
-            $(this).val("");
+            $("#DataCollectionAndReportingTools").select2('val', 'All');
         }
     });
     if (datacollection.DataCollectionProcess != null && datacollection.DataCollectionAndReportingTools != null && datacollection.ReportingLevel != null) {

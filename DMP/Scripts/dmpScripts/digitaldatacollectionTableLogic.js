@@ -14,20 +14,32 @@ $("#adddgtbtn").click(function (e) {
 
     $("#DigitalPnl input, select, textarea").each(function () {
         if ($(this)[0].id == "dgtThematicArea") {
-            digitaldata["ThematicArea"] = $(this)[0].value;
-            $(this).val("");
+            let th = '';
+            $("#dgtThematicArea option:selected").each(function () {
+                th += $(this).val() + ',';
+            });
+            digitaldata["ThematicArea"] = th;
+            $("#dgtThematicArea").select2('val', 'All');
         }
         else if ($(this)[0].id == "dgtReportingLevel") {
-            digitaldata["ReportingLevel"] = $(this)[0].value;
-            $(this).val("");
+            let reportinglevel = '';
+            $("#dgtReportingLevel option:selected").each(function () {
+                reportinglevel += $(this).val() + ',';
+            });
+            digitaldata["ReportingLevel"] = reportinglevel;
+            $("#dgtReportingLevel").select2('val', 'All');
         }
         else if ($(this)[0].id == "VolumeOfdigitalData") {
             digitaldata["VolumeOfDigitalData"] = $(this)[0].value;
             $(this).val("");
         }
         else if ($(this)[0].id == "DataStorageFormat") {
-            digitaldata["DataStorageFormat"] = $(this)[0].value;
-            $(this).val("");
+            let dstf = '';
+            $("#DataStorageFormat option:selected").each(function () {
+                dstf += $(this).val() + ',';
+            });
+            digitaldata["DataStorageFormat"] = dstf;
+            $("#DataStorageFormat").select2('val', 'All');
         }
         else if ($(this)[0].id == "Storagelocation") {
             digitaldata["StorageLocation"] = $(this)[0].value;

@@ -285,6 +285,7 @@
                                                     <label class="col-sm-4 control-label" for="Rational">Rational</label>
                                                     <div class="col-sm-5">
                                                         <select class="form-control" onchange="document.getElementById('Rational').value=this.options[this.selectedIndex].text;">
+                                                            <option value=""></option>
                                                             <option value="" disabled>please specify if not on the list</option>
                                                             @foreach (var item in Model.rational)
                                                             {
@@ -299,6 +300,7 @@
                                                     <label class="col-sm-4 control-label" for="AprrovingInstititionalReviewBoard">Aprroving Instititional Review Board</label>
                                                     <div class="col-sm-5">
                                                         <select class="form-control" onchange="document.getElementById('AprrovingInstititionalReviewBoard').value=this.options[this.selectedIndex].text;">
+                                                            <option value=""></option>
                                                             <option value="" disabled>please specify if not on the list</option>
                                                             @foreach (var item in Model.reviewBoard)
                                                             {
@@ -312,6 +314,7 @@
                                                     <label class="col-sm-4 control-label" for="TypeOfEthicalApproval">Type of Ethical Approval</label>
                                                     <div class="col-sm-5">
                                                         <select class="form-control" onchange="document.getElementById('TypeOfEthicalApproval').value=this.options[this.selectedIndex].text;">
+                                                            <option value=""></option>
                                                             <option value="" disabled>please specify if not on the list</option>
                                                             @foreach (var item in Model.ethicalApprovalTypes)
                                                             {
@@ -540,8 +543,7 @@
                                                         <div class="form-group">
                                                             <label class="col-sm-3 control-label">Reporting level</label>
                                                             <div class="col-sm-7">
-                                                                <select id="dtReportingLevel" class="form-control reportingleveldrpdn">
-                                                                    <option value="" disabled selected>select applicable level</option>
+                                                                <select id="dtReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -750,8 +752,7 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Reporting level</label>
                                                 <div class="col-sm-8">
-                                                    <select id="dcReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="dcReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
@@ -816,8 +817,7 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Reporting level</label>
                                                 <div class="col-sm-8">
-                                                    <select id="rptReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="rptReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
@@ -826,6 +826,7 @@
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of data are collected  & reported on? "><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
                                                     <select class="form-control" onchange="document.getElementById('ReportsType').value=this.options[this.selectedIndex].text;">
+                                                        <option value=""></option>
                                                         <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.reportTypes)
                                                         {
@@ -840,6 +841,7 @@
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Data is reported to?"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
                                                     <select class="form-control" onchange="document.getElementById('ReportedTo').value=this.options[this.selectedIndex].text;">
+                                                        <option value=""></option>
                                                         <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.datareported)
                                                         {
@@ -940,15 +942,14 @@
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label">Reporting level</label>
                                                 <div class="col-sm-6">
-                                                    <select id="dvReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="dvReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label">Thematic area</label>
                                                 <div class="col-sm-6">
-                                                    <select id="dvThematicArea" class="select2 form-control" multiple data-placeholder="select applicable level">
+                                                    <select id="dvThematicArea" class="select2 form-control" multiple data-placeholder="select applicable area">
                                                         @foreach (var item in Model.thematicAreas)
                                                         {
                                                             <option value="@item">@item</option>
@@ -960,6 +961,7 @@
                                                 <label class="col-sm-4 control-label" for="DataVerificationApproach">Data validation approach</label>
                                                 <div class="col-sm-6">
                                                     <select class="form-control" onchange="document.getElementById('DataVerificationApproach').value=this.options[this.selectedIndex].text;">
+                                                        <option value=""></option>
                                                         <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.DataVerificationApproach)
                                                         {
@@ -1057,16 +1059,14 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Reporting level</label>
                                                 <div class="col-sm-8">
-                                                    <select id="dgtReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="dgtReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Thematic area</label>
                                                 <div class="col-sm-8">
-                                                    <select id="dgtThematicArea" class="form-control">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="dgtThematicArea" class="select2 form-control" multiple data-placeholder="select applicable area">
                                                         @foreach (var item in Model.thematicAreas)
                                                         {
                                                             <option value="@item">@item</option>
@@ -1097,10 +1097,11 @@
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Do you have a specified location for storing data collected ?"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
                                                     <select class="form-control" onchange="document.getElementById('Storagelocation').value=this.options[this.selectedIndex].text;">
+                                                        <option value=""></option>
                                                         <option value="" disabled>please specify if not on the list</option>
                                                         @foreach (var item in Model.storageLoation)
                                                         {
-                                                        <option value="@item">@item</option>
+                                                            <option value="@item">@item</option>
                                                         }
                                                     </select>
                                                     <input id="Storagelocation" value="" placeholder="Do you have a specified location for storing data collected?" class="modifiedselect" onfocus="this.select()" type="text">
@@ -1175,16 +1176,14 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Reporting level</label>
                                                 <div class="col-sm-8">
-                                                    <select id="ndgtReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="ndgtReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Thematic area</label>
                                                 <div class="col-sm-8">
-                                                    <select id="ndgtThematicArea" class="form-control">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="ndgtThematicArea" class="select2 form-control" multiple data-placeholder="select applicable area">
                                                         @foreach (var item in Model.thematicAreas)
                                                         {
                                                             <option value="@item">@item</option>
@@ -1250,16 +1249,14 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Reporting level</label>
                                                 <div class="col-sm-8">
-                                                    <select id="dasReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="dasReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Thematic area</label>
                                                 <div class="col-sm-8">
-                                                    <select id="dasThematicArea" class="form-control">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="dasThematicArea" class="select2 form-control" multiple data-placeholder="select applicable area">
                                                         @foreach (var item in Model.thematicAreas)
                                                         {
                                                             <option value="@item">@item</option>
@@ -1328,16 +1325,14 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Reporting level</label>
                                                 <div class="col-sm-8">
-                                                    <select id="ddocReportingLevel" class="form-control reportingleveldrpdn">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="ddocReportingLevel" class="select2 form-control reportingleveldrpdn" multiple data-placeholder="select applicable level">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label">Thematic area</label>
                                                 <div class="col-sm-8">
-                                                    <select id="ddocThematicArea" class="form-control">
-                                                        <option value="" disabled selected>select applicable level</option>
+                                                    <select id="ddocThematicArea" class="select2 form-control" multiple data-placeholder="select applicable area">
                                                         @foreach (var item in Model.thematicAreas)
                                                         {
                                                             <option value="@item">@item</option>

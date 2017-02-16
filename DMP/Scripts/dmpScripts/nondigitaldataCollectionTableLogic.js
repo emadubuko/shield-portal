@@ -15,16 +15,28 @@ $("#addndgtbtn").click(function (e) {
 
     $("#NonDigitalPnl input, select, textarea").each(function () {
         if ($(this)[0].id == "ndgtThematicArea") {
-            nondigitaldata["ThematicArea"] = $(this)[0].value;
-            $(this).val("");
+            let th = '';
+            $("#ndgtThematicArea option:selected").each(function () {
+                th += $(this).val() + ',';
+            });
+            nondigitaldata["ThematicArea"] = th;
+            $("#ndgtThematicArea").select2('val', 'All');
         }
         else if ($(this)[0].id == "ndgtReportingLevel") {
-            nondigitaldata["ReportingLevel"] = $(this)[0].value;
-            $(this).val("");
+            let reportinglevel = '';
+            $("#ndgtReportingLevel option:selected").each(function () {
+                reportinglevel += $(this).val() + ',';
+            });
+            nondigitaldata["ReportingLevel"] = reportinglevel;
+            $("#ndgtReportingLevel").select2('val', 'All');
         }
         else if ($(this)[0].id == "NonDigitalDataTypes") {
-            nondigitaldata["NonDigitalDataTypes"] = $(this)[0].value;
-            $(this).val("");
+            let nddtype = '';
+            $("#NonDigitalDataTypes option:selected").each(function () {
+                nddtype += $(this).val() + ',';
+            });
+            nondigitaldata["NonDigitalDataTypes"] = nddtype;
+            $("#NonDigitalDataTypes").select2('val', 'All');
         }
         else if ($(this)[0].id == "NonDigitalStorageLocation") {
             nondigitaldata["StorageLocation"] = $(this)[0].value;
