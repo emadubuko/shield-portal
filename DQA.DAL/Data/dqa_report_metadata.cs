@@ -22,8 +22,8 @@ namespace DQA.DAL.Data
     
         public int Id { get; set; }
         public int SiteId { get; set; }
-        public int LgaId { get; set; }
-        public int StateId { get; set; }
+        public string LgaId { get; set; }
+        public string StateId { get; set; }
         public int LgaLevel { get; set; }
         public int FundingAgency { get; set; }
         public int ImplementingPartner { get; set; }
@@ -33,6 +33,7 @@ namespace DQA.DAL.Data
         public string CreatedBy { get; set; }
         public string ReportPeriod { get; set; }
     
+        public virtual ImplementingPartner ImplementingPartner1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dqa_report_value> dqa_report_value { get; set; }
     }

@@ -12,32 +12,28 @@ namespace DQA.DAL.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class ImplementingPartner
+    public partial class state
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ImplementingPartner()
+        public state()
         {
-            this.dqa_report_metadata = new HashSet<dqa_report_metadata>();
-            this.HealthFacilities = new HashSet<HealthFacility>();
-            this.HealthFacilities1 = new HashSet<HealthFacility>();
+            this.lgas = new HashSet<lga>();
+            this.lgas1 = new HashSet<lga>();
+            this.lgas2 = new HashSet<lga>();
+            this.lgas3 = new HashSet<lga>();
         }
     
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string ShortName { get; set; }
-        public string Address { get; set; }
-        public string OrganizationType { get; set; }
-        public string MissionPartner { get; set; }
-        public byte[] Logo { get; set; }
-        public string WebSite { get; set; }
-        public string Fax { get; set; }
-        public string PhoneNumber { get; set; }
+        public string state_code { get; set; }
+        public string geo_polictical_region { get; set; }
+        public string state_name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<dqa_report_metadata> dqa_report_metadata { get; set; }
+        public virtual ICollection<lga> lgas { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<HealthFacility> HealthFacilities { get; set; }
+        public virtual ICollection<lga> lgas1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<HealthFacility> HealthFacilities1 { get; set; }
+        public virtual ICollection<lga> lgas2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<lga> lgas3 { get; set; }
     }
 }

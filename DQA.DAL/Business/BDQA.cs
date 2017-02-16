@@ -26,7 +26,7 @@ namespace DQA.DAL.Business
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The partner does not exist.</td></tr>";
                 }
                 excel_value = worksheet.Cells["Q3"].Value.ToString();
-                var state = entity.dqa_states.FirstOrDefault(e => e.state_name ==excel_value);
+                var state = entity.states.FirstOrDefault(e => e.state_name ==excel_value);
                 if (state == null)
                 {
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. State is incorrect</td></tr>";
@@ -34,7 +34,7 @@ namespace DQA.DAL.Business
 
                 excel_value = worksheet.Cells["S3"].Value.ToString().Split()[1];
 
-                var lga = entity.dqa_lga.FirstOrDefault(e => e.lga_name == excel_value);
+                var lga = entity.lgas.FirstOrDefault(e => e.lga_name == excel_value);
                 if (lga == null)
                 {
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The LGA is incorrect</td></tr>";
@@ -54,11 +54,11 @@ namespace DQA.DAL.Business
                 metadata.FiscalYear = DateTime.Now.Year.ToString();
                 metadata.FundingAgency = 1;
                 metadata.ImplementingPartner = partner.Id;
-                metadata.LgaId = lga.id;
+                metadata.LgaId = lga.lga_code;
                 metadata.LgaLevel = 2;
                 metadata.ReportPeriod = worksheet.Cells["Q8"].Value.ToString();
                 metadata.SiteId = Convert.ToInt32(facility.Id);//worksheet.Cells["Z3"].Value.ToString();
-                metadata.StateId = state.id;
+                metadata.StateId = state.state_code;
 
                 //var worksheet = package.Workbook.Worksheets["Data entry"];
 

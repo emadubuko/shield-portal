@@ -1,6 +1,8 @@
 ﻿using DQA.DAL.Business;
 using DQA.DAL.Model;
 using DQA.ViewModel;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 using ShieldPortal.Service;
 using System;
 using System.Collections.Generic;
@@ -36,16 +38,83 @@ namespace ShieldPortal.Controllers
                     var postedFile = httpRequest.Files[file];
                     string ext = Path.GetExtension(postedFile.FileName).Substring(1);
 
-                    if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM")
+                    if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                     {
-                        
+
                         var filePath = HttpContext.Current.Server.MapPath("~/Report/Uploads" + postedFile.FileName);
                         postedFile.SaveAs(filePath);
-                        messages+= new BDQA().ReadWorkbook(filePath,User.Identity.Name);
+                        
+
+                        if (ext.ToUpper() == "ZIP")
+                        {
+                            messages+= "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
+                            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                            using (ZipFile zipFile = new ZipFile(fs))
+                            {
+                                var countProcessed = 0;
+                                var countFailed = 0;
+                                var countSuccess = 0;
+                                var step = 0;
+                                var total = (int)zipFile.Count;
+                                var currentFile = "";
+
+                                foreach (ZipEntry zipEntry in zipFile)
+                                {
+                                    step++;
+                                    //Thread.Sleep(10000);
+
+
+                                    try
+                                    {
+                                        if (!zipEntry.IsFile)
+                                        {
+                                            continue;
+                                        }
+                                        currentFile = zipEntry.Name;
+                                        var entryFileName = zipEntry.Name;
+                                        var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
+                                        var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
+                                        var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
+
+                                        if (extractedDirectory.Length > 0)
+                                        {
+                                            Directory.CreateDirectory(extractedDirectory);
+                                        }
+
+                                        if (entryExt.ToUpper() == "XLS" || entryExt.ToUpper() == "XLSX" || entryExt.ToUpper() == "XLSM")
+                                        {
+                                            countProcessed++;
+                                            Stream zipStream = zipFile.GetInputStream(zipEntry);
+                                            using (FileStream entryStream = File.Create(extractedFilePath))
+                                            {
+                                                StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
+                                            }
+                                            //BLoadWorkbookData wkb = new BLoadWorkbookData(this._ReportType);
+                                            messages += new BDQA().ReadWorkbook(extractedFilePath, User.Identity.Name);
+                                            //wkb.ProcessWorkbookData(extractedFilePath, this.Weeks, this.Year, this.Months, thread);
+                                            countSuccess++;
+                                        }
+                                    }
+                                    catch (Exception exp)
+                                    {
+                                        countFailed++;
+                                        //SRDLog.WriteToLog(wkb.EventId, currentFile + "|" + exp.Message, "", EventTypes.Upload, EventSeverity.Failure);
+                                        messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
+                                    }
+                                }
+                                zipFile.IsStreamOwner = true;
+                                zipFile.Close();
+
+                            }
+                        }
+                        else
+                        {
+                            messages += new BDQA().ReadWorkbook(filePath, User.Identity.Name);
+                        }
                     }
                     else
                     {
-                        messages+= "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
+                        messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
                     }
                 }
                // result = Request.CreateResponse(HttpStatusCode.Created, docfiles);
@@ -94,7 +163,7 @@ namespace ShieldPortal.Controllers
         }
 
         [HttpPost]
-        public List<ReportMetadata> SearchIPDQA(int ip,int lga,int state,string facility,string period)
+        public List<ReportMetadata> SearchIPDQA(int ip,string lga,string state,string facility,string period)
         {
             var metas = metadataService.SearchIpMetaData(ip, period, lga, state, facility);
             var facilities = new List<Facility>();

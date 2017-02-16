@@ -23,6 +23,9 @@ namespace DQA.DAL.Data
         public string OrganizationType { get; set; }
         public Nullable<int> ImplementingPartnerId { get; set; }
     
+        public virtual lga lga { get; set; }
         public virtual ImplementingPartner ImplementingPartner { get; set; }
+        public virtual lga lga1 { get; set; }
+        public virtual ImplementingPartner ImplementingPartner1 { get; set; }
     }
 }

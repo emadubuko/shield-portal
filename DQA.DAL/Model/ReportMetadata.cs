@@ -17,7 +17,7 @@ namespace DQA.DAL.Model
         public ReportMetadata(dqa_report_metadata metadata)
         {
             Id = metadata.Id;
-            SiteId = Utility.GetFacility(metadata.SiteId).Site_Name;
+            SiteId = Utility.GetFacility(metadata.SiteId).Name;
             LgaId = Utility.GetLgaName(metadata.LgaId);
             StateId =Utility.GetStateName(metadata.StateId);
             //LgaLevel = metadata.LgaLevel;

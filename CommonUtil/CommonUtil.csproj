@@ -71,6 +71,7 @@
     <Compile Include="DAO\LGADao.cs" />
     <Compile Include="DAO\OrganizationDAO.cs" />
     <Compile Include="DAO\ProfileDAO.cs" />
+    <Compile Include="DAO\StateDao.cs" />
     <Compile Include="DBSessionManager\BaseDAO.cs" />
     <Compile Include="DBSessionManager\NhibernateSessionManager.cs" />
     <Compile Include="Entities\HealthFacility.cs" />
