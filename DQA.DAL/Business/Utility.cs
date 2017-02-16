@@ -1,4 +1,5 @@
-﻿using DQA.DAL.Data;
+﻿using CommonUtil.Mapping;
+using DQA.DAL.Data;
 using DQA.DAL.Model;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,16 @@ namespace DQA.DAL.Business
         /// <returns>The number of states a partner has facilities in</returns>
         public static int GetIpStateCount(int partnerId)
         {
-            return entity.dqa_facility.Where(e=>e.Partners==partnerId).Select(e=>e.State).Distinct().Count();
+
+            var cmd = new SqlCommand();
+            cmd.CommandText = string.Format("select count(distinct(state_code)) from [dbo].[lga] where lga_code in (select lgaId from [dbo].[HealthFacility]  where [ImplementingPartnerId]={0})", partnerId);
+            cmd.CommandType = CommandType.Text;
+
+            var result = GetNumberValue(cmd);
+
+            
+
+            return result; //.Select(e=>e.State).Distinct().Count();
         }
 
         /// <summary>
@@ -30,7 +40,17 @@ namespace DQA.DAL.Business
         /// <returns>The number of lgas a partner has facilities in</returns>
         public static int GetIpLGACount(int partnerId)
         {
-            return entity.dqa_facility.Where(e => e.Partners == partnerId).Select(e => e.LGA).Distinct().Count();
+            //return entity.HealthFacilities.Where(e => e.ImplementingPartnerId == partnerId).Select(e => e.LGA).Distinct().Count();
+
+            var cmd = new SqlCommand();
+            cmd.CommandText = string.Format("select count(distinct(lga_code)) from [dbo].[lga] where lga_code in (select lgaId from [dbo].[HealthFacility]  where [ImplementingPartnerId]={0})", partnerId);
+            cmd.CommandType = CommandType.Text;
+
+            var result = GetNumberValue(cmd);
+
+
+
+            return result;
         }
 
         /// <summary>
@@ -57,59 +77,81 @@ namespace DQA.DAL.Business
 
         public static List<StateSummary> GetStateIpStateSummary(int partnerId,string reporting_period)
         {
-            var states= entity.dqa_facility.Where(e => e.Partners == partnerId).Select(e => e.State).Distinct();
+
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_IP_state_summary";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ip_id", partnerId);
+            cmd.Parameters.AddWithValue("@period", reporting_period);
+            var dataTable = GetDatable(cmd);
+
             var summaries = new List<StateSummary>();
-            foreach (var stateId in states)
+            foreach (DataRow row in dataTable.Rows)
             {
                 var summary = new StateSummary();
-                var state = entity.dqa_states.FirstOrDefault(e => e.id == stateId);
-                if (state == null) continue;
-                summary.Id = state.id;
-                summary.Name = state.state_name;
-
-                //get the facilities submitted for the state
-                summary.Submitted = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.StateId == stateId && e.ReportPeriod == reporting_period).Count();
-                var total_state_facilities = entity.dqa_facility.Count(e => e.Partners == partnerId && e.State == stateId);
-                summary.Pending = total_state_facilities - summary.Submitted;
-                if (total_state_facilities > 0)
+                summary.Name = row.ItemArray[1].ToString();
+                summary.Submitted = Convert.ToInt32(row.ItemArray[2].ToString());
+                summary.Pending = Convert.ToInt32(row.ItemArray[3].ToString());
+                if (Convert.ToInt32(row.ItemArray[4].ToString()) > 0)
                 {
-                    var value= (float.Parse(summary.Submitted.ToString()) / float.Parse(total_state_facilities.ToString())) * 100;
-
-                    summary.Percentage =Convert.ToInt32(value);//((summary.Submitted / total_state_facilities) * 100);
+                    var value = (float.Parse(summary.Submitted.ToString()) / float.Parse(row.ItemArray[4].ToString())) * 100;
                 }
                 summaries.Add(summary);
             }
+
+            //var states= entity.dqa_facility.Where(e => e.Partners == partnerId).Select(e => e.State).Distinct();
+            //var summaries = new List<StateSummary>();
+            //foreach (var stateId in states)
+            //{
+            //    var summary = new StateSummary();
+            //    var state = entity.dqa_states.FirstOrDefault(e => e.id == stateId);
+            //    if (state == null) continue;
+            //    summary.Id = state.id;
+            //    summary.Name = state.state_name;
+
+            //    //get the facilities submitted for the state
+            //    summary.Submitted = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.StateId == stateId && e.ReportPeriod == reporting_period).Count();
+            //    var total_state_facilities = entity.dqa_facility.Count(e => e.Partners == partnerId && e.State == stateId);
+            //    summary.Pending = total_state_facilities - summary.Submitted;
+            //    if (total_state_facilities > 0)
+            //    {
+            //        var value= (float.Parse(summary.Submitted.ToString()) / float.Parse(total_state_facilities.ToString())) * 100;
+
+            //        summary.Percentage =Convert.ToInt32(value);//((summary.Submitted / total_state_facilities) * 100);
+            //    }
+            //    summaries.Add(summary);
+            //}
             return summaries;
         }
 
 
-        public static List<dqa_facility> GetSubmittedFacilities(int partnerId,string reporting_period)
+        public static List<HealthFacility> GetSubmittedFacilities(int partnerId,string reporting_period)
         {
             var facility_ids= entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId  && e.ReportPeriod == reporting_period).Select(e=>e.Id).ToList();
-            return entity.dqa_facility.Where(x => facility_ids.Contains(x.Id)).ToList();
+            return entity.HealthFacilities.Where(x => facility_ids.Contains((int)x.Id)).ToList();
         }
 
 
-        public static List<dqa_facility> GetPendingFacilities(int partnerId, string reporting_period)
+        public static List<HealthFacility> GetPendingFacilities(int partnerId, string reporting_period)
         {
             var facility_ids = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == reporting_period).Select(e => e.Id).ToList();
-            return entity.dqa_facility.Where(x => !facility_ids.Contains(x.Id)).ToList();
+            return entity.HealthFacilities.Where(x => !facility_ids.Contains((int)x.Id)).ToList();
         }
 
-        public static dqa_facility GetFacility(int facilityId)
+        public static HealthFacility GetFacility(int facilityId)
         {
-            return entity.dqa_facility.FirstOrDefault(e => e.Id == facilityId);
+            return entity.HealthFacilities.FirstOrDefault(e => e.Id == facilityId);
         }
 
-        public static string GetLgaName(int lgaId)
+        public static string GetLgaName(string lgaId)
         {
-            var lga = entity.dqa_lga.Find(lgaId);
+            var lga = entity.lgas.FirstOrDefault(e=>e.lga_code==lgaId);
             return lga !=null? lga.lga_name : "";
         }
 
-        public static string GetStateName(int stateId)
+        public static string GetStateName(string stateId)
         {
-            var state = entity.dqa_states.Find(stateId);
+            var state = entity.states.FirstOrDefault(e=>e.state_code==stateId);
             return state != null ? state.state_name : "";
         }
 
@@ -157,21 +199,21 @@ namespace DQA.DAL.Business
 
         }
 
-        public static dqa_lga GetLga(int lgaId)
+        public static lga GetLga(string lgaId)
         {
-            return entity.dqa_lga.Find(lgaId);
+            return entity.lgas.FirstOrDefault(e=>e.lga_code==lgaId);
         }
 
-        public static dqa_states GetState(int stateId)
+        public static state GetState(int stateId)
         {
-            return entity.dqa_states.Find(stateId);
+            return entity.states.Find(stateId);
         }
 
         public static string GetFacilityLevel(int levelId)
         {
             try
             {
-                return entity.dqa_facility_level.FirstOrDefault(e => e.Id == levelId).FacilityLevel;
+                return "";// entity.dqa_facility_level.FirstOrDefault(e => e.Id == levelId).FacilityLevel;
             }
             
             catch (Exception ex)
@@ -184,7 +226,7 @@ namespace DQA.DAL.Business
         {
             try
             {
-                return entity.dqa_facility_type.FirstOrDefault(e => e.Id == typeId).TypeName;
+                return "";//entity.dqa_facility_type.FirstOrDefault(e => e.Id == typeId).TypeName;
             }
             catch(Exception ex)
             {
@@ -192,5 +234,78 @@ namespace DQA.DAL.Business
             }
             
         }
+
+        public static string GetStringValue(SqlCommand command)
+        {
+            var connection = (SqlConnection)entity.Database.Connection;
+            command.Connection = connection;
+            //command.CommandType = CommandType.StoredProcedure;
+            var result = "";
+            try
+            {
+                connection.Open();
+
+                result = (string)command.ExecuteScalar();
+
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return result;
+
+        }
+
+        public static int GetNumberValue(SqlCommand command)
+        {
+            var connection = (SqlConnection)entity.Database.Connection;
+            command.Connection = connection;
+            //command.CommandType = CommandType.StoredProcedure;
+            var result = 0;
+            try
+            {
+                connection.Open();
+
+                result = (int)command.ExecuteScalar();
+
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return result;
+
+        }
+
+        public static DataSet GetDataSet(SqlCommand cmd)
+        {
+            var conn = (SqlConnection)entity.Database.Connection;
+            SqlDataAdapter da = new SqlDataAdapter();
+            //SqlCommand cmd = conn.CreateCommand();
+            cmd.Connection = conn;
+            da.SelectCommand = cmd;
+            DataSet ds = new DataSet();
+
+            conn.Open();
+            da.Fill(ds);
+            conn.Close();
+
+            return ds;
+        }
+
+
+
     }
 }

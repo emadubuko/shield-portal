@@ -9,19 +9,15 @@ namespace DQA.ViewModel
 {
     public class Facility
     {
-        public Facility(dqa_facility facility)
+        public Facility(HealthFacility facility)
         {
-            var state = Utility.GetState(Convert.ToInt32(facility.State.Value));
-            if (state != null) State = state.state_name;
-            if (facility.LGA != null || facility.LGA != "")
-            {
-                var lga = Utility.GetLga(Convert.ToInt32(facility.LGA));
-                if (lga != null) Lga = lga.lga_name;
-            }
-            Id = facility.Id;
-            SiteName = facility.Site_Name;
-            FacilityType = Utility.GetFacilityType(Convert.ToInt32(facility.Facility_Type));
-            FacilityLevel = Utility.GetFacilityLevel(Convert.ToInt32(facility.Facility_Level));
+
+            State = facility.lga.state.state_name;
+            Lga = facility.lga.lga_name;
+            Id = (int)facility.Id;
+            SiteName = facility.Name;
+            FacilityType = facility.OrganizationType;//Utility.GetFacilityType(Convert.ToInt32(facility.Facility_Type));
+            //FacilityLevel = Utility.GetFacilityLevel(Convert.ToInt32(facility.Facility_Level));
             
         }
         public int Id { set; get; }

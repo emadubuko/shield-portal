@@ -3,6 +3,8 @@ using DQA.DAL.Business;
 using DQA.DAL.Model;
 using DQA.ViewModel;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.Http;
 
 namespace ShieldPortal.Controllers
@@ -12,29 +14,16 @@ namespace ShieldPortal.Controllers
 
         // GET: api/Dashboard/5
         [Route("api/Dashboard/GetIpCounts/{partner_id}/{reporting_period}")]
-        public string GetIpCounts(int partner_id, string reporting_period)
+        public DataSet GetIpCounts(int partner_id, string reporting_period)
         {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_dqa_dashboard_details";
+            cmd.Parameters.AddWithValue("@ip_id", partner_id);
+            cmd.Parameters.AddWithValue("@period", reporting_period);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-            return Utility.GetIpFacilitycount(partner_id) + "|" +Utility.GetIpSubmitted(partner_id, reporting_period)+"|"+Utility.GetIpLGACount(partner_id) +"|"+Utility.GetIpStateCount(partner_id);
-        }
-
-        [Route("api/Dashboard/GetStateSummary/{state_id}/{reporting_period}")]
-        public List<StateSummary> GetStateSummary(int state_id,string reporting_period)
-        {
-            return Utility.GetStateIpStateSummary(state_id, reporting_period);
-        }
-
-
-        [Route("api/Dashboard/GetPendingFacilities/{partner_id}/{reporting_period}")]
-        public List<Facility> GetPendingFacilities(int partner_id, string reporting_period)
-        {
-            var pending_facs= Utility.GetPendingFacilities(partner_id, reporting_period);
-            var facilities = new List<Facility>();
-            foreach(var pending_fac in pending_facs)
-            {
-                facilities.Add(new Facility(pending_fac));
-            }
-            return facilities;
+            return Utility.GetDataSet(cmd);
+          
         }
       
      

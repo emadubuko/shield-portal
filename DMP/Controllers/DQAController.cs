@@ -49,7 +49,7 @@ namespace ShieldPortal.Controllers
         public void PopulateStates(object selectStatus = null)
         {
             var statusQuery = new BaseDAO<State, long>().RetrieveAll();
-            ViewBag.states = new SelectList(statusQuery, "ID", "state_name", selectStatus);
+            ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
 
         }
     }

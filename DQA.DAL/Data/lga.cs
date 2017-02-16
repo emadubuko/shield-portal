@@ -12,32 +12,27 @@ namespace DQA.DAL.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class ImplementingPartner
+    public partial class lga
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ImplementingPartner()
+        public lga()
         {
-            this.dqa_report_metadata = new HashSet<dqa_report_metadata>();
             this.HealthFacilities = new HashSet<HealthFacility>();
             this.HealthFacilities1 = new HashSet<HealthFacility>();
         }
     
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string ShortName { get; set; }
-        public string Address { get; set; }
-        public string OrganizationType { get; set; }
-        public string MissionPartner { get; set; }
-        public byte[] Logo { get; set; }
-        public string WebSite { get; set; }
-        public string Fax { get; set; }
-        public string PhoneNumber { get; set; }
+        public string lga_code { get; set; }
+        public string state_code { get; set; }
+        public string lga_name { get; set; }
+        public string lga_hm_longcode { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<dqa_report_metadata> dqa_report_metadata { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HealthFacility> HealthFacilities { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HealthFacility> HealthFacilities1 { get; set; }
+        public virtual state state { get; set; }
+        public virtual state state1 { get; set; }
+        public virtual state state2 { get; set; }
+        public virtual state state3 { get; set; }
     }
 }
