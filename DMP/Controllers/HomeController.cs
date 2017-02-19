@@ -4,7 +4,9 @@ using DAL.DAO;
 using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
@@ -26,28 +28,21 @@ namespace ShieldPortal.Controllers
 
         }
 
-        public ActionResult Index()
+        public ActionResult index()
         {
-            return RedirectToAction("index", "DMP");
+            return View();
+        }
 
-            Dictionary<string, string> iframe = null;
-            var loggedinProfile = new Services.Utils().GetloggedInProfile();
-             
+        public async Task<ActionResult> downloadDQATemplate()
+        {
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/DQA_user_guide_18Feb2017.docx");
 
-            if (loggedinProfile.RoleName == "ip")
+            using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
-                iframe = Utilities.RetrieveDashboard(loggedinProfile.RoleName, loggedinProfile.Organization.ShortName);
+                byte[] fileBytes = new byte[stream.Length];
+                await stream.ReadAsync(fileBytes, 0, fileBytes.Length);
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "DQA User guide.docx");
             }
-            else
-            {
-                iframe = Utilities.RetrieveDashboard("shield_team", "national");
-            }
-            
-            foreach (var item in iframe )
-            {
-                ViewData[item.Key] = item.Value;
-            }             
-            return View(); 
         }
 
 

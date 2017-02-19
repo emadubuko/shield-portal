@@ -51,6 +51,28 @@ namespace ShieldPortal.Controllers
             return View(reportList);
         }
 
+        public ActionResult Dashboard()
+        {
+            Dictionary<string, string> iframe = null;
+            var loggedinProfile = new Services.Utils().GetloggedInProfile();
+
+
+            if (loggedinProfile.RoleName == "ip")
+            {
+                iframe = Utilities.RetrieveDashboard(loggedinProfile.RoleName, loggedinProfile.Organization.ShortName);
+            }
+            else
+            {
+                iframe = Utilities.RetrieveDashboard("shield_team", "national");
+            }
+
+            foreach (var item in iframe)
+            {
+                ViewData[item.Key] = item.Value;
+            }
+            return View();
+        }
+
         [HttpPost]
         public ActionResult Upload(string reportingPeriod, int Year, string ImplementingPartner)
         {

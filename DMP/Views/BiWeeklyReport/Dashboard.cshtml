@@ -1,0 +1,35 @@
+﻿
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <link href="~/css/style.css" rel="stylesheet" />
+}
+
+<div class="main-content">
+     
+    @foreach (var item in ViewData)
+    {
+        <h4>@item.Key.Replace("_", " ")</h4> 
+       <div id='@item.Key'>            
+       </div> 
+    }
+
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+
+    <script>
+        $(document).ready(function () {
+
+            var data = @Html.Raw(Json.Encode(ViewData));
+
+            $.each(data, function(index, chart){                
+                var iframe = $.parseHTML(chart.Value);
+                $("#"+chart.Key).html(iframe);
+            });
+             
+        });
+    </script>
+}

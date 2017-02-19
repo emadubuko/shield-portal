@@ -108,11 +108,16 @@
                     </li>
 
                     <li class="has-sub">
-                        <a href="#/"><i class="icon-clock"></i><span class="title">Bi-Monthly Scale up Reports</span></a>
+                        <a href="#/"><i class="icon-clock"></i><span class="title">Semi-Monthly Scale up Reports</span></a>
                         <ul class="nav collapse">
                             <li>
+                                <a href=@Url.Action("Dashboard", "BiWeeklyReport")>
+                                    <i class="fa fa-area-chart"></i><span class="title">Dashboard</span>
+                                </a>
+                            </li> 
+                            <li>
                                 <a href=@Url.Action("index", "BiWeeklyReport")>
-                                    <i class="fa fa-area-chart"></i><span class="title">LGA Level DashBoard</span>
+                                    <i class="fa fa-area-chart"></i><span class="title">LGA Level Dashboard</span>
                                 </a>
                             </li>                            
                                 <li>
@@ -202,7 +207,7 @@
 
             <!-- Footer -->
             <footer class="footer-main">
-                &copy; @DateTime.Now.Year  <a target="_blank" href="#/">University of Maryland</a>
+                &copy; @DateTime.Now.Year  <span>University of Maryland</span>
             </footer>
             <!-- /footer -->
         </div>

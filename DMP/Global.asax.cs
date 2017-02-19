@@ -19,5 +19,12 @@ namespace ShieldPortal
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_Error()
+        {
+            Exception exception = Server.GetLastError();
+            if (exception != null)
+                CommonUtil.Utilities.Logger.LogError(exception);
+        }
     }
 }

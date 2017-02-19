@@ -2,17 +2,122 @@
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
     <link href="~/css/style.css" rel="stylesheet" />
+    <style>
+        .panel-body {
+            text-align: center;
+        }
+
+        .panel {
+            background-color: white;
+            color: steelblue;
+            height: 120px;
+            border-color: #969100;
+        }
+
+        a {
+            color: steelblue;
+        }
+
+            a:hover {
+                color: steelblue;
+                font-weight: bold;
+            }
+
+        .col-lg-4 {
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+
+        .fa-2x {
+            color: #969100;
+        }
+    </style>
+    <script type="text/javascript">
+
+    </script>
 }
 
 <div class="main-content">
-     
-    @foreach (var item in ViewData)
-    {
-        <h4>@item.Key.Replace("_", " ")</h4> 
-       <div id='@item.Key'>            
-       </div> 
-    }
+    <div class="row">
 
+        <div class="col-lg-1"></div>
+
+        <div class="col-lg-4">
+            <div class="panel panel-default minimal secondary-bg">
+                <a href="@Url.Action("index", "DMP")">
+                    <div class="panel-body">
+                        <i class="fa fa-file-text fa-2x"></i>
+                        <h2 class="no-margins"><strong>Data Management Plan</strong></h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-sm-1"></div>
+
+        <div class="col-lg-4">
+            <div class="panel panel-default minimal secondary-bg">
+                <div class="panel-body">
+                    <a href="@Url.Action("UploadDQA", "DQA")">
+                        <i class="fa fa-check-square-o fa-2x"></i>
+                        <h2 class="no-margins"><strong>Data Quality Assesment</strong></h2>
+                    </a><br />
+                    <a style="float: right;" href=@Url.Action("downloadDQATemplate", "Home")><i class="fa fa-download"></i>Download DQA template</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-1"></div>
+
+        <div class="col-lg-4">
+            <div class="panel panel-default minimal secondary-bg">
+                <a href="@Url.Action("index", "BiWeeklyReport")">
+                    <div class="panel-body">
+                        <i class="fa fa-clock-o fa-2x"></i>
+                        <h2 class="no-margins"><strong>Semi-Monthly Scale up Report</strong></h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-1">
+        </div>
+
+        <div class="col-lg-4">
+            <div class="panel panel-default minimal secondary-bg">
+                <a>
+                    <div class="panel-body" id="noshow">
+                        <i class="fa fa-line-chart fa-2x"></i>
+                        <h2 class="no-margins"><strong>Evaluation Plan</strong></h2>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="comingSoonModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 45%;border-color: steelblue;" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #FFF;background-color: steelblue;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                Coming soon . . .
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-2"> </div>
+                <div class="col-sm-7">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -23,11 +128,13 @@
     <script>
         $(document).ready(function () {
 
-            var data = @Html.Raw(Json.Encode(ViewData));
+            $(".btn.btn-default.btn-sm.btn-outline").css('visibility', 'hidden')
 
-            $.each(data, function(index, chart){                
-                var iframe = $.parseHTML(chart.Value);
-                $("#"+chart.Key).html(iframe);
+            $("[data-toggle=popover]").popover({ html: true })
+
+            $("#noshow").click(function () {
+                $('#comingSoonModal').fadeIn('slow');
+                $('#comingSoonModal').modal('show');
             });
              
         });
