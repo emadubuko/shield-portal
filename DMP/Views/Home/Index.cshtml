@@ -10,8 +10,8 @@
         .panel {
             background-color: white;
             color: steelblue;
-            height: 120px;
-            border-color: #969100;
+            height: 130px;
+            border-color: steelblue;
         }
 
         a {
@@ -29,7 +29,7 @@
         }
 
         .fa-2x {
-            color: #969100;
+            color: #cc9d00;
         }
     </style>
     <script type="text/javascript">
@@ -44,12 +44,22 @@
 
         <div class="col-lg-4">
             <div class="panel panel-default minimal secondary-bg">
-                <a href="@Url.Action("index", "DMP")">
-                    <div class="panel-body">
+                <div class="panel-body">
+                    <a href="@Url.Action("index", "DMP")">
                         <i class="fa fa-file-text fa-2x"></i>
                         <h2 class="no-margins"><strong>Data Management Plan</strong></h2>
+                    </a><br />
+                    <div class="dropdown" style="float: right;">
+                        <button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            Download DMP Resource Files
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="~/Home/downloadDMPResource?fileType=staffstructure">IP ME staff structure template</a></li>
+                        </ul>
                     </div>
-                </a>
+                </div>
+
             </div>
         </div>
 
@@ -62,13 +72,25 @@
                         <i class="fa fa-check-square-o fa-2x"></i>
                         <h2 class="no-margins"><strong>Data Quality Assesment</strong></h2>
                     </a><br />
-                    <a style="float: right;" href=@Url.Action("downloadDQATemplate", "Home")><i class="fa fa-download"></i>Download DQA template</a>
+                    <div class="dropdown" style="float: right;">
+                        <button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            Download DQA Resource Files
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="~/Home/downloadDQAResource?fileType=DQATemplate">DQA tool</a></li>
+                            <li><a href="~/Home/downloadDQAResource?fileType=DQASummaryReport">DQA summary report</a></li>
+                            <li><a href="~/Home/downloadDQAResource?fileType=DQAUserGuide">DQA user guide</a></li>
+                            <li><a href="~/Home/downloadDQAResource?fileType=RandomNumber">Random number table</a></li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="visibility:hidden">
         <div class="col-lg-1"></div>
 
         <div class="col-lg-4">
@@ -136,7 +158,7 @@
                 $('#comingSoonModal').fadeIn('slow');
                 $('#comingSoonModal').modal('show');
             });
-             
+
         });
     </script>
 }
