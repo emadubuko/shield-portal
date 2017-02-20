@@ -21,6 +21,8 @@ namespace Test
 
             Console.ReadLine();
 
+            CommonUtil.Utilities.Utilities.Sha256_Hash("secret");
+
         }
 
 

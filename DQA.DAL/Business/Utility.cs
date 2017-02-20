@@ -298,7 +298,9 @@ namespace DQA.DAL.Business
             da.SelectCommand = cmd;
             DataSet ds = new DataSet();
 
-            conn.Open();
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
+
             da.Fill(ds);
             conn.Close();
 

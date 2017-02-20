@@ -4,6 +4,8 @@ using NHibernate.Engine;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CommonUtil.Utilities
@@ -25,6 +27,19 @@ namespace CommonUtil.Utilities
             else
                 return "";
         }
+
+        public static string Sha256_Hash(string secret)
+        {
+            SHA256Managed crypt = new SHA256Managed();
+            StringBuilder hash = new StringBuilder();
+            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(secret), 0, Encoding.UTF8.GetByteCount(secret));
+            foreach (byte theByte in crypto)
+            {
+                hash.Append(theByte.ToString("x2"));
+            }
+            return hash.ToString();
+        }
+
 
         public static Dictionary<string, string> RetrieveDashboard(string role, string IPShortname, List<string> dashboardtype =null)
         {
