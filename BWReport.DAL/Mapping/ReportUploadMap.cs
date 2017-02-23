@@ -15,6 +15,7 @@ namespace BWReport.DAL.Mapping
             Map(x => x.FY); 
             Map(x => x.UploadingUser); 
             Map(x => x.ImplementingPartner);
+            Map(x => x.ReportName);
             
         }
     }

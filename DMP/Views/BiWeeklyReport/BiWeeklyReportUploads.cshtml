@@ -196,13 +196,16 @@
                 $("#loadImg").show();
 
                 var data = new FormData();
+                let reportPeriod = '';
+                let reportYear ='';
+                let iP = '';
 
                 try {
                     var file = $('form input[type=file]')[0].files[0];
                     data.append('file', file);
-                    var ReportingPeriod = $("form #ReportingPeriod")[0].value;
-                    var ReportingYear = $("form #ReportingYear")[0].value;
-                    var ImplementingPartner = $("form #ImplementingPartner")[0].value;
+                    reportPeriod = $("form #ReportingPeriod")[0].value;
+                    reportYear = $("form #ReportingYear")[0].value;
+                     iP = $("form #ImplementingPartner")[0].value;
                 }
                 catch (e) {
                     $('#upload').disabled = false;
@@ -213,7 +216,7 @@
                     return false;
                 }
 
-                if (ReportingPeriod == "" || ReportingYear == "" || ImplementingPartner == "") {
+                if (reportPeriod == "" || reportYear == "" || iP == "") {
                     $('#upload').disabled = false;
                     $("#loadImg").hide();
                     $("#error").empty();
@@ -222,10 +225,10 @@
                     return false;
                 }
 
-
+                let url = '/BiWeeklyReport/Upload?ReportingPeriod=' + reportPeriod + '&Year=' + reportYear + '&ImplementingPartner=' + iP;
                 $.ajax({
                     type: "POST",
-                    url: '/BiWeeklyReport/Upload?ReportingPeriod=' + ReportingPeriod + '&Year=' + ReportingYear + '&ImplementingPartner=' + ImplementingPartner,
+                    url: url,
                     contentType: false,
                     processData: false,
                     data: data,

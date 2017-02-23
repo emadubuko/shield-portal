@@ -61,7 +61,10 @@ namespace BWReport.DAL.DAO
         public bool SaveBatchFromCSV(Stream csvFile, int Year, out string wrongEntries)
         {
             wrongEntries = "";
-            var existingFacilities = new HealthFacilityDAO().RetrieveAll().ToDictionary(x => x.FacilityCode);
+            var existingFacilities = new HealthFacilityDAO().RetrieveAll()
+                //.ToDictionary(x => x.FacilityCode);
+                .ToDictionary(x => x.Name);
+
             List<YearlyPerformanceTarget> targets = new List<YearlyPerformanceTarget>();
 
             string fileContent = "";
@@ -80,7 +83,7 @@ namespace BWReport.DAL.DAO
 
                 try
                 {
-                    string healthFacilityCode = entries[0];
+                    string healthFacilityCode = entries[2]; //entries[0];
                     HealthFacility facility = null;
                     existingFacilities.TryGetValue(healthFacilityCode, out facility);
 

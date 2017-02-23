@@ -87,11 +87,11 @@ namespace ShieldPortal.Controllers
             Stream fileContent = files[0].InputStream;
             string loggedInUser = Services.Utils.LoggedinProfileName;
 
-            int startColumnIndex = IndexPeriods[reportingPeriod]; // new ReportViewModel().IndexPeriods[reportingPeriod];
+            int startColumnIndex = IndexPeriods[reportingPeriod]; 
 
             try
             {
-                bool result = new ReportLoader().ExtractReport(reportingPeriod, Year, startColumnIndex, ImplementingPartner, fileContent, loggedInUser);
+                bool result = new ReportLoader().ExtractReport(reportingPeriod, Year, startColumnIndex, ImplementingPartner, fileContent, loggedInUser, fileName);
                 return Json("Upload succesful", JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

@@ -8,13 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CommonUtil.Utilities;
 
 namespace BWReport.DAL.Services
 {
     public class ReportLoader
     {
-        public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, string ImplementingPartner, Stream ReportStream, string loggedinUser)
+        public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, string ImplementingPartner, Stream ReportStream, string loggedinUser, string fileName)
         {
             List<PerformanceData> ActualPerformanceMeasures = new List<PerformanceData>();
 
@@ -33,28 +32,32 @@ namespace BWReport.DAL.Services
             {
                 using (ExcelPackage package = new ExcelPackage(ReportStream))//(new FileInfo(FilePath)))
                 {
+                    ReportUploads upload = null;
                     //search previous report for duplicate using date
-                    var previousUploads = new ReportUploadsDao().SearchPreviousUpload(reportingPeriod, Year, ImplementingPartner);
+                    var previousUploads = new ReportUploadsDao().SearchPreviousUpload(reportingPeriod, Year, ImplementingPartner, fileName);
                     if (previousUploads != null && previousUploads.Count() > 0)
                     {
                         throw new ApplicationException("report already uploaded for the selected period");
                     }
-
-                    var upload = new ReportUploads
+                    if (previousUploads == null || previousUploads.Count == 0)
                     {
-                        DateUploaded = DateTime.Now,
-                        ImplementingPartner = ImplementingPartner,
-                        UploadingUser = loggedinUser,
-                        ReportingPeriod = reportingPeriod,
-                        FY = Year,
-                    };
-                    new ReportUploadsDao().Save(upload);
+                        upload = new ReportUploads
+                        {
+                            ReportName = fileName,
+                            DateUploaded = DateTime.Now,
+                            ImplementingPartner = ImplementingPartner,
+                            UploadingUser = loggedinUser,
+                            ReportingPeriod = reportingPeriod,
+                            FY = Year,
+                        };
+                        new ReportUploadsDao().Save(upload);
+                    }
 
                     var sheets = package.Workbook.Worksheets.Where(x => x.Hidden == eWorkSheetHidden.Visible).ToList();
                     foreach (var sheet in sheets)
                     {
                         string name = sheet.Name;
-                        if (name.ToLower().Contains("dashboard"))
+                        if (name.ToLower().Contains("dashboard") || name.Contains("LGA Level Dashboard"))
                             continue;
 
                         string sheetTitle = ExcelHelper.ReadCell(sheet, 1, 1);
@@ -77,43 +80,47 @@ namespace BWReport.DAL.Services
 
                             string facilityType = ExcelHelper.ReadCell(sheet, row, 4);
                             string fType = !string.IsNullOrEmpty(facilityType) ? facilityType.Substring(0, 1) : "F";
-                            string facilityCode = GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
+                            string facilityCode = ExcelHelper.ReadCell(sheet, row, 1); //GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
 
-                            HealthFacility theFacility = null;
-                            existingFacilities.TryGetValue(facilityCode, out theFacility);
-
-                            if (theFacility == null)
+                            if (!string.IsNullOrEmpty(facilityCode))
                             {
-                                theFacility = new HealthFacility
+                                HealthFacility theFacility = null;
+                                existingFacilities.TryGetValue(facilityCode, out theFacility);
+
+                                if (theFacility == null)
                                 {
-                                    Organization = ip,
-                                    FacilityCode = facilityCode,
-                                    LGA = theLGA,
-                                    Name = facilityName,
-                                    OrganizationType = facilityType.StartsWith("F") ? CommonUtil.Enums.OrganizationType.HealthFacilty : CommonUtil.Enums.OrganizationType.CommunityBasedOrganization,
+                                    theFacility = new HealthFacility
+                                    {
+                                        Organization = ip,
+                                        FacilityCode = facilityCode,
+                                        LGA = theLGA,
+                                        Name = facilityName,
+                                        OrganizationType = facilityType.StartsWith("F") ? CommonUtil.Enums.OrganizationType.HealthFacilty : CommonUtil.Enums.OrganizationType.CommunityBasedOrganization,
+                                    };
+                                    sdfDao.Save(theFacility);
+                                }
+
+                                int columnStart = startColumnIndex; //12
+                                int HTC_TST = 0;
+                                int HTC_TST_pos = 0;
+                                int Tx_NEW = 0;
+                                int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart), out HTC_TST);
+                                int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 1), out HTC_TST_pos);
+                                int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 2), out Tx_NEW);
+
+                                var performanceMeasure = new PerformanceData
+                                {
+                                    HTC_TST = HTC_TST,
+                                    HTC_TST_POS = HTC_TST_pos,
+                                    Tx_NEW = Tx_NEW,
+                                    HealthFacility = theFacility,
+                                    ReportPeriod = reportingPeriod,
+                                    FY = Year,
+                                    ReportUpload = upload,
                                 };
-                                sdfDao.Save(theFacility);
+                                ActualPerformanceMeasures.Add(performanceMeasure);
                             }
 
-                            int columnStart = startColumnIndex; //12
-                            int HTC_TST = 0;
-                            int HTC_TST_pos = 0;
-                            int Tx_NEW = 0;
-                            int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart), out HTC_TST);
-                            int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 1), out HTC_TST_pos);
-                            int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 2), out Tx_NEW);
-
-                            var performanceMeasure = new PerformanceData
-                            {
-                                HTC_TST = HTC_TST,
-                                HTC_TST_POS = HTC_TST_pos,
-                                Tx_NEW = Tx_NEW,
-                                HealthFacility = theFacility,
-                                ReportPeriod = reportingPeriod,
-                                FY = Year,
-                                ReportUpload = upload,
-                            };
-                            ActualPerformanceMeasures.Add(performanceMeasure);
                             row++;
                         }
                     }
@@ -121,7 +128,7 @@ namespace BWReport.DAL.Services
 
                 if(ActualPerformanceMeasures == null || ActualPerformanceMeasures.Count() == 0)
                 {
-                    throw new ApplicationException("invalid upload. Please cross-check the template");
+                    throw new ApplicationException("No Valid facility found. Please cross-check the template and ensure that DATIM facility codes are included");
                 }
 
                 //save here

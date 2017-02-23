@@ -1,12 +1,23 @@
-﻿using CommonUtil.DAO;
+﻿using BWReport.DAL.DAO;
+using BWReport.DAL.Entities;
+using CommonUtil.DAO;
 using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
+using CommonUtil.Utilities;
 using DAL.DAO;
 using DAL.Entities;
+using NHibernate;
+using NHibernate.Engine;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Test
 {
@@ -14,22 +25,246 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Press enter to begin");
-            new Program().InsertFacility();
-            //new Program().CreateNewDMP();
-            //new Program().QuerySystem();
+            Console.WriteLine("started");
+
+            //new Program().UpdateFacilities();
+            //new Program().GenerateFacilityTargetCSV();
+
+
+            new Program().GenerateFacilityCode();
+
 
             Console.ReadLine();
-
-            CommonUtil.Utilities.Utilities.Sha256_Hash("secret");
-
         }
 
+
+        public void GenerateFacilityCode()
+        {
+            YearlyPerformanceTargetDAO yptDAO = new YearlyPerformanceTargetDAO();
+
+            HealthFacilityDAO _sdfDao = new HealthFacilityDAO();
+            var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
+            var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
+
+            var ypts = yptDAO.GenerateYearlyTargetGroupedByLGA(2017);
+            var facilitiesGroupedByLGA = _sdfDao.RetrieveAll().GroupBy(x => x.LGA.lga_name).ToList();
+
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
+            List<string> files = new List<string>
+            {
+                "APIN_260117.xlsx", "CCFN_Benue_260117.xlsx", "CCFN_Other LGAs_260117.xlsx","CIHP_260117.xlsx","IHVN_260117.xlsx",
+            };
+            foreach (var file in files)
+            {
+                string newTemplate = baseLocation + "new_" + file;
+                string existingTemplate = baseLocation + file;
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(existingTemplate)))
+                {
+                    foreach (var item in facilitiesGroupedByLGA)
+                    {
+                        if (ypts.FirstOrDefault(x => x.lga_name == item.Key) == null)
+                            continue;
+
+                        string lgaName = item.Key;
+
+                        ExcelWorksheet sheet = RetrieveMatchingWorkSheet(lgaName, package.Workbook.Worksheets, LGADictionary);
+                        if (sheet == null)
+                            continue;
+
+
+                        var facilitiesInLGA = item.ToList();
+
+                        for (int row = 8; ; row++)  
+                        {
+                            string fName = (string)sheet.Cells[row, 3].Value;
+                            if (!string.IsNullOrEmpty(fName))
+                            {
+                                var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name == fName);
+                                if (sdf != null)
+                                {
+                                    sheet.Cells[row, 1].Value = sdf.FacilityCode;
+                                }
+                            }
+                            else
+                                break;
+                        }
+                    }
+                    package.SaveAs(new FileInfo(newTemplate));
+                }
+            }
+            
+        }
+
+        private ExcelWorksheet RetrieveMatchingWorkSheet(string lgaName, ExcelWorksheets worksheets, Dictionary<string, LGA> lGADictionary)
+        {
+            ExcelWorksheet sheet = null;
+            foreach (var sh in worksheets)
+            {
+                string sheet_lga = ExcelHelper.ReadCell(sh, 1, 1);
+
+                LGA theLGA = null;
+                lGADictionary.TryGetValue("NIE " + sheet_lga, out theLGA);
+                if (theLGA == null)
+                {
+                    continue;
+                }
+                if (theLGA.lga_name == lgaName)
+                    sheet = sh;
+            }
+
+            return sheet;
+        }
+
+        private void GenerateFacilityTargetCSV()
+        {
+            var hfDAO = new HealthFacilityDAO();
+            var yptDAO = new YearlyPerformanceTargetDAO();
+            StringBuilder sb = new StringBuilder();
+            StringBuilder valid = new StringBuilder();
+
+            List<YearlyPerformanceTarget> ypts = new List<YearlyPerformanceTarget>();
+
+            valid.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
+            sb.AppendLine("Name, FacilityType");
+
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
+            List<string> files = new List<string>
+            {
+                "CCFN_Other_LGAs_sample.xlsx", "APIN_sample.xlsx", "CCFN_sample.xlsx","CIHP_sample.xlsx","IHVN_sample.xlsx",
+            };
+            foreach (var file in files)
+            {
+                var existingFacilities = hfDAO.RetrieveAll().Where(x => file.Split('_')[0] == x.Organization.ShortName);//.ToDictionary(x => x.Name);
+                valid.AppendLine(file);
+                sb.AppendLine(file);
+
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(baseLocation + file)))
+                {
+                    var sheets = package.Workbook.Worksheets.Where(x => x.Hidden == eWorkSheetHidden.Visible).ToList();
+                    foreach (var sheet in sheets)
+                    {
+                        string name = sheet.Name;
+                        if (name.ToLower().Contains("dashboard") || name.Contains("LGA Level Dashboard"))
+                            continue;
+
+                        int row = 8;
+
+                        while (true)
+                        {
+                            string facilityName = ExcelHelper.ReadCell(sheet, row, 3);
+                            if (string.IsNullOrEmpty(facilityName))
+                            {
+                                break;
+                            } 
+
+                            HealthFacility theFacility = null;
+                            theFacility = existingFacilities.FirstOrDefault(x => x.Name.Trim() == facilityName.Trim());
+                         
+                            if (theFacility == null)
+                            {
+                                sb.AppendLine(string.Format("{0},{1}", facilityName, sheet.Name));
+                            }
+                            else
+                            {
+                                int HTC_TST = 0;
+                                int HTC_TST_pos = 0;
+                                int Tx_NEW = 0;
+                                int.TryParse(ExcelHelper.ReadCell(sheet, row, 5), out HTC_TST);
+                                int.TryParse(ExcelHelper.ReadCell(sheet, row, 7), out HTC_TST_pos);
+                                int.TryParse(ExcelHelper.ReadCell(sheet, row, 9), out Tx_NEW);
+                                valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
+                                 
+                                ypts.Add(new YearlyPerformanceTarget
+                                {
+                                    FiscalYear = 2017,
+                                    HealthFacilty = theFacility,
+                                    HTC_TST = HTC_TST,
+                                    HTC_TST_POS = HTC_TST_pos,
+                                    Tx_NEW = Tx_NEW,
+                                });
+                            }
+                            row++;
+                        }
+                    }
+                }
+            }
+           // yptDAO.BulkInsert(ypts);
+            File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
+            File.WriteAllText(baseLocation + "_Found.csv", valid.ToString());
+            Console.WriteLine("press enter to continue");
+            Console.ReadLine();            
+        }
+
+
+        private async void UpdateFacilities()
+        {
+            HealthFacilityDAO hfdao = new HealthFacilityDAO();
+            var hfs = hfdao.RetrieveAll();
+            StringBuilder sb = new StringBuilder();
+            var taskList = new List<Task<string>>();
+
+            foreach (var hf in hfs)
+            {
+                string baseUrl = "https://www.datim.org/api/organisationUnits/" + hf.FacilityCode + "?fields=coordinates";
+                taskList.Add(RetrieveDatimData(baseUrl, hf));
+            }
+
+            var result = await Task.WhenAll(taskList);
+            string query = string.Join(";", result);
+            Console.WriteLine("Finish fetching data. Press enter to update the db");
+            //Console.ReadLine();
+            DirectUpdateDB(query);
+        }
+
+        private async Task<string> RetrieveDatimData(string uri, HealthFacility hf)
+        {
+            string script = "";
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes("UMB_SHIELD:UMB@sh1eld")));
+                httpClient.Timeout = TimeSpan.FromMinutes(2);
+
+                await httpClient.GetAsync(uri)
+                  .ContinueWith(x =>
+                 {
+                     Console.WriteLine("generated script for hf :{0}", uri);
+                     if (x.IsCompleted && x.Status == TaskStatus.RanToCompletion)
+                     {
+                         var dt = x.Result.Content.ReadAsAsync<DatimResponse>().Result;
+                         if (dt != null && !string.IsNullOrEmpty(dt.coordinates))
+                         {
+                             string[] lnglat = dt.coordinates.Split(new string[] { "[", "]", "," }, StringSplitOptions.RemoveEmptyEntries);
+                             if (lnglat.Count() == 2)
+                             {
+                                 Console.WriteLine("generated script for hf :{0}", hf.Id);
+                                 script = string.Format("Update[HealthFacility] set longitude = '{0}', latitude = '{1}' where id = {2};", lnglat[0], lnglat[1], hf.Id);
+                             }
+                         }
+                     }
+                 });
+            }
+            return script;
+        }
+
+
+        void DirectUpdateDB(string script)
+        {
+            ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
+
+            using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
+            {
+                SqlConnection s = (SqlConnection)connection;
+                SqlCommand command = new SqlCommand(script, s);
+                int rows = command.ExecuteNonQuery();
+                command.Dispose();
+                Console.WriteLine("{0} rows affected", rows);
+            }
+        }
 
         public void InsertFacility()
         {
             StreamReader reader = new StreamReader(@"C:\Users\Somadina Mbadiwe\AppData\Roaming\Skype\My Skype Received Files\Facility_List(1).csv");
-           string header= reader.ReadLine();
+            string header = reader.ReadLine();
             string[] content = reader.ReadToEnd().Split(new string[] { "\n\r", System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             reader.Close();
             reader.Dispose();
@@ -43,7 +278,7 @@ namespace Test
 
                 LGA lga = lgas.FirstOrDefault(x => x.lga_name.Trim().ToUpper() == theline[2].Trim().ToUpper() && x.State.state_name.Trim().ToUpper() == theline[1].Trim().ToUpper());
                 if (lga == null)
-                    continue;                
+                    continue;
 
                 HealthFacility hf = new HealthFacility
                 {
@@ -61,8 +296,8 @@ namespace Test
         public void CreateNewDMP()
         {
             Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
-           var tt=  new ProfileDAO().Retrieve(guid);
-          //  profile.Username = "John doe ";
+            var tt = new ProfileDAO().Retrieve(guid);
+            //  profile.Username = "John doe ";
             new ProfileDAO().Save(profile);
             var dmpDao = new DMPDAO();
             var dmpDocumentDao = new DMPDocumentDAO();
@@ -102,7 +337,7 @@ namespace Test
                 Status = DMPStatus.New,
                 CreationDate = DateTime.Now,
                 TheDMP = dmp,
-                Version ="0.1", 
+                Version = "0.1",
             };
 
             try
@@ -175,69 +410,15 @@ namespace Test
                 Summary = new Summary
                 { ProjectObjectives = "TL;DR. Too long dont read" }
             },
-            //DataCollection = new DataCollection
-            //{
-            //    Report = new Report
-            //    {
-            //        ReportData = new ReportData
-            //        {
-            //            NameOfReport = "Test report",
-            //            DataType = "dont know"
-            //        },
-            //        RoleAndResponsibilities = new RolesAndResponsiblities
-            //        {
-            //            CDC = "Determines the report",
-            //            FMoH = "Archives",
-            //            HealthFacility = "Generates the report",
-            //            ImplementingPartner = "Mgic",
-            //            LGA = "AMAC",
-            //            StateMoH = "Non involved"
-            //        }
-            //    },
-            //},
             QualityAssurance = new QualityAssurance
             {
-                //DataVerification = new DataVerificaton
-                //{
-                //    FormsOfDataVerification = "Manual",
-                //    TypesOfDataVerification = "DQA"
-                //},
             },
-            //DataCollectionProcesses = new Processes
-            //{
-            //    DataCollectionProcessess = "Collected by hand"
-            //},
-            //DataStorageAccessAndSharing = new DataStorage
-            //{
-            //    Digital = new DigitalData
-            //    {
-            //        Backup = "None",
-            //        //StorageType = "DBs"
-            //    },
-            //    NonDigital = new NonDigitalData
-            //    {
-            //        NonDigitalDataTypes = "Registers",
-            //        StorageLocation = "File Cabinet"
-            //    }
-            //},
             IntellectualPropertyCopyrightAndOwnership = new IntellectualPropertyCopyrightAndOwnership
             {
                 ContractsAndAgreements = "None",
                 Ownership = "Fully Us",
                 UseOfThirdPartyDataSources = "None Needed"
             },
-            //DataAccessAndSharing = new DataAccessAndSharing
-            //{
-            //    DataAccess = "Everyone with Login",
-            //    DataSharingPolicies = "Only staff",
-            //    DataTransmissionPolicies = "SSL Secured",
-            //    SharingPlatForms = "Mobile"
-            //},
-            //DataDocumentationManagementAndEntry = new DataDocumentationManagementAndEntry
-            //{
-            //    NamingStructureAndFilingStructures = "camel Case Name, arranged Alphabetical order",
-            //    StoredDocumentationAndDataDescriptors = "Dont know"
-            //},
             PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
             {
                 DataToRetain = "None",
@@ -263,8 +444,13 @@ namespace Test
             JobDesignation = "Software developer",
             Password = "password",
             Surname = "Doe",
-            Username = "johndoe@missingPlace.org",  
+            Username = "johndoe@missingPlace.org",
         };
 
+    }
+
+    public class DatimResponse
+    {
+        public string coordinates { get; set; }
     }
 }
