@@ -18,7 +18,7 @@ using System.Web.Http;
 
 namespace ShieldPortal.Controllers
 {
-   // [EnableCors(origins: "http://localhost:65097", headers: "*", methods: "*")]
+   
     public class DQAApiController : ApiController
     {
         readonly MetaDataService metadataService = new MetaDataService();
@@ -41,7 +41,7 @@ namespace ShieldPortal.Controllers
                     if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                     {
 
-                        var filePath = HttpContext.Current.Server.MapPath("~/Report/Uploads" + postedFile.FileName);
+                        var filePath = HttpContext.Current.Server.MapPath("~/Report/Uploads/" + postedFile.FileName);
                         postedFile.SaveAs(filePath);
                         
 

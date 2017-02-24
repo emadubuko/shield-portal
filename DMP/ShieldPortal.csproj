@@ -1136,7 +1136,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>65097</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/ShieldPortal</IISUrl>
+          <IISUrl>http://localhost:65097/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

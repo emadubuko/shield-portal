@@ -1,3 +1,3 @@
 ﻿function baseUrl() {
-    return "/ShieldPortal/api/";
+    return "/api/";
 }
