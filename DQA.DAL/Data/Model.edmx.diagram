@@ -24,6 +24,11 @@
         <AssociationConnector Association="shield_dmpModel.FK19DCEB72794DD3B7" />
         <AssociationConnector Association="shield_dmpModel.FK6ECB7A12794DD3B7" />
         <AssociationConnector Association="shield_dmpModel.FKDAADEEE960D0DD2E" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_lnk_version_indicators" Width="1.5" PointX="10" PointY="9.875" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_indicators" Width="1.5" PointX="7.75" PointY="3.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_versions" Width="1.5" PointX="7.75" PointY="10" />
+        <AssociationConnector Association="shield_dmpModel.FK_LINK_VERSION" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_value" Width="1.5" PointX="0.75" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

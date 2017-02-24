@@ -22,14 +22,22 @@
           <Property Name="ThematicArea" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Readonly" Type="nvarchar" MaxLength="1" />
         </EntityType>
+        <EntityType Name="dqa_lnk_version_indicators">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version_id" Type="int" Nullable="false" />
+          <Property Name="indicator_code" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
         <EntityType Name="dqa_report_metadata">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SiteId" Type="int" Nullable="false" />
-          <Property Name="LgaId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="StateId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LgaId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="StateId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="LgaLevel" Type="int" Nullable="false" />
           <Property Name="FundingAgency" Type="int" Nullable="false" />
           <Property Name="ImplementingPartner" Type="int" Nullable="false" />
@@ -49,6 +57,30 @@
           <Property Name="IndicatorValueMonth1" Type="decimal" Precision="18" Scale="0" />
           <Property Name="IndicatorValueMonth2" Type="decimal" Precision="18" Scale="0" />
           <Property Name="IndicatorValueMonth3" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="dqa_summary_indicators">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="summary_code" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="thematic_area" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="indicator_element" Type="nvarchar" MaxLength="1000" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_summary_value">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="metadata_id" Type="int" Nullable="false" />
+          <Property Name="summary_object" Type="xml" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_versions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version_number" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="HealthFacility">
           <Key>
@@ -95,42 +127,6 @@
           <Property Name="geo_polictical_region" Type="nvarchar" MaxLength="50" />
           <Property Name="state_name" Type="nvarchar" MaxLength="250" />
         </EntityType>
-        <Association Name="FK_dqa_report_metadata_ImplementingPartners">
-          <End Role="ImplementingPartners" Type="Self.ImplementingPartners" Multiplicity="1" />
-          <End Role="dqa_report_metadata" Type="Self.dqa_report_metadata" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ImplementingPartners">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="dqa_report_metadata">
-              <PropertyRef Name="ImplementingPartner" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dqa_report_value_dqa_indicator">
-          <End Role="dqa_indicator" Type="Self.dqa_indicator" Multiplicity="1" />
-          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="dqa_indicator">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="dqa_report_value">
-              <PropertyRef Name="IndicatorId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dqa_report_value_dqa_report_metadata">
-          <End Role="dqa_report_metadata" Type="Self.dqa_report_metadata" Multiplicity="1" />
-          <End Role="dqa_report_value" Type="Self.dqa_report_value" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="dqa_report_metadata">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="dqa_report_value">
-              <PropertyRef Name="MetadataId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_LGA_states">
           <End Role="states" Type="Self.states" Multiplicity="0..1" />
           <End Role="lga" Type="Self.lga" Multiplicity="*" />
@@ -140,6 +136,18 @@
             </Principal>
             <Dependent Role="lga">
               <PropertyRef Name="state_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LINK_VERSION">
+          <End Role="dqa_versions" Type="Self.dqa_versions" Multiplicity="1" />
+          <End Role="dqa_lnk_version_indicators" Type="Self.dqa_lnk_version_indicators" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dqa_versions">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="dqa_lnk_version_indicators">
+              <PropertyRef Name="version_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -230,27 +238,23 @@
         <EntityContainer Name="shield_dmpModelStoreContainer">
           <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_lnk_version_indicators" EntityType="Self.dqa_lnk_version_indicators" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_report_metadata" EntityType="Self.dqa_report_metadata" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_report_value" EntityType="Self.dqa_report_value" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_summary_indicators" EntityType="Self.dqa_summary_indicators" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_summary_value" EntityType="Self.dqa_summary_value" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_versions" EntityType="Self.dqa_versions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HealthFacility" EntityType="Self.HealthFacility" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImplementingPartners" EntityType="Self.ImplementingPartners" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="lga" EntityType="Self.lga" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="states" EntityType="Self.states" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_dqa_report_metadata_ImplementingPartners" Association="Self.FK_dqa_report_metadata_ImplementingPartners">
-            <End Role="ImplementingPartners" EntitySet="ImplementingPartners" />
-            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="Self.FK_dqa_report_value_dqa_indicator">
-            <End Role="dqa_indicator" EntitySet="dqa_indicator" />
-            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dqa_report_value_dqa_report_metadata" Association="Self.FK_dqa_report_value_dqa_report_metadata">
-            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
-            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
-          </AssociationSet>
           <AssociationSet Name="FK_LGA_states" Association="Self.FK_LGA_states">
             <End Role="states" EntitySet="states" />
             <End Role="lga" EntitySet="lga" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LINK_VERSION" Association="Self.FK_LINK_VERSION">
+            <End Role="dqa_versions" EntitySet="dqa_versions" />
+            <End Role="dqa_lnk_version_indicators" EntitySet="dqa_lnk_version_indicators" />
           </AssociationSet>
           <AssociationSet Name="FK19DCEB72794DD3B7" Association="Self.FK19DCEB72794DD3B7">
             <End Role="states" EntitySet="states" />
@@ -338,6 +342,14 @@
             <End Role="state" EntitySet="states" />
             <End Role="lga" EntitySet="lgas" />
           </AssociationSet>
+          <EntitySet Name="dqa_lnk_version_indicators" EntityType="shield_dmpModel.dqa_lnk_version_indicators" />
+          <EntitySet Name="dqa_summary_indicators" EntityType="shield_dmpModel.dqa_summary_indicators" />
+          <EntitySet Name="dqa_versions" EntityType="shield_dmpModel.dqa_versions" />
+          <AssociationSet Name="FK_LINK_VERSION" Association="shield_dmpModel.FK_LINK_VERSION">
+            <End Role="dqa_versions" EntitySet="dqa_versions" />
+            <End Role="dqa_lnk_version_indicators" EntitySet="dqa_lnk_version_indicators" />
+          </AssociationSet>
+          <EntitySet Name="dqa_summary_value" EntityType="shield_dmpModel.dqa_summary_value" />
         </EntityContainer>
         <EntityType Name="dqa_funder">
           <Key>
@@ -363,8 +375,8 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SiteId" Type="Int32" Nullable="false" />
-          <Property Name="LgaId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StateId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LgaId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StateId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="LgaLevel" Type="Int32" Nullable="false" />
           <Property Name="FundingAgency" Type="Int32" Nullable="false" />
           <Property Name="ImplementingPartner" Type="Int32" Nullable="false" />
@@ -583,6 +595,52 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="dqa_lnk_version_indicators">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version_id" Type="Int32" Nullable="false" />
+          <Property Name="indicator_code" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dqa_versions" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_lnk_version_indicators" ToRole="dqa_versions" />
+        </EntityType>
+        <EntityType Name="dqa_summary_indicators">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="summary_code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="thematic_area" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="indicator_element" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="dqa_versions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version_number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dqa_lnk_version_indicators" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_versions" ToRole="dqa_lnk_version_indicators" />
+        </EntityType>
+        <Association Name="FK_LINK_VERSION">
+          <End Type="shield_dmpModel.dqa_versions" Role="dqa_versions" Multiplicity="1" />
+          <End Type="shield_dmpModel.dqa_lnk_version_indicators" Role="dqa_lnk_version_indicators" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dqa_versions">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="dqa_lnk_version_indicators">
+              <PropertyRef Name="version_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="dqa_summary_value">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="metadata_id" Type="Int32" Nullable="false" />
+          <Property Name="summary_object" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -684,6 +742,42 @@
                 <ScalarProperty Name="state_name" ColumnName="state_name" />
                 <ScalarProperty Name="geo_polictical_region" ColumnName="geo_polictical_region" />
                 <ScalarProperty Name="state_code" ColumnName="state_code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_lnk_version_indicators">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_lnk_version_indicators">
+              <MappingFragment StoreEntitySet="dqa_lnk_version_indicators">
+                <ScalarProperty Name="indicator_code" ColumnName="indicator_code" />
+                <ScalarProperty Name="version_id" ColumnName="version_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_summary_indicators">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_summary_indicators">
+              <MappingFragment StoreEntitySet="dqa_summary_indicators">
+                <ScalarProperty Name="indicator_element" ColumnName="indicator_element" />
+                <ScalarProperty Name="thematic_area" ColumnName="thematic_area" />
+                <ScalarProperty Name="summary_code" ColumnName="summary_code" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_versions">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_versions">
+              <MappingFragment StoreEntitySet="dqa_versions">
+                <ScalarProperty Name="version_number" ColumnName="version_number" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_summary_value">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_summary_value">
+              <MappingFragment StoreEntitySet="dqa_summary_value">
+                <ScalarProperty Name="summary_object" ColumnName="summary_object" />
+                <ScalarProperty Name="metadata_id" ColumnName="metadata_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

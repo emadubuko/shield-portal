@@ -33,5 +33,9 @@ namespace DQA.DAL.Data
         public virtual DbSet<ImplementingPartner> ImplementingPartners { get; set; }
         public virtual DbSet<lga> lgas { get; set; }
         public virtual DbSet<state> states { get; set; }
+        public virtual DbSet<dqa_lnk_version_indicators> dqa_lnk_version_indicators { get; set; }
+        public virtual DbSet<dqa_summary_indicators> dqa_summary_indicators { get; set; }
+        public virtual DbSet<dqa_versions> dqa_versions { get; set; }
+        public virtual DbSet<dqa_summary_value> dqa_summary_value { get; set; }
     }
 }
