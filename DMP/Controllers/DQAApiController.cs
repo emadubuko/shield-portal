@@ -188,7 +188,24 @@ namespace ShieldPortal.Controllers
             return Utility.GetDatable(cmd);
         }
 
-      
+        public DataSet GetSummaryResult()
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_dqa_summary_result";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            return Utility.GetDataSet(cmd);
+        }
+
+        public DataTable GetIpSummaryResult(int id)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_ip_dqa_summary_result";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ip", id);
+
+            return Utility.GetDatable(cmd);
+        }
 
         // DELETE: api/DQA/5
         public void Delete(int id)

@@ -24,7 +24,7 @@
                 }
                 var percentage = 0;
                 if (dt.Total > 0) {
-                    percentage = (dt.Submitted / dt.Total) * 100;
+                    percentage = ((dt.Submitted / dt.Total) * 100).toFixed(2);
                 }
 
                 var value = '<div class="col-lg-4"><div class="panel panel-default"><div class="panel-body"><div class="media"><div class="media-left"><div class="knob-outer"><input type="text" readonly class="knob" data-width="82" data-height="82" data-fgColor="#29B6F6" value="' + percentage + '"></div></div><div class="media-body"><h4 class="media-heading">' + dt.Submitted + ' facilities submitted</h4><p>' + pending + '</p><button class="btn btn-sm btn-primary">' + dt.Name + '</button></div></div></div></div></div>';
@@ -74,12 +74,12 @@ function loadHomeData() {
                 if (dt.Pending > 0) {
                     pending = dt.Pending + " are yet to submit";
                 }
-                else if (dt.Pending == 0) {
+                else if (dt.Pending <= 0) {
                     pending = "All facilites in the state have submitted"
                 }
                 var percentage = 0;
                 if (dt.Total > 0) {
-                    percentage = (dt.Submitted / dt.Total) * 100;
+                    percentage = ((dt.Submitted / dt.Total) * 100).toFixed(2);;
                 }
 
                 var value = '<div class="col-lg-4"><div class="panel panel-default"><div class="panel-body"><div class="media"><div class="media-left"><div class="knob-outer"><input type="text" readonly class="knob" data-width="82" data-height="82" data-fgColor="#29B6F6" value="' + percentage + '"></div></div><div class="media-body"><h4 class="media-heading">' + dt.Submitted + ' facilities submitted</h4><p>' + pending + '</p><a href="/dqa/IpHome/' + dt.Id + '" class="btn btn-sm btn-primary">' + dt.Name + '</a></div></div></div></div></div>';

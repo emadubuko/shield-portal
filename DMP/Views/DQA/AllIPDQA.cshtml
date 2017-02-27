@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "IpDQA";
+}
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <style>
+        .panel-warning {
+            border-color: #929b17;
+        }
+
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: #929b17;
+                border-color: #929b17;
+            }
+         
+    </style>
+}
+
+<div class="main-content">
+
+    <div class="row">
+       
+        <div class="col-lg-12">
+            
+                 
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading clearfix" style="padding:15px">
+                                    <h4 class="panel-title">DQA Summary Result</h4>
+
+                                </div>
+                                <div class="panel-body">
+                                    <div id="divTable" class="table-responsive"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix" style="padding:15px">
+                                            <h4 class="panel-title">IP Listing</h4>
+
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped table-hover" id="output">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th>IP Name</th>
+                                                            <th>ShortName</th>
+                                                            <th>Address</th>
+                                                            <th>Phone Number</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                            </div>
+</div>
+
+                                        </div>
+                                    </div>
+
+                     
+                </div>
+        
+    </div>
+
+</div>
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/dataTables")
+    @Scripts.Render("~/bundles/loader")
+<script src="~/Scripts/jsonTable.js"></script>
+    <script src="~/Scripts/fns/base.js" type="text/javascript"></script>
+    <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
+
+    <script>
+
+
+        $(document).ready(function () {
+            getAllIPDQASummary();
+
+        });
+    </script>
+}

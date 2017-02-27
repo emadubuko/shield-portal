@@ -44,15 +44,40 @@ namespace ShieldPortal.Controllers
 
         public ActionResult IpDQA()
         {
-            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
-           ViewBag.ip_name = new Services.Utils().GetloggedInProfile().Organization.Name;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                PopulateStates();
+                return View("AllIPDQA");
+            }
 
-            PopulateStates();
-            
-            ViewBag.ip_id = ip_id;
+            else if (User.IsInRole("ip"))
+            {
+                var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+                ViewBag.ip_name = new Services.Utils().GetloggedInProfile().Organization.Name;
 
-            return View();
+                PopulateStates();
+
+                ViewBag.ip_id = ip_id;
+                return View();
+            }
+            return View("~/Views/Shared/Denied.cshtml");
         }
+
+
+        public ActionResult IPDQAResult(int id)
+        {
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                PopulateStates();
+                PopulateStates();
+
+                ViewBag.ip_id = id;
+                return View("IpDQA");
+            }
+            return View("~/Views/Shared/Denied.cshtml");
+        }
+
+    
 
         public ActionResult GetDQA(int id)
         {

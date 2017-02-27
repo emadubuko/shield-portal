@@ -92,27 +92,49 @@
                     <div class="line-dashed"></div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover" id="output">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Site</th>
-                                            <th>Lga</th>
-                                            <th>State</th>
-                                            
-                                            <th>FiscalYear</th>
-                                           
-                                            <th>UploadDate</th>
-                                            <th>Month</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading clearfix" style="padding:15px">
+                                    <h4 class="panel-title">DQA Summary Result</h4>
+
+                                </div>
+                                <div class="panel-body">
+                                    <div id="divTable" class="table-responsive"></div>
+                                </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading clearfix" style="padding:15px">
+                                    <h4 class="panel-title"> DQA LIST</h4>
+
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped table-hover" id="output">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Site</th>
+                                                    <th>Lga</th>
+                                                    <th>State</th>
+
+                                                    <th>FiscalYear</th>
+
+                                                    <th>UploadDate</th>
+                                                    <th>Month</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    </div>
+</div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -132,12 +154,14 @@
     @Scripts.Render("~/bundles/loader")
     <script src="~/Scripts/fns/base.js" type="text/javascript"></script>
     <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
+<script src="~/Scripts/jsonTable.js"></script>
 
     <script>
        
 
         $(document).ready(function () {
             getIPDQA(@ViewBag.ip_id);
+            getIPDQASummary(@ViewBag.ip_id);
            
         });
     </script>

@@ -89,3 +89,41 @@ function getDQA(metadataId) {
         }
     })
 }
+
+function getAllIPDQASummary() {
+    $.ajax({
+        url: baseUrl() + "dqaapi/GetSummaryResult",
+        method: "GET",
+        contentType: "application/json",
+        success: function (data) {
+            var jsonHtmlTable = ConvertJsonToTable(data.Table, 'table', "table table-bordered table-striped table-hover", 'Download');
+            $("#divTable").html(jsonHtmlTable);
+            var tbl = "";
+            var ips = data.Table1;
+            for (var i = 0; i < ips.length; i++) {
+                tbl += "<tr><td><a href='/dqa/IPDQAResult/" + ips[i].Id + "'>" + ips[i].Name + "</a></td>";
+                tbl += "<td>" + ips[i].ShortName + "</td>";
+                tbl += "<td>" + ips[i].Address + "</td>";
+                tbl += "<td>" + ips[i].PhoneNumber + "</td></tr>";
+
+            }
+
+            $("#output tbody").empty();
+            $("#output tbody").append(tbl);
+            $('#output').DataTable();
+        }
+    })
+}
+
+function getIPDQASummary(id) {
+    $.ajax({
+        url: baseUrl() + "dqaapi/GetIpSummaryResult/"+id,
+        method: "GET",
+        contentType: "application/json",
+        success: function (data) {
+            var jsonHtmlTable = ConvertJsonToTable(data, 'table', "table table-bordered table-striped table-hover", 'Download');
+            $("#divTable").html(jsonHtmlTable);
+           
+        }
+    })
+}
