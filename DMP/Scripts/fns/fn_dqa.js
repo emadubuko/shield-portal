@@ -28,10 +28,10 @@ function getIPDQA(ip) {
         success: function (data) {
             var table_value="";
             for (var i = 0; i < data.length; i++) {
-                table_value += "<tr id='tr_"+data[i].Id+"'>";
-                table_value += "<td><a href='/DQA/GetDQA/"+data[i].Id+"'>" + data[i].Id + "</a></td><td>" + data[i].SiteId + "</td><td>" + data[i].LgaId + "</td>";
+                table_value += "<tr id='tr_" + data[i].Id + "'>";
+                table_value += "<td>" + data[i].Id + "</td><td><a href='/DQA/GetDQA/" + data[i].Id + "'>" + data[i].SiteId + "</a></td><td>" + data[i].LgaId + "</td>";
                 table_value += "<td>" + data[i].StateId + "</td>";
-                table_value += "<td>" + data[i].FiscalYear + "</td><td>" + data[i].AssessmentWeek + "</td>";
+                table_value += "<td>" + data[i].FiscalYear + "</td>";
                 table_value += "<td>" + data[i].CreateDate + "</td><td>" + data[i].Month + "</td>";
                 table_value += "<td><button class='btn btn-danger'  onclick='deleteDQA(" + data[i].Id + ")'><i class='fa fa-trash'></i> Delete</button></td>";
                 table_value += "</tr>";
@@ -53,9 +53,9 @@ function searchIPDQA(ip) {
             var table_value = "";
             for (var i = 0; i < data.length; i++) {
                 table_value += "<tr id='tr_" + data[i].Id + "'>";
-                table_value += "<td><a href='/DQA/GetDQA/" + data[i].Id + "'>" + data[i].Id + "</a></td><td>" + data[i].SiteId + "</td><td>" + data[i].LgaId + "</td>";
+                table_value += "<td>" + data[i].Id + "</td><td><a href='/DQA/GetDQA/" + data[i].Id + "'>" + data[i].SiteId + "</a></td><td>" + data[i].LgaId + "</td>";
                 table_value += "<td>" + data[i].StateId + "</td>";
-                table_value += "<td>" + data[i].FiscalYear + "</td><td>" + data[i].AssessmentWeek + "</td>";
+                table_value += "<td>" + data[i].FiscalYear + "</td>";
                 table_value += "<td>" + data[i].CreateDate + "</td><td>" + data[i].Month + "</td>";
                 table_value += "<td><button class='btn btn-danger'  onclick='deleteDQA(" + data[i].Id + ")'><i class='fa fa-trash'></i> Delete</button></td>";
                 table_value += "</tr>";
