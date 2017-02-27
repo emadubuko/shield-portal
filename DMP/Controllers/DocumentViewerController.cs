@@ -77,7 +77,7 @@ namespace ShieldPortal.Controllers
                 ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
                 intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
                 ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
-                projectDetails = thepageDoc.ProjectProfile.ProjectDetails,
+                projectDetails = Doc.TheDMP.TheProject, //thepageDoc.ProjectProfile.ProjectDetails,
                 summary = thepageDoc.Planning.Summary,
                 versionMetadata = versionMetadata,
                 reportDataList =  thepageDoc.DataProcesses.Reports.ReportData,

@@ -79,7 +79,15 @@ namespace Test
                             string fName = (string)sheet.Cells[row, 3].Value;
                             if (!string.IsNullOrEmpty(fName))
                             {
-                                var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name == fName);
+                                var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name.ToLower().Trim() == fName);
+                                //var sdf = facilitiesInLGA.FirstOrDefault(x =>
+                                //{
+                                //    var spNames = x.Name.ToLower().Trim().Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                                //    var name = string.Join(" ", spNames, 0, spNames.Length - 1);
+
+                                //    return name == fName;
+                                //});
+
                                 if (sdf != null)
                                 {
                                     sheet.Cells[row, 1].Value = sdf.FacilityCode;
