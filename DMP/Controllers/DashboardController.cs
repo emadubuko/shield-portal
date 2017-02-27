@@ -25,7 +25,20 @@ namespace ShieldPortal.Controllers
             return Utility.GetDataSet(cmd);
           
         }
-      
-     
+
+
+        [Route("api/Dashboard/GetHome/{reporting_period}")]
+        public DataSet GetHome( string reporting_period)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_dqa_dashboard_details_cdc";
+            cmd.Parameters.AddWithValue("@period", reporting_period);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            return Utility.GetDataSet(cmd);
+
+        }
+
+
     }
 }

@@ -1,23 +1,37 @@
 ﻿using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
+    [System.Web.Mvc.Authorize]
     public class DQAController : Controller
     {
         public ActionResult Index()
         {
-            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
-            ViewBag.ip_id = ip_id;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                return View("Home");
+            }
+            else if (User.IsInRole("ip"))
+            {
+                var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+                ViewBag.ip_id = ip_id;
 
-            return View("Dashboard");
+                return View("Dashboard");
+            }
+
+            return View("~/Views/Shared/Denied.cshtml");
+        }
+
+        public ActionResult IpHome(int id)
+        {
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                ViewBag.ip_id = id;
+                return View("Dashboard");
+            }
+            return View("~/Views/Shared/Denied.cshtml");
         }
 
         public ActionResult UploadDQA()
