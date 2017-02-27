@@ -1,4 +1,5 @@
-﻿using DQA.DAL.Data;
+﻿using CommonUtil.Utilities;
+using DQA.DAL.Data;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -17,93 +18,102 @@ namespace DQA.DAL.Business
         {
             using (ExcelPackage package=new ExcelPackage(new FileInfo(filename)))
             {
-
-                var worksheet = package.Workbook.Worksheets["Worksheet"];
-                //var metaSheet = package.Workbook.Worksheets["CDC DQA"];
-                var excel_value = worksheet.Cells["P2"].Value.ToString();
-                var partner = entity.ImplementingPartners.FirstOrDefault(e => e.ShortName == excel_value);
-                if (partner==null)
+                try
                 {
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The partner does not exist.</td></tr>";
+                    var worksheet = package.Workbook.Worksheets["Worksheet"];
+                    //var metaSheet = package.Workbook.Worksheets["CDC DQA"];
+                    var excel_value = worksheet.Cells["P2"].Value.ToString();
+                    var partner = entity.ImplementingPartners.FirstOrDefault(e => e.ShortName == excel_value);
+                    if (partner == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The partner does not exist.</td></tr>";
+                    }
+                    excel_value = worksheet.Cells["R2"].Value.ToString();
+                    var state = entity.states.FirstOrDefault(e => e.state_name == excel_value);
+                    if (state == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. State is incorrect</td></tr>";
+                    }
+
+                    excel_value = worksheet.Cells["T2"].Value.ToString().Substring(3, worksheet.Cells["T2"].Value.ToString().Length - 3);
+
+                    var lga = entity.lgas.FirstOrDefault(e => e.lga_name == excel_value);
+                    if (lga == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The LGA is incorrect</td></tr>";
+                    }
+
+
+
+                    excel_value = worksheet.Cells["AA2"].Value.ToString();
+                    var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == excel_value);
+
+                    if (facility == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
+                    }
+                    //get the metadata of the report
+                    var metadata = new dqa_report_metadata();
+                    metadata.AssessmentWeek = 1;//Convert.ToInt32(worksheet.Cells["Q8"].Value.ToString());
+                    metadata.CreateDate = DateTime.Now;
+                    metadata.CreatedBy = username;
+                    metadata.FiscalYear = DateTime.Now.Year.ToString();
+                    metadata.FundingAgency = 1;
+                    metadata.ImplementingPartner = partner.Id;
+                    metadata.LgaId = lga.lga_code;
+                    metadata.LgaLevel = 2;
+                    metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
+                    metadata.SiteId = Convert.ToInt32(facility.Id);//worksheet.Cells["Z3"].Value.ToString();
+                    metadata.StateId = state.state_code;
+
+                    //var worksheet = package.Workbook.Worksheets["Data entry"];
+
+                    //check if the report exists
+                    var meta = entity.dqa_report_metadata.Where(e => e.FiscalYear == metadata.FiscalYear && e.FundingAgency == metadata.FundingAgency && e.ReportPeriod == metadata.ReportPeriod && e.ImplementingPartner == metadata.ImplementingPartner && e.SiteId == metadata.SiteId);
+                    if (meta.Any())
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
+                    }
+                    entity.dqa_report_metadata.Add(metadata);
+                    entity.SaveChanges();
+
+
+                    worksheet = package.Workbook.Worksheets["All Questions"];
+                    //get all the indicators in the system
+                    var indicators = entity.dqa_indicator;
+                    //var cells = worksheet.Cells[1, 1, 945, 3];
+                    for (var i = 8; i < 205; i++)
+                    {
+                        var value = worksheet.Cells[i, 4];
+                        //check if there is a value for the indicator
+                        if (value == null || value.Value == null || worksheet.Cells[i, 5] == null || worksheet.Cells[i, 6].Value == null || worksheet.Cells[i, 2].Value == null)
+                            continue;
+
+                        var indicator_code = worksheet.Cells[i, 2].Value.ToString();
+                        var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
+                        var report_value = new dqa_report_value();
+                        report_value.MetadataId = metadata.Id;
+                        report_value.IndicatorId = indicator.Id;
+                        report_value.IndicatorValueMonth1 = Utility.GetDecimal(worksheet.Cells[i, 4].Value);//Convert.ToInt32(value.Value);
+                        report_value.IndicatorValueMonth2 = Utility.GetDecimal(worksheet.Cells[i, 5].Value);
+                        report_value.IndicatorValueMonth3 = Utility.GetDecimal(worksheet.Cells[i, 6].Value);
+
+                        entity.dqa_report_value.Add(report_value);
+
+                    }
+                    entity.SaveChanges();
+
+                    ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
+
+                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + "was processed successfully</td></tr>";
                 }
-                excel_value = worksheet.Cells["R2"].Value.ToString();
-                var state = entity.states.FirstOrDefault(e => e.state_name ==excel_value);
-                if (state == null)
+                catch(Exception ex)
                 {
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. State is incorrect</td></tr>";
+                    Logger.LogError(ex);
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + "was processed successfully</td></tr>";
                 }
 
-                excel_value = worksheet.Cells["T2"].Value.ToString().Split()[1];
-
-                var lga = entity.lgas.FirstOrDefault(e => e.lga_name == excel_value);
-                if (lga == null)
-                {
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The LGA is incorrect</td></tr>";
-                }
-
-             
-
-                excel_value = worksheet.Cells["AA2"].Value.ToString();
-                var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == excel_value);
-
-                if (facility == null)
-                {
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
-                }
-                //get the metadata of the report
-                var metadata = new dqa_report_metadata();
-                metadata.AssessmentWeek = 1;//Convert.ToInt32(worksheet.Cells["Q8"].Value.ToString());
-                metadata.CreateDate = DateTime.Now;
-                metadata.CreatedBy = username;
-                metadata.FiscalYear = DateTime.Now.Year.ToString();
-                metadata.FundingAgency = 1;
-                metadata.ImplementingPartner = partner.Id;
-                metadata.LgaId = lga.lga_code;
-                metadata.LgaLevel = 2;
-                metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
-                metadata.SiteId = Convert.ToInt32(facility.Id);//worksheet.Cells["Z3"].Value.ToString();
-                metadata.StateId = state.state_code;
-
-                //var worksheet = package.Workbook.Worksheets["Data entry"];
-
-                //check if the report exists
-                var meta = entity.dqa_report_metadata.Where(e => e.FiscalYear == metadata.FiscalYear && e.FundingAgency == metadata.FundingAgency && e.ReportPeriod == metadata.ReportPeriod && e.ImplementingPartner == metadata.ImplementingPartner && e.SiteId == metadata.SiteId);
-                if (meta.Any())
-                {
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
-                }
-                entity.dqa_report_metadata.Add(metadata);
-                entity.SaveChanges();
-
-
-                worksheet = package.Workbook.Worksheets["All Questions"];
-                //get all the indicators in the system
-                var indicators = entity.dqa_indicator;
-                //var cells = worksheet.Cells[1, 1, 945, 3];
-                for(var i = 8; i < 205; i++)
-                {
-                    var value = worksheet.Cells[i, 4];
-                    //check if there is a value for the indicator
-                    if (value == null || value.Value ==null || worksheet.Cells[i, 5]==null || worksheet.Cells[i, 6].Value==null || worksheet.Cells[i, 2].Value==null)
-                        continue;
-
-                    var indicator_code = worksheet.Cells[i, 2].Value.ToString();
-                    var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
-                    var report_value = new dqa_report_value();
-                    report_value.MetadataId = metadata.Id;
-                    report_value.IndicatorId = indicator.Id;
-                    report_value.IndicatorValueMonth1 = Utility.GetDecimal(worksheet.Cells[i, 4].Value);//Convert.ToInt32(value.Value);
-                    report_value.IndicatorValueMonth2 = Utility.GetDecimal(worksheet.Cells[i, 5].Value);
-                    report_value.IndicatorValueMonth3 = Utility.GetDecimal(worksheet.Cells[i, 6].Value);
-
-                    entity.dqa_report_value.Add(report_value);
-                   
-                }
-                entity.SaveChanges();
-
-                ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
-
-                return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + "was processed successfully</td></tr>";
+               
             }
         }
 
