@@ -24,7 +24,7 @@ namespace DAL.Entities
         public virtual string GrantReferenceNumber {get;set;}
         public virtual string ProjectSummary { get; set; }
         public virtual string PhoneNumber { get; set; }
-
+        [XmlIgnore]
         public virtual Profile LeadActivityManager { get; set; }
         
 

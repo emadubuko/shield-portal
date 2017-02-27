@@ -83,7 +83,7 @@ namespace ShieldPortal.Services
             header.Alignment = Element.BODY;
             header.IndentationLeft = 55f;
             doc.Add(header);// add paragraph to the document
-            doc.Add(CreateProjectProfileTable(pageData.ProjectProfile)); // add pdf table to the document
+            doc.Add(CreateProjectProfileTable(dmpDoc.TheDMP.TheProject)); //pageData.ProjectProfile));
             doc.Add(GenericPageTable(pageData.ProjectProfile.EthicalApproval, "Ethical Approval"));
             
             doc.NewPage();//Planning
@@ -287,7 +287,8 @@ namespace ShieldPortal.Services
                 // Maximum width is 600 pixels.
                 float percentage = 0.0f;
                 percentage = 540 / pic.Width;
-                pic.ScalePercent(percentage * 100);
+                if (percentage < 1)
+                    pic.ScalePercent(percentage * 100);
 
             }
 
@@ -601,7 +602,7 @@ namespace ShieldPortal.Services
       
 
 
-        private PdfPTable CreateProjectProfileTable(ProjectProfile ProjectProfile)
+        private PdfPTable CreateProjectProfileTable(ProjectDetails ProjectDetails)
         {
             BaseColor blackColor = new BaseColor(0, 0, 0);
             Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
@@ -627,7 +628,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectTitle, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.ProjectTitle, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -645,7 +646,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.NameOfImplementingPartner, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.NameOfImplementingPartner, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -663,7 +664,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.AbreviationOfImplementingPartner, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.AbreviationOfImplementingPartner, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -681,7 +682,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.MissionPartner, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.MissionPartner, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
             pp.SpacingBefore = 1f;
@@ -699,7 +700,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            string leadActivityMgr = ProjectProfile.ProjectDetails.LeadActivityManager != null ? ProjectProfile.ProjectDetails.LeadActivityManager.FullName : "";
+            string leadActivityMgr = ProjectDetails.LeadActivityManager != null ? ProjectDetails.LeadActivityManager.FullName : "";
             pp = new Paragraph(new Chunk(leadActivityMgr, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -717,7 +718,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.AddressOfOrganization, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.AddressOfOrganization, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
             pp.SpacingBefore = 1f;
@@ -734,7 +735,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.PhoneNumber, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.PhoneNumber, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
             pp.SpacingBefore = 1f;
@@ -752,7 +753,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectStartDate, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.ProjectStartDate, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -770,7 +771,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.ProjectEndDate, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.ProjectEndDate, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -789,7 +790,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectProfile.ProjectDetails.GrantReferenceNumber, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.GrantReferenceNumber, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;

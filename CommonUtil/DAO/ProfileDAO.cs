@@ -3,6 +3,7 @@ using CommonUtil.Entities;
 using NHibernate;
 using NHibernate.Criterion;
 using System;
+using System.Collections.Generic;
 
 namespace CommonUtil.DAO
 {
@@ -39,6 +40,15 @@ namespace CommonUtil.DAO
             ICriteria criteria = session.CreateCriteria<Profile>()
             .Add(Restrictions.Eq("Username", username)); 
             var profile = criteria.UniqueResult<Profile>();
+
+            return profile;
+        }
+        public IList<Profile> GetProfilesByIP(int IPId)
+        {
+            var session = BuildSession();
+            ICriteria criteria = session.CreateCriteria<Profile>()
+            .Add(Restrictions.Eq("Organization.Id", IPId));
+            var profile = criteria.List<Profile>();
 
             return profile;
         }

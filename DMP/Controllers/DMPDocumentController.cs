@@ -57,6 +57,7 @@ namespace ShieldPortal.Controllers
                 dmpDoc = MyDMP.DMPDocuments.LastOrDefault();
             }
             var states = ExcelHelper.RetrieveStatesName();
+            var currentUser = new Utils().GetloggedInProfile();
             if (dmpDoc != null)
             {                
                 var thepageDoc = dmpDoc.Document;
@@ -80,7 +81,7 @@ namespace ShieldPortal.Controllers
                     ethicsApproval = thepageDoc.ProjectProfile.EthicalApproval,
                     intelProp = thepageDoc.IntellectualPropertyCopyrightAndOwnership,
                     ppData = thepageDoc.PostProjectDataRetentionSharingAndDestruction,
-                    projectDetails =  thepageDoc.ProjectProfile.ProjectDetails,
+                    projectDetails = MyDMP.TheProject,// thepageDoc.ProjectProfile.ProjectDetails,
                     summary = thepageDoc.Planning.Summary, 
                     reportDataList = thepageDoc.DataProcesses.Reports.ReportData,
                     Trainings = thepageDoc.MonitoringAndEvaluationSystems.People!=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Trainings : new List<Trainings>(),
@@ -88,7 +89,7 @@ namespace ShieldPortal.Controllers
                     responsibilities = thepageDoc.MonitoringAndEvaluationSystems.People !=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Responsibilities : new List<StaffGrouping>(),
                     documentID = dmpDoc.Id.ToString(),
                     EditMode = true,
-                    Profiles = profileDAO.RetrieveAll().ToDictionary(x => x.Id),
+                    Profiles = profileDAO.GetProfilesByIP(MyDMP.Organization.Id).ToDictionary(x => x.Id),
                     Organization = MyDMP.Organization,
                     dataCollection = thepageDoc.DataProcesses.DataCollection,
                     DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems.People.DataFlowChart,
@@ -101,14 +102,14 @@ namespace ShieldPortal.Controllers
                 {
                     states = states,
                     Organization = MyDMP.Organization,
-                    Initiator = new Utils().GetloggedInProfile(),  
+                    Initiator = currentUser,  
                     EditMode = false,
                     projectDetails = new ProjectDetails
                     {
                         Organization = MyDMP.Organization,
                         DocumentTitle = MyDMP.DMPTitle, 
                     },
-                     Profiles = profileDAO.RetrieveAll().ToDictionary(x=>x.Id), 
+                     Profiles = profileDAO.GetProfilesByIP(MyDMP.Organization.Id).ToDictionary(x=>x.Id), 
                 };
                 return View(docVM);
             }

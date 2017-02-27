@@ -1,10 +1,5 @@
 ﻿using DAL.Entities;
 using FluentNHibernate.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Mapping
 {
@@ -19,7 +14,7 @@ namespace DAL.Mapping
             Map(x => x.ProjectStartDate);
             Map(x => x.ProjectEndDate);
             Map(x => x.ProjectSummary);
-            References(x => x.LeadActivityManager).Column("LeadActivityManagerId").Not.LazyLoad();
+            References(x => x.LeadActivityManager).Column("LeadActivityManagerId");
             References(x => x.Organization).Column("OrganizationId");
 
         }
