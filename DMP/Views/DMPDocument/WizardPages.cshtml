@@ -782,7 +782,7 @@
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="DataCollectionProcess">Data collection process</label>
                                                 <div class="col-sm-8">
-                                                     <textarea id="DataCollectionProcess" rows="3"class="form-control"  placeholder="Describe the data collection process"></textarea>
+                                                     <textarea id="DataCollectionProcess" rows="3" class="form-control"  placeholder="Describe the data collection process"></textarea>
                                                 </div>
                                             </div>   
                                             <div class="col-sm-offset-9">
@@ -1560,7 +1560,7 @@
                                     <a id="finishbtn" href="javascript:void(0)">
                                         Finish and Preview<i class="icon-right-open"></i>
                                     </a>
-                                    <img id="finishSpinner" style=" display:none" class="center" src="~/images/spinner.gif" width="36">
+                                    <img id="finishSpinner" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                                 </li>
                             </ul>
                         </div>
@@ -1692,9 +1692,11 @@
                     if (e.currentTarget.id === "finishbtn") {
                         window.location.href = "/DocumentViewer/DocumentPreview?documnentId="+documentID;
                     }
-                    var nxtcss = $("#nextbtn").attr('class');
+                    var nxtcss = document.getElementById("nextbtn").className; //$("#nextbtn").attr('class');
                     if (nxtcss === "next disabled") {
-                        $("#finish").removeClass("removeVisibility");
+                        document.getElementById("finish").className = 
+                            document.getElementById("finish").className.replace(new RegExp('(?:^|\\s)'+ 'removeVisibility' + '(?:\\s|$)'), ' ');
+                        //$("#finish").removeClass("removeVisibility");
                     }
                     $("#loadImg").hide();
                 }).error(function (xhr, status, err) {
