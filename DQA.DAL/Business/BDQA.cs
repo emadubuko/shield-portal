@@ -105,12 +105,12 @@ namespace DQA.DAL.Business
 
                     ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
 
-                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + "was processed successfully</td></tr>";
+                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
                 }
                 catch(Exception ex)
                 {
                     Logger.LogError(ex);
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + "was processed successfully</td></tr>";
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>There are errors " + filename + "</td></tr>";
                 }
 
                
