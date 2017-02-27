@@ -15,7 +15,7 @@ function imagePreview(e, control) {
 
 function BindImageToControl(control, base64ImageString) {
    // control.attr('src', "/^data:image\/(png|jpg|x-icon);base64,/" + btoa(String.fromCharCode(...new Uint8Array(base64ImageString))));
-    control.attr('src', "data:image/jpg;base64," + btoa(String.fromCharCode(...new Uint8Array(base64ImageString))));
+    control.attr('src', "data:image/jpg;base64," + btoa(String.fromCharCode(new Uint8Array(base64ImageString))));
 
     //$('#imageURL').attr('src', "data:image/jpg;base64,"+ btoa(String.fromCharCode(...new Uint8Array(selectedOrg.Logo))));
 }
