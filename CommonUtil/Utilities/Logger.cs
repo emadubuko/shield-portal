@@ -32,6 +32,7 @@ namespace CommonUtil.Utilities
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("Date and Time: " + DateTime.Now.ToString("dd-MMM-yyyy hh:mm:ss"));
                 sb.AppendLine("ErrorMessage: \n " + message);
+                sb.AppendLine(ex.StackTrace);
 
                 using (System.IO.StreamWriter str = new System.IO.StreamWriter(filename, true))
                 {

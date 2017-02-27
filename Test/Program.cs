@@ -28,10 +28,10 @@ namespace Test
             Console.WriteLine("started");
 
             //new Program().UpdateFacilities();
-            //new Program().GenerateFacilityTargetCSV();
+            new Program().GenerateFacilityTargetCSV();
 
 
-            new Program().GenerateFacilityCode();
+         //   new Program().GenerateFacilityCode();
 
 
             Console.ReadLine();
@@ -133,7 +133,7 @@ namespace Test
             List<YearlyPerformanceTarget> ypts = new List<YearlyPerformanceTarget>();
 
             valid.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
-            sb.AppendLine("Name, FacilityType");
+            sb.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
 
             string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
             List<string> files = new List<string>
@@ -167,30 +167,31 @@ namespace Test
 
                             HealthFacility theFacility = null;
                             theFacility = existingFacilities.FirstOrDefault(x => x.Name.Trim() == facilityName.Trim());
-                         
+
+                            int HTC_TST = 0;
+                            int HTC_TST_pos = 0;
+                            int Tx_NEW = 0;
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 5), out HTC_TST);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 7), out HTC_TST_pos);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 9), out Tx_NEW);
+
                             if (theFacility == null)
-                            {
-                                sb.AppendLine(string.Format("{0},{1}", facilityName, sheet.Name));
+                            {                                
+                                sb.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, "", HTC_TST, HTC_TST_pos, Tx_NEW, sheet.Name));
                             }
-                            else
-                            {
-                                int HTC_TST = 0;
-                                int HTC_TST_pos = 0;
-                                int Tx_NEW = 0;
-                                int.TryParse(ExcelHelper.ReadCell(sheet, row, 5), out HTC_TST);
-                                int.TryParse(ExcelHelper.ReadCell(sheet, row, 7), out HTC_TST_pos);
-                                int.TryParse(ExcelHelper.ReadCell(sheet, row, 9), out Tx_NEW);
-                                valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
+                            //else
+                            //{                                
+                            //    valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
                                  
-                                ypts.Add(new YearlyPerformanceTarget
-                                {
-                                    FiscalYear = 2017,
-                                    HealthFacilty = theFacility,
-                                    HTC_TST = HTC_TST,
-                                    HTC_TST_POS = HTC_TST_pos,
-                                    Tx_NEW = Tx_NEW,
-                                });
-                            }
+                            //    ypts.Add(new YearlyPerformanceTarget
+                            //    {
+                            //        FiscalYear = 2017,
+                            //        HealthFacilty = theFacility,
+                            //        HTC_TST = HTC_TST,
+                            //        HTC_TST_POS = HTC_TST_pos,
+                            //        Tx_NEW = Tx_NEW,
+                            //    });
+                            //}
                             row++;
                         }
                     }
@@ -198,7 +199,7 @@ namespace Test
             }
            // yptDAO.BulkInsert(ypts);
             File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
-            File.WriteAllText(baseLocation + "_Found.csv", valid.ToString());
+           // File.WriteAllText(baseLocation + "_Found.csv", valid.ToString());
             Console.WriteLine("press enter to continue");
             Console.ReadLine();            
         }
