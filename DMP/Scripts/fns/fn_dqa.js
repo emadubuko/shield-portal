@@ -84,8 +84,13 @@ function getDQA(metadataId) {
         method: "GET",
         contentType:"application/json",
         success: function (data) {
-            var jsonHtmlTable = ConvertJsonToTable(data, 'table', "table table-bordered table-striped table-hover", 'Download');
+            var jsonHtmlTable = ConvertJsonToTable(data.Table1, 'table', "table table-bordered table-striped table-hover", 'Download');
+            $("#divTable1").html(jsonHtmlTable);
+
+            jsonHtmlTable = ConvertJsonToTable(data.Table, 'table', "table table-bordered table-striped table-hover", 'Download');
             $("#divTable").html(jsonHtmlTable);
+
+            $(".panel-title").text(data.Table2[0].FacilityName);
         }
     })
 }
@@ -115,15 +120,56 @@ function getAllIPDQASummary() {
     })
 }
 
-function getIPDQASummary(id) {
+function getIPDQASummaryAdmin(id) {
     $.ajax({
         url: baseUrl() + "dqaapi/GetIpSummaryResult/"+id,
         method: "GET",
         contentType: "application/json",
-        success: function (data) {
-            var jsonHtmlTable = ConvertJsonToTable(data, 'table', "table table-bordered table-striped table-hover", 'Download');
+        success: function (result) {
+            var jsonHtmlTable = ConvertJsonToTable(result.Table, 'table', "table table-bordered table-striped table-hover", 'Download');
             $("#divTable").html(jsonHtmlTable);
+
+            var data = result.Table1;
+            var table_value = "";
+            for (var i = 0; i < data.length; i++) {
+                table_value += "<tr id='tr_" + data[i].Id + "'>";
+                table_value += "<td>" + data[i].Id + "</td><td><a href='/DQA/GetDQA/" + data[i].Id + "'>" + data[i].SiteId + "</a></td><td>" + data[i].LgaId + "</td>";
+                table_value += "<td>" + data[i].StateId + "</td>";
+                table_value += "<td>" + data[i].FiscalYear + "</td>";
+                table_value += "<td>" + data[i].CreateDate + "</td><td>" + data[i].Month + "</td>";
+                table_value += "<td><button class='btn btn-danger'  onclick='deleteDQA(" + data[i].Id + ")'><i class='fa fa-trash'></i> Delete</button></td>";
+                table_value += "</tr>";
+            }
+            $("#output tbody").prepend(table_value);
+            $('#output').DataTable();
            
+        }
+    })
+}
+
+function getIPDQASummary(id) {
+    $.ajax({
+        url: baseUrl() + "dqaapi/GetIpSummaryResult/" + id,
+        method: "GET",
+        contentType: "application/json",
+        success: function (result) {
+            var jsonHtmlTable = ConvertJsonToTable(result.Table, 'table', "table table-bordered table-striped table-hover", 'Download');
+            $("#divTable").html(jsonHtmlTable);
+
+            var data = result.Table1;
+            var table_value = "";
+            for (var i = 0; i < data.length; i++) {
+                table_value += "<tr id='tr_" + data[i].Id + "'>";
+                table_value += "<td>" + data[i].Id + "</td><td><a href='/DQA/GetDQA/" + data[i].Id + "'>" + data[i].SiteId + "</a></td><td>" + data[i].LgaId + "</td>";
+                table_value += "<td>" + data[i].StateId + "</td>";
+                table_value += "<td>" + data[i].FiscalYear + "</td>";
+                table_value += "<td>" + data[i].CreateDate + "</td><td>" + data[i].Month + "</td>";
+                //table_value += "<td><button class='btn btn-danger'  onclick='deleteDQA(" + data[i].Id + ")'><i class='fa fa-trash'></i> Delete</button></td>";
+                table_value += "</tr>";
+            }
+            $("#output tbody").prepend(table_value);
+            $('#output').DataTable();
+
         }
     })
 }

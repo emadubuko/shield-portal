@@ -1047,6 +1047,7 @@
     <Content Include="Views\DQA\error.cshtml" />
     <Content Include="Views\Shared\Denied.cshtml" />
     <Content Include="Views\DQA\AllIPDQA.cshtml" />
+    <Content Include="Views\DQA\IpDQAAdmin.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

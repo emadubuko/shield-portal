@@ -23,11 +23,11 @@ namespace DQA.DAL.Business
                     var worksheet = package.Workbook.Worksheets["Worksheet"];
                     //var metaSheet = package.Workbook.Worksheets["CDC DQA"];
                     var excel_value = worksheet.Cells["P2"].Value.ToString();
-                    var partner = entity.ImplementingPartners.FirstOrDefault(e => e.ShortName == excel_value);
-                    if (partner == null)
-                    {
-                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The partner does not exist.</td></tr>";
-                    }
+                    //var partner = entity.ImplementingPartners.FirstOrDefault(e => e.ShortName == excel_value);
+                    //if (partner == null)
+                    //{
+                    //    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The partner does not exist.</td></tr>";
+                    //}
                     excel_value = worksheet.Cells["R2"].Value.ToString();
                     var state = entity.states.FirstOrDefault(e => e.state_name == excel_value);
                     if (state == null)
@@ -60,7 +60,7 @@ namespace DQA.DAL.Business
                     metadata.CreatedBy = username;
                     metadata.FiscalYear = DateTime.Now.Year.ToString();
                     metadata.FundingAgency = 1;
-                    metadata.ImplementingPartner = partner.Id;
+                    metadata.ImplementingPartner = facility.ImplementingPartnerId.Value;
                     metadata.LgaId = facility.LGAId;
                     metadata.LgaLevel = 2;
                     metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
