@@ -60,10 +60,14 @@ namespace BWReport.DAL.DAO
 
         public bool SaveBatchFromCSV(Stream csvFile, int Year, out string wrongEntries)
         {
+            var Ips = new OrganizationDAO().RetrieveAll();
+            var lgas = new LGADao().RetrieveAll().GroupBy(x => x.State.state_code);
+
             wrongEntries = "";
-            var existingFacilities = new HealthFacilityDAO().RetrieveAll()
-                //.ToDictionary(x => x.FacilityCode);
-                .ToDictionary(x => x.Name);
+            var hfDAO = new HealthFacilityDAO();
+            var existingFacilities = hfDAO.RetrieveAll()
+                .ToDictionary(x => x.FacilityCode);
+                //.ToDictionary(x => x.Name);
 
             List<YearlyPerformanceTarget> targets = new List<YearlyPerformanceTarget>();
 
@@ -84,32 +88,63 @@ namespace BWReport.DAL.DAO
                 try
                 {
                     string healthFacilityCode = entries[2]; //entries[0];
-                    HealthFacility facility = null;
-                    existingFacilities.TryGetValue(healthFacilityCode, out facility);
-
-                    if (facility != null)
+                    if (!string.IsNullOrEmpty(healthFacilityCode))
                     {
+                        HealthFacility facility = null;
+                        existingFacilities.TryGetValue(healthFacilityCode, out facility);
+
                         int HTC_TST = 0;
                         int HTC_TST_POS = 0;
                         int Tx_NEW = 0;
 
-                        int.TryParse(entries[1], out HTC_TST);
-                        int.TryParse(entries[2], out HTC_TST_POS);
-                        int.TryParse(entries[3], out Tx_NEW);
+                        int.TryParse(entries[3], out HTC_TST);
+                        int.TryParse(entries[4], out HTC_TST_POS);
+                        int.TryParse(entries[5], out Tx_NEW);
 
-                        targets.Add(new YearlyPerformanceTarget
+                        if (facility != null)
+                        {                           
+                            targets.Add(new YearlyPerformanceTarget
+                            {
+                                Tx_NEW = Tx_NEW,
+                                FiscalYear = Year,
+                                HealthFacilty = facility,
+                                HTC_TST = HTC_TST,
+                                HTC_TST_POS = HTC_TST_POS
+                            });
+                        }
+                        else
                         {
-                            Tx_NEW = Tx_NEW,
-                            FiscalYear = Year,
-                            HealthFacilty = facility,
-                            HTC_TST = HTC_TST,
-                            HTC_TST_POS = HTC_TST_POS
-                        });
+                            var ip = Ips.FirstOrDefault(x=>x.ShortName == entries[8].Trim());
+                            var lga = lgas.FirstOrDefault(x => x.Key == entries[7]).ToList()
+                                .FirstOrDefault(y => y.lga_name.ToLower().Trim() == entries[6].ToLower().Trim());
+
+                            var hf = new HealthFacility
+                            {
+                                FacilityCode = healthFacilityCode,
+                                LinkCode = healthFacilityCode.Contains('-') ? healthFacilityCode.Split('-')[1]: "",
+                                Name = entries[9],
+                                Organization = ip,
+                                LGA = lga,
+                            };
+                            var target = new YearlyPerformanceTarget
+                            {
+                                FacilityReportName = entries[0],
+                                Tx_NEW = Tx_NEW,
+                                FiscalYear = Year,
+                                HealthFacilty = facility,
+                                HTC_TST = HTC_TST,
+                                HTC_TST_POS = HTC_TST_POS
+                            };
+                            hfDAO.Save(hf);
+                            targets.Add(target);
+                        }
                     }
                     else
                     {
                         wrongEntries = item + ", unknown facility";
                     }
+                   
+                    
                 }
                 catch (Exception ex)
                 {

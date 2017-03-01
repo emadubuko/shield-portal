@@ -8,6 +8,7 @@ namespace CommonUtil.Entities
         [XmlIgnore]
         public virtual int Id { get; set; }
         public virtual string FacilityCode { get; set; }
+        public virtual string LinkCode { get; set; }
         public virtual string Name { get; set; }
         public virtual LGA LGA { get; set; }
 
