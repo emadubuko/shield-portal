@@ -10,11 +10,20 @@
             border-color: #929b17;
         }
 
-            .panel-warning > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-            }
+        .panel-warning > .panel-heading {
+            color: #FFF;
+            background-color: #929b17;
+            border-color: #929b17;
+        }
+
+        .table > thead > tr > th {
+             font-weight:bold
+        }
+
+        .abbrev-full{
+            background-color:lightblue
+        }
+       
          
     </style>
 }
@@ -35,6 +44,23 @@
 
                                 </div>
                                 <div class="panel-body">
+                                    <table class="table table-bordered table-condensed table-hover">
+                                        <tr>
+                                            <td><strong>LEGEND : </strong></td>
+                                            <td class="abbrev">COM</td>
+                                            <td class="abbrev-full">COMPLETENESS</td>
+                                            <td class="abbrev">CON</td>
+                                            <td class="abbrev-full">CONSISTENCY</td>
+                                            <td class="abbrev">PRE</td>
+                                            <td class="abbrev-full">PRECISION</td>
+                                            <td class="abbrev">INT</td>
+                                            <td class="abbrev-full">INTEGRITY</td>
+                                            <td class="abbrev">VAL</td>
+                                            <td class="abbrev-full">VALIDITY</td>
+
+
+                                        </tr>
+                                    </table>
                                     <div id="divTable" class="table-responsive"></div>
                                     </div>
                                 </div>

@@ -178,14 +178,14 @@ namespace ShieldPortal.Controllers
             return metadatas;
         }
 
-        public DataTable GetDQAReport(int id)
+        public DataSet GetDQAReport(int id)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_dqa_get_facility_quarterly_report";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@metadataId", id);
 
-            return Utility.GetDatable(cmd);
+            return Utility.GetDataSet(cmd);
         }
 
         public DataSet GetSummaryResult()
@@ -197,14 +197,14 @@ namespace ShieldPortal.Controllers
             return Utility.GetDataSet(cmd);
         }
 
-        public DataTable GetIpSummaryResult(int id)
+        public DataSet GetIpSummaryResult(int id)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_get_ip_dqa_summary_result";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ip", id);
 
-            return Utility.GetDatable(cmd);
+            return Utility.GetDataSet(cmd);
         }
 
         // DELETE: api/DQA/5

@@ -19,11 +19,10 @@
         .table > thead > tr > th {
              font-weight:bold
         }
-
+       
         .abbrev-full{
             background-color:lightblue
         }
-       
     </style>
 }
 
@@ -151,7 +150,7 @@
 
                                                     <th>UploadDate</th>
                                                     <th>Quarer</th>
-                                                   @* <th></th>*@
+                                                   <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -187,7 +186,7 @@
 
         $(document).ready(function () {
             //getIPDQA(@ViewBag.ip_id);
-            getIPDQASummary(@ViewBag.ip_id);
+            getIPDQASummaryAdmin(@ViewBag.ip_id);
            
         });
     </script>

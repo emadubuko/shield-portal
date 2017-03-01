@@ -15,6 +15,14 @@
                 background-color: #929b17;
                 border-color: #929b17;
             }
+
+            
+        .table > thead > tr > th {
+             font-weight:bold
+        }
+        .abbrev-full{
+            background-color:lightblue
+        }
     </style>
 }
 
@@ -30,10 +38,53 @@
                 </div>
                 <div class="panel-body">
 
-                    <div class="table-responsive" id="divTable">
-                      
+                  
+
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a aria-expanded="true" href="#home" data-toggle="tab">DQA Summary Result</a></li>
+                            <li><a aria-expanded="false" href="#profile" data-toggle="tab">DQA</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="home">
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-condensed table-hover">
+                                        <tr>
+                                            <td><strong>LEGEND : </strong></td>
+                                            <td class="abbrev">COM</td>
+                                            <td class="abbrev-full">COMPLETENESS</td>
+                                            <td class="abbrev">CON</td>
+                                            <td class="abbrev-full">CONSISTENCY</td>
+                                            <td class="abbrev">PRE</td>
+                                            <td class="abbrev-full">PRECISION</td>
+                                            <td class="abbrev">INT</td>
+                                            <td class="abbrev-full">INTEGRITY</td>
+                                            <td class="abbrev">VAL</td>
+                                            <td class="abbrev-full">VALIDITY</td>
+
+
+                                        </tr>
+                                    </table>
+                                    <div class="table-responsive" id="divTable1">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="profile">
+                                <div class="panel-body">
+                                    <div class="table-responsive" id="divTable">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+
+
+                    
 
                 </div>
             </div>

@@ -72,7 +72,7 @@ namespace ShieldPortal.Controllers
                 PopulateStates();
 
                 ViewBag.ip_id = id;
-                return View("IpDQA");
+                return View("IpDQAAdmin");
             }
             return View("~/Views/Shared/Denied.cshtml");
         }
