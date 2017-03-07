@@ -64,6 +64,7 @@ function CreatedasTable(dataSharing) {
     html += '<td>' + dataSharing.DataTransmissionPolicies + '</td>';
     html += '<td>' + dataSharing.SharingPlatForms + '</td>';
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + dasId + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="Deletedas(' + dasId + ')"/></td>';
     }
     html += '</tr>';

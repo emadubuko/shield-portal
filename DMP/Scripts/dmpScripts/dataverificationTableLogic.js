@@ -130,6 +130,7 @@ function CreatedataverificationTable(dataverification) {
     html += '<td>' + dataverification.DurationOfDataVerificaion + '</td>';
     html += '<td><a class="btn btn-info btn-sm btn-outline" title=' + JSON.stringify(timelines) + '>View</a></td>';
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + dataverificationId + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + dataverificationId + ')"  id=' + removeId + '/></td>';
     }
     html += '</tr>';

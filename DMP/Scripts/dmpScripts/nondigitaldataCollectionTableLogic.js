@@ -63,6 +63,7 @@ function CreatendgtTable(nondigitaldata) {
     html += '<td>' + nondigitaldata.StorageLocation + '</td>';
     html += '<td>' + nondigitaldata.SafeguardsAndRequirements + '</td>'; 
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + nondgtid + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="Deletendgt(' + nondgtid + ')"/></td>';
     }
     html += '</tr>';

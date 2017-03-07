@@ -63,6 +63,8 @@ namespace BWReport.DAL.DAO
             var Ips = new OrganizationDAO().RetrieveAll();
             var lgas = new LGADao().RetrieveAll().GroupBy(x => x.State.state_code);
 
+            StringBuilder sb = new StringBuilder();
+
             wrongEntries = "";
             var hfDAO = new HealthFacilityDAO();
             var existingFacilities = hfDAO.RetrieveAll()
@@ -114,45 +116,22 @@ namespace BWReport.DAL.DAO
                         }
                         else
                         {
-                            var ip = Ips.FirstOrDefault(x=>x.ShortName == entries[8].Trim());
-                            var lga = lgas.FirstOrDefault(x => x.Key == entries[7]).ToList()
-                                .FirstOrDefault(y => y.lga_name.ToLower().Trim() == entries[6].ToLower().Trim());
-
-                            var hf = new HealthFacility
-                            {
-                                FacilityCode = healthFacilityCode,
-                                LinkCode = healthFacilityCode.Contains('-') ? healthFacilityCode.Split('-')[1]: "",
-                                Name = entries[9],
-                                Organization = ip,
-                                LGA = lga,
-                            };
-                            var target = new YearlyPerformanceTarget
-                            {
-                                FacilityReportName = entries[0],
-                                Tx_NEW = Tx_NEW,
-                                FiscalYear = Year,
-                                HealthFacilty = facility,
-                                HTC_TST = HTC_TST,
-                                HTC_TST_POS = HTC_TST_POS
-                            };
-                            hfDAO.Save(hf);
-                            targets.Add(target);
+                            sb.AppendLine(item + ", unknown facility" + ", <br />");
                         }
                     }
                     else
                     {
-                        wrongEntries = item + ", unknown facility";
-                    }
-                   
-                    
+                        sb.AppendLine(item + ", unknown facility" + ", <br />");
+                    }                    
                 }
                 catch (Exception ex)
                 {
-                    wrongEntries = item + ","+ex.Message;
+                    sb.AppendLine(item + "," + ex.Message + ",<br />");
+                    RollbackChanges();
                 }
             }
-
-            var result = BulkInsert(targets);
+            wrongEntries = sb.ToString();
+            var result = BulkInsert(targets);            
             return result;
         }
 

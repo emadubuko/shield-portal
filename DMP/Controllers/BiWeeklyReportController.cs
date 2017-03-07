@@ -21,7 +21,7 @@ namespace ShieldPortal.Controllers
 
         public BiWeeklyReportController()
         {
-            if(IndexPeriods == null)
+            if (IndexPeriods == null)
             {
                 IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
             }
@@ -87,7 +87,7 @@ namespace ShieldPortal.Controllers
             Stream fileContent = files[0].InputStream;
             string loggedInUser = Services.Utils.LoggedinProfileName;
 
-            int startColumnIndex = IndexPeriods[reportingPeriod]; 
+            int startColumnIndex = IndexPeriods[reportingPeriod];
 
             try
             {
@@ -120,7 +120,7 @@ namespace ShieldPortal.Controllers
 
                 foreach (var index in IndexPeriods.Keys)
                 {
-                    if (ipEntries.FirstOrDefault(x => x == index) != null)                     
+                    if (ipEntries.FirstOrDefault(x => x == index) != null)
                         uploaded.Add(true);
                     else
                         uploaded.Add(false);
@@ -130,8 +130,8 @@ namespace ShieldPortal.Controllers
             }
 
             vm.IndexPeriods = IndexPeriods;
-            
-            vm.ImplementingPartner = loggedinProfile.RoleName == "ip" ? new List<string> { loggedinProfile.Organization.ShortName } :  new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
+
+            vm.ImplementingPartner = loggedinProfile.RoleName == "ip" ? new List<string> { loggedinProfile.Organization.ShortName } : new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
             vm.SelectedYear = fYear.ToString();
             return View(vm);
         }
@@ -147,9 +147,9 @@ namespace ShieldPortal.Controllers
 
             new ReportLoader().GenerateExcel(newFile, existingTemplate, IP, fYear);
 
-            byte[] fileBytes = System.IO.File.ReadAllBytes(newFile);            
+            byte[] fileBytes = System.IO.File.ReadAllBytes(newFile);
 
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);         
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
 
@@ -194,10 +194,14 @@ namespace ShieldPortal.Controllers
 
             Stream fileContent = files[0].InputStream;
             bool saved = dao.SaveBatchFromCSV(fileContent, fiscalyear, out wrongEntries);
-            if (saved)
+            if (string.IsNullOrEmpty(wrongEntries))
                 return Json("Upload Succesful");
             else
-                return new HttpStatusCodeResult(HttpStatusCode.Conflict, wrongEntries);
+            {
+                var data = new { error = wrongEntries };
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            // return new HttpStatusCodeResult(HttpStatusCode.BadRequest, wrongEntries);
         }
     }
 }

@@ -57,6 +57,7 @@ function CreatedatacollectionTable(datacollection) {
     html += '<td>' + datacollection.DataCollectionProcess + '</td>'; 
    
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + datacollectionId + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + datacollectionId + ')"/></td>';
     }
     html += '</tr>';
