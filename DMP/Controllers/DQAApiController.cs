@@ -188,6 +188,16 @@ namespace ShieldPortal.Controllers
             return Utility.GetDataSet(cmd);
         }
 
+        public String GenerateReports()
+        {
+            var metas = new MetaDataService().GetAllMetadata();
+            foreach(var meta in metas)
+            {
+                new BDQA().LoadWorkbook(meta.Id);
+            }
+            return "Complete";
+        }
+
         public DataSet GetSummaryResult()
         {
             var cmd = new SqlCommand();

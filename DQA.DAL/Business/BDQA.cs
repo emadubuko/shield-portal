@@ -205,8 +205,24 @@ namespace DQA.DAL.Business
             var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId && e.dqa_indicator.Readonly =="");
             using (ExcelPackage package=new ExcelPackage(new FileInfo(template),new FileInfo(newfile)))
             {
-                var worksheet = package.Workbook.Worksheets["Data entry"];
-                for(var i = 4; i < 946; i++)
+                var meta = entity.dqa_report_metadata.FirstOrDefault(e=>e.Id==metadataId);
+                var facility = entity.HealthFacilities.FirstOrDefault(e => e.Id == meta.Id);
+                var worksheet = package.Workbook.Worksheets["Worksheet"];
+                worksheet.Cells["AA2"].Value = facility.FacilityCode;
+
+                var partner = entity.ImplementingPartners.FirstOrDefault(e => e.Id == meta.ImplementingPartner);
+                worksheet.Cells["P2"].Value = partner.ShortName;
+
+
+                var state = entity.states.FirstOrDefault(e => e.state_code == meta.StateId);
+                worksheet.Cells["R2"].Value = state.state_name;
+                
+
+
+
+
+                worksheet = package.Workbook.Worksheets["All Questions"];
+                for(var i = 8; i < 205; i++)
                 {
                     //check if there is a value for the indicator
                     if (worksheet.Cells[i, 1] == null || worksheet.Cells[i, 1].Value == null)
@@ -214,9 +230,9 @@ namespace DQA.DAL.Business
                     var indicator_code = worksheet.Cells[i, 1].Value.ToString();
                     var report_value = report_values.FirstOrDefault(e => e.dqa_indicator.IndicatorCode == indicator_code);
                     if (report_value == null) continue;
-                    worksheet.Cells[i, 3].Value = report_value.IndicatorValueMonth1;
-                    worksheet.Cells[i, 4].Value = report_value.IndicatorValueMonth2;
-                    worksheet.Cells[i, 5].Value = report_value.IndicatorValueMonth3;
+                    worksheet.Cells[i, 4].Value = report_value.IndicatorValueMonth1;
+                    worksheet.Cells[i, 5].Value = report_value.IndicatorValueMonth2;
+                    worksheet.Cells[i, 6].Value = report_value.IndicatorValueMonth3;
 
                 }
                
