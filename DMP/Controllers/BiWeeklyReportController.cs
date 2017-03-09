@@ -92,11 +92,12 @@ namespace ShieldPortal.Controllers
             try
             {
                 bool result = new ReportLoader().ExtractReport(reportingPeriod, Year, startColumnIndex, ImplementingPartner, fileContent, loggedInUser, fileName);
-                return Json("Upload succesful", JsonRequestBehavior.AllowGet);
+                return Json("00|Upload succesful", JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.Message);
+                return Json("06|"+ex.Message, JsonRequestBehavior.AllowGet);
+                //return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 

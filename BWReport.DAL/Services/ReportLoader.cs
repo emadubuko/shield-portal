@@ -57,30 +57,32 @@ namespace BWReport.DAL.Services
                     foreach (var sheet in sheets)
                     {
                         string name = sheet.Name;
-                        if (name.ToLower().Contains("dashboard") || name.Contains("LGA Level Dashboard"))
+                        if (name.ToLower().Contains("dashboard") || name.Contains("LGA"))
                             continue;
 
                         string sheetTitle = ExcelHelper.ReadCell(sheet, 1, 1);
 
                         LGA theLGA = null;
-                        LGADictionary.TryGetValue("NIE " + sheetTitle, out theLGA);
+                        LGADictionary.TryGetValue(sheetTitle, out theLGA);
                         if (theLGA == null)
                         {
-                            continue;
+                            throw new ApplicationException("invalid LGA code on the sheet - " + name);
                         }
                         int row = 8;
 
+                        
                         while (true)
                         {
-                            string facilityName = ExcelHelper.ReadCell(sheet, row, 3);
+                            string facilityName = ExcelHelper.ReadCell(sheet, row, 2);
                             if (string.IsNullOrEmpty(facilityName))
                             {
                                 break;
                             }
 
-                            string facilityType = ExcelHelper.ReadCell(sheet, row, 4);
+                            string facilityType = ExcelHelper.ReadCell(sheet, row, 3);
                             string fType = !string.IsNullOrEmpty(facilityType) ? facilityType.Substring(0, 1) : "F";
                             string facilityCode = ExcelHelper.ReadCell(sheet, row, 1); //GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
+                            CommonUtil.Enums.OrganizationType orgType = facilityType.StartsWith("F") ? CommonUtil.Enums.OrganizationType.HealthFacilty : CommonUtil.Enums.OrganizationType.CommunityBasedOrganization;
 
                             if (!string.IsNullOrEmpty(facilityCode))
                             {
@@ -95,9 +97,21 @@ namespace BWReport.DAL.Services
                                         FacilityCode = facilityCode,
                                         LGA = theLGA,
                                         Name = facilityName,
-                                        OrganizationType = facilityType.StartsWith("F") ? CommonUtil.Enums.OrganizationType.HealthFacilty : CommonUtil.Enums.OrganizationType.CommunityBasedOrganization,
+                                        OrganizationType = orgType,
                                     };
                                     sdfDao.Save(theFacility);
+                                }
+                                //correct the the facility type here
+                                //the list from datim did not specify faciity type
+                                else if (orgType != theFacility.OrganizationType)
+                                {
+                                    theFacility.OrganizationType = orgType;
+                                    sdfDao.Update(theFacility);
+                                }
+
+                                if(theFacility.LGA != theLGA)
+                                {
+                                    throw new ApplicationException(string.Format("{0}({1}) Wrongly included in {2} sheet", facilityName, facilityCode, theLGA.lga_name));
                                 }
 
                                 int columnStart = startColumnIndex; //12
@@ -120,7 +134,10 @@ namespace BWReport.DAL.Services
                                 };
                                 ActualPerformanceMeasures.Add(performanceMeasure);
                             }
-
+                            else
+                            {
+                                throw new ApplicationException("Facility code is empty for site -" + facilityName);
+                            }
                             row++;
                         }
                     }

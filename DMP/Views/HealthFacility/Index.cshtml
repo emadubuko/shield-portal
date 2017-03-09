@@ -27,6 +27,7 @@
                         <table class="table table-striped table-hover dataTables-example">
                             <thead>
                                 <tr>
+                                    <td>IP</td>
                                     <th>Facility Code</th>
                                     <th>Name</th>                                    
                                     <th>Type</th>
@@ -36,6 +37,7 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr onclick="window.document.location='/HealthFacility/HealthFacilityDetail?facilityId=@item.Id'" style="cursor: pointer;">
+                                        <td>@item.Organization.ShortName</td>
                                         <td>@item.FacilityCode</td>
                                         <td>@item.Name</td>
                                         <td>@CommonUtil.Utilities.Utilities.PasCaseConversion(Enum.GetName(typeof(CommonUtil.Enums.OrganizationType), item.OrganizationType))</td>

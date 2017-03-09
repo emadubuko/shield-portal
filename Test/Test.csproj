@@ -100,6 +100,14 @@
       <Project>{9F0B7662-62EA-468E-B677-34FAAC9F120F}</Project>
       <Name>DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DMP\ShieldPortal.csproj">
+      <Project>{D4691C2F-EF1F-472A-8852-60DCAF4C0FAA}</Project>
+      <Name>ShieldPortal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DQA.DAL\DQA.DAL.csproj">
+      <Project>{ADC0F63F-CE6C-4BE8-867F-16EAF68B00B4}</Project>
+      <Name>DQA.DAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

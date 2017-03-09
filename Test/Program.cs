@@ -19,26 +19,76 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using DQA.DAL.Business;
 
 namespace Test
-{
+{    
     class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("started");
 
+
+
+            //Console.ReadLine();
             //new Program().UpdateFacilities();
             //  new Program().GenerateFacilityTargetCSV();
 
+           // new Program().GenerateNonDatimCode();
 
-            new Program().GenerateFacilityCode();
+            //new Program().GenerateFacilityCode();
             //new Program().UnprotectExcelFile();
-          //  new Program().CopyAndPaste();
+            //  new Program().CopyAndPaste();
+
+            
 
             Console.ReadLine();
         }
-        
+
+        public void GenerateNonDatimCode()
+        {
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
+            string[] files = Directory.GetFiles(baseLocation, "*_new.xlsx", SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+            {
+                int count = 0;
+                string newTemplate = file.Replace("_new.xlsx", "_template.xlsx");
+                string existingTemplate = file;
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(existingTemplate)))
+                {
+                    var sheets = package.Workbook.Worksheets.Where(x => x.Hidden == eWorkSheetHidden.Visible).ToList();
+                    foreach (var sheet in sheets)
+                    {
+                        string lgaName = sheet.Name;
+                        if (lgaName.ToLower().Contains("dashboard") || lgaName.Contains("LGA Level Dashboard"))
+                            continue;
+
+                        for (int row = 8; ; row++)
+                        {
+                            string fName = (string)sheet.Cells[row, 2].Value;
+                            if (!string.IsNullOrEmpty(fName))
+                            {
+                                string code = (string)sheet.Cells[row, 1].Value;
+                                if (string.IsNullOrEmpty(code))
+                                {
+                                    string[] ip = file.Split(new string[] { @"\", "_new.xlsx" }, StringSplitOptions.RemoveEmptyEntries);
+                                    count += 1;
+                                    sheet.Cells[row, 1].Value = string.Format("M{0}{1}", ip[ip.Count() - 1], count.ToString().PadLeft(3, '0'));
+                                }
+                                
+                            }
+                            else
+                                break;
+                        }
+                    }                   
+                    package.SaveAs(new FileInfo(newTemplate));
+                }
+            }
+        }
+
         public void GenerateFacilityCode()
         {
             YearlyPerformanceTargetDAO yptDAO = new YearlyPerformanceTargetDAO();
@@ -120,8 +170,6 @@ namespace Test
                 }
             }
             File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
-
-
         }
 
 

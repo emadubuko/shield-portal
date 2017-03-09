@@ -117,7 +117,7 @@
                                         <td>@item.lga_name</td>
                                         <td>@item.Tested</td>
                                         <td>@item.Positive</td>
-                                        <td>@item.Positivity.ToString("N")</td>
+                                        <td>@item.Positivity.ToString("N") %</td>
                                     </tr>
                                     }
                                 </tbody>
@@ -148,7 +148,7 @@
                                         <td>@item.lga_name</td>
                                         <td>@item.Tested</td>
                                         <td>@item.Positive</td>
-                                        <td>@item.Positivity.ToString("N")</td>
+                                        <td>@item.Positivity.ToString("N") %</td>
                                     </tr>
                                     }
                                 </tbody>
@@ -300,7 +300,12 @@
                             $("#loadImg").hide();
                             console.log(result);
                             $("#error").empty();
-                            $("#error").append('<span style="color:green;">' + result + '</span>');
+                            if (result.split('|')[0] == "00") {
+                                $("#error").append('<span style="color:green;">' + result.split('|')[1] + '</span>');
+                            }
+                            else {
+                                $("#error").append('<span style="color:red;">' + result.split('|')[1] + '</span>');
+                            }
                             $("#error").show();
                         }).error(function (xhr, status, err) {
                             //alert(err);

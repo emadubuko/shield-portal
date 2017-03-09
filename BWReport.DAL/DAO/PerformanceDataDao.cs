@@ -98,7 +98,7 @@ namespace BWReport.DAL.DAO
             }
 
             criteria.SetProjection(
-                Projections.Alias(Projections.GroupProperty("org.Name"), "IPName"),
+                Projections.Alias(Projections.GroupProperty("org.ShortName"), "IPName"),
                  Projections.Alias(Projections.GroupProperty("pd.ReportPeriod"), "ReportPeriod")
                 );
 
