@@ -101,6 +101,11 @@
                 var rowid = row.id.split('x')[1];
                 datacollationArray.splice(row-1, 1);
             }
+            else  if(row.id.indexOf('datacollection') !==-1){
+                $(row).remove();
+                var rowid = row.id.split('x')[1];
+                datacollectionArray.splice(row-1, 1);
+            }
             else  if(row.id.indexOf('dataverification') !==-1){
                 $(row).remove();
                 var rowid = row.id.split('x')[1];
@@ -111,6 +116,91 @@
                 $(row).remove();
                 trainingArray.splice(row-1, 1);
             }
+        }
+
+        function MakeEditable(row){
+            var content = $(row).html();
+            if(content.indexOf('value="Edit"') !==-1){
+                content =content.replace('value="Edit"', 'value="Save"');
+                $(row).html(content);
+                $(row).prop('contenteditable', true)
+            }            
+            else{
+                content =content.replace('value="Save"', 'value="Edit"');
+                $(row).html(content);
+                $(row).prop('contenteditable', false)
+                var rowid = row.id.split('x')[1];
+                var rowValues = row.getElementsByTagName('td');
+
+                if(row.id.indexOf("report") !== -1){                   
+                    var report = reportArray[rowid-1];                    
+                    report.ReportingLevel = rowValues[0].innerHTML; 
+                    report.ReportsType = rowValues[1].innerHTML;
+                    report.ReportedTo = rowValues[2].innerHTML;
+                    report.ProgramArea = rowValues[3].innerHTML;
+                    report.FrequencyOfReporting = rowValues[4].innerHTML;
+                    report.DurationOfReporting = rowValues[5].innerHTML;
+                }
+                else  if(row.id.indexOf('datacollation') !==-1){
+                    var dtcl =   datacollationArray[rowid-1];
+                    dtcl.ReportingLevel  = rowValues[0].innerHTML; 
+                    dtcl.DataType = rowValues[1].innerHTML; 
+                    dtcl.CollationFrequency = rowValues[2].innerHTML; 
+                }
+                else  if(row.id.indexOf('dataverification') !==-1){
+                    var dv = DataVerificationArray[rowid-1];
+                    dv.ReportingLevel = rowValues[0].innerHTML; 
+                    dv.ThematicArea = rowValues[1].innerHTML; 
+                    dv.DataVerificationApproach = rowValues[2].innerHTML; 
+                    dv.TypesOfDataVerification = rowValues[3].innerHTML; 
+                    dv.FrequencyOfDataVerification = rowValues[4].innerHTML; 
+                    dv.DurationOfDataVerificaion = rowValues[5].innerHTML; 
+                }
+                else  if(row.id.indexOf('datacollection') !== -1){ 
+                    var dc = datacollectionArray[rowid-1];
+                    dc.ReportingLevel = rowValues[0].innerHTML; 
+                    dc.DataType =rowValues[1].innerHTML; 
+                    dc.DataCollectionAndReportingTools=rowValues[2].innerHTML; 
+                    dc.DataCollectionProcess =rowValues[3].innerHTML; 
+                }
+                else  if(row.id.indexOf('nondigital') !== -1){ 
+                    var ndtd = nondigitalDatacollectionArray[rowid-1];
+                    ndtd.ReportingLevel = rowValues[0].innerHTML; 
+                    ndtd.ThematicArea = rowValues[1].innerHTML; 
+                    ndtd.NonDigitalDataTypes = rowValues[2].innerHTML; 
+                    ndtd.StorageLocation = rowValues[3].innerHTML; 
+                    ndtd.SafeguardsAndRequirements = rowValues[4].innerHTML; 
+                }
+                else  if(row.id.indexOf('digital') !== -1){ 
+                    var dtd= digitalDatacollectionArray[rowid-1];
+                    dtd.ReportingLevel = rowValues[0].innerHTML; 
+                    dtd.ThematicArea  = rowValues[1].innerHTML; 
+                    dtd.VolumeOfDigitalData = rowValues[2].innerHTML; 
+                    dtd.DataStorageFormat = rowValues[3].innerHTML; 
+                    dtd.StorageLocation = rowValues[4].innerHTML; 
+                    dtd.Backup  = rowValues[5].innerHTML; 
+                    dtd.DataSecurity  = rowValues[6].innerHTML; 
+                    dtd.PatientConfidentialityPolicies = rowValues[7].innerHTML; 
+                    dtd.StorageOfPreExistingData = rowValues[8].innerHTML; 
+                }                
+                else  if(row.id.indexOf('dataSharing') !== -1){ 
+                    var dts = dasDatacollectionArray[rowid-1];
+                    dts.ReportingLevel = rowValues[0].innerHTML; 
+                    dts.ThematicArea = rowValues[1].innerHTML; 
+                    dts.DataAccess = rowValues[2].innerHTML; 
+                    dts.DataSharingPolicies = rowValues[3].innerHTML; 
+                    dts.DataTransmissionPolicies = rowValues[4].innerHTML; 
+                    dts.SharingPlatForms = rowValues[5].innerHTML; 
+                }
+                else  if(row.id.indexOf('datadocumentation') !== -1){ 
+                    var ddoc = ddocDatacollectionArray[rowid-i];
+                    ddoc.ReportingLevel = rowValues[0].innerHTML; 
+                    ddoc.ThematicArea = rowValues[1].innerHTML; 
+                    ddoc.StoredDocumentationAndDataDescriptors = rowValues[2].innerHTML; 
+                    ddoc.NamingStructureAndFilingStructures = rowValues[3].innerHTML; 
+                }
+            }
+
         }
     </script>
 
@@ -576,6 +666,7 @@
                                                                             <th>Types</th>                                                                            
                                                                             <th>Frequency</th>
                                                                             <th></th>
+                                                                            <th></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody id="datacollationdataTable"> </tbody>
@@ -723,7 +814,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="panel panel-warning" id="Organization">
+                                        <div class="panel panel-warning" id="Organization" style="visibility:hidden">
                                             <div class="panel-heading clearfix">
                                                 <h4 class="panel-title">Organization</h4>
                                             </div>
@@ -798,7 +889,7 @@
                                                         <th>Data Type</th>
                                                         <th>Reporting Tool</th>
                                                         <th>Process</th>                                                                                                                
-                                                        <th></th>
+                                                        <th></th><th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="datacollectiondataTable"> </tbody>
@@ -915,7 +1006,7 @@
                                                         <th>Frequency</th>
                                                         <th>Duration(days)</th>
                                                         <th>Timelines</th>
-                                                        <th></th>
+                                                        <th></th><th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="reportdataTable"> </tbody>
@@ -999,7 +1090,6 @@
                                                     <label style="color:red;">Please select dates corresponding to the frequency selected above</label>
                                                 </div>
                                             </div>
-
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label" for="DurationOfDataVerificaion">Duration</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="What is the duration of this data validation excercise? numbers only"><i class="icon-help"></i></button>
@@ -1031,6 +1121,7 @@
                                                         <th>Frequency</th>
                                                         <th>Duration</th>
                                                         <th>Timelines</th>
+                                                        <th></th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -1096,27 +1187,18 @@
                                                 <label class="col-sm-3 control-label" for="Storagelocation">Storage Location</label>
                                                 <button type="button" class="btn btn-black btn-outline btn-sm" title="Do you have a specified location for storing data collected ?"><i class="icon-help"></i></button>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control" onchange="document.getElementById('Storagelocation').value=this.options[this.selectedIndex].text;">
-                                                        <option value=""></option>
-                                                        <option value="" disabled>please specify if not on the list</option>
+                                                    <select id="Storagelocation" class="select2 form-control" data-placeholder="Do you have a specified location for storing data collected?" multiple>
                                                         @foreach (var item in Model.storageLoation)
                                                         {
                                                             <option value="@item">@item</option>
                                                         }
                                                     </select>
-                                                    <input id="Storagelocation" value="" placeholder="Do you have a specified location for storing data collected?" class="modifiedselect" onfocus="this.select()" type="text">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="Backup">Backup?</label>
                                                 <div class="col-sm-8">
-                                                    <select id="Backup" class="form-control">
-                                                        <option value="" disabled selected>Do you have a back up plan arrangement for data storage?</option>
-                                                        @foreach (var item in Model.YesNoOption)
-                                                        {
-                                                            <option value="@item">@item</option>                                                           
-                                                        }
-                                                    </select>
+                                                    <textarea id="Backup" rows="3" type="text" placeholder="Describe back up arrangement for data storage" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -1157,7 +1239,7 @@
                                                         <th>Security</th>
                                                         <th>Confidentiality Policies</th>
                                                         <th>Pre-existing Data</th>
-                                                        <th></th>
+                                                        <th></th><th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="digitaldataTable"> </tbody>
@@ -1230,7 +1312,7 @@
                                                         <th>Data types</th>
                                                         <th>Storage location</th>
                                                         <th>Safeguards and requirement</th>
-                                                        <th></th>
+                                                        <th></th><th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="ndigitaldataTable"> </tbody>
@@ -1307,7 +1389,7 @@
                                                         <th>Sharing Policies</th>
                                                         <th>Transmission policies</th>
                                                         <th>Sharing platform</th>
-                                                        <th></th>
+                                                        <th></th><th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="dasTable"> </tbody>
@@ -1366,7 +1448,7 @@
                                                         <th>Thematic Area</th>
                                                         <th>Descriptors</th>
                                                         <th>Naming Structure</th> 
-                                                        <th></th>
+                                                        <th></th><th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="ddocTable"> </tbody>
@@ -1596,7 +1678,18 @@
 
     <script>
         $(document).ready(function () {
-             
+                      
+            //$('body').on('mouseout', '[contenteditable]', function() {
+            //    var $this = $(this);
+            //    if ($this.data('before') !== $this.html()) {
+            //        let newValues = $this.html(); 
+            //        newValues = newValues.replace('<td>','#').replace('</td>','#'); 
+            //        newValues = newValues.split('#');
+            //        console.log(newValues);
+            //    }
+            //    return $this;
+            //})
+
 
             $(".select2.select2-container.select2-container--default").css("width", "100%");
             $(".select2-search__field").css("width", "200%");

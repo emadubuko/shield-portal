@@ -55,6 +55,7 @@ function uploadfileToServer(e, control, url, controlToUpdate) {
         }
     }).error(function (xhr, status, err) {
         alert(err);
+        console.log(err);
     });
     return false;
 }

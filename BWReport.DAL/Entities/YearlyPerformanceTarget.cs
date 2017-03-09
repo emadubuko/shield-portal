@@ -9,6 +9,7 @@ namespace BWReport.DAL.Entities
         public virtual int Id { get; set; }
         
         public virtual int FiscalYear { get; set; }
+        public virtual string FacilityReportName { get; set; }
 
         public virtual HealthFacility HealthFacilty { get; set; }
 

@@ -56,6 +56,7 @@ function CreateddocTable(datadocumentation) {
     html += '<td>' + datadocumentation.StoredDocumentationAndDataDescriptors + '</td>';
     html += '<td>' + datadocumentation.NamingStructureAndFilingStructures + '</td>';
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + datadoccollectionId + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="Deleteddoc(' + datadoccollectionId + ')"/></td>';
     }
     html += '</tr>';

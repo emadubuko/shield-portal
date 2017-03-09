@@ -43,6 +43,7 @@ function CreatedatacollationTable(datacollation) {
     html += '<td>' + datacollation.DataType + '</td>'; 
     html += '<td>' + datacollation.CollationFrequency + '</td>';     
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + datacollationId + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="DeleteRow(' + datacollationId + ')"/></td>';
     }
     html += '</tr>';

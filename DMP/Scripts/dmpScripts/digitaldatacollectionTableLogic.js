@@ -42,8 +42,12 @@ $("#adddgtbtn").click(function (e) {
             $("#DataStorageFormat").select2('val', 'All');
         }
         else if ($(this)[0].id == "Storagelocation") {
-            digitaldata["StorageLocation"] = $(this)[0].value;
-            $(this).val("");
+            let stlocation = '';
+            $("#Storagelocation option:selected").each(function () {
+                stlocation += $(this).val() + ',';
+            });
+            digitaldata["StorageLocation"] = stlocation;
+            $("#Storagelocation").select2('val', 'All');
         }
         else if ($(this)[0].id == "Backup") {
             digitaldata["Backup"] = $(this)[0].value;
@@ -82,6 +86,7 @@ function CreatedgtTable(digitaldata) {
     html += '<td>' + digitaldata.PatientConfidentialityPolicies + '</td>';
     html += '<td>' + digitaldata.StorageOfPreExistingData + '</td>';
     if (editMode) {
+        html += '<td><input type="button" value="Edit" class="btn btn-info btn-sm btn-outline" onclick="MakeEditable(' + dgtid + ')"/></td>';
         html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="Deletedgt(' + dgtid + ')"/></td>';
     }
     html += '</tr>';

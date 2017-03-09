@@ -37,9 +37,9 @@ namespace DAL.DAO
             {
                 leadMgr = obj.LeadActivityManager.Id;
             }
-             
+
             string updatescript = string.Format("Update [dmp_projectdetails] set ProjectTitle=@ProjectTitle, GrantReferenceNumber=@GrantReferenceNumber, ProjectStartDate=@ProjectStartDate, ProjectEndDate=@ProjectEndDate, LeadActivityManagerId=@LeadActivityManagerId, OrganizationId=@OrganizationId where id=@id ");
-           
+
             ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
 
             using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
@@ -50,14 +50,14 @@ namespace DAL.DAO
                 command.Parameters.AddWithValue("ProjectTitle", GetDBValue(obj.ProjectTitle));
                 command.Parameters.AddWithValue("GrantReferenceNumber", GetDBValue(obj.GrantReferenceNumber));
                 command.Parameters.AddWithValue("ProjectStartDate", GetDBValue(obj.ProjectStartDate));
-                command.Parameters.AddWithValue("ProjectEndDate", (obj.ProjectEndDate));
+                command.Parameters.AddWithValue("ProjectEndDate", GetDBValue(obj.ProjectEndDate));
                 command.Parameters.AddWithValue("LeadActivityManagerId", leadMgr);
                 command.Parameters.AddWithValue("OrganizationId", orgid);
                 command.Parameters.AddWithValue("id", obj.Id);
 
-                int i = command.ExecuteNonQuery();                
+                int i = command.ExecuteNonQuery();
             }
-            return obj;            
+            return obj;
         }
     }
 }

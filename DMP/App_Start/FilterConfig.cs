@@ -9,5 +9,6 @@ namespace ShieldPortal
         {
             filters.Add(new HandleErrorAttribute());
         }
-    }
+    }  
+
 }

@@ -18,7 +18,8 @@ namespace BWReport.DAL.Mapping
             Map(x => x.HTC_TST);
             Map(x => x.HTC_TST_POS);
             Map(x => x.Tx_NEW);
-            References(x => x.HealthFacilty).Column("HealthFaciltyId"); 
+            References(x => x.HealthFacilty).Column("HealthFaciltyId");
+            Map(x => x.FacilityReportName);
         }
     }
 }

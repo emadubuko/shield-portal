@@ -1,6 +1,7 @@
 ﻿using CommonUtil.DAO;
 using CommonUtil.Entities;
 using ShieldPortal.ViewModel.BWR;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -24,16 +25,21 @@ namespace ShieldPortal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
             }
-            string filecontent = "";
 
+            string[] theLines;
             using (StreamReader reader = new StreamReader(files[0].InputStream))
             {
-                filecontent = reader.ReadToEnd();
+                reader.ReadLine();
+                string filecontent = reader.ReadToEnd();
+                theLines = filecontent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             }
             //Todo: finish this upload later
+            string response = new HealthFacilityDAO().SaveFromCSV(theLines);
 
-
-            return Json("Successful");
+            if (string.IsNullOrEmpty(response))
+                return Json("Successful");
+            else
+                return Json("An error occurred");
         }
 
         public ActionResult HealthFacilityDetail(int facilityId)

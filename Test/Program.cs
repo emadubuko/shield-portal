@@ -18,6 +18,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
 
 namespace Test
 {
@@ -28,79 +29,122 @@ namespace Test
             Console.WriteLine("started");
 
             //new Program().UpdateFacilities();
-            new Program().GenerateFacilityTargetCSV();
+            //  new Program().GenerateFacilityTargetCSV();
 
 
-         //   new Program().GenerateFacilityCode();
-
+            new Program().GenerateFacilityCode();
+            //new Program().UnprotectExcelFile();
+          //  new Program().CopyAndPaste();
 
             Console.ReadLine();
         }
-
-
+        
         public void GenerateFacilityCode()
         {
             YearlyPerformanceTargetDAO yptDAO = new YearlyPerformanceTargetDAO();
 
-            HealthFacilityDAO _sdfDao = new HealthFacilityDAO();
-            var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
-            var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
+           // HealthFacilityDAO _sdfDao = new HealthFacilityDAO();
+           // var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
+            //var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
 
-            var ypts = yptDAO.GenerateYearlyTargetGroupedByLGA(2017);
-            var facilitiesGroupedByLGA = _sdfDao.RetrieveAll().GroupBy(x => x.LGA.lga_name).ToList();
+            //var ypts = yptDAO.GenerateYearlyTargetGroupedByLGA(2017);
+           // var facilitiesGroupedByLGA = _sdfDao.RetrieveAll().GroupBy(x => x.LGA.lga_name).ToList();
+             
 
-            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
-            List<string> files = new List<string>
-            {
-                "APIN_260117.xlsx", "CCFN_Benue_260117.xlsx", "CCFN_Other LGAs_260117.xlsx","CIHP_260117.xlsx","IHVN_260117.xlsx",
-            };
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
+            string[] files = Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.TopDirectoryOnly);
+
+            var masterList = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\Reconciliation\FacilityWithCodes.csv";
+            string[] linesInmasterList = File.ReadAllText(masterList).Split(new string[] { System.Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+
+            StringBuilder sb = new StringBuilder();
             foreach (var file in files)
             {
-                string newTemplate = baseLocation + "new_" + file;
-                string existingTemplate = baseLocation + file;
+                string newTemplate = file.Replace(".xlsx", "_new.xlsx");
+                string existingTemplate = file;
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(existingTemplate)))
                 {
-                    foreach (var item in facilitiesGroupedByLGA)
+                    var sheets = package.Workbook.Worksheets.Where(x => x.Hidden == eWorkSheetHidden.Visible).ToList();
+                    foreach (var sheet in sheets)
                     {
-                        if (ypts.FirstOrDefault(x => x.lga_name == item.Key) == null)
+                        string lgaName = sheet.Name;
+                        if (lgaName.ToLower().Contains("dashboard") || lgaName.Contains("LGA Level Dashboard"))
                             continue;
 
-                        string lgaName = item.Key;
-
-                        ExcelWorksheet sheet = RetrieveMatchingWorkSheet(lgaName, package.Workbook.Worksheets, LGADictionary);
-                        if (sheet == null)
-                            continue;
-
-
-                        var facilitiesInLGA = item.ToList();
-
-                        for (int row = 8; ; row++)  
+                        for (int row = 8; ; row++)
                         {
-                            string fName = (string)sheet.Cells[row, 3].Value;
+                            string fName = (string)sheet.Cells[row, 2].Value;
                             if (!string.IsNullOrEmpty(fName))
                             {
-                                var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name.ToLower().Trim() == fName);
-                                //var sdf = facilitiesInLGA.FirstOrDefault(x =>
-                                //{
-                                //    var spNames = x.Name.ToLower().Trim().Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
-                                //    var name = string.Join(" ", spNames, 0, spNames.Length - 1);
-
-                                //    return name == fName;
-                                //});
-
-                                if (sdf != null)
+                                string code = SearchMasterList(linesInmasterList, fName, lgaName);
+                                sheet.Cells[row, 1].Value = code;
+                                if (code == "")
                                 {
-                                    sheet.Cells[row, 1].Value = sdf.FacilityCode;
+                                    sb.AppendLine(fName + "," + lgaName + "," + file);
                                 }
                             }
                             else
                                 break;
                         }
                     }
+                    //foreach (var item in facilitiesGroupedByLGA)
+                    //{
+                    //    if (ypts.FirstOrDefault(x => x.lga_name == item.Key) == null)
+                    //        continue;
+
+                    //    string lgaName = item.Key;
+
+                    //    ExcelWorksheet sheet = RetrieveMatchingWorkSheet(lgaName, package.Workbook.Worksheets, LGADictionary);
+                    //    if (sheet == null)
+                    //        continue;
+                    //    var facilitiesInLGA = item.ToList();
+
+                        //for (int row = 8; ; row++)  
+                        //{
+                        //    string fName = (string)sheet.Cells[row, 3].Value;
+                        //    if (!string.IsNullOrEmpty(fName))
+                        //    {
+                        //        var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name.ToLower().Trim() == fName);
+                                
+
+                        //        if (sdf != null)
+                        //        {
+                        //            sheet.Cells[row, 1].Value = sdf.FacilityCode;
+                        //        }
+                        //    }
+                        //    else
+                        //        break;
+                        //}
+                    //}
                     package.SaveAs(new FileInfo(newTemplate));
                 }
             }
-            
+            File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
+
+
+        }
+
+
+        private string SearchMasterList(string[] lines, string fname, string lgaName)
+        {
+            if (lgaName.ToLower().Contains("ifako"))
+                lgaName = "Ifako Ijaiye";
+
+            if (lgaName.ToLower().Contains("amac"))
+                lgaName = "Municipal Area Council";
+
+            foreach (var line in lines)
+            {
+                string[] items = line.Split(',');
+                if (string.IsNullOrEmpty(items[0]))
+                    break;
+                
+                string Sname = items[0].Trim().ToLower().Replace("-","").Replace(",","");
+                string Slganame = items[6].Trim().ToLower();
+                if (Sname == fname.Trim().ToLower().Replace("-", "").Replace(",", "") && lgaName.Trim().ToLower() ==Slganame )
+                    return items[2];
+            }
+            return "";
         }
 
         private ExcelWorksheet RetrieveMatchingWorkSheet(string lgaName, ExcelWorksheets worksheets, Dictionary<string, LGA> lGADictionary)
@@ -135,18 +179,20 @@ namespace Test
             valid.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
             sb.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
 
-            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
-            List<string> files = new List<string>
-            {
-                "CCFN_Other_LGAs_sample.xlsx", "APIN_sample.xlsx", "CCFN_sample.xlsx","CIHP_sample.xlsx","IHVN_sample.xlsx",
-            };
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";
+            string[] files = Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.TopDirectoryOnly);
+
+            //List<string> files = new List<string>
+            //{
+            //    "CCFN_Other_LGAs_sample.xlsx", "APIN_sample.xlsx", "CCFN_sample.xlsx","CIHP_sample.xlsx","IHVN_sample.xlsx",
+            //};
             foreach (var file in files)
             {
                 var existingFacilities = hfDAO.RetrieveAll().Where(x => file.Split('_')[0] == x.Organization.ShortName);//.ToDictionary(x => x.Name);
                 valid.AppendLine(file);
                 sb.AppendLine(file);
 
-                using (ExcelPackage package = new ExcelPackage(new FileInfo(baseLocation + file)))
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
                 {
                     var sheets = package.Workbook.Worksheets.Where(x => x.Hidden == eWorkSheetHidden.Visible).ToList();
                     foreach (var sheet in sheets)
@@ -159,7 +205,7 @@ namespace Test
 
                         while (true)
                         {
-                            string facilityName = ExcelHelper.ReadCell(sheet, row, 3);
+                            string facilityName = ExcelHelper.ReadCell(sheet, row, 2);
                             if (string.IsNullOrEmpty(facilityName))
                             {
                                 break;
@@ -300,6 +346,60 @@ namespace Test
                 hfdao.Save(hf);
             }
             hfdao.CommitChanges();
+        }
+        
+        void CopyAndPaste()
+        {
+            string destinationDir = @"C:\Users\cmadubuko\Desktop\DQAs\";
+            string baseLocation = @"C:\Users\cmadubuko\Desktop\Uploads\";
+            string doneLocation = @"C:\Users\cmadubuko\Desktop\Unproted doc\";
+
+            var files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+            {
+                string newTemplate = destinationDir + file.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[5];
+                string existingTemplate = doneLocation + file.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[5];
+                
+
+                bool exist = File.Exists(existingTemplate);
+                if (exist)
+                    continue;
+
+                if (!File.Exists(newTemplate))
+                {
+                    FileInfo info = new FileInfo(existingTemplate);
+                    info.CopyTo(newTemplate);
+                }                                
+            } 
+        }
+
+        void UnprotectExcelFile()
+        {
+            string destinationDir = @"C:\Users\cmadubuko\Desktop\DQAs\";
+            string baseLocation = @"C:\Users\cmadubuko\Desktop\Uploads\";
+            var files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
+            Application xApp = new Application();
+            foreach (var file in files)
+            {
+                string newTemplate = destinationDir + file.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[5];
+                string existingTemplate = file;
+
+                bool exist = File.Exists(newTemplate);
+                if (exist)
+                    continue;
+
+                var wkb = xApp.Workbooks.Open(file, 0, false, 5, "Pa55w0rd1", "", false, XlPlatform.xlWindows, "", true, false, 0, true);
+                wkb.Unprotect("Pa55w0rd1");
+
+                foreach (Worksheet sheet in wkb.Sheets)
+                {
+                    sheet.Unprotect("Pa55w0rd1");
+                    sheet.Visible = XlSheetVisibility.xlSheetVisible;
+                }
+                wkb.SaveAs(newTemplate, wkb.FileFormat, "", "", false, false, XlSaveAsAccessMode.xlNoChange);
+                wkb.Close();
+            }
+            xApp.Quit();
         }
 
         public void CreateNewDMP()
