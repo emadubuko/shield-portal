@@ -28,6 +28,11 @@ namespace ShieldPortal.Controllers
 
         }
 
+        public ActionResult DQARegenerator()
+        {
+            return View();
+        }
+
         public ActionResult index()
         {
             return View();

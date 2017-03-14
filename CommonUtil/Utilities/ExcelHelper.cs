@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using OfficeOpenXml;
+using OfficeOpenXml; 
 
 namespace CommonUtil.Utilities
 {
@@ -21,7 +21,7 @@ namespace CommonUtil.Utilities
             }
             return "";
         }
-
+         
         public static Dictionary<string, int> GenerateIndexedPeriods()
         {
             Dictionary<string, int> indexedPeriod = new Dictionary<string, int>();

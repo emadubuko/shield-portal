@@ -18,35 +18,408 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using DQA.DAL.Business;
+using ShieldPortal.Service;
+using System.Reflection;
 
 namespace Test
 {    
+    
     class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("started");
+            new Program().RetrieveDimensionValue();
+
+           // new Program().RetrieveExcelValue();
 
 
+            // DMPSummary();
 
-            //Console.ReadLine();
             //new Program().UpdateFacilities();
             //  new Program().GenerateFacilityTargetCSV();
 
-           // new Program().GenerateNonDatimCode();
+            // new Program().GenerateNonDatimCode();
 
             //new Program().GenerateFacilityCode();
             //new Program().UnprotectExcelFile();
             //  new Program().CopyAndPaste();
 
-            
-
             Console.ReadLine();
         }
+
+        private void RetrieveDimensionValue()
+        {
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Downloads\";
+            string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
+            StringBuilder sb = new StringBuilder();
+
+            Excel.Application xApp = new Excel.Application();
+            var oldAlert = xApp.DisplayAlerts;
+            xApp.DisplayAlerts = false;
+            foreach (var file in files)
+            {
+                string FacilityName = "", FacilityCode = "";
+                var wkb = xApp.Workbooks.Open(file, 0, false, 5, "", "", false, Excel.XlPlatform.xlWindows, "", true, false, 0, true); //(file);
+                Excel.Worksheet sht = wkb.Sheets["Worksheet"];
+                FacilityName = RetrieveExcelValueUsingInterop(sht, 2, 22);
+                FacilityCode = RetrieveExcelValueUsingInterop(sht, 2, 27);
+
+                sht = wkb.Sheets["All Questions"];
+
+                string HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts,
+                    Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID,
+                    PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW,
+                    TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT,
+                    Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr,
+                    HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions,
+                    Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID,
+                    PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions,
+                    Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR,
+                    Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID,
+                    Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr,
+                    Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID,
+                    Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr;
+
+                HTC_Charts = RetrieveExcelValueUsingInterop(sht, 6, 6);
+                PMTCT_STAT_charts = RetrieveExcelValueUsingInterop(sht, 49, 6);
+                PMTCT_EID_charts = RetrieveExcelValueUsingInterop(sht, 117, 6);
+                PMTCT_ARV_Charts = RetrieveExcelValueUsingInterop(sht, 91, 6);
+                TX_NEW_charts = RetrieveExcelValueUsingInterop(sht, 142, 6);
+                TX_CURR_charts = RetrieveExcelValueUsingInterop(sht, 167, 6);
+
+                HTC_Charts_Precisions = RetrieveExcelValueUsingInterop(sht, 2, 6);
+                PMTCT_STAT_Charts_Precisions = RetrieveExcelValueUsingInterop(sht, 46, 6);
+                PMTCT_EID_Charts_Precisions = RetrieveExcelValueUsingInterop(sht, 117, 6);
+                PMTCT_ARV_Charts_Precisions = RetrieveExcelValueUsingInterop(sht, 91, 6);
+                TX_NEW_Charts_Precisions = RetrieveExcelValueUsingInterop(sht, 141, 6);
+                TX_CURR_Charts_Precisions = RetrieveExcelValueUsingInterop(sht, 166, 6);
+
+
+                sht = wkb.Sheets["DQA Summary (Map to Quest Ans)"];
+
+                Total_Completeness_HTC_TST = RetrieveExcelValueUsingInterop(sht, 8, 23);
+                Total_Completeness_PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 12, 23);
+                Total_completeness_PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 15, 23);
+                Total_completeness_PMTCT_ARV = RetrieveExcelValueUsingInterop(sht, 16, 23);
+                Total_completeness_TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 23);
+                Total_completeness_TX_CURR = RetrieveExcelValueUsingInterop(sht, 18, 23);
+
+                Total_consistency_HTC_TST = RetrieveExcelValueUsingInterop(sht, 8, 24);
+                Total_consistency_PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 12, 24);
+                Total_consistency_PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 15, 24);
+                Total_consistency_PMTCT_ART = RetrieveExcelValueUsingInterop(sht, 16, 24);
+                Total_consistency_TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 24);
+                Total_consistency_TX_Curr = RetrieveExcelValueUsingInterop(sht, 18, 24);
+
+                Total_precision_HTC_TST = RetrieveExcelValueUsingInterop(sht, 8, 25);
+                Total_precision_PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 12, 25);
+                Total_precision_PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 15, 25);
+                Total_precision_PMTCT_ARV = RetrieveExcelValueUsingInterop(sht, 16, 25);
+                Total_precision_TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 25);
+                Total_precision_TX_CURR = RetrieveExcelValueUsingInterop(sht, 18, 25);
+
+                Total_integrity_HTC_TST = RetrieveExcelValueUsingInterop(sht, 8, 26);
+                Total_integrity_PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 12, 26);
+                Total_integrity_PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 15, 26);
+                Total_integrity_PMTCT_ART = RetrieveExcelValueUsingInterop(sht, 16, 26);
+                Total_integrity_TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 26);
+                Total_integrity_TX_Curr = RetrieveExcelValueUsingInterop(sht, 18, 26);
+
+                Total_Validity_HTC_TST = RetrieveExcelValueUsingInterop(sht, 8, 27);
+                Total_Validity_PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 12, 27);
+                Total_Validity_PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 15, 27);
+                Total_Validity_PMTCT_ART = RetrieveExcelValueUsingInterop(sht, 16, 27);
+                Total_Validity_TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 27);
+                Total_Validity_TX_Curr = RetrieveExcelValueUsingInterop(sht, 18, 27);
+
+                sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43}",
+                    FacilityName.Replace(",", "-"), FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr));
+
+                wkb.Close(false, Missing.Value, Missing.Value);
+            }
+            xApp.Quit();
+
+            File.WriteAllText(@"C:\Users\cmadubuko\Desktop\DQA Datim source\DQADimensions.csv", sb.ToString());
+            Console.WriteLine("Press enter to end");
+            return;
+        }
+
+
+
+        private void RetrieveExcelValue()
+        {
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Downloads\";
+            string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
+            StringBuilder sb = new StringBuilder();
+
+            Excel.Application xApp = new Excel.Application();
+            var oldAlert = xApp.DisplayAlerts;
+            xApp.DisplayAlerts = false;
+            foreach (var file in files)
+            {
+                string Datim_HTC_TST = "";
+                string DATIM_HTC_TST_POS = "";
+                string DATIM_HTC_ONLY = "";
+                string DATIM_HTC_POS = "";
+                string DATIM_PMTCT_STAT = "";
+                string DATIM_PMTCT_STAT_POS = "";
+                string DATIM_PMTCT_STAT_Previously = "";
+                string DATIM_PMTCT_EID = "";
+                string DATIM_PMTCT_ART = "";
+                string Datim_TX_NEW = "";
+                string DATIM_TX_CURR = "";
+
+                string HTC_TST = "";
+                string HTC_TST_POS = "";
+                string HTC_ONLY = "";
+                string HTC_POS = "";
+                string PMTCT_STAT = "";
+                string PMTCT_STAT_POS = "";
+                string PMTCT_STAT_Previoulsy_Known = "";
+                string PMTCT_EID = "";
+                string PMTCT_ART = "";
+                string TX_NEW = "";
+                string TX_Curr = "";
+                string FacilityName = "", FacilityCode = "";
+
+                var wkb = xApp.Workbooks.Open(file, 0, false, 5, "", "", false, Excel.XlPlatform.xlWindows, "", true, false, 0, true); //(file);
+                Excel.Worksheet sht = wkb.Sheets["Worksheet"];
+                FacilityName = RetrieveExcelValueUsingInterop(sht, 2, 22);
+                FacilityCode = RetrieveExcelValueUsingInterop(sht, 2, 27); //sht.Cells["AA2"].Value;
+
+                sht = wkb.Sheets["All Questions"];
+                Datim_HTC_TST = RetrieveExcelValueUsingInterop(sht, 2, 6); //sht.Cells["F2"].Value;
+                DATIM_PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 46, 6); //sht.Cells["F46"].Value;
+                DATIM_PMTCT_ART = RetrieveExcelValueUsingInterop(sht, 91, 6); //sht.Cells["F91"].Value;
+                Datim_TX_NEW = RetrieveExcelValueUsingInterop(sht, 141, 6); //sht.Cells["F141"].Value;
+                DATIM_TX_CURR = RetrieveExcelValueUsingInterop(sht, 166, 6);// sht.Cells["F166"].Value;
+                DATIM_PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 117, 6); //sht.Cells["F117"].Value;
+                DATIM_HTC_ONLY = !string.IsNullOrEmpty(Datim_HTC_TST) && !string.IsNullOrEmpty(DATIM_PMTCT_STAT) ? (Convert.ToInt32(Datim_HTC_TST) - Convert.ToInt32(DATIM_PMTCT_STAT)).ToString() : " ";
+
+                sht = wkb.Sheets["DQA Summary (Map to Quest Ans)"];
+                HTC_TST = RetrieveExcelValueUsingInterop(sht, 8, 22);
+                HTC_TST_POS = RetrieveExcelValueUsingInterop(sht, 9, 22);
+                HTC_ONLY = RetrieveExcelValueUsingInterop(sht, 10, 22);
+                HTC_POS = RetrieveExcelValueUsingInterop(sht, 11, 22);
+                PMTCT_STAT = RetrieveExcelValueUsingInterop(sht, 12, 22);
+                PMTCT_STAT_POS = RetrieveExcelValueUsingInterop(sht, 13, 22);
+                PMTCT_STAT_Previoulsy_Known = RetrieveExcelValueUsingInterop(sht, 14, 22);
+                PMTCT_EID = RetrieveExcelValueUsingInterop(sht, 15, 22);
+                PMTCT_ART = RetrieveExcelValueUsingInterop(sht, 16, 22);
+                TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 22);
+                TX_Curr = RetrieveExcelValueUsingInterop(sht, 18, 22);
+
+               sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23}",
+                   FacilityName.Replace(",", "-"), FacilityCode, Datim_HTC_TST, HTC_TST, DATIM_HTC_TST_POS, HTC_TST_POS, DATIM_HTC_ONLY, HTC_ONLY, DATIM_HTC_POS, HTC_POS, DATIM_PMTCT_STAT, PMTCT_STAT, DATIM_PMTCT_STAT_POS, PMTCT_STAT_POS, DATIM_PMTCT_STAT_Previously, PMTCT_STAT_Previoulsy_Known, DATIM_PMTCT_EID, PMTCT_EID, DATIM_PMTCT_ART, PMTCT_ART, Datim_TX_NEW, TX_NEW, DATIM_TX_CURR, TX_Curr));
+                
+                    wkb.Close(false, Missing.Value, Missing.Value);
+            }
+
+            xApp.Quit();
+
+            File.WriteAllText(@"C:\Users\cmadubuko\Desktop\DQA Datim source\New_DQAComparison.csv", sb.ToString());
+            Console.WriteLine("Press enter to end");
+            return;
+        }
+
+
+        /// <summary>
+        /// Retrieve excel value using Microsoft.Office.Interop.Excel;
+        /// Use on local system only
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public static string RetrieveExcelValueUsingInterop(Excel.Worksheet sheet, int row, int column)
+        {
+            Excel.Range range = (Excel.Range)sheet.Cells[row, column];
+            return Convert.ToString(range.Value2);
+        }
+
+        static string makeCSVEntry(string incoming)
+        {
+            if (string.IsNullOrEmpty(incoming))
+            {
+                return ",";
+            }
+            else
+            {
+                return string.Format("\"{0}\",", incoming.Trim().Replace(",", "|"));
+            }
+        }
+
+
+        static void DMPSummary()
+        {
+            var dmps = new DMPDocumentDAO().RetrieveAll();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("IP,Project Title,Document Title,Organization,Lead Activity Manager,Address of Organization,	Mission Partner,Project Start Date,	Project End Date,Grant Reference Number,Ethical approval for the project,Rational,Aprroving instititional review board,Type of ethical approval,VERSION AUTHOR,VERSION NUMBER,VERSION DATE,	APPROVAL,Program Objective,	Roles,Number of staff site,	Number of staff state,	Number of staff HQ,	Responsibilities, Responsibility at site,Responsibility at State,	Responsibility at HQ,Name of training,Implementing partner M & E process,Report level,Data collation types,	Data collation frequency,Data garnering,Data use,Data improvement approach,	Project equipments,	States covered by implementing partners,Contracts and agreements,Ownership,Use of third party data sources,Data To Retain,Pre-Existing Data,Duration,Licensing,Digital Data Retention,Non Digital Data Retention"); //others
+
+            // sb.AppendLine("IP,Reporting Level, Data Type, Reporting Tools, Collection process");//data collection 
+            //sb.AppendLine("IP,Reporting Level,Reports Type,Reported To,Program Area,Frequency of Reporting,Duration of Reporting,Timelines");// report
+            //sb.AppendLine("IP,Reporting Level,ThematicArea,DataVerificationApproach,Types,Frequency,Duration,Timelines"); //dverification
+            //sb.AppendLine("IP,Reporting Level,Thematic Area,Volume of digital data, Data storage format,Storage location,Backup,Data security, Patient confidentiality policies,Storage of pre existing data"); //digital data
+            //sb.AppendLine("IP,Reporting Level,Thematic Area, data types,Storage location,SafeguardsAndRequirements"); //non digital data
+            //sb.AppendLine("IP,Reporting Level,Thematic Area,Data access, Sharing policies,Data transmission policies,Sharing flatforms"); //sharing
+            //sb.AppendLine("IP,Reporting Level,Thematic Area,Documentation and dataDescriptors, Naming structure and filing structures"); //doc mgt
+            foreach (var dmp in dmps)
+            {
+                var doc = dmp.Document;
+                var docRev = doc.DocumentRevisions.LastOrDefault();
+
+                ////data doc mgt
+                //foreach (var dv in doc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(dv.ReportingLevel);
+                //    anEntry += makeCSVEntry(dv.ThematicArea);
+                //    anEntry += makeCSVEntry(dv.StoredDocumentationAndDataDescriptors);
+                //    anEntry += makeCSVEntry(dv.NamingStructureAndFilingStructures);
+                //    sb.AppendLine(anEntry);
+                //}
+
+                ////data sharing
+                //foreach (var dv in doc.DataStorageAccessAndSharing.DataAccessAndSharing)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(dv.ReportingLevel);
+                //    anEntry += makeCSVEntry(dv.ThematicArea);
+                //    anEntry += makeCSVEntry(dv.DataAccess);
+                //    anEntry += makeCSVEntry(dv.DataSharingPolicies);
+                //    anEntry += makeCSVEntry(dv.DataTransmissionPolicies);
+                //    anEntry += makeCSVEntry(dv.SharingPlatForms);
+                //    sb.AppendLine(anEntry);
+                //}
+
+                ////nondigital
+                //foreach (var dv in doc.DataStorageAccessAndSharing.NonDigital)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(dv.ReportingLevel);
+                //    anEntry += makeCSVEntry(dv.ThematicArea);
+                //    anEntry += makeCSVEntry(dv.NonDigitalDataTypes);
+                //    anEntry += makeCSVEntry(dv.StorageLocation);
+                //    anEntry += makeCSVEntry(dv.SafeguardsAndRequirements);
+                //    sb.AppendLine(anEntry);
+                //}
+
+                //digital data
+                //foreach(var dv in doc.DataStorageAccessAndSharing.Digital)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(dv.ReportingLevel);
+                //    anEntry += makeCSVEntry(dv.ThematicArea);
+                //    anEntry += makeCSVEntry(dv.VolumeOfDigitalData);
+                //    anEntry += makeCSVEntry(dv.DataStorageFormat);
+                //    anEntry += makeCSVEntry(dv.StorageLocation);
+                //    anEntry += makeCSVEntry(dv.Backup);
+                //    anEntry += makeCSVEntry(dv.DataSecurity);
+                //    anEntry += makeCSVEntry(dv.PatientConfidentialityPolicies);
+                //    anEntry += makeCSVEntry(dv.StorageOfPreExistingData);
+                //    sb.AppendLine(anEntry);
+                //}
+
+
+                //dverification
+                //foreach(var dv in doc.QualityAssurance.DataVerification)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(dv.ReportingLevel);
+                //    anEntry += makeCSVEntry(dv.ThematicArea);
+                //    anEntry += makeCSVEntry(dv.DataVerificationApproach);
+                //    anEntry += makeCSVEntry(dv.TypesOfDataVerification);
+                //    anEntry += makeCSVEntry(dv.FrequencyOfDataVerification);
+                //    anEntry += dv.DurationOfDataVerificaion + ",";
+                //    anEntry += makeCSVEntry(string.Join(System.Environment.NewLine, dv.TimelinesForDataVerification.Select(x => x)));
+                //    sb.AppendLine(anEntry);
+                //}
+
+
+                //report
+                //foreach(var rt in doc.DataProcesses.Reports.ReportData)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(rt.ReportingLevel);
+                //    anEntry += makeCSVEntry(rt.ReportsType);
+                //    anEntry += makeCSVEntry(rt.ReportedTo);
+                //    anEntry += makeCSVEntry(rt.ProgramArea);
+                //    anEntry += makeCSVEntry(rt.FrequencyOfReporting);
+                //    anEntry += rt.DurationOfReporting + ",";
+                //    anEntry += makeCSVEntry(string.Join(System.Environment.NewLine, rt.TimelinesForReporting.Select(x => x)));
+                //    sb.AppendLine(anEntry);
+                //}
+
+                //data collection             
+                //foreach (var dt in doc.DataProcesses.DataCollection)
+                //{
+                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                //    anEntry += makeCSVEntry(dt.ReportingLevel);
+                //    anEntry += makeCSVEntry(dt.DataType);
+                //    anEntry += makeCSVEntry(dt.DataCollectionAndReportingTools);
+                //    anEntry += makeCSVEntry(dt.DataCollectionProcess);
+
+                //    sb.AppendLine(anEntry);
+                //}
+
+                string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                anEntry += makeCSVEntry(dmp.TheDMP.TheProject.ProjectTitle);
+                anEntry += makeCSVEntry(dmp.TheDMP.DMPTitle);
+                anEntry += makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                anEntry += makeCSVEntry(dmp.TheDMP.TheProject.LeadActivityManager != null ? dmp.TheDMP.TheProject.LeadActivityManager.FullName : "");
+                anEntry += makeCSVEntry(dmp.TheDMP.Organization.Address);
+                anEntry += makeCSVEntry(dmp.TheDMP.Organization.MissionPartner);
+                anEntry += makeCSVEntry(dmp.TheDMP.TheProject.ProjectStartDate);
+                anEntry += makeCSVEntry(dmp.TheDMP.TheProject.ProjectEndDate);
+                anEntry += makeCSVEntry(dmp.TheDMP.TheProject.GrantReferenceNumber);
+                anEntry += makeCSVEntry(doc.ProjectProfile.EthicalApproval.EthicalApprovalForTheProject);
+                anEntry += makeCSVEntry(doc.ProjectProfile.EthicalApproval.Rational);
+                anEntry += makeCSVEntry(doc.ProjectProfile.EthicalApproval.AprrovingInstititionalReviewBoard);
+                anEntry += makeCSVEntry(doc.ProjectProfile.EthicalApproval.TypeOfEthicalApproval);
+                anEntry += makeCSVEntry(docRev != null && docRev.Version != null ? docRev.Version.VersionAuthor.DisplayName : "");
+                anEntry += makeCSVEntry(docRev != null && docRev.Version != null ? docRev.Version.VersionMetadata.VersionNumber : "");
+                anEntry += makeCSVEntry(docRev != null && docRev.Version != null ? docRev.Version.VersionMetadata.VersionDate : "");
+                anEntry += makeCSVEntry(docRev != null && docRev.Version != null && docRev.Version.Approval != null ? docRev.Version.Approval.DisplayName : "");
+                anEntry += makeCSVEntry(doc.Planning.Summary.ProjectObjectives);
+                anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.People.Roles.Select(x => x.Name)));
+                anEntry += doc.MonitoringAndEvaluationSystems.People.Roles.Sum(x => x.SiteCount) + ",";
+                anEntry += doc.MonitoringAndEvaluationSystems.People.Roles.Sum(x => x.RegionCount) + ",";
+                anEntry += doc.MonitoringAndEvaluationSystems.People.Roles.Sum(x => x.HQCount) + ",";
+                anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.People.Responsibilities.Select(x => x.Name)));
+                anEntry += doc.MonitoringAndEvaluationSystems.People.Responsibilities.Sum(x => x.SiteCount) + ",";
+                anEntry += doc.MonitoringAndEvaluationSystems.People.Responsibilities.Sum(x => x.RegionCount) + ",";
+                anEntry += doc.MonitoringAndEvaluationSystems.People.Responsibilities.Sum(x => x.HQCount) + ",";
+                anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.People.Trainings.Select(x => x.NameOfTraining)));
+                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Process.ImplementingPartnerMEProcess);
+                anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.Process.ReportLevel.Select(x => x)));
+                anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.Process.DataCollation.Select(x => x.DataType)));
+                anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.Process.DataCollation.Select(x => x.CollationFrequency)));
+                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Process.DataGarnering);
+                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Process.DataUse);
+                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Process.DataImprovementApproach);
+                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Equipment.ProjectEquipments);
+                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Environment.StatesCoveredByImplementingPartners);
+
+                anEntry += makeCSVEntry(doc.IntellectualPropertyCopyrightAndOwnership.ContractsAndAgreements);
+                anEntry += makeCSVEntry(doc.IntellectualPropertyCopyrightAndOwnership.Ownership);
+                anEntry += makeCSVEntry(doc.IntellectualPropertyCopyrightAndOwnership.UseOfThirdPartyDataSources);
+
+                anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.DataToRetain);
+                anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.PreExistingData);
+                anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.Duration);
+                anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.Licensing);
+                anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.DigitalDataRetention.DataRetention);
+                anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention.DataRention);
+                sb.AppendLine(anEntry);
+            }
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummay.csv", sb.ToString());
+        }
+
 
         public void GenerateNonDatimCode()
         {
@@ -171,8 +544,7 @@ namespace Test
             }
             File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
         }
-
-
+        
         private string SearchMasterList(string[] lines, string fname, string lgaName)
         {
             if (lgaName.ToLower().Contains("ifako"))
@@ -426,7 +798,7 @@ namespace Test
             string destinationDir = @"C:\Users\cmadubuko\Desktop\DQAs\";
             string baseLocation = @"C:\Users\cmadubuko\Desktop\Uploads\";
             var files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
-            Application xApp = new Application();
+            Excel.Application xApp = new Excel.Application();
             foreach (var file in files)
             {
                 string newTemplate = destinationDir + file.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[5];
@@ -436,80 +808,20 @@ namespace Test
                 if (exist)
                     continue;
 
-                var wkb = xApp.Workbooks.Open(file, 0, false, 5, "Pa55w0rd1", "", false, XlPlatform.xlWindows, "", true, false, 0, true);
+                var wkb = xApp.Workbooks.Open(file, 0, false, 5, "Pa55w0rd1", "", false, Excel.XlPlatform.xlWindows, "", true, false, 0, true);
                 wkb.Unprotect("Pa55w0rd1");
 
-                foreach (Worksheet sheet in wkb.Sheets)
+                foreach (Excel.Worksheet sheet in wkb.Sheets)
                 {
                     sheet.Unprotect("Pa55w0rd1");
-                    sheet.Visible = XlSheetVisibility.xlSheetVisible;
+                    sheet.Visible = Excel.XlSheetVisibility.xlSheetVisible;
                 }
-                wkb.SaveAs(newTemplate, wkb.FileFormat, "", "", false, false, XlSaveAsAccessMode.xlNoChange);
+                wkb.SaveAs(newTemplate, wkb.FileFormat, "", "", false, false, Excel.XlSaveAsAccessMode.xlNoChange);
                 wkb.Close();
             }
             xApp.Quit();
         }
-
-        public void CreateNewDMP()
-        {
-            Guid guid = new Guid("CC16C80A-593F-4AB5-837C-A6F301107842");
-            var tt = new ProfileDAO().Retrieve(guid);
-            //  profile.Username = "John doe ";
-            new ProfileDAO().Save(profile);
-            var dmpDao = new DMPDAO();
-            var dmpDocumentDao = new DMPDocumentDAO();
-
-            Organizations org = new BaseDAO<Organizations, int>().Retrieve(1);
-            //    new Organizations
-            //{
-            //    Address = "Jahi District",
-            //    Name = "Centre for Clinical Care and Research Nigeria",
-            //    OrganizationType = OrganizationType.ImplemetingPartner,
-            //    ShortName = "CCCRN"
-            //};
-            //new BaseDAO<Organizations, int>().Save(org);
-
-            page.ProjectProfile.ProjectDetails.Organization = org;
-            new BaseDAO<ProjectDetails, int>().Save(page.ProjectProfile.ProjectDetails);
-
-            DMP dmp = new DMP
-            {
-                CreatedBy = profile,
-                DateCreated = DateTime.Now,
-                DMPTitle = "CCCRN SEEDS DMP",
-                EndDate = DateTime.Now.AddMonths(9),
-                StartDate = DateTime.Now.AddMonths(1),
-                TheProject = page.ProjectProfile.ProjectDetails,
-                Organization = org
-            };
-
-            DMPDocument dmpDocument = new DMPDocument
-            {
-                Document = page,
-                PageNumber = 1,
-                Initiator = profile,
-                InitiatorUsername = profile.Username,
-                LastModifiedDate = DateTime.Now,
-                ReferralCount = 0,
-                Status = DMPStatus.New,
-                CreationDate = DateTime.Now,
-                TheDMP = dmp,
-                Version = "0.1",
-            };
-
-            try
-            {
-                dmpDao.Save(dmp);
-                dmpDocumentDao.Save(dmpDocument);
-                dmpDao.CommitChanges();
-            }
-            catch
-            {
-                dmpDao.RollbackChanges();
-            }
-
-        }
-
+        
         public void QuerySystem()
         {
             var dmpDao = new DMPDocumentDAO();
@@ -518,96 +830,23 @@ namespace Test
 
             Console.ReadLine();
         }
-
-        WizardPage page = new WizardPage
-        {
-            ProjectProfile = new ProjectProfile
-            {
-                EthicalApproval = new EthicsApproval
-                {
-                    EthicalApprovalForTheProject = "Yes there is",
-                    TypeOfEthicalApproval = "General",
-                },
-                ProjectDetails = new ProjectDetails
-                {
-                    AbreviationOfImplementingPartner = "CCCRN",
-                    AddressOfOrganization = "Jahi district",
-                    NameOfImplementingPartner = "Center for clinical research nigeria",
-                    DocumentTitle = "SEED DMP for CCCRN",
-                    ProjectTitle = "SEEDS Evaluation",
-                    ProjectEndDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now.AddMonths(7)),
-                    ProjectStartDate = string.Format("{0:dd-MMM-yyyy}", DateTime.Now.AddMonths(-2)),
-                },
-            },
-            DocumentRevisions = new List<DocumentRevisions>
-            {
-                new DocumentRevisions{
-                Version = new DAL.Entities.Version
-                {
-                    Approval = new Approval
-                    {
-                        SurnameApprover = "madubuko",
-                        FirstnameofApprover = "Emeka"
-                    },
-                    VersionAuthor = new VersionAuthor
-                    {
-                        SurnameAuthor = "Madubuko",
-                        FirstNameOfAuthor = "Christian"
-                    },
-                    VersionMetadata = new VersionMetadata
-                    {
-                        VersionDate = DateTime.Now.ToShortDateString(),
-                        VersionNumber = "1.0.0"
-                    },
-                }
-                }
-            },
-            Planning = new Planning
-            {
-                Summary = new Summary
-                { ProjectObjectives = "TL;DR. Too long dont read" }
-            },
-            QualityAssurance = new QualityAssurance
-            {
-            },
-            IntellectualPropertyCopyrightAndOwnership = new IntellectualPropertyCopyrightAndOwnership
-            {
-                ContractsAndAgreements = "None",
-                Ownership = "Fully Us",
-                UseOfThirdPartyDataSources = "None Needed"
-            },
-            PostProjectDataRetentionSharingAndDestruction = new PostProjectDataRetentionSharingAndDestruction
-            {
-                DataToRetain = "None",
-                DigitalDataRetention = new DigitalDataRetention
-                {
-                    DataRetention = "Yes, anticipated"
-                },
-                Licensing = "MIT",
-                NonDigitalRentention = new NonDigitalDataRetention
-                {
-                    DataRention = "In place"
-                },
-                Duration = "As long as relevant",
-                PreExistingData = "Nope"
-            }
-        };
-
-        Profile profile = new Profile
-        {
-            ContactEmailAddress = "emadubuko@mgic-nigeria.org",
-            ContactPhoneNumber = "08068627544",
-            FirstName = "John",
-            JobDesignation = "Software developer",
-            Password = "password",
-            Surname = "Doe",
-            Username = "johndoe@missingPlace.org",
-        };
-
+        
     }
 
     public class DatimResponse
     {
         public string coordinates { get; set; }
     }
+
+    public class DatimResponseIndicators
+    {
+        public string HTS { get; set; }
+        public string PMTCT_STAT { get; set; }
+        public string TX_NEW { get; set; }
+        public string TX_Curr { get; set; }
+        public string PMTCT_Eid { get; set; }
+        public string PMTCT_Art { get; set; }
+
+    }
+ 
 }

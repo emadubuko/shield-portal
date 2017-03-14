@@ -12,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
@@ -188,13 +190,19 @@ namespace ShieldPortal.Controllers
             return Utility.GetDataSet(cmd);
         }
 
-        public String GenerateReports()
+        public string GenerateReports()
         {
+            string[] datimNumbersRaw = File.ReadAllText(@"C:\Users\cmadubuko\Desktop\DQA Datim source\DatimSource.csv").Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+           
             var metas = new MetaDataService().GetAllMetadata();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Facility Name,Facility code, Datim_HTC_TST, HTC_TST, DATIM_HTC_TST_POS, HTC_TST_POS, DATIM_HTC_ONLY, HTC_ONLY, DATIM_HTC_POS, HTC_POS, DATIM_PMTCT_STAT, PMTCT_STAT, DATIM_PMTCT_STAT_POS, PMTCT_STAT_POS, DATIM_PMTCT_STAT_Previously, PMTCT_STAT_Previoulsy_Known, DATIM_PMTCT_EID,PMTCT_EID,DATIM_PMTCT_ART,PMTCT_ART,Datim_TX_NEW,TX_NEW,DATIM_TX_CURR,TX_Curr");
             foreach(var meta in metas)
             {
-                new BDQA().LoadWorkbook(meta.Id);
+                string output = new BDQA().LoadWorkbook(meta.Id, datimNumbersRaw);
+                sb.AppendLine(output);
             }
+            File.WriteAllText(@"C:\Users\cmadubuko\Desktop\DQA Datim source\DQAComparison.csv", sb.ToString());
             return "Complete";
         }
 
@@ -218,6 +226,7 @@ namespace ShieldPortal.Controllers
         }
 
         // DELETE: api/DQA/5
+        [HttpDelete]
         public void Delete(int id)
         {
             new BDQA().Delete(id);
