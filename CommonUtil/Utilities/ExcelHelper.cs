@@ -4,24 +4,46 @@ using NHibernate.Engine;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using OfficeOpenXml; 
+using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing;
+using OfficeOpenXml.FormulaParsing.Exceptions;
 
 namespace CommonUtil.Utilities
 {
-   public class ExcelHelper
+    public class ExcelHelper
     {
         public static string ReadCell(ExcelWorksheet sheet, int row, int column)
         {
+            
+
             var range = sheet.Cells[row, column] as ExcelRange;
+            if (!string.IsNullOrEmpty(range.Formula))
+            {
+                try
+                {
+                    var calculateOptions = new ExcelCalculationOption();
+                    calculateOptions.AllowCirculareReferences = true;
+                    range.Calculate(calculateOptions);
+                }
+                catch (CircularReferenceException ex)
+                {
+                    throw ex;
+                }
+            }
             if (range.Value != null)
             {
                 return range.Value.ToString();
             }
             return "";
         }
-         
+
+        public static string ReadCell(ExcelWrapper wrapper, int row, int column)
+        {
+            //decimal value = wrapper.GetCellNumericValue(row-1, column-1);
+            
+            return wrapper.GetCellValue(row - 1, column - 1);//value.ToString();
+        }
+
         public static Dictionary<string, int> GenerateIndexedPeriods()
         {
             Dictionary<string, int> indexedPeriod = new Dictionary<string, int>();

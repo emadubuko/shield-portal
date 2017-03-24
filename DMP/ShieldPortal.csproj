@@ -68,8 +68,8 @@
       <HintPath>..\packages\EPPlus.4.1.0\lib\net40\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
@@ -1015,6 +1015,12 @@
     <Content Include="Resources\DQA resourse files\GUIDE TO USING THE DATA QUALITY ASSESSMENT %28DQA%29 TOOL.Q1R.pdf" />
     <Content Include="Resources\DQA resourse files\Random Number Table.pdf" />
     <Content Include="Resources\Implementing Partner ME Staff Structure_modified.xlsx" />
+    <Content Include="Report\Template\DatimSource.csv" />
+    <Content Include="Report\Template\DQA Summary Report.Q1R.pdf" />
+    <Content Include="Report\Template\DQA_user_guide_18Feb2017.docx" />
+    <Content Include="Report\Template\GUIDE TO USING THE DATA QUALITY ASSESSMENT %28DQA%29 TOOL.Q1R.pdf" />
+    <Content Include="Report\Template\Random Number Table.pdf" />
+    <Content Include="Report\Template\SHIELD_DQA_v2_20170321.xlsm" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1090,7 +1096,6 @@
     <Folder Include="Models\Data\" />
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\" />
-    <Folder Include="Report\Template\" />
     <Folder Include="Report\Uploads\" />
     <Folder Include="tempData\" />
     <Folder Include="Uploads\" />

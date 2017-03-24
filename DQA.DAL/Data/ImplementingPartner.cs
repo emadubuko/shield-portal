@@ -17,7 +17,6 @@ namespace DQA.DAL.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ImplementingPartner()
         {
-            this.dqa_report_metadata = new HashSet<dqa_report_metadata>();
             this.HealthFacilities = new HashSet<HealthFacility>();
             this.HealthFacilities1 = new HashSet<HealthFacility>();
         }
@@ -33,8 +32,6 @@ namespace DQA.DAL.Data
         public string Fax { get; set; }
         public string PhoneNumber { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<dqa_report_metadata> dqa_report_metadata { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HealthFacility> HealthFacilities { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

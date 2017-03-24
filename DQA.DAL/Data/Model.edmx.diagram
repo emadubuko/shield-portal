@@ -5,17 +5,22 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="fc90e455f8dc46bd8e75336315d376e6" Name="Diagram1">
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_funder" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_indicator" Width="1.5" PointX="5.25" PointY="10.625" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="5.25" PointY="5.75" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_value" Width="1.5" PointX="7.5" PointY="6.375" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_facility_level" Width="1.5" PointX="7.75" PointY="8.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_facility_type" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_funder" Width="1.5" PointX="2.75" PointY="9.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_indicator" Width="1.5" PointX="7.75" PointY="1" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_lnk_version_indicators" Width="1.5" PointX="8" PointY="5.875" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="9.75" PointY="8.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_value" Width="1.5" PointX="10" PointY="1" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_indicators" Width="1.5" PointX="10.75" PointY="4.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_value" Width="1.5" PointX="11.75" PointY="7.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_versions" Width="1.5" PointX="5.75" PointY="6" />
         <EntityTypeShape EntityType="shield_dmpModel.HealthFacility" Width="1.5" PointX="5.25" PointY="1" />
-        <EntityTypeShape EntityType="shield_dmpModel.ImplementingPartner" Width="1.5" PointX="3" PointY="4.875" />
-        <EntityTypeShape EntityType="shield_dmpModel.lga" Width="1.5" PointX="3" PointY="1.125" />
-        <EntityTypeShape EntityType="shield_dmpModel.state" Width="1.5" PointX="0.75" PointY="1.5" />
+        <EntityTypeShape EntityType="shield_dmpModel.ImplementingPartner" Width="1.5" PointX="3" PointY="5.125" />
+        <EntityTypeShape EntityType="shield_dmpModel.lga" Width="1.5" PointX="3" PointY="1.25" />
+        <EntityTypeShape EntityType="shield_dmpModel.state" Width="1.5" PointX="0.75" PointY="1.625" />
         <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_indicator" />
-        <AssociationConnector Association="shield_dmpModel.FK_dqa_report_metadata_ImplementingPartners" />
-        <AssociationConnector Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" />
+        <AssociationConnector Association="shield_dmpModel.FK_LINK_VERSION" />
         <AssociationConnector Association="shield_dmpModel.FKA9A8FFC7C3F5A779" />
         <AssociationConnector Association="shield_dmpModel.FKA9A8FFC7CC15123B" />
         <AssociationConnector Association="shield_dmpModel.FKE287F3F135201EB8" />
@@ -24,11 +29,7 @@
         <AssociationConnector Association="shield_dmpModel.FK19DCEB72794DD3B7" />
         <AssociationConnector Association="shield_dmpModel.FK6ECB7A12794DD3B7" />
         <AssociationConnector Association="shield_dmpModel.FKDAADEEE960D0DD2E" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_lnk_version_indicators" Width="1.5" PointX="10" PointY="9.875" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_indicators" Width="1.5" PointX="7.75" PointY="3.75" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_versions" Width="1.5" PointX="7.75" PointY="10" />
-        <AssociationConnector Association="shield_dmpModel.FK_LINK_VERSION" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_value" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_dimensions" Width="1.5" PointX="5" PointY="9.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

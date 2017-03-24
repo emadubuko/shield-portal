@@ -60,7 +60,7 @@ namespace ShieldPortal.Controllers
             switch (fileType)
             {
                 case "DQATemplate":
-                    filename = "Data Quality Assessment Tool.Q1R.xlsm";
+                    filename = "SHIELD_DQA_v2_20170321.xlsm";
                     break;
                 case "DQASummaryReport":
                     filename = "DQA Summary Report.Q1R.pdf";
@@ -72,7 +72,8 @@ namespace ShieldPortal.Controllers
                     filename = "Random Number Table.pdf";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/DQA resourse files/" + filename);
+            //Report/Template\SHIELD_DQA_v2_20170321.xlsm
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {

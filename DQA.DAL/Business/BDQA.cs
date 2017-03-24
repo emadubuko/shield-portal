@@ -1,6 +1,7 @@
 ﻿using CommonUtil.Utilities;
 using DQA.DAL.Data;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +19,9 @@ namespace DQA.DAL.Business
     {
         shield_dmpEntities entity = new shield_dmpEntities();
 
-        public string ReadWorkbook(string filename,string username)
+        public string ReadWorkbook(string filename, string username)
         {
-            using (ExcelPackage package=new ExcelPackage(new FileInfo(filename)))
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
             {
                 try
                 {
@@ -56,7 +57,7 @@ namespace DQA.DAL.Business
                     {
                         return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
                     }
-                   
+
                     //get the metadata of the report
                     var metadata = new dqa_report_metadata();
                     metadata.AssessmentWeek = 1;//Convert.ToInt32(worksheet.Cells["Q8"].Value.ToString());
@@ -96,6 +97,8 @@ namespace DQA.DAL.Business
 
                         var indicator_code = worksheet.Cells[i, 2].Value.ToString();
                         var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
+                        if (indicator == null)
+                            continue;
                         var report_value = new dqa_report_value();
                         report_value.MetadataId = metadata.Id;
                         report_value.IndicatorId = indicator.Id;
@@ -110,36 +113,43 @@ namespace DQA.DAL.Business
 
                     ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
 
+                    SaveDQADimensions(package.Workbook, metadata.Id, filename);
+
                     return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.LogError(ex);
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>There are errors " + filename + "</td></tr>";
                 }
 
-               
+
             }
         }
+
+       
 
         /// <summary>
         /// Read the result from the summary sheet
         /// </summary>
         /// <param name="worksheet"></param>
         /// <param name="medata_data_id"></param>
-        private void ReadSummary(ExcelWorksheet worksheet,int medata_data_id)
+        private void ReadSummary(ExcelWorksheet worksheet, int medata_data_id)
         {
 
             var sections = new[] { "Completeness", "Consistency", "Precision", "Integrity", "Validity" };
-            
-            
+
+
             for (var i = 8; i < 19; i++)
             {
                 var indicator_code = worksheet.Cells[i, 1].Value.ToString();
                 var indicator = entity.dqa_summary_indicators.FirstOrDefault(e => e.summary_code == indicator_code);
                 var summaries = new XElement("summaries");
-                summaries.Add(new XElement("datim_report", worksheet.Cells[i, 19].Value.ToString()));
-                summaries.Add(new XElement("concurrence_rate", worksheet.Cells[i, 20].Value.ToString()));
+                summaries.Add(new XElement("datim_report", ExcelHelper.ReadCell(worksheet, i, 19)));  //worksheet.Cells[i, 19].Value.ToString()));
+
+                decimal concurence = 0;
+                decimal.TryParse(ExcelHelper.ReadCell(worksheet, i, 20), out concurence);
+                summaries.Add(new XElement("concurrence_rate", concurence * 100)); // worksheet.Cells[i, 20].Value.ToString()));
                 summaries.Add(new XElement("indicator_id", indicator.id));
 
                 var summary = new XElement("summary_1");
@@ -150,9 +160,9 @@ namespace DQA.DAL.Business
                     var value = "";
                     if (worksheet.Cells[i, (j + col_id)].Value != null)
                     {
-                        value = worksheet.Cells[i, (j + col_id)].Value.ToString();
+                        value = ExcelHelper.ReadCell(worksheet, i, (j + col_id)); // worksheet.Cells[i, (j + col_id)].Value.ToString();
                     }
-                    summary.Add(new XElement(sections[j],value ));
+                    summary.Add(new XElement(sections[j], value));
                 }
                 summaries.Add(summary);
 
@@ -166,7 +176,7 @@ namespace DQA.DAL.Business
                     var value = "";
                     if (worksheet.Cells[i, (j + col_id)].Value != null)
                     {
-                        value = worksheet.Cells[i, (j + col_id)].Value.ToString();
+                        value = ExcelHelper.ReadCell(worksheet, i, (j + col_id));// worksheet.Cells[i, (j + col_id)].Value.ToString();
                     }
                     summary.Add(new XElement(sections[j], value));
                 }
@@ -182,7 +192,7 @@ namespace DQA.DAL.Business
                     var value = "";
                     if (worksheet.Cells[i, (j + col_id)].Value != null)
                     {
-                        value = worksheet.Cells[i, (j + col_id)].Value.ToString();
+                        value = ExcelHelper.ReadCell(worksheet, i, (j + col_id)); // worksheet.Cells[i, (j + col_id)].Value.ToString();
                     }
                     summary.Add(new XElement(sections[j], value));
                 }
@@ -191,7 +201,6 @@ namespace DQA.DAL.Business
                 var summary_value = new dqa_summary_value();
                 summary_value.metadata_id = medata_data_id;
                 summary_value.summary_object = summaries.ToString();
-
                 entity.dqa_summary_value.Add(summary_value);
             }
 
@@ -238,7 +247,7 @@ namespace DQA.DAL.Business
             string FacilityName = facility.Name;
             string FacilityCode = facility.FacilityCode;
 
-            var template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/NEW DQA TEMPLATE.xlsm");
+            var template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/SHIELD_DQA_v2_20170321.xlsm");
             var newfile = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/" + facility.Name + ".xlsm");
             var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId && e.dqa_indicator.Readonly == "");
             using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
@@ -334,7 +343,7 @@ namespace DQA.DAL.Business
         }
 
         private string SearchMasterList(string[] lines, string fcode)
-        {            
+        {
             foreach (var line in lines)
             {
                 string[] items = line.Split(',');
@@ -344,50 +353,400 @@ namespace DQA.DAL.Business
                 if (items[0].Trim() == fcode)
                     return line;
             }
-            throw new ApplicationException("Facility code does not exist in the source document");
+            throw new ApplicationException("Facility code " + fcode + " does not exist in the source document");
         }
+
+        public void GenerateDQADimensionsFromDB(string outputfile)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("FacilityName, FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr");
+            var dqadimensions = new List<dqa_dimensions>();
+            dqadimensions = entity.dqa_dimensions.ToList();
+            foreach(var dimensions in dqadimensions)
+            {
+                sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43}",
+                       dimensions.FacilityName.Replace(",", "-"), dimensions.FacilityCode, dimensions.HTC_Charts, dimensions.Total_Completeness_HTC_TST, dimensions.PMTCT_STAT_charts, dimensions.Total_Completeness_PMTCT_STAT, dimensions.PMTCT_EID_charts, dimensions.Total_completeness_PMTCT_EID, dimensions.PMTCT_ARV_Charts, dimensions.Total_completeness_PMTCT_ARV, dimensions.TX_NEW_charts, dimensions.Total_completeness_TX_NEW, dimensions.TX_CURR_charts, dimensions.Total_completeness_TX_CURR, dimensions.Total_consistency_HTC_TST, dimensions.Total_consistency_PMTCT_STAT, dimensions.Total_consistency_PMTCT_EID, dimensions.Total_consistency_PMTCT_ART, dimensions.Total_consistency_TX_NEW, dimensions.Total_consistency_TX_Curr, dimensions.HTC_Charts_Precisions, dimensions.Total_precision_HTC_TST, dimensions.PMTCT_STAT_Charts_Precisions, dimensions.Total_precision_PMTCT_STAT, dimensions.PMTCT_EID_Charts_Precisions, dimensions.Total_precision_PMTCT_EID, dimensions.PMTCT_ARV_Charts_Precisions, dimensions.Total_precision_PMTCT_ARV, dimensions.TX_NEW_Charts_Precisions, dimensions.Total_precision_TX_NEW, dimensions.TX_CURR_Charts_Precisions, dimensions.Total_precision_TX_CURR, dimensions.Total_integrity_HTC_TST, dimensions.Total_integrity_PMTCT_STAT, dimensions.Total_integrity_PMTCT_EID, dimensions.Total_integrity_PMTCT_ART, dimensions.Total_integrity_TX_NEW, dimensions.Total_integrity_TX_Curr, dimensions.Total_Validity_HTC_TST, dimensions.Total_Validity_PMTCT_STAT, dimensions.Total_Validity_PMTCT_EID, dimensions.Total_Validity_PMTCT_ART, dimensions.Total_Validity_TX_NEW, dimensions.Total_Validity_TX_Curr));
+            }
+            File.WriteAllText(outputfile, sb.ToString());
+        }
+
 
         [Obsolete]
-        private string RetrieveDatimData(string uri)
+        public void GenerateDQADimensionsFromFile(string outputfile)
         {
-            string script = null; 
+            string baseLocation = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/");
+            string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("FacilityName, FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr");
+            var dqadimensions = new List<dqa_dimensions>();
+            foreach (var file in files)
+            { 
+                string FacilityName = "", FacilityCode = "";
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
+                {
+                    package.Workbook.Worksheets.ToList().ForEach(w => w.Hidden = eWorkSheetHidden.Visible);
 
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes("UMB_SHIELD:UMB@sh1eld")));
-                httpClient.Timeout = TimeSpan.FromMinutes(2);
-                script = httpClient.GetAsync(uri).Result.Content.ReadAsStringAsync().Result;
-                script = script.Split(new string[] { "rows", "width" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                script = script.Replace(":", "").Replace("[[", "").Replace("]],", "").Replace("\"", "");
-                var t = script.Split(new string[] { ",", }, StringSplitOptions.None);
-                script = t[t.Count() - 1];
 
-                //await httpClient.GetAsync(uri)
-                //   .ContinueWith(x =>
-                //   {
-                //       if (x.IsCompleted && x.Status == TaskStatus.RanToCompletion)
-                //       {
-                //          script = x.Result.Content.ReadAsStringAsync().Result.Split(new string[] { "rows", "width" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                //           script = script.Replace(":", "").Replace("[[", "").Replace("]],", "").Replace("\"", "");
-                //           var t = script.Split(new string[] { ",", }, StringSplitOptions.None);
-                //           script = t[t.Count() - 1];                            
-                //      }
-                //   });
+                    ExcelWorksheet sht = package.Workbook.Worksheets["Worksheet"];
+
+                    FacilityName = ExcelHelper.ReadCell(sht, 2, 22);
+                    FacilityCode = ExcelHelper.ReadCell(sht, 2, 27);
+                     
+                    sht = package.Workbook.Worksheets["All Questions"];
+
+                    string HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts,
+                    Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID,
+                    PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW,
+                    TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT,
+                    Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr,
+                    HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions,
+                    Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID,
+                    PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions,
+                    Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR,
+                    Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID,
+                    Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr,
+                    Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID,
+                    Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr;
+
+                    //HTC_Charts = ExcelHelper.ReadCell(sht, 6, 6);
+                    //PMTCT_STAT_charts = ExcelHelper.ReadCell(sht, 49, 6);
+                    //PMTCT_EID_charts = ExcelHelper.ReadCell(sht, 117, 6);
+                    //PMTCT_ARV_Charts = ExcelHelper.ReadCell(sht, 91, 6);
+                    //TX_NEW_charts = ExcelHelper.ReadCell(sht, 142, 6);
+                    //TX_CURR_charts = ExcelHelper.ReadCell(sht, 167, 6);
+
+                    HTC_Charts_Precisions = ExcelHelper.ReadCell(sht, 2, 6);
+                    HTC_Charts = GetRandomizeDatimValue(HTC_Charts_Precisions);
+
+                    PMTCT_STAT_Charts_Precisions = ExcelHelper.ReadCell(sht, 46, 6);
+                    PMTCT_STAT_charts = GetRandomizeDatimValue(PMTCT_STAT_Charts_Precisions);
+
+                    PMTCT_EID_Charts_Precisions = ExcelHelper.ReadCell(sht, 117, 6);
+                    PMTCT_EID_charts = GetRandomizeDatimValue(PMTCT_EID_Charts_Precisions);
+
+                    PMTCT_ARV_Charts_Precisions = ExcelHelper.ReadCell(sht, 91, 6);
+                    PMTCT_ARV_Charts = GetRandomizeDatimValue(PMTCT_ARV_Charts_Precisions);
+
+                    TX_NEW_Charts_Precisions = ExcelHelper.ReadCell(sht, 141, 6);
+                    TX_NEW_charts = GetRandomizeDatimValue(TX_NEW_Charts_Precisions);
+
+                    TX_CURR_Charts_Precisions = ExcelHelper.ReadCell(sht, 166, 6);
+                    TX_CURR_charts = GetRandomizeDatimValue(TX_CURR_Charts_Precisions);
+
+                    sht = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
+
+                    Total_Completeness_HTC_TST = ExcelHelper.ReadCell(sht, 8, 23);
+                    Total_Completeness_PMTCT_STAT = ExcelHelper.ReadCell(sht, 12, 23);
+                    Total_completeness_PMTCT_EID = ExcelHelper.ReadCell(sht, 15, 23);
+                    Total_completeness_PMTCT_ARV = ExcelHelper.ReadCell(sht, 16, 23);
+                    Total_completeness_TX_NEW = ExcelHelper.ReadCell(sht, 17, 23);
+                    Total_completeness_TX_CURR = ExcelHelper.ReadCell(sht, 18, 23);
+
+                    Total_consistency_HTC_TST = ExcelHelper.ReadCell(sht, 8, 24);
+                    Total_consistency_PMTCT_STAT = ExcelHelper.ReadCell(sht, 12, 24);
+                    Total_consistency_PMTCT_EID = ExcelHelper.ReadCell(sht, 15, 24);
+                    Total_consistency_PMTCT_ART = ExcelHelper.ReadCell(sht, 16, 24);
+                    Total_consistency_TX_NEW = ExcelHelper.ReadCell(sht, 17, 24);
+                    Total_consistency_TX_Curr = ExcelHelper.ReadCell(sht, 18, 24);
+
+                    Total_precision_HTC_TST = ExcelHelper.ReadCell(sht, 8, 25);
+                    Total_precision_PMTCT_STAT = ExcelHelper.ReadCell(sht, 12, 25);
+                    Total_precision_PMTCT_EID = ExcelHelper.ReadCell(sht, 15, 25);
+                    Total_precision_PMTCT_ARV = ExcelHelper.ReadCell(sht, 16, 25);
+                    Total_precision_TX_NEW = ExcelHelper.ReadCell(sht, 17, 25);
+                    Total_precision_TX_CURR = ExcelHelper.ReadCell(sht, 18, 25);
+
+                    Total_integrity_HTC_TST = ExcelHelper.ReadCell(sht, 8, 26);
+                    Total_integrity_PMTCT_STAT = ExcelHelper.ReadCell(sht, 12, 26);
+                    Total_integrity_PMTCT_EID = ExcelHelper.ReadCell(sht, 15, 26);
+                    Total_integrity_PMTCT_ART = ExcelHelper.ReadCell(sht, 16, 26);
+                    Total_integrity_TX_NEW = ExcelHelper.ReadCell(sht, 17, 26);
+                    Total_integrity_TX_Curr = ExcelHelper.ReadCell(sht, 18, 26);
+
+                    Total_Validity_HTC_TST = ExcelHelper.ReadCell(sht, 8, 27);
+                    Total_Validity_PMTCT_STAT = ExcelHelper.ReadCell(sht, 12, 27);
+                    Total_Validity_PMTCT_EID = ExcelHelper.ReadCell(sht, 15, 27);
+                    Total_Validity_PMTCT_ART = ExcelHelper.ReadCell(sht, 16, 27);
+                    Total_Validity_TX_NEW = ExcelHelper.ReadCell(sht, 17, 27);
+                    Total_Validity_TX_Curr = ExcelHelper.ReadCell(sht, 18, 27);
+
+                    sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43}",
+                        FacilityName.Replace(",", "-"), FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr));
+
+                    var aDqaDimension = new dqa_dimensions
+                    {
+                        FacilityCode = FacilityCode,
+                        FacilityName = FacilityName,
+                        HTC_Charts_Precisions = HTC_Charts_Precisions,
+                        HTC_Charts = HTC_Charts,
+                        PMTCT_ARV_Charts = PMTCT_ARV_Charts,
+                        PMTCT_ARV_Charts_Precisions = PMTCT_ARV_Charts_Precisions,
+                        PMTCT_EID_charts = PMTCT_EID_charts,
+                        PMTCT_EID_Charts_Precisions = PMTCT_EID_Charts_Precisions,
+                        PMTCT_STAT_charts = PMTCT_STAT_charts,
+                        PMTCT_STAT_Charts_Precisions = PMTCT_STAT_Charts_Precisions,
+                        Total_Completeness_HTC_TST = Total_Completeness_HTC_TST,
+                        Total_completeness_PMTCT_ARV = Total_completeness_PMTCT_ARV,
+                        Total_completeness_PMTCT_EID = Total_completeness_PMTCT_EID,
+                        Total_Completeness_PMTCT_STAT = Total_Completeness_PMTCT_STAT,
+                        Total_completeness_TX_CURR = Total_completeness_TX_CURR,
+                        Total_completeness_TX_NEW = Total_completeness_TX_NEW,
+                        Total_consistency_HTC_TST = Total_consistency_HTC_TST,
+                        Total_consistency_PMTCT_ART = Total_consistency_PMTCT_ART,
+                        Total_consistency_PMTCT_EID = Total_consistency_PMTCT_EID,
+                        Total_consistency_PMTCT_STAT = Total_consistency_PMTCT_STAT,
+                        Total_consistency_TX_Curr = Total_consistency_TX_Curr,
+                        Total_consistency_TX_NEW = Total_consistency_TX_NEW,
+                        Total_integrity_HTC_TST = Total_integrity_HTC_TST,
+                        Total_integrity_PMTCT_ART = Total_integrity_PMTCT_ART,
+                        Total_integrity_PMTCT_EID = Total_integrity_PMTCT_EID,
+                        Total_integrity_PMTCT_STAT = Total_integrity_PMTCT_STAT,
+                        Total_integrity_TX_Curr = Total_integrity_TX_Curr,
+                        Total_integrity_TX_NEW = Total_integrity_TX_NEW,
+                        Total_precision_HTC_TST = Total_precision_HTC_TST,
+                        Total_precision_PMTCT_ARV = Total_precision_PMTCT_ARV,
+                        Total_precision_PMTCT_EID = Total_precision_PMTCT_EID,
+                        Total_precision_PMTCT_STAT = Total_precision_PMTCT_STAT,
+                        Total_precision_TX_CURR = Total_precision_TX_CURR,
+                        Total_precision_TX_NEW = Total_precision_TX_NEW,
+                        Total_Validity_HTC_TST = Total_Validity_HTC_TST,
+                        Total_Validity_PMTCT_ART = Total_Validity_PMTCT_ART,
+                        Total_Validity_PMTCT_EID = Total_Validity_PMTCT_EID,
+                        Total_Validity_PMTCT_STAT = Total_Validity_PMTCT_STAT,
+                        Total_Validity_TX_Curr = Total_Validity_TX_Curr,
+                        Total_Validity_TX_NEW = Total_Validity_TX_NEW,
+                        TX_CURR_charts = TX_CURR_charts,
+                        TX_CURR_Charts_Precisions = TX_CURR_Charts_Precisions,
+                        TX_NEW_charts = TX_NEW_charts,
+                        TX_NEW_Charts_Precisions = TX_NEW_Charts_Precisions
+                    };
+                    dqadimensions.Add(aDqaDimension);
+                }
             }
-            return script;
+            File.WriteAllText(outputfile, sb.ToString());
+
+            entity.dqa_dimensions.RemoveRange(entity.dqa_dimensions);
+            entity.dqa_dimensions.AddRange(dqadimensions);
+
+            entity.SaveChanges();
         }
+
+
+
+        private void SaveDQADimensions(ExcelWorkbook workbook, int metatdata, string filepath)
+        {             
+            ExcelWrapper wrapper = new ExcelWrapper(filepath);
+            wrapper.SetActiveSheet("Worksheet");
+
+            //ExcelWorksheet sht = workbook.Worksheets["Worksheet"];
+
+            string FacilityName = wrapper.GetCellValue(2, 22); // ExcelHelper.ReadCell(sht, 2, 22);
+            string FacilityCode = wrapper.GetCellValue(2, 27); // ExcelHelper.ReadCell(sht, 2, 27);
+
+            // sht = workbook.Worksheets["All Questions"];
+            wrapper.SetActiveSheet("All Questions");
+
+
+            string HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts,
+            Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID,
+            PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW,
+            TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT,
+            Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr,
+            HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions,
+            Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID,
+            PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions,
+            Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR,
+            Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID,
+            Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr,
+            Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID,
+            Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr;
+
+            HTC_Charts_Precisions = ExcelHelper.ReadCell(wrapper, 2, 6);
+            HTC_Charts = GetRandomizeDatimValue(HTC_Charts_Precisions);
+
+            PMTCT_STAT_Charts_Precisions = ExcelHelper.ReadCell(wrapper, 46, 6);
+            PMTCT_STAT_charts = GetRandomizeDatimValue(PMTCT_STAT_Charts_Precisions);
+
+            PMTCT_EID_Charts_Precisions = ExcelHelper.ReadCell(wrapper, 117, 6);
+            PMTCT_EID_charts = GetRandomizeDatimValue(PMTCT_EID_Charts_Precisions);
+
+            PMTCT_ARV_Charts_Precisions = ExcelHelper.ReadCell(wrapper, 91, 6);
+            PMTCT_ARV_Charts = GetRandomizeDatimValue(PMTCT_ARV_Charts_Precisions);
+
+            TX_NEW_Charts_Precisions = ExcelHelper.ReadCell(wrapper, 141, 6);
+            TX_NEW_charts = GetRandomizeDatimValue(TX_NEW_Charts_Precisions);
+
+            TX_CURR_Charts_Precisions = ExcelHelper.ReadCell(wrapper, 166, 6);
+            TX_CURR_charts = GetRandomizeDatimValue(TX_CURR_Charts_Precisions);
+
+            //sht = workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
+            wrapper.SetActiveSheet("DQA Summary (Map to Quest Ans)");
+
+            Total_Completeness_HTC_TST = ExcelHelper.ReadCell(wrapper, 8, 23);
+            Total_Completeness_PMTCT_STAT = ExcelHelper.ReadCell(wrapper, 12, 23);
+            Total_completeness_PMTCT_EID = ExcelHelper.ReadCell(wrapper, 15, 23);
+            Total_completeness_PMTCT_ARV = ExcelHelper.ReadCell(wrapper, 16, 23);
+            Total_completeness_TX_NEW = ExcelHelper.ReadCell(wrapper, 17, 23);
+            Total_completeness_TX_CURR = ExcelHelper.ReadCell(wrapper, 18, 23);
+
+            Total_consistency_HTC_TST = ExcelHelper.ReadCell(wrapper, 8, 24);
+            Total_consistency_PMTCT_STAT = ExcelHelper.ReadCell(wrapper, 12, 24);
+            Total_consistency_PMTCT_EID = ExcelHelper.ReadCell(wrapper, 15, 24);
+            Total_consistency_PMTCT_ART = ExcelHelper.ReadCell(wrapper, 16, 24);
+            Total_consistency_TX_NEW = ExcelHelper.ReadCell(wrapper, 17, 24);
+            Total_consistency_TX_Curr = ExcelHelper.ReadCell(wrapper, 18, 24);
+
+            Total_precision_HTC_TST = ExcelHelper.ReadCell(wrapper, 8, 25);
+            Total_precision_PMTCT_STAT = ExcelHelper.ReadCell(wrapper, 12, 25);
+            Total_precision_PMTCT_EID = ExcelHelper.ReadCell(wrapper, 15, 25);
+            Total_precision_PMTCT_ARV = ExcelHelper.ReadCell(wrapper, 16, 25);
+            Total_precision_TX_NEW = ExcelHelper.ReadCell(wrapper, 17, 25);
+            Total_precision_TX_CURR = ExcelHelper.ReadCell(wrapper, 18, 25);
+
+            Total_integrity_HTC_TST = ExcelHelper.ReadCell(wrapper, 8, 26);
+            Total_integrity_PMTCT_STAT = ExcelHelper.ReadCell(wrapper, 12, 26);
+            Total_integrity_PMTCT_EID = ExcelHelper.ReadCell(wrapper, 15, 26);
+            Total_integrity_PMTCT_ART = ExcelHelper.ReadCell(wrapper, 16, 26);
+            Total_integrity_TX_NEW = ExcelHelper.ReadCell(wrapper, 17, 26);
+            Total_integrity_TX_Curr = ExcelHelper.ReadCell(wrapper, 18, 26);
+
+            Total_Validity_HTC_TST = ExcelHelper.ReadCell(wrapper, 8, 27);
+            Total_Validity_PMTCT_STAT = ExcelHelper.ReadCell(wrapper, 12, 27);
+            Total_Validity_PMTCT_EID = ExcelHelper.ReadCell(wrapper, 15, 27);
+            Total_Validity_PMTCT_ART = ExcelHelper.ReadCell(wrapper, 16, 27);
+            Total_Validity_TX_NEW = ExcelHelper.ReadCell(wrapper, 17, 27);
+            Total_Validity_TX_Curr = ExcelHelper.ReadCell(wrapper, 18, 27);
+
+            var aDqaDimension = new dqa_dimensions
+            {
+                FacilityCode = FacilityCode,
+                FacilityName = FacilityName,
+                HTC_Charts_Precisions = HTC_Charts_Precisions,
+                HTC_Charts = HTC_Charts,
+                PMTCT_ARV_Charts = PMTCT_ARV_Charts,
+                PMTCT_ARV_Charts_Precisions = PMTCT_ARV_Charts_Precisions,
+                PMTCT_EID_charts = PMTCT_EID_charts,
+                PMTCT_EID_Charts_Precisions = PMTCT_EID_Charts_Precisions,
+                PMTCT_STAT_charts = PMTCT_STAT_charts,
+                PMTCT_STAT_Charts_Precisions = PMTCT_STAT_Charts_Precisions,
+                Total_Completeness_HTC_TST = Total_Completeness_HTC_TST,
+                Total_completeness_PMTCT_ARV = Total_completeness_PMTCT_ARV,
+                Total_completeness_PMTCT_EID = Total_completeness_PMTCT_EID,
+                Total_Completeness_PMTCT_STAT = Total_Completeness_PMTCT_STAT,
+                Total_completeness_TX_CURR = Total_completeness_TX_CURR,
+                Total_completeness_TX_NEW = Total_completeness_TX_NEW,
+                Total_consistency_HTC_TST = Total_consistency_HTC_TST,
+                Total_consistency_PMTCT_ART = Total_consistency_PMTCT_ART,
+                Total_consistency_PMTCT_EID = Total_consistency_PMTCT_EID,
+                Total_consistency_PMTCT_STAT = Total_consistency_PMTCT_STAT,
+                Total_consistency_TX_Curr = Total_consistency_TX_Curr,
+                Total_consistency_TX_NEW = Total_consistency_TX_NEW,
+                Total_integrity_HTC_TST = Total_integrity_HTC_TST,
+                Total_integrity_PMTCT_ART = Total_integrity_PMTCT_ART,
+                Total_integrity_PMTCT_EID = Total_integrity_PMTCT_EID,
+                Total_integrity_PMTCT_STAT = Total_integrity_PMTCT_STAT,
+                Total_integrity_TX_Curr = Total_integrity_TX_Curr,
+                Total_integrity_TX_NEW = Total_integrity_TX_NEW,
+                Total_precision_HTC_TST = Total_precision_HTC_TST,
+                Total_precision_PMTCT_ARV = Total_precision_PMTCT_ARV,
+                Total_precision_PMTCT_EID = Total_precision_PMTCT_EID,
+                Total_precision_PMTCT_STAT = Total_precision_PMTCT_STAT,
+                Total_precision_TX_CURR = Total_precision_TX_CURR,
+                Total_precision_TX_NEW = Total_precision_TX_NEW,
+                Total_Validity_HTC_TST = Total_Validity_HTC_TST,
+                Total_Validity_PMTCT_ART = Total_Validity_PMTCT_ART,
+                Total_Validity_PMTCT_EID = Total_Validity_PMTCT_EID,
+                Total_Validity_PMTCT_STAT = Total_Validity_PMTCT_STAT,
+                Total_Validity_TX_Curr = Total_Validity_TX_Curr,
+                Total_Validity_TX_NEW = Total_Validity_TX_NEW,
+                TX_CURR_charts = TX_CURR_charts,
+                TX_CURR_Charts_Precisions = TX_CURR_Charts_Precisions,
+                TX_NEW_charts = TX_NEW_charts,
+                TX_NEW_Charts_Precisions = TX_NEW_Charts_Precisions,
+                MetadataId = metatdata
+            };
+            
+            entity.dqa_dimensions.Add(aDqaDimension);
+            entity.SaveChanges();
+        }
+
+
 
 
         //delete reports of a particular metadataId
         public void Delete(int metadataId)
         {
-           var report_values= entity.dqa_report_value.Where(e=>e.MetadataId==metadataId);
+            var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId);
             entity.dqa_report_value.RemoveRange(report_values);
 
             entity.dqa_report_metadata.Remove(entity.dqa_report_metadata.Find(metadataId));
+
+            var dqa_summary = entity.dqa_summary_value.Where(s => s.metadata_id == metadataId);
+            entity.dqa_summary_value.RemoveRange(dqa_summary);
+
+            var dqadimension = entity.dqa_dimensions.Where(x => x.MetadataId == metadataId);
+            entity.dqa_dimensions.RemoveRange(dqadimension);
+
             entity.SaveChanges();
 
         }
-        
+
+
+        private string GetRandomizeDatimValue(string value)
+        {
+            int x = Convert.ToInt32(value);
+            int result = 0;
+            if (x >= 24 && x <= 30)
+                result = 24;
+            else if (x >= 31 && x <= 40)
+                result = 30;
+            else if (x >= 41 && x <= 50)
+                result = 35;
+            else if (x >= 51 && x <= 60)
+                result = 39;
+            else if (x >= 61 && x <= 70)
+                result = 43;
+            else if (x >= 71 && x <= 80)
+                result = 46;
+            else if (x >= 81 && x <= 90)
+                result = 49;
+            else if (x >= 91 && x <= 100)
+                result = 52;
+            else if (x >= 101 && x <= 119)
+                result = 57;
+            else if (x >= 120 && x <= 139)
+                result = 61;
+            else if (x >= 140 && x <= 159)
+                result = 64;
+            else if (x >= 160 && x <= 179)
+                result = 67;
+            else if (x >= 180 && x <= 199)
+                result = 70;
+            else if (x >= 200 && x <= 249)
+                result = 75;
+            else if (x >= 250 && x <= 299)
+                result = 79;
+            else if (x >= 300 && x <= 349)
+                result = 82;
+            else if (x >= 350 && x <= 399)
+                result = 85;
+            else if (x >= 400 && x <= 449)
+                result = 87;
+            else if (x >= 450 && x <= 499)
+                result = 88;
+            else if (x >= 500 && x <= 749)
+                result = 94;
+            else if (x >= 750 && x <= 999)
+                result = 97;
+            else if (x >= 1000 && x <= 4999)
+                result = 105;
+            else if(x >= 5000 && x <= 1000000)
+                result = 107;
+            else
+                result = x;
+
+            return result.ToString();
+        }
     }
-}
+
+   }

@@ -41,7 +41,7 @@ namespace Test
             // DMPSummary();
 
             //new Program().UpdateFacilities();
-            //  new Program().GenerateFacilityTargetCSV();
+          //    new Program().GenerateFacilityTargetCSV();
 
             // new Program().GenerateNonDatimCode();
 
@@ -54,9 +54,10 @@ namespace Test
 
         private void RetrieveDimensionValue()
         {
-            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Downloads\";
+            string baseLocation = @"C:\Users\cmadubuko\Desktop\DQA 22nd march\Downloads\"; 
             string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine("FacilityName, FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr");
 
             Excel.Application xApp = new Excel.Application();
             var oldAlert = xApp.DisplayAlerts;
@@ -591,26 +592,24 @@ namespace Test
         {
             var hfDAO = new HealthFacilityDAO();
             var yptDAO = new YearlyPerformanceTargetDAO();
-            StringBuilder sb = new StringBuilder();
+            StringBuilder invalid = new StringBuilder();
             StringBuilder valid = new StringBuilder();
 
             List<YearlyPerformanceTarget> ypts = new List<YearlyPerformanceTarget>();
 
             valid.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
-            sb.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
+            invalid.AppendLine("facilityName, facilityCode, HTC_TST, HTC_TST_pos, Tx_NEW");
 
-            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\";
             string[] files = Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.TopDirectoryOnly);
 
-            //List<string> files = new List<string>
-            //{
-            //    "CCFN_Other_LGAs_sample.xlsx", "APIN_sample.xlsx", "CCFN_sample.xlsx","CIHP_sample.xlsx","IHVN_sample.xlsx",
-            //};
+            var existingFacilities = hfDAO.RetrieveAll();//.Where(x => file.Split('_')[0] == x.Organization.ShortName);//.ToDictionary(x => x.Name);
+
             foreach (var file in files)
             {
-                var existingFacilities = hfDAO.RetrieveAll().Where(x => file.Split('_')[0] == x.Organization.ShortName);//.ToDictionary(x => x.Name);
-                valid.AppendLine(file);
-                sb.AppendLine(file);
+               string ip = file.Split(new string[] { @"\" }, StringSplitOptions.None)[8].Split('_')[0];
+               
+                invalid.AppendLine(file);
 
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
                 {
@@ -626,46 +625,47 @@ namespace Test
                         while (true)
                         {
                             string facilityName = ExcelHelper.ReadCell(sheet, row, 2);
+                            string facilitycode = ExcelHelper.ReadCell(sheet, row, 1);
                             if (string.IsNullOrEmpty(facilityName))
                             {
                                 break;
                             } 
 
                             HealthFacility theFacility = null;
-                            theFacility = existingFacilities.FirstOrDefault(x => x.Name.Trim() == facilityName.Trim());
+                            theFacility = existingFacilities.FirstOrDefault(x => x.FacilityCode.Trim() == facilitycode);
 
                             int HTC_TST = 0;
                             int HTC_TST_pos = 0;
                             int Tx_NEW = 0;
-                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 5), out HTC_TST);
-                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 7), out HTC_TST_pos);
-                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 9), out Tx_NEW);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 4), out HTC_TST);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 6), out HTC_TST_pos);
+                            int.TryParse(ExcelHelper.ReadCell(sheet, row, 8), out Tx_NEW);
 
                             if (theFacility == null)
-                            {                                
-                                sb.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, "", HTC_TST, HTC_TST_pos, Tx_NEW, sheet.Name));
+                            {
+                                invalid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, "", HTC_TST, HTC_TST_pos, Tx_NEW, sheet.Name));
                             }
-                            //else
-                            //{                                
-                            //    valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName, theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
-                                 
-                            //    ypts.Add(new YearlyPerformanceTarget
-                            //    {
-                            //        FiscalYear = 2017,
-                            //        HealthFacilty = theFacility,
-                            //        HTC_TST = HTC_TST,
-                            //        HTC_TST_POS = HTC_TST_pos,
-                            //        Tx_NEW = Tx_NEW,
-                            //    });
-                            //}
+                            else
+                            {
+                                valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName.Replace(',','-'), theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
+
+                                ypts.Add(new YearlyPerformanceTarget
+                                {
+                                    FiscalYear = 2017,
+                                    HealthFacilty = theFacility,
+                                    HTC_TST = HTC_TST,
+                                    HTC_TST_POS = HTC_TST_pos,
+                                    Tx_NEW = Tx_NEW,
+                                });
+                            }
                             row++;
                         }
                     }
                 }
             }
            // yptDAO.BulkInsert(ypts);
-            File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
-           // File.WriteAllText(baseLocation + "_Found.csv", valid.ToString());
+            File.WriteAllText(baseLocation + "_notFound.csv", invalid.ToString());
+            File.WriteAllText(baseLocation + "_Found.csv", valid.ToString());
             Console.WriteLine("press enter to continue");
             Console.ReadLine();            
         }

@@ -68,13 +68,17 @@ function searchIPDQA(ip) {
     })
 }
 function deleteDQA(metadataId) {
-    $.ajax({
-        url: baseUrl() + "dqaapi/delete/" + metadataId,
-        method: "DELETE",
-        success: function (data) {
-            $("#tr_" + metadataId).remove();
-        }
-    });
+    var r = confirm("you are sure ?");
+    if (r) {
+        $.ajax({
+            url: baseUrl() + "dqaapi/delete/" + metadataId,
+            method: "DELETE",
+            success: function (data) {
+                $("#tr_" + metadataId).remove();
+                alert("DQA data for the facility has been removed");
+            }
+        });
+    }   
 
 }
 

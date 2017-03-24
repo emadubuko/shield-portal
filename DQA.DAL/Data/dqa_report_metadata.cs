@@ -14,12 +14,6 @@ namespace DQA.DAL.Data
     
     public partial class dqa_report_metadata
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public dqa_report_metadata()
-        {
-            this.dqa_report_value = new HashSet<dqa_report_value>();
-        }
-    
         public int Id { get; set; }
         public int SiteId { get; set; }
         public string LgaId { get; set; }
@@ -32,9 +26,5 @@ namespace DQA.DAL.Data
         public System.DateTime CreateDate { get; set; }
         public string CreatedBy { get; set; }
         public string ReportPeriod { get; set; }
-    
-        public virtual ImplementingPartner ImplementingPartner1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<dqa_report_value> dqa_report_value { get; set; }
     }
 }

@@ -22,6 +22,5 @@ namespace DQA.DAL.Data
         public Nullable<decimal> IndicatorValueMonth3 { get; set; }
     
         public virtual dqa_indicator dqa_indicator { get; set; }
-        public virtual dqa_report_metadata dqa_report_metadata { get; set; }
     }
 }

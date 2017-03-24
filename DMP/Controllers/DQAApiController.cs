@@ -190,21 +190,45 @@ namespace ShieldPortal.Controllers
             return Utility.GetDataSet(cmd);
         }
 
-        public string GenerateReports()
+        [HttpPost]
+        public HttpResponseMessage GenerateReports()
         {
-            string[] datimNumbersRaw = File.ReadAllText(@"C:\Users\cmadubuko\Desktop\DQA Datim source\DatimSource.csv").Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-           
-            var metas = new MetaDataService().GetAllMetadata();
+            string DatimFileSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DatimSource.csv");
+            string[] datimNumbersRaw = File.ReadAllText(DatimFileSource).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Facility Name,Facility code, Datim_HTC_TST, HTC_TST, DATIM_HTC_TST_POS, HTC_TST_POS, DATIM_HTC_ONLY, HTC_ONLY, DATIM_HTC_POS, HTC_POS, DATIM_PMTCT_STAT, PMTCT_STAT, DATIM_PMTCT_STAT_POS, PMTCT_STAT_POS, DATIM_PMTCT_STAT_Previously, PMTCT_STAT_Previoulsy_Known, DATIM_PMTCT_EID,PMTCT_EID,DATIM_PMTCT_ART,PMTCT_ART,Datim_TX_NEW,TX_NEW,DATIM_TX_CURR,TX_Curr");
-            foreach(var meta in metas)
+            sb.AppendLine("facility name,facility code, datim_htc_tst, htc_tst, datim_htc_tst_pos, htc_tst_pos, datim_htc_only, htc_only, datim_htc_pos, htc_pos, datim_pmtct_stat, pmtct_stat, datim_pmtct_stat_pos, pmtct_stat_pos, datim_pmtct_stat_previously, pmtct_stat_previoulsy_known, datim_pmtct_eid,pmtct_eid,datim_pmtct_art,pmtct_art,datim_tx_new,tx_new,datim_tx_curr,tx_curr");
+
+            var metas = new MetaDataService().GetAllMetadata();
+            foreach (var meta in metas)
             {
                 string output = new BDQA().LoadWorkbook(meta.Id, datimNumbersRaw);
                 sb.AppendLine(output);
             }
-            File.WriteAllText(@"C:\Users\cmadubuko\Desktop\DQA Datim source\DQAComparison.csv", sb.ToString());
-            return "Complete";
+
+            string DQAComparisonPath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/DQAComparison.csv");
+            File.WriteAllText(DQAComparisonPath, sb.ToString()); 
+            HttpResponseMessage result = null; 
+            result = Request.CreateResponse(HttpStatusCode.OK);
+            result.Content = new StreamContent(new FileStream(DQAComparisonPath, FileMode.Open, FileAccess.Read));
+            result.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            result.Content.Headers.ContentDisposition.FileName = "DQAComparison.csv";
+
+            return result;
         }
+
+
+        [HttpPost]
+        public string GenerateDQADimensions()
+        {
+            string outputfile = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/DQADimensions.csv");
+
+            new BDQA().GenerateDQADimensionsFromDB(outputfile);
+            // new BDQA().GenerateDQADimensionsFromFile(outputfile);
+
+            return "ok";
+        }
+
 
         public DataSet GetSummaryResult()
         {

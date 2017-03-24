@@ -56,13 +56,13 @@
                             <th>Linkage Rate</th>
                             <th>HTC_TST </th>
                             <td>TARGET</td>
-                            <th>% Acht</th>
+                            <th>Acht</th>
                             <th>HTC_TST_pos</th>
                             <th>TARGET</th>
-                            <th>% ACHV</th>
+                            <th>ACHV</th>
                             <th>Tx_NEW</th>
                             <th>TARGET</th>
-                            <th>% ACHV</th>
+                            <th>ACHV</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,16 +70,16 @@
                         {
                             <tr>
                                 <td>@item.lga_name</td>
-                                <td>@item.LinkageRate.ToString("N")</td>
+                                <td>@item.LinkageRate.ToString("N") %</td>
                                 <td>@item.TOTAL_HTC_TST</td>
                                 <td>@item.HTC_TST_Target</td>
-                                <td>@item.HTC_TST_Percentage_Achievement.ToString("N")</td>
+                                <td>@item.HTC_TST_Percentage_Achievement.ToString("N") %</td>
                                 <td>@item.TOTAL_HTC_TST_POS</td>
                                 <td>@item.HTC_TST_POS_Target</td>
-                                <td>@item.HTC_TST_POS_Percentage_Achievement.ToString("N")</td>
+                                <td>@item.HTC_TST_POS_Percentage_Achievement.ToString("N") %</td>
                                 <td>@item.Total_Tx_New</td>
                                 <td>@item.Tx_New_Target</td>
-                                <td>@item.Tx_New_Acheivement.ToString("N")</td>
+                                <td>@item.Tx_New_Acheivement.ToString("N") %</td>
                             </tr>
                         }
                     </tbody>

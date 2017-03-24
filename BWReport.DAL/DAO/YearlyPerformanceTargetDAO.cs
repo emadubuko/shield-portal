@@ -89,7 +89,7 @@ namespace BWReport.DAL.DAO
 
                 try
                 {
-                    string healthFacilityCode = entries[2]; //entries[0];
+                    string healthFacilityCode = entries[1]; //entries[0];
                     if (!string.IsNullOrEmpty(healthFacilityCode))
                     {
                         HealthFacility facility = null;
@@ -99,20 +99,24 @@ namespace BWReport.DAL.DAO
                         int HTC_TST_POS = 0;
                         int Tx_NEW = 0;
 
-                        int.TryParse(entries[3], out HTC_TST);
-                        int.TryParse(entries[4], out HTC_TST_POS);
-                        int.TryParse(entries[5], out Tx_NEW);
+                        int.TryParse(entries[2], out HTC_TST);
+                        int.TryParse(entries[3], out HTC_TST_POS);
+                        int.TryParse(entries[4], out Tx_NEW);
 
                         if (facility != null)
-                        {                           
-                            targets.Add(new YearlyPerformanceTarget
+                        {                
+                            if(targets.FirstOrDefault(x=>x.HealthFacilty.FacilityCode == facility.FacilityCode) == null)
                             {
-                                Tx_NEW = Tx_NEW,
-                                FiscalYear = Year,
-                                HealthFacilty = facility,
-                                HTC_TST = HTC_TST,
-                                HTC_TST_POS = HTC_TST_POS
-                            });
+                                targets.Add(new YearlyPerformanceTarget
+                                {
+                                    Tx_NEW = Tx_NEW,
+                                    FiscalYear = Year,
+                                    HealthFacilty = facility,
+                                    HTC_TST = HTC_TST,
+                                    HTC_TST_POS = HTC_TST_POS
+                                });
+                            }           
+                            
                         }
                         else
                         {

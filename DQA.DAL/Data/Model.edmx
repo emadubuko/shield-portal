@@ -5,6 +5,71 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="shield_dmpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="dqa_dimensions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FacilityName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="FacilityCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="HTC_Charts" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_STAT_charts" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_EID_charts" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_ARV_Charts" Type="nvarchar" MaxLength="50" />
+          <Property Name="TX_NEW_charts" Type="nvarchar" MaxLength="50" />
+          <Property Name="TX_CURR_charts" Type="nvarchar" MaxLength="50" />
+          <Property Name="HTC_Charts_Precisions" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_STAT_Charts_Precisions" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_EID_Charts_Precisions" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_ARV_Charts_Precisions" Type="nvarchar" MaxLength="50" />
+          <Property Name="TX_NEW_Charts_Precisions" Type="nvarchar" MaxLength="50" />
+          <Property Name="TX_CURR_Charts_Precisions" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Completeness_HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Completeness_PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_completeness_PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_completeness_PMTCT_ARV" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_completeness_TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_completeness_TX_CURR" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_consistency_HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_consistency_PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_consistency_PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_consistency_PMTCT_ART" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_consistency_TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_consistency_TX_Curr" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_precision_HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_precision_PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_precision_PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_precision_PMTCT_ARV" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_precision_TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_precision_TX_CURR" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_integrity_HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_integrity_PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_integrity_PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_integrity_PMTCT_ART" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_integrity_TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_integrity_TX_Curr" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Validity_HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Validity_PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Validity_PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Validity_PMTCT_ART" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Validity_TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="Total_Validity_TX_Curr" Type="nvarchar" MaxLength="50" />
+          <Property Name="MetadataId" Type="int" />
+        </EntityType>
+        <EntityType Name="dqa_facility_level">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FacilityLevel" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_facility_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="dqa_funder">
           <Key>
             <PropertyRef Name="Id" />
@@ -94,6 +159,7 @@
           <Property Name="LGAId" Type="nvarchar" MaxLength="50" />
           <Property Name="OrganizationType" Type="nvarchar" MaxLength="255" />
           <Property Name="ImplementingPartnerId" Type="int" />
+          <Property Name="LinkCode" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="ImplementingPartners">
           <Key>
@@ -236,6 +302,9 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="shield_dmpModelStoreContainer">
+          <EntitySet Name="dqa_dimensions" EntityType="Self.dqa_dimensions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_lnk_version_indicators" EntityType="Self.dqa_lnk_version_indicators" Schema="dbo" store:Type="Tables" />
@@ -290,10 +359,16 @@
     <edmx:ConceptualModels>
       <Schema Namespace="shield_dmpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="shield_dmpEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dqa_facility_level" EntityType="shield_dmpModel.dqa_facility_level" />
+          <EntitySet Name="dqa_facility_type" EntityType="shield_dmpModel.dqa_facility_type" />
           <EntitySet Name="dqa_funder" EntityType="shield_dmpModel.dqa_funder" />
           <EntitySet Name="dqa_indicator" EntityType="shield_dmpModel.dqa_indicator" />
+          <EntitySet Name="dqa_lnk_version_indicators" EntityType="shield_dmpModel.dqa_lnk_version_indicators" />
           <EntitySet Name="dqa_report_metadata" EntityType="shield_dmpModel.dqa_report_metadata" />
           <EntitySet Name="dqa_report_value" EntityType="shield_dmpModel.dqa_report_value" />
+          <EntitySet Name="dqa_summary_indicators" EntityType="shield_dmpModel.dqa_summary_indicators" />
+          <EntitySet Name="dqa_summary_value" EntityType="shield_dmpModel.dqa_summary_value" />
+          <EntitySet Name="dqa_versions" EntityType="shield_dmpModel.dqa_versions" />
           <EntitySet Name="HealthFacilities" EntityType="shield_dmpModel.HealthFacility" />
           <EntitySet Name="ImplementingPartners" EntityType="shield_dmpModel.ImplementingPartner" />
           <EntitySet Name="lgas" EntityType="shield_dmpModel.lga" />
@@ -302,13 +377,9 @@
             <End Role="dqa_indicator" EntitySet="dqa_indicator" />
             <End Role="dqa_report_value" EntitySet="dqa_report_value" />
           </AssociationSet>
-          <AssociationSet Name="FK_dqa_report_metadata_ImplementingPartners" Association="shield_dmpModel.FK_dqa_report_metadata_ImplementingPartners">
-            <End Role="ImplementingPartner" EntitySet="ImplementingPartners" />
-            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dqa_report_value_dqa_report_metadata" Association="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata">
-            <End Role="dqa_report_metadata" EntitySet="dqa_report_metadata" />
-            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+          <AssociationSet Name="FK_LINK_VERSION" Association="shield_dmpModel.FK_LINK_VERSION">
+            <End Role="dqa_versions" EntitySet="dqa_versions" />
+            <End Role="dqa_lnk_version_indicators" EntitySet="dqa_lnk_version_indicators" />
           </AssociationSet>
           <AssociationSet Name="FKA9A8FFC7C3F5A779" Association="shield_dmpModel.FKA9A8FFC7C3F5A779">
             <End Role="lga" EntitySet="lgas" />
@@ -342,15 +413,22 @@
             <End Role="state" EntitySet="states" />
             <End Role="lga" EntitySet="lgas" />
           </AssociationSet>
-          <EntitySet Name="dqa_lnk_version_indicators" EntityType="shield_dmpModel.dqa_lnk_version_indicators" />
-          <EntitySet Name="dqa_summary_indicators" EntityType="shield_dmpModel.dqa_summary_indicators" />
-          <EntitySet Name="dqa_versions" EntityType="shield_dmpModel.dqa_versions" />
-          <AssociationSet Name="FK_LINK_VERSION" Association="shield_dmpModel.FK_LINK_VERSION">
-            <End Role="dqa_versions" EntitySet="dqa_versions" />
-            <End Role="dqa_lnk_version_indicators" EntitySet="dqa_lnk_version_indicators" />
-          </AssociationSet>
-          <EntitySet Name="dqa_summary_value" EntityType="shield_dmpModel.dqa_summary_value" />
+          <EntitySet Name="dqa_dimensions" EntityType="shield_dmpModel.dqa_dimensions" />
         </EntityContainer>
+        <EntityType Name="dqa_facility_level">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FacilityLevel" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="dqa_facility_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="dqa_funder">
           <Key>
             <PropertyRef Name="Id" />
@@ -369,6 +447,15 @@
           <Property Name="Readonly" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="dqa_report_value" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_indicator" FromRole="dqa_indicator" ToRole="dqa_report_value" />
         </EntityType>
+        <EntityType Name="dqa_lnk_version_indicators">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version_id" Type="Int32" Nullable="false" />
+          <Property Name="indicator_code" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dqa_versions" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_lnk_version_indicators" ToRole="dqa_versions" />
+        </EntityType>
         <EntityType Name="dqa_report_metadata">
           <Key>
             <PropertyRef Name="Id" />
@@ -385,8 +472,6 @@
           <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ReportPeriod" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ImplementingPartner1" Relationship="shield_dmpModel.FK_dqa_report_metadata_ImplementingPartners" FromRole="dqa_report_metadata" ToRole="ImplementingPartner" />
-          <NavigationProperty Name="dqa_report_value" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_metadata" ToRole="dqa_report_value" />
         </EntityType>
         <EntityType Name="dqa_report_value">
           <Key>
@@ -399,7 +484,31 @@
           <Property Name="IndicatorValueMonth2" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="IndicatorValueMonth3" Type="Decimal" Precision="18" Scale="0" />
           <NavigationProperty Name="dqa_indicator" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_indicator" FromRole="dqa_report_value" ToRole="dqa_indicator" />
-          <NavigationProperty Name="dqa_report_metadata" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_report_metadata" FromRole="dqa_report_value" ToRole="dqa_report_metadata" />
+        </EntityType>
+        <EntityType Name="dqa_summary_indicators">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="summary_code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="thematic_area" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="indicator_element" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="dqa_summary_value">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="metadata_id" Type="Int32" Nullable="false" />
+          <Property Name="summary_object" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="dqa_versions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version_number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dqa_lnk_version_indicators" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_versions" ToRole="dqa_lnk_version_indicators" />
         </EntityType>
         <EntityType Name="HealthFacility">
           <Key>
@@ -413,6 +522,7 @@
           <Property Name="LGAId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OrganizationType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ImplementingPartnerId" Type="Int32" />
+          <Property Name="LinkCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="lga" Relationship="shield_dmpModel.FKA9A8FFC7C3F5A779" FromRole="HealthFacility" ToRole="lga" />
           <NavigationProperty Name="ImplementingPartner" Relationship="shield_dmpModel.FKA9A8FFC7CC15123B" FromRole="HealthFacility" ToRole="ImplementingPartner" />
           <NavigationProperty Name="lga1" Relationship="shield_dmpModel.FKE287F3F135201EB8" FromRole="HealthFacility" ToRole="lga" />
@@ -432,7 +542,6 @@
           <Property Name="WebSite" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PhoneNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="dqa_report_metadata" Relationship="shield_dmpModel.FK_dqa_report_metadata_ImplementingPartners" FromRole="ImplementingPartner" ToRole="dqa_report_metadata" />
           <NavigationProperty Name="HealthFacilities" Relationship="shield_dmpModel.FKA9A8FFC7CC15123B" FromRole="ImplementingPartner" ToRole="HealthFacility" />
           <NavigationProperty Name="HealthFacilities1" Relationship="shield_dmpModel.FKE287F3F1C04CA587" FromRole="ImplementingPartner" ToRole="HealthFacility" />
         </EntityType>
@@ -475,27 +584,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_dqa_report_metadata_ImplementingPartners">
-          <End Type="shield_dmpModel.ImplementingPartner" Role="ImplementingPartner" Multiplicity="1" />
-          <End Type="shield_dmpModel.dqa_report_metadata" Role="dqa_report_metadata" Multiplicity="*" />
+        <Association Name="FK_LINK_VERSION">
+          <End Type="shield_dmpModel.dqa_versions" Role="dqa_versions" Multiplicity="1" />
+          <End Type="shield_dmpModel.dqa_lnk_version_indicators" Role="dqa_lnk_version_indicators" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ImplementingPartner">
-              <PropertyRef Name="Id" />
+            <Principal Role="dqa_versions">
+              <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="dqa_report_metadata">
-              <PropertyRef Name="ImplementingPartner" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dqa_report_value_dqa_report_metadata">
-          <End Type="shield_dmpModel.dqa_report_metadata" Role="dqa_report_metadata" Multiplicity="1" />
-          <End Type="shield_dmpModel.dqa_report_value" Role="dqa_report_value" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="dqa_report_metadata">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="dqa_report_value">
-              <PropertyRef Name="MetadataId" />
+            <Dependent Role="dqa_lnk_version_indicators">
+              <PropertyRef Name="version_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -595,58 +692,79 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="dqa_lnk_version_indicators">
+        <EntityType Name="dqa_dimensions">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version_id" Type="Int32" Nullable="false" />
-          <Property Name="indicator_code" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="dqa_versions" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_lnk_version_indicators" ToRole="dqa_versions" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FacilityName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FacilityCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HTC_Charts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_STAT_charts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_EID_charts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_ARV_Charts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_NEW_charts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_CURR_charts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HTC_Charts_Precisions" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_STAT_Charts_Precisions" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_EID_Charts_Precisions" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_ARV_Charts_Precisions" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_NEW_Charts_Precisions" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_CURR_Charts_Precisions" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Completeness_HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Completeness_PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_completeness_PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_completeness_PMTCT_ARV" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_completeness_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_completeness_TX_CURR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_consistency_HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_consistency_PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_consistency_PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_consistency_PMTCT_ART" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_consistency_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_consistency_TX_Curr" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_precision_HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_precision_PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_precision_PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_precision_PMTCT_ARV" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_precision_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_precision_TX_CURR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_integrity_HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_integrity_PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_integrity_PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_integrity_PMTCT_ART" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_integrity_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_integrity_TX_Curr" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Validity_HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Validity_PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Validity_PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Validity_PMTCT_ART" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Validity_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Total_Validity_TX_Curr" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MetadataId" Type="Int32" />
         </EntityType>
-        <EntityType Name="dqa_summary_indicators">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="summary_code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="thematic_area" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="indicator_element" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="dqa_versions">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version_number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="dqa_lnk_version_indicators" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_versions" ToRole="dqa_lnk_version_indicators" />
-        </EntityType>
-        <Association Name="FK_LINK_VERSION">
-          <End Type="shield_dmpModel.dqa_versions" Role="dqa_versions" Multiplicity="1" />
-          <End Type="shield_dmpModel.dqa_lnk_version_indicators" Role="dqa_lnk_version_indicators" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="dqa_versions">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="dqa_lnk_version_indicators">
-              <PropertyRef Name="version_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="dqa_summary_value">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="metadata_id" Type="Int32" Nullable="false" />
-          <Property Name="summary_object" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="shield_dmpModelStoreContainer" CdmEntityContainer="shield_dmpEntities">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="shield_dmpModelStoreContainer" CdmEntityContainer="shield_dmpEntities">
+          <EntitySetMapping Name="dqa_facility_level">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_facility_level">
+              <MappingFragment StoreEntitySet="dqa_facility_level">
+                <ScalarProperty Name="FacilityLevel" ColumnName="FacilityLevel" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_facility_type">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_facility_type">
+              <MappingFragment StoreEntitySet="dqa_facility_type">
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="dqa_funder">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_funder">
               <MappingFragment StoreEntitySet="dqa_funder">
@@ -663,6 +781,15 @@
                 <ScalarProperty Name="IndicatorName" ColumnName="IndicatorName" />
                 <ScalarProperty Name="IndicatorCode" ColumnName="IndicatorCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_lnk_version_indicators">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_lnk_version_indicators">
+              <MappingFragment StoreEntitySet="dqa_lnk_version_indicators">
+                <ScalarProperty Name="indicator_code" ColumnName="indicator_code" />
+                <ScalarProperty Name="version_id" ColumnName="version_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -696,9 +823,37 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="dqa_summary_indicators">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_summary_indicators">
+              <MappingFragment StoreEntitySet="dqa_summary_indicators">
+                <ScalarProperty Name="indicator_element" ColumnName="indicator_element" />
+                <ScalarProperty Name="thematic_area" ColumnName="thematic_area" />
+                <ScalarProperty Name="summary_code" ColumnName="summary_code" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_summary_value">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_summary_value">
+              <MappingFragment StoreEntitySet="dqa_summary_value">
+                <ScalarProperty Name="summary_object" ColumnName="summary_object" />
+                <ScalarProperty Name="metadata_id" ColumnName="metadata_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_versions">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_versions">
+              <MappingFragment StoreEntitySet="dqa_versions">
+                <ScalarProperty Name="version_number" ColumnName="version_number" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="HealthFacilities">
             <EntityTypeMapping TypeName="shield_dmpModel.HealthFacility">
               <MappingFragment StoreEntitySet="HealthFacility">
+                <ScalarProperty Name="LinkCode" ColumnName="LinkCode" />
                 <ScalarProperty Name="ImplementingPartnerId" ColumnName="ImplementingPartnerId" />
                 <ScalarProperty Name="OrganizationType" ColumnName="OrganizationType" />
                 <ScalarProperty Name="LGAId" ColumnName="LGAId" />
@@ -745,45 +900,60 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="dqa_lnk_version_indicators">
-            <EntityTypeMapping TypeName="shield_dmpModel.dqa_lnk_version_indicators">
-              <MappingFragment StoreEntitySet="dqa_lnk_version_indicators">
-                <ScalarProperty Name="indicator_code" ColumnName="indicator_code" />
-                <ScalarProperty Name="version_id" ColumnName="version_id" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="dqa_summary_indicators">
-            <EntityTypeMapping TypeName="shield_dmpModel.dqa_summary_indicators">
-              <MappingFragment StoreEntitySet="dqa_summary_indicators">
-                <ScalarProperty Name="indicator_element" ColumnName="indicator_element" />
-                <ScalarProperty Name="thematic_area" ColumnName="thematic_area" />
-                <ScalarProperty Name="summary_code" ColumnName="summary_code" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="dqa_versions">
-            <EntityTypeMapping TypeName="shield_dmpModel.dqa_versions">
-              <MappingFragment StoreEntitySet="dqa_versions">
-                <ScalarProperty Name="version_number" ColumnName="version_number" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="dqa_summary_value">
-            <EntityTypeMapping TypeName="shield_dmpModel.dqa_summary_value">
-              <MappingFragment StoreEntitySet="dqa_summary_value">
-                <ScalarProperty Name="summary_object" ColumnName="summary_object" />
-                <ScalarProperty Name="metadata_id" ColumnName="metadata_id" />
-                <ScalarProperty Name="id" ColumnName="id" />
+          <EntitySetMapping Name="dqa_dimensions">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_dimensions">
+              <MappingFragment StoreEntitySet="dqa_dimensions">
+                <ScalarProperty Name="MetadataId" ColumnName="MetadataId" />
+                <ScalarProperty Name="Total_Validity_TX_Curr" ColumnName="Total_Validity_TX_Curr" />
+                <ScalarProperty Name="Total_Validity_TX_NEW" ColumnName="Total_Validity_TX_NEW" />
+                <ScalarProperty Name="Total_Validity_PMTCT_ART" ColumnName="Total_Validity_PMTCT_ART" />
+                <ScalarProperty Name="Total_Validity_PMTCT_EID" ColumnName="Total_Validity_PMTCT_EID" />
+                <ScalarProperty Name="Total_Validity_PMTCT_STAT" ColumnName="Total_Validity_PMTCT_STAT" />
+                <ScalarProperty Name="Total_Validity_HTC_TST" ColumnName="Total_Validity_HTC_TST" />
+                <ScalarProperty Name="Total_integrity_TX_Curr" ColumnName="Total_integrity_TX_Curr" />
+                <ScalarProperty Name="Total_integrity_TX_NEW" ColumnName="Total_integrity_TX_NEW" />
+                <ScalarProperty Name="Total_integrity_PMTCT_ART" ColumnName="Total_integrity_PMTCT_ART" />
+                <ScalarProperty Name="Total_integrity_PMTCT_EID" ColumnName="Total_integrity_PMTCT_EID" />
+                <ScalarProperty Name="Total_integrity_PMTCT_STAT" ColumnName="Total_integrity_PMTCT_STAT" />
+                <ScalarProperty Name="Total_integrity_HTC_TST" ColumnName="Total_integrity_HTC_TST" />
+                <ScalarProperty Name="Total_precision_TX_CURR" ColumnName="Total_precision_TX_CURR" />
+                <ScalarProperty Name="Total_precision_TX_NEW" ColumnName="Total_precision_TX_NEW" />
+                <ScalarProperty Name="Total_precision_PMTCT_ARV" ColumnName="Total_precision_PMTCT_ARV" />
+                <ScalarProperty Name="Total_precision_PMTCT_EID" ColumnName="Total_precision_PMTCT_EID" />
+                <ScalarProperty Name="Total_precision_PMTCT_STAT" ColumnName="Total_precision_PMTCT_STAT" />
+                <ScalarProperty Name="Total_precision_HTC_TST" ColumnName="Total_precision_HTC_TST" />
+                <ScalarProperty Name="Total_consistency_TX_Curr" ColumnName="Total_consistency_TX_Curr" />
+                <ScalarProperty Name="Total_consistency_TX_NEW" ColumnName="Total_consistency_TX_NEW" />
+                <ScalarProperty Name="Total_consistency_PMTCT_ART" ColumnName="Total_consistency_PMTCT_ART" />
+                <ScalarProperty Name="Total_consistency_PMTCT_EID" ColumnName="Total_consistency_PMTCT_EID" />
+                <ScalarProperty Name="Total_consistency_PMTCT_STAT" ColumnName="Total_consistency_PMTCT_STAT" />
+                <ScalarProperty Name="Total_consistency_HTC_TST" ColumnName="Total_consistency_HTC_TST" />
+                <ScalarProperty Name="Total_completeness_TX_CURR" ColumnName="Total_completeness_TX_CURR" />
+                <ScalarProperty Name="Total_completeness_TX_NEW" ColumnName="Total_completeness_TX_NEW" />
+                <ScalarProperty Name="Total_completeness_PMTCT_ARV" ColumnName="Total_completeness_PMTCT_ARV" />
+                <ScalarProperty Name="Total_completeness_PMTCT_EID" ColumnName="Total_completeness_PMTCT_EID" />
+                <ScalarProperty Name="Total_Completeness_PMTCT_STAT" ColumnName="Total_Completeness_PMTCT_STAT" />
+                <ScalarProperty Name="Total_Completeness_HTC_TST" ColumnName="Total_Completeness_HTC_TST" />
+                <ScalarProperty Name="TX_CURR_Charts_Precisions" ColumnName="TX_CURR_Charts_Precisions" />
+                <ScalarProperty Name="TX_NEW_Charts_Precisions" ColumnName="TX_NEW_Charts_Precisions" />
+                <ScalarProperty Name="PMTCT_ARV_Charts_Precisions" ColumnName="PMTCT_ARV_Charts_Precisions" />
+                <ScalarProperty Name="PMTCT_EID_Charts_Precisions" ColumnName="PMTCT_EID_Charts_Precisions" />
+                <ScalarProperty Name="PMTCT_STAT_Charts_Precisions" ColumnName="PMTCT_STAT_Charts_Precisions" />
+                <ScalarProperty Name="HTC_Charts_Precisions" ColumnName="HTC_Charts_Precisions" />
+                <ScalarProperty Name="TX_CURR_charts" ColumnName="TX_CURR_charts" />
+                <ScalarProperty Name="TX_NEW_charts" ColumnName="TX_NEW_charts" />
+                <ScalarProperty Name="PMTCT_ARV_Charts" ColumnName="PMTCT_ARV_Charts" />
+                <ScalarProperty Name="PMTCT_EID_charts" ColumnName="PMTCT_EID_charts" />
+                <ScalarProperty Name="PMTCT_STAT_charts" ColumnName="PMTCT_STAT_charts" />
+                <ScalarProperty Name="HTC_Charts" ColumnName="HTC_Charts" />
+                <ScalarProperty Name="FacilityCode" ColumnName="FacilityCode" />
+                <ScalarProperty Name="FacilityName" ColumnName="FacilityName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
         </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -797,7 +967,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>

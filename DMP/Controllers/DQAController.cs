@@ -1,5 +1,6 @@
 ﻿using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
+using System.IO;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
@@ -91,5 +92,20 @@ namespace ShieldPortal.Controllers
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
 
         }
+
+
+        //[HttpPost]
+        //public ActionResult DownloadDQADimensions()
+        //{            
+        //    string fileName = "DQADimensions.csv";
+        //    string fullFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/" + fileName);
+
+        //    using (FileStream fs = new FileStream(fullFilename, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
+        //    {
+
+        //    }
+
+        //    return Json(fileName);
+        //}
     }
 }

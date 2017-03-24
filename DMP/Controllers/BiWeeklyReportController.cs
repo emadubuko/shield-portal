@@ -56,15 +56,16 @@ namespace ShieldPortal.Controllers
             Dictionary<string, string> iframe = null;
             var loggedinProfile = new Services.Utils().GetloggedInProfile();
 
+            iframe = Utilities.RetrieveDashboard("shield_team", "national");
 
-            if (loggedinProfile.RoleName == "ip")
-            {
-                iframe = Utilities.RetrieveDashboard(loggedinProfile.RoleName, loggedinProfile.Organization.ShortName);
-            }
-            else
-            {
-                iframe = Utilities.RetrieveDashboard("shield_team", "national");
-            }
+            //if (loggedinProfile.RoleName == "ip")
+            //{
+            //    iframe = Utilities.RetrieveDashboard(loggedinProfile.RoleName, loggedinProfile.Organization.ShortName);
+            //}
+            //else
+            //{
+            //    iframe = Utilities.RetrieveDashboard("shield_team", "national");
+            //}
 
             foreach (var item in iframe)
             {
