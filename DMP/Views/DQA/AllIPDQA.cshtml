@@ -40,7 +40,7 @@
                         <div class="panel-heading clearfix" style="padding:15px">
                             <h4 class="panel-title">DQA Summary Result</h4>
                             <a style="float:right" id="downloadbtn" class="btn btn-default btn-sm btn-outline">
-                                <i class="icon-download"></i><span>Download DQA Dimensions</span>
+                                <i class="icon-download"></i><span>Download DQA Result</span>
                             </a>
                         </div>
                         <div class="panel-body">
@@ -124,8 +124,8 @@
                     url: "/api/DQAApi/GenerateDQADimensions",
                     contentType: "application/json; charset=utf-8",
                     cache: false,
-                }).done(function () {
-                    window.open('/Report/Downloads/DQADimensions.csv', '_blank', '');
+                }).done(function (filename) {
+                    window.open('/Report/Downloads/DQAResult/' + filename, '_blank', '');
                     // window.location = '/Report/Downloads/DQADimensions.csv';///Downloads/' + filename;
                 }).error(function (xhr, status, err) {
                     alert(err);

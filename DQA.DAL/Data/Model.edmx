@@ -5,6 +5,37 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="shield_dmpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="dqa_comparison">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FacilityName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="FacilityCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="metadataId" Type="int" Nullable="false" />
+          <Property Name="Datim_HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_HTC_TST_POS" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_HTC_ONLY" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_HTC_POS" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_PMTCT_STAT_POS" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_PMTCT_STAT_Previously" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_PMTCT_ART" Type="nvarchar" MaxLength="50" />
+          <Property Name="Datim_TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATIM_TX_CURR" Type="nvarchar" MaxLength="50" />
+          <Property Name="HTC_TST" Type="nvarchar" MaxLength="50" />
+          <Property Name="HTC_TST_POS" Type="nvarchar" MaxLength="50" />
+          <Property Name="HTC_ONLY" Type="nvarchar" MaxLength="50" />
+          <Property Name="HTC_POS" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_STAT" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_STAT_POS" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_STAT_Previoulsy_Known" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_EID" Type="nvarchar" MaxLength="50" />
+          <Property Name="PMTCT_ART" Type="nvarchar" MaxLength="50" />
+          <Property Name="TX_NEW" Type="nvarchar" MaxLength="50" />
+          <Property Name="TX_Curr" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="dqa_dimensions">
           <Key>
             <PropertyRef Name="Id" />
@@ -54,7 +85,7 @@
           <Property Name="Total_Validity_PMTCT_ART" Type="nvarchar" MaxLength="50" />
           <Property Name="Total_Validity_TX_NEW" Type="nvarchar" MaxLength="50" />
           <Property Name="Total_Validity_TX_Curr" Type="nvarchar" MaxLength="50" />
-          <Property Name="MetadataId" Type="int" />
+          <Property Name="MetadataId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="dqa_facility_level">
           <Key>
@@ -302,6 +333,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="shield_dmpModelStoreContainer">
+          <EntitySet Name="dqa_comparison" EntityType="Self.dqa_comparison" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_dimensions" EntityType="Self.dqa_dimensions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" Schema="dbo" store:Type="Tables" />
@@ -414,6 +446,7 @@
             <End Role="lga" EntitySet="lgas" />
           </AssociationSet>
           <EntitySet Name="dqa_dimensions" EntityType="shield_dmpModel.dqa_dimensions" />
+          <EntitySet Name="dqa_comparison" EntityType="shield_dmpModel.dqa_comparison" />
         </EntityContainer>
         <EntityType Name="dqa_facility_level">
           <Key>
@@ -741,7 +774,38 @@
           <Property Name="Total_Validity_PMTCT_ART" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Total_Validity_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Total_Validity_TX_Curr" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MetadataId" Type="Int32" />
+          <Property Name="MetadataId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dqa_comparison">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FacilityName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FacilityCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="metadataId" Type="Int32" Nullable="false" />
+          <Property Name="Datim_HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_HTC_TST_POS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_HTC_ONLY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_HTC_POS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_PMTCT_STAT_POS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_PMTCT_STAT_Previously" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_PMTCT_ART" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Datim_TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATIM_TX_CURR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HTC_TST" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HTC_TST_POS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HTC_ONLY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HTC_POS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_STAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_STAT_POS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_STAT_Previoulsy_Known" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_EID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PMTCT_ART" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_NEW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_Curr" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -946,6 +1010,38 @@
                 <ScalarProperty Name="PMTCT_EID_charts" ColumnName="PMTCT_EID_charts" />
                 <ScalarProperty Name="PMTCT_STAT_charts" ColumnName="PMTCT_STAT_charts" />
                 <ScalarProperty Name="HTC_Charts" ColumnName="HTC_Charts" />
+                <ScalarProperty Name="FacilityCode" ColumnName="FacilityCode" />
+                <ScalarProperty Name="FacilityName" ColumnName="FacilityName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_comparison">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_comparison">
+              <MappingFragment StoreEntitySet="dqa_comparison">
+                <ScalarProperty Name="TX_Curr" ColumnName="TX_Curr" />
+                <ScalarProperty Name="TX_NEW" ColumnName="TX_NEW" />
+                <ScalarProperty Name="PMTCT_ART" ColumnName="PMTCT_ART" />
+                <ScalarProperty Name="PMTCT_EID" ColumnName="PMTCT_EID" />
+                <ScalarProperty Name="PMTCT_STAT_Previoulsy_Known" ColumnName="PMTCT_STAT_Previoulsy_Known" />
+                <ScalarProperty Name="PMTCT_STAT_POS" ColumnName="PMTCT_STAT_POS" />
+                <ScalarProperty Name="PMTCT_STAT" ColumnName="PMTCT_STAT" />
+                <ScalarProperty Name="HTC_POS" ColumnName="HTC_POS" />
+                <ScalarProperty Name="HTC_ONLY" ColumnName="HTC_ONLY" />
+                <ScalarProperty Name="HTC_TST_POS" ColumnName="HTC_TST_POS" />
+                <ScalarProperty Name="HTC_TST" ColumnName="HTC_TST" />
+                <ScalarProperty Name="DATIM_TX_CURR" ColumnName="DATIM_TX_CURR" />
+                <ScalarProperty Name="Datim_TX_NEW" ColumnName="Datim_TX_NEW" />
+                <ScalarProperty Name="DATIM_PMTCT_ART" ColumnName="DATIM_PMTCT_ART" />
+                <ScalarProperty Name="DATIM_PMTCT_EID" ColumnName="DATIM_PMTCT_EID" />
+                <ScalarProperty Name="DATIM_PMTCT_STAT_Previously" ColumnName="DATIM_PMTCT_STAT_Previously" />
+                <ScalarProperty Name="DATIM_PMTCT_STAT_POS" ColumnName="DATIM_PMTCT_STAT_POS" />
+                <ScalarProperty Name="DATIM_PMTCT_STAT" ColumnName="DATIM_PMTCT_STAT" />
+                <ScalarProperty Name="DATIM_HTC_POS" ColumnName="DATIM_HTC_POS" />
+                <ScalarProperty Name="DATIM_HTC_ONLY" ColumnName="DATIM_HTC_ONLY" />
+                <ScalarProperty Name="DATIM_HTC_TST_POS" ColumnName="DATIM_HTC_TST_POS" />
+                <ScalarProperty Name="Datim_HTC_TST" ColumnName="Datim_HTC_TST" />
+                <ScalarProperty Name="metadataId" ColumnName="metadataId" />
                 <ScalarProperty Name="FacilityCode" ColumnName="FacilityCode" />
                 <ScalarProperty Name="FacilityName" ColumnName="FacilityName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

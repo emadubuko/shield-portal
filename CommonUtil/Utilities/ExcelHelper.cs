@@ -14,8 +14,6 @@ namespace CommonUtil.Utilities
     {
         public static string ReadCell(ExcelWorksheet sheet, int row, int column)
         {
-            
-
             var range = sheet.Cells[row, column] as ExcelRange;
             if (!string.IsNullOrEmpty(range.Formula))
             {
@@ -35,13 +33,6 @@ namespace CommonUtil.Utilities
                 return range.Value.ToString();
             }
             return "";
-        }
-
-        public static string ReadCell(ExcelWrapper wrapper, int row, int column)
-        {
-            //decimal value = wrapper.GetCellNumericValue(row-1, column-1);
-            
-            return wrapper.GetCellValue(row - 1, column - 1);//value.ToString();
         }
 
         public static Dictionary<string, int> GenerateIndexedPeriods()

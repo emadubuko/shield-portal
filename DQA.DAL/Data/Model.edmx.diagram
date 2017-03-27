@@ -30,6 +30,7 @@
         <AssociationConnector Association="shield_dmpModel.FK6ECB7A12794DD3B7" />
         <AssociationConnector Association="shield_dmpModel.FKDAADEEE960D0DD2E" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_dimensions" Width="1.5" PointX="5" PointY="9.25" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_comparison" Width="1.5" PointX="0.75" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

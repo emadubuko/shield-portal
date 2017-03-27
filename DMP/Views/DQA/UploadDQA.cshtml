@@ -88,15 +88,23 @@
                 type: 'POST',
                 data: formData,
                 async: true,
-                success: function (data) {
-                    $("#output tbody").prepend(data);
-                    $("#btnSubmit").prop("disabled", false);
-                    $("#progress").hide();
-                    //$('#output').append(data);
-                },
+                //success: function (data) {
+                //    $("#output tbody").prepend(data);
+                //    $("#btnSubmit").prop("disabled", false);
+                //    $("#progress").hide();
+                //    //$('#output').append(data);
+                //},
                 cache: false,
                 contentType: false,
                 processData: false
+            }).done(function (data) {
+                $("#output tbody").prepend(data);
+                $("#btnSubmit").prop("disabled", false);
+                $("#progress").hide();
+            }).error(function (xhr, status, err) {
+                alert(err);
+                console.log(err);
+                $("#progress").hide();
             });
 
 

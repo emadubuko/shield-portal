@@ -59,6 +59,6 @@ namespace DQA.DAL.Data
         public string Total_Validity_PMTCT_ART { get; set; }
         public string Total_Validity_TX_NEW { get; set; }
         public string Total_Validity_TX_Curr { get; set; }
-        public Nullable<int> MetadataId { get; set; }
+        public int MetadataId { get; set; }
     }
 }

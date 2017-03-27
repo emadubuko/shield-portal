@@ -40,5 +40,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<lga> lgas { get; set; }
         public virtual DbSet<state> states { get; set; }
         public virtual DbSet<dqa_dimensions> dqa_dimensions { get; set; }
+        public virtual DbSet<dqa_comparison> dqa_comparison { get; set; }
     }
 }

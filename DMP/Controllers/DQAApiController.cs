@@ -1,4 +1,5 @@
-﻿using DQA.DAL.Business;
+﻿using CommonUtil.Utilities;
+using DQA.DAL.Business;
 using DQA.DAL.Model;
 using DQA.ViewModel;
 using ICSharpCode.SharpZipLib.Core;
@@ -15,115 +16,129 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Http;
 
 
 namespace ShieldPortal.Controllers
 {
-   
+
     public class DQAApiController : ApiController
     {
         readonly MetaDataService metadataService = new MetaDataService();
         // GET: api/DQA
-      
+
         // POST: api/DQA
         public string Post()
         {
             var messages = "";
-            HttpResponseMessage result = null;
-            var httpRequest = HttpContext.Current.Request;
-            if (httpRequest.Files.Count > 0)
+            try
             {
-                var docfiles = new List<string>();
-                foreach (string file in httpRequest.Files)
+                Logger.LogInfo(" DQAAPi,post", "processing dqa upload");
+
+                HttpResponseMessage result = null;
+                var httpRequest = HttpContext.Current.Request;
+                if (httpRequest.Files.Count > 0)
                 {
-                    var postedFile = httpRequest.Files[file];
-                    string ext = Path.GetExtension(postedFile.FileName).Substring(1);
-
-                    if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
+                    var docfiles = new List<string>();
+                    foreach (string file in httpRequest.Files)
                     {
+                        var postedFile = httpRequest.Files[file];
+                        string ext = Path.GetExtension(postedFile.FileName).Substring(1);
 
-                        var filePath = HttpContext.Current.Server.MapPath("~/Report/Uploads/" + postedFile.FileName);
-                        postedFile.SaveAs(filePath);
-                        
-
-                        if (ext.ToUpper() == "ZIP")
+                        if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                         {
-                            messages+= "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
-                            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                            using (ZipFile zipFile = new ZipFile(fs))
+
+                            var filePath = HttpContext.Current.Server.MapPath("~/Report/Uploads/" + postedFile.FileName);
+                            postedFile.SaveAs(filePath);
+
+                            //get the datim file containing the DQA numbers for all the facilities
+                            string DatimFileSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DatimSource.csv");
+                            string[] datimNumbersRaw = File.ReadAllText(DatimFileSource).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+                            if (ext.ToUpper() == "ZIP")
                             {
-                                var countProcessed = 0;
-                                var countFailed = 0;
-                                var countSuccess = 0;
-                                var step = 0;
-                                var total = (int)zipFile.Count;
-                                var currentFile = "";
-
-                                foreach (ZipEntry zipEntry in zipFile)
+                                messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
+                                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                using (ZipFile zipFile = new ZipFile(fs))
                                 {
-                                    step++;
-                                    //Thread.Sleep(10000);
+                                    var countProcessed = 0;
+                                    var countFailed = 0;
+                                    var countSuccess = 0;
+                                    var step = 0;
+                                    var total = (int)zipFile.Count;
+                                    var currentFile = "";
 
-
-                                    try
+                                    foreach (ZipEntry zipEntry in zipFile)
                                     {
-                                        if (!zipEntry.IsFile)
-                                        {
-                                            continue;
-                                        }
-                                        currentFile = zipEntry.Name;
-                                        var entryFileName = zipEntry.Name;
-                                        var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
-                                        var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
-                                        var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
+                                        step++;
+                                        //Thread.Sleep(10000);
 
-                                        if (extractedDirectory.Length > 0)
-                                        {
-                                            Directory.CreateDirectory(extractedDirectory);
-                                        }
 
-                                        if (entryExt.ToUpper() == "XLS" || entryExt.ToUpper() == "XLSX" || entryExt.ToUpper() == "XLSM")
+                                        try
                                         {
-                                            countProcessed++;
-                                            Stream zipStream = zipFile.GetInputStream(zipEntry);
-                                            using (FileStream entryStream = File.Create(extractedFilePath))
+                                            if (!zipEntry.IsFile)
                                             {
-                                                StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
+                                                continue;
                                             }
-                                            //BLoadWorkbookData wkb = new BLoadWorkbookData(this._ReportType);
-                                            messages += new BDQA().ReadWorkbook(extractedFilePath, User.Identity.Name);
-                                            //wkb.ProcessWorkbookData(extractedFilePath, this.Weeks, this.Year, this.Months, thread);
-                                            countSuccess++;
+                                            currentFile = zipEntry.Name;
+                                            var entryFileName = zipEntry.Name;
+                                            var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
+                                            var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
+                                            var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
+
+                                            if (extractedDirectory.Length > 0)
+                                            {
+                                                Directory.CreateDirectory(extractedDirectory);
+                                            }
+
+                                            if (entryExt.ToUpper() == "XLS" || entryExt.ToUpper() == "XLSX" || entryExt.ToUpper() == "XLSM")
+                                            {
+                                                countProcessed++;
+                                                Stream zipStream = zipFile.GetInputStream(zipEntry);
+                                                using (FileStream entryStream = File.Create(extractedFilePath))
+                                                {
+                                                    StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
+                                                }
+                                                //BLoadWorkbookData wkb = new BLoadWorkbookData(this._ReportType);
+                                                messages += new BDQA().ReadWorkbook(extractedFilePath, User.Identity.Name, datimNumbersRaw);
+                                                //wkb.ProcessWorkbookData(extractedFilePath, this.Weeks, this.Year, this.Months, thread);
+                                                countSuccess++;
+                                            }
+                                        }
+                                        catch (Exception exp)
+                                        {
+                                            countFailed++;
+                                            //SRDLog.WriteToLog(wkb.EventId, currentFile + "|" + exp.Message, "", EventTypes.Upload, EventSeverity.Failure);
+                                            messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
                                         }
                                     }
-                                    catch (Exception exp)
-                                    {
-                                        countFailed++;
-                                        //SRDLog.WriteToLog(wkb.EventId, currentFile + "|" + exp.Message, "", EventTypes.Upload, EventSeverity.Failure);
-                                        messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
-                                    }
-                                }
-                                zipFile.IsStreamOwner = true;
-                                zipFile.Close();
+                                    zipFile.IsStreamOwner = true;
+                                    zipFile.Close();
 
+                                }
+                            }
+                            else
+                            {
+                                messages += new BDQA().ReadWorkbook(filePath, User.Identity.Name, datimNumbersRaw);
                             }
                         }
                         else
                         {
-                            messages += new BDQA().ReadWorkbook(filePath, User.Identity.Name);
+                            messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
                         }
                     }
-                    else
-                    {
-                        messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
-                    }
+                    // result = Request.CreateResponse(HttpStatusCode.Created, docfiles);
                 }
-               // result = Request.CreateResponse(HttpStatusCode.Created, docfiles);
+                else
+                {
+                    result = Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                result = Request.CreateResponse(HttpStatusCode.BadRequest);
+                Logger.LogError(ex);
+                messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred</td></tr>";
             }
             return messages;
         }
@@ -165,7 +180,7 @@ namespace ShieldPortal.Controllers
         }
 
         [HttpPost]
-        public List<ReportMetadata> SearchIPDQA(int ip,string lga,string state,string facility,string period)
+        public List<ReportMetadata> SearchIPDQA(int ip, string lga, string state, string facility, string period)
         {
             var metas = metadataService.SearchIpMetaData(ip, period, lga, state, facility);
             var facilities = new List<Facility>();
@@ -207,8 +222,8 @@ namespace ShieldPortal.Controllers
             }
 
             string DQAComparisonPath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/DQAComparison.csv");
-            File.WriteAllText(DQAComparisonPath, sb.ToString()); 
-            HttpResponseMessage result = null; 
+            File.WriteAllText(DQAComparisonPath, sb.ToString());
+            HttpResponseMessage result = null;
             result = Request.CreateResponse(HttpStatusCode.OK);
             result.Content = new StreamContent(new FileStream(DQAComparisonPath, FileMode.Open, FileAccess.Read));
             result.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
@@ -221,12 +236,59 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public string GenerateDQADimensions()
         {
-            string outputfile = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Downloads/DQADimensions.csv");
+            string baseFolder = HostingEnvironment.MapPath("~/Report/Downloads/DQAResult/");
 
-            new BDQA().GenerateDQADimensionsFromDB(outputfile);
+            baseFolder = baseFolder + string.Format("{0:MMddhhmmss}", DateTime.Now);
+            if (!Directory.Exists(baseFolder))
+            {
+                Directory.CreateDirectory(baseFolder);
+            }
+
+            string dimension_outputfile = baseFolder + "/DQADimensions.csv";
+            string comparsion_outputfile = baseFolder + "/DQAComparsion.csv";
+
+
+            new BDQA().GenerateDQADimensionsFromDB(dimension_outputfile, comparsion_outputfile);
             // new BDQA().GenerateDQADimensionsFromFile(outputfile);
 
-            return "ok";
+            string outputZip = baseFolder + ".zip";
+            // zip up the files
+            try
+            {
+                using (ZipOutputStream s = new ZipOutputStream(File.Create(outputZip)))
+                {
+                    s.SetLevel(9); // 0-9, 9 being the highest compression
+
+                    byte[] buffer = new byte[4096];
+                    string[] filenames = Directory.GetFiles(baseFolder);
+                    foreach (string file in filenames)
+                    {
+                        ZipEntry entry = new
+                        ZipEntry(Path.GetFileName(file));
+
+                        entry.DateTime = DateTime.Now;
+                        s.PutNextEntry(entry);
+
+                        using (FileStream fs = File.OpenRead(file))
+                        {
+                            int sourceBytes;
+                            do
+                            {
+                                sourceBytes = fs.Read(buffer, 0,
+                                buffer.Length);
+
+                                s.Write(buffer, 0, sourceBytes);
+
+                            } while (sourceBytes > 0);
+                        }
+                    }
+                    s.Finish();
+                    s.Close();
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            string[] output = outputZip.Split(new string[] { "\\", "//" }, StringSplitOptions.None);
+            return output[output.Count() - 1];
         }
 
 
