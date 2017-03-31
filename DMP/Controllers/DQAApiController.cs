@@ -14,7 +14,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
@@ -27,7 +26,7 @@ namespace ShieldPortal.Controllers
     {
         readonly MetaDataService metadataService = new MetaDataService();
         // GET: api/DQA
-
+         
         // POST: api/DQA
         public string Post()
         {
@@ -53,30 +52,31 @@ namespace ShieldPortal.Controllers
                             postedFile.SaveAs(filePath);
 
                             //get the datim file containing the DQA numbers for all the facilities
-                            string DatimFileSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DatimSource.csv");
+                            string DatimFileSource = HostingEnvironment.MapPath("~/Report/Template/DatimSource.csv");
                             string[] datimNumbersRaw = File.ReadAllText(DatimFileSource).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
                             if (ext.ToUpper() == "ZIP")
                             {
                                 messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
-                                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                                using (ZipFile zipFile = new ZipFile(fs))
-                                {
-                                    var countProcessed = 0;
-                                    var countFailed = 0;
-                                    var countSuccess = 0;
-                                    var step = 0;
-                                    var total = (int)zipFile.Count;
-                                    var currentFile = "";
-
-                                    foreach (ZipEntry zipEntry in zipFile)
+                                var countFailed = 0;
+                                try
+                                {                                                                          
+                                   using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                    using (ZipFile zipFile = new ZipFile(fs))
                                     {
-                                        step++;
-                                        //Thread.Sleep(10000);
+                                         
+                                        var countProcessed = 0;
+
+                                        var countSuccess = 0;
+                                        var step = 0;
+                                        var total = (int)zipFile.Count;
+                                        var currentFile = "";
 
 
-                                        try
+                                        foreach (ZipEntry zipEntry in zipFile)
                                         {
+                                            step++;
+
                                             if (!zipEntry.IsFile)
                                             {
                                                 continue;
@@ -86,6 +86,7 @@ namespace ShieldPortal.Controllers
                                             var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
                                             var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
                                             var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
+
 
                                             if (extractedDirectory.Length > 0)
                                             {
@@ -100,22 +101,20 @@ namespace ShieldPortal.Controllers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                //BLoadWorkbookData wkb = new BLoadWorkbookData(this._ReportType);
                                                 messages += new BDQA().ReadWorkbook(extractedFilePath, User.Identity.Name, datimNumbersRaw);
-                                                //wkb.ProcessWorkbookData(extractedFilePath, this.Weeks, this.Year, this.Months, thread);
                                                 countSuccess++;
                                             }
-                                        }
-                                        catch (Exception exp)
-                                        {
-                                            countFailed++;
-                                            //SRDLog.WriteToLog(wkb.EventId, currentFile + "|" + exp.Message, "", EventTypes.Upload, EventSeverity.Failure);
-                                            messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
-                                        }
-                                    }
-                                    zipFile.IsStreamOwner = true;
-                                    zipFile.Close();
 
+                                        }
+                                        zipFile.IsStreamOwner = true;
+                                        zipFile.Close();
+                                    }
+                                }
+                                catch (Exception exp)
+                                {
+                                    Logger.LogError(exp);
+                                    countFailed++;
+                                    messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
                                 }
                             }
                             else
@@ -128,7 +127,6 @@ namespace ShieldPortal.Controllers
                             messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
                         }
                     }
-                    // result = Request.CreateResponse(HttpStatusCode.Created, docfiles);
                 }
                 else
                 {
@@ -142,6 +140,7 @@ namespace ShieldPortal.Controllers
             }
             return messages;
         }
+       
 
         public HttpResponseMessage GetTestFile()
         {

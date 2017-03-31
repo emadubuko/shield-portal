@@ -12,6 +12,7 @@ namespace DAL.Entities
     {
         [XmlIgnore]
         public virtual int Id { get; set; }
+        public virtual string ProjectShortName { get; set; }
         public virtual string ProjectTitle { get; set; }
         public virtual string DocumentTitle { get; set; }
         public virtual string NameOfImplementingPartner { get; set; }

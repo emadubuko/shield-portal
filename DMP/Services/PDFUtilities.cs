@@ -22,6 +22,8 @@ namespace ShieldPortal.Services
         {
             WizardPage pageData = dmpDoc.Document;
 
+            ProjectDetails ProjectDetails = dmpDoc.TheDMP.TheProject;
+
             Font pageFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
 
             Font istPageFont20 = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD, fadedBlue);
@@ -31,10 +33,10 @@ namespace ShieldPortal.Services
             Font istPageFont10 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL, new BaseColor(System.Drawing.Color.Black));
 
 
-            Paragraph istPage = new Paragraph("NOVEMBER 1, 2017", istPageFont20);
-            istPage.Alignment = Element.ALIGN_RIGHT;
-            istPage.IndentationRight = 55f;
-            doc.Add(istPage);
+            //Paragraph istPage = new Paragraph("NOVEMBER 1, 2017", istPageFont20);
+            //istPage.Alignment = Element.ALIGN_RIGHT;
+            //istPage.IndentationRight = 55f;
+            //doc.Add(istPage);
 
             WriteLines(8, ref doc);
 
@@ -42,7 +44,7 @@ namespace ShieldPortal.Services
             docLogo.Alignment = Element.ALIGN_CENTER;
             doc.Add(docLogo);
 
-            istPage = new Paragraph(dmpDoc.TheDMP.Organization.Name, istPageFont20);
+            Paragraph istPage = new Paragraph(dmpDoc.TheDMP.Organization.Name, istPageFont20);
             istPage.Alignment = Element.ALIGN_CENTER;
             doc.Add(istPage);
 
@@ -54,20 +56,45 @@ namespace ShieldPortal.Services
             
             WriteLines(6, ref doc);
 
-            istPage = new Paragraph("SI LEAD", istPageFont14);
+            string leadActivityMgr = ProjectDetails.LeadActivityManager == null ? "" : ProjectDetails.LeadActivityManager.FullName;
+            istPage = new Paragraph(leadActivityMgr, istPageFont14);
             istPage.Alignment = Element.ALIGN_RIGHT;
             istPage.IndentationRight = 55f;
             doc.Add(istPage);
 
-            istPage = new Paragraph("[Company Name]", istPageFont10);
+            istPage = new Paragraph(dmpDoc.TheDMP.Organization.ShortName, istPageFont10);
             istPage.Alignment = Element.ALIGN_RIGHT;
             istPage.IndentationRight = 55f;
             doc.Add(istPage);
 
-            istPage = new Paragraph("[Company Address]", istPageFont10);
+            istPage = new Paragraph(dmpDoc.TheDMP.Organization.Address, istPageFont10);
             istPage.Alignment = Element.ALIGN_RIGHT;
             istPage.IndentationRight = 55f;
             doc.Add(istPage);
+
+            doc.NewPage();
+            doc.NewPage();
+            Paragraph header = new Paragraph("Index page", new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD));
+            header.Alignment = Element.BODY;
+            header.IndentationLeft = 55f;
+            doc.Add(header);
+             
+
+            doc.NewPage();
+            header = new Paragraph("Table of Content", pageFont);
+            header.Alignment = Element.BODY;
+            header.IndentationLeft = 55f;
+            doc.Add(header);// add paragraph to the document
+            doc.Add(CreateTableOfContent(pageData));
+                       
+
+            doc.NewPage();
+            header = new Paragraph("1. PROJECT PROFILE", pageFont);
+            header.Alignment = Element.BODY;
+            header.IndentationLeft = 55f;
+            doc.Add(header);// add paragraph to the document
+            doc.Add(CreateProjectProfileTable(ProjectDetails)); //pageData.ProjectProfile));
+            doc.Add(GenericPageTable(pageData.ProjectProfile.EthicalApproval, "Ethical Approval"));
 
             ////////revision
             doc.NewPage();
@@ -76,34 +103,53 @@ namespace ShieldPortal.Services
             {
                 doc.Add(t);
             }
-
-
             doc.NewPage();
-            Paragraph header = new Paragraph("PROJECT PROFILE", pageFont);
+            header = new Paragraph("2. Document revision", pageFont);
             header.Alignment = Element.BODY;
             header.IndentationLeft = 55f;
-            doc.Add(header);// add paragraph to the document
-            doc.Add(CreateProjectProfileTable(dmpDoc.TheDMP.TheProject)); //pageData.ProjectProfile));
-            doc.Add(GenericPageTable(pageData.ProjectProfile.EthicalApproval, "Ethical Approval"));
-            
+            header.SpacingAfter = 20f;
+            doc.Add(header);
+            doc.Add(CreateDocumentRevisionPage2(pageData.DocumentRevisions.LastOrDefault().Version));
+
+
             doc.NewPage();//Planning
-            header = new Paragraph("Project Objectives", istPageFont16);
+            header = new Paragraph("3. Project Objectives", istPageFont16);
             header.IndentationLeft = 55;
             doc.Add(header);
             WriteLines(1, ref doc);
             var aparagraph = new Paragraph(pageData.Planning.Summary.ProjectObjectives, istPageFont14);
             aparagraph.IndentationLeft = 70f;
+            aparagraph.IndentationRight = 50f;
             doc.Add(aparagraph); 
 
             doc.NewPage();// MonitoringAndEvaluationSystems
-            header = new Paragraph("MONITORING AND EVALUATION SYSTEMS", istPageFont14);
+            header = new Paragraph("4. MONITORING AND EVALUATION SYSTEMS", istPageFont14);
             header.IndentationLeft = 55f;
+            header.SpacingAfter = 10f;
             doc.Add(header);
-            WriteLines(1, ref doc);
 
-            header = new Paragraph("Data Flow Chart", pageFont);
+            header = new Paragraph("Roles", istPageFont10);
+            header.IndentationLeft = 70f;
+            doc.Add(header);
+            var rls = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Roles : new List<StaffGrouping>();
+            doc.Add(MultiColumn(rls));
+
+            header = new Paragraph("Responsibilities", istPageFont10);
+            header.IndentationLeft = 70f;
+            doc.Add(header);
+            var rsps = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Responsibilities : new List<StaffGrouping>();
+            doc.Add(MultiColumn(rsps));
+
+            doc.NewPage();
+            header = new Paragraph("Trainings", istPageFont10);
+            header.IndentationLeft = 70f;
+            doc.Add(header);
+            var trn = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Trainings : new List<Trainings>();
+            doc.Add(MultiColumn(trn, 6));
+
+            header = new Paragraph("Data Flow Chart", istPageFont10);
             header.Alignment = Element.ALIGN_LEFT;
-            header.IndentationLeft = 55f;
+            header.IndentationLeft = 70f;
             doc.Add(header);
             string dataflowchart = pageData.MonitoringAndEvaluationSystems != null && !string.IsNullOrEmpty(pageData.MonitoringAndEvaluationSystems.People.DataFlowChart) ? pageData.MonitoringAndEvaluationSystems.People.DataFlowChart.Split(',')[1] : null;
             if (dataflowchart != null)
@@ -115,48 +161,26 @@ namespace ShieldPortal.Services
                 doc.Add(docLogo);
             }
 
-            //doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.People, "People"));
-            //WriteLines(1, ref doc);
-            header = new Paragraph("Roles", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-            var rls = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Roles : new List<StaffGrouping>();
-            doc.Add(MultiColumn(rls));
-
-            header = new Paragraph("Responsibilities", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-            var rsps = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Responsibilities : new List<StaffGrouping>();
-            doc.Add(MultiColumn(rsps));
-
-            doc.NewPage();
-            header = new Paragraph("Trainings", istPageFont14);
-            header.IndentationLeft = 55f;
-            doc.Add(header);
-            var trn = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.People != null ? pageData.MonitoringAndEvaluationSystems.People.Trainings : new List<Trainings>();
-            doc.Add(MultiColumn(trn, 6));             
-
             doc.NewPage();
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Process, "Process"));
-            header = new Paragraph("Data collation", istPageFont14);
-            header.IndentationLeft = 55f;
+
+            doc.NewPage();
+            header = new Paragraph("Data collation", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             var dt = pageData.MonitoringAndEvaluationSystems != null && pageData.MonitoringAndEvaluationSystems.Process != null ? pageData.MonitoringAndEvaluationSystems.Process.DataCollation : new List<DataCollation>();
             doc.Add(MultiColumn(dt, 1));
 
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Equipment, "Equipment"));
             doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Environment, "Environment"));
-            //doc.NewPage();
-            //doc.Add(GenericPageTable(pageData.MonitoringAndEvaluationSystems.Organization, "Organization"));
-
-
+            
             doc.NewPage();
-            header = new Paragraph("Data Processes", istPageFont14);
+            header = new Paragraph("5. Data Processes", istPageFont14);
             header.IndentationLeft = 55;
             doc.Add(header);
             WriteLines(1, ref doc);
-            header = new Paragraph("Reporting levels", istPageFont14);
-            header.IndentationLeft = 55;
+            header = new Paragraph("Reporting levels", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             string concateddata = "";
             pageData.MonitoringAndEvaluationSystems.Process.ReportLevel.ForEach(x => {
@@ -164,61 +188,63 @@ namespace ShieldPortal.Services
             });
             concateddata = concateddata.TrimEnd(new char[] { '-', '>', ' ' });
             header = new Paragraph(concateddata, fontValue);
-            header.IndentationLeft = 55;
+            header.IndentationLeft = 75f;
             doc.Add(header);
 
             WriteLines(1, ref doc);
-            header = new Paragraph("Data", istPageFont14);
-            header.IndentationLeft = 55f;
+            header = new Paragraph("Data", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
-            doc.Add(MultiColumn(pageData.DataProcesses.DataCollection, 1));
-           
-            header = new Paragraph("REPORTS", istPageFont14);
-            header.IndentationLeft = 55f;
+            doc.Add(LateralMultiColumn(pageData.DataProcesses.DataCollection));
+            //doc.Add(MultiColumn(pageData.DataProcesses.DataCollection, 1));
+
+            doc.NewPage();
+            header = new Paragraph("REPORTS", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             var reportList = pageData.DataProcesses.Reports != null ? pageData.DataProcesses.Reports.ReportData : new List<ReportData>();
             doc.Add(LateralMultiColumn(reportList));
 
 
             doc.NewPage();// QualityAssurance
-            header = new Paragraph("Quality Assurance", istPageFont14);
+            header = new Paragraph("6. Quality Assurance", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             doc.Add(LateralMultiColumn(pageData.QualityAssurance.DataVerification));
            
              
             doc.NewPage(); // Data Storage, Access & Sharing
-            header = new Paragraph("Data Storage, Access & Sharing", istPageFont14);
+            header = new Paragraph("7. Data Storage, Access & Sharing", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             WriteLines(1, ref doc);
-            header = new Paragraph("Digital Data Storage", istPageFont14);
-            header.IndentationLeft = 55f;
+            header = new Paragraph("Digital Data Storage", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.Digital));
 
-            header = new Paragraph("Non Digital Data Storage", istPageFont14);
-            header.IndentationLeft = 55f;
+            header = new Paragraph("Non Digital Data Storage", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.NonDigital));
-            header = new Paragraph("Data Access and Sharing", istPageFont14);
-            header.IndentationLeft = 55f;
+            header = new Paragraph("Data Access and Sharing", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.DataAccessAndSharing));
-            header = new Paragraph("Data Documentation Management and Entry", istPageFont14);
-            header.IndentationLeft = 55f;
+            header = new Paragraph("Data Documentation Management and Entry", istPageFont10);
+            header.IndentationLeft = 70f;
             doc.Add(header);
             doc.Add(LateralMultiColumn(pageData.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry));
 
             doc.NewPage();// IntellectualPropertyCopyrightAndOwnership
-            header = new Paragraph("Intellectual Property, Copyright and Ownership", istPageFont14);
+            header = new Paragraph("8. Intellectual Property, Copyright and Ownership", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             doc.Add(GenericPageTable(pageData.IntellectualPropertyCopyrightAndOwnership, "Intellectual Property, Copyright and Ownership"));
               
              
             doc.NewPage();// PostProjectDataRetentionSharingAndDestruction
-            header = new Paragraph("Post Project Data Retention Sharing and Destruction", istPageFont14);
+            header = new Paragraph("9. Post Project Data Retention Sharing and Destruction", istPageFont14);
             header.IndentationLeft = 55f;
             doc.Add(header);
             doc.Add(GenericPageTable(pageData.PostProjectDataRetentionSharingAndDestruction, "Post Project Data Retention Sharing and Destruction"));
@@ -246,6 +272,149 @@ namespace ShieldPortal.Services
             doc.Add(PostDataRetention(pageData.PostProjectDataRetentionSharingAndDestruction));
             */
             #endregion
+        }
+
+        private IElement CreateTableOfContent(WizardPage pageData)
+        {
+            BaseColor blackColor = new BaseColor(0, 0, 0);
+            Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Regular, blackColor);
+
+            Paragraph contents = new Paragraph();
+            Paragraph pp = null;
+
+            pp = new Paragraph(new Chunk("1. Project Profile", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            PropertyInfo[] infos = typeof(ProjectProfile).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+
+            pp = new Paragraph(new Chunk("2. Document Revisions", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+
+            pp = new Paragraph(new Chunk("3. Project Objectives", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+
+            pp = new Paragraph(new Chunk("4. Monitoring and evaluation systems", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            infos = typeof(MonitoringAndEvaluationSystems).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+
+            pp = new Paragraph(new Chunk("5. Data processes", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            infos = typeof(DataProcesses).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+
+            pp = new Paragraph(new Chunk("6. Quality assurance", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            infos = typeof(QualityAssurance).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+
+            pp = new Paragraph(new Chunk("7. Data Storage Access and Sharing", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            infos = typeof(DataStorage).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+
+            pp = new Paragraph(new Chunk("8. Intellectual property copyright and ownership", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            infos = typeof(IntellectualPropertyCopyrightAndOwnership).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+
+            pp = new Paragraph(new Chunk("9. Post project data retention sharing and destruction", font8));
+            pp.IndentationLeft = 60f;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            contents.Add(pp);
+            infos = typeof(PostProjectDataRetentionSharingAndDestruction).GetProperties();
+            for (int i = 0; i < infos.Count(); i++)
+            {
+                pp = new Paragraph(new Chunk(ToRoman(i + 1) + ". " + CommonUtil.Utilities.Utilities.PasCaseConversion(infos[i].Name), font8));
+                pp.IndentationLeft = 70f;
+                pp.PaddingTop = 10f;
+                pp.SpacingAfter = 5f;
+                pp.SpacingBefore = 5f;
+                contents.Add(pp);
+            }
+            return contents;
         }
 
         private void WriteLines(int count, ref Document doc)
@@ -407,6 +576,10 @@ namespace ShieldPortal.Services
                         if(datavalue.Contains(" - ") && !datavalue.Contains("Bi - "))
                         {
                             datavalue = datavalue.Replace(" - ", "\n");
+                        }
+                        else if(datavalue == "0")
+                        {
+                            datavalue = " - ";
                         }                       
                     }
                      
@@ -438,13 +611,16 @@ namespace ShieldPortal.Services
                 var data = dataList[i];
                 if (typeof(T).Name == "ReportData")
                 {
-                    tableHeader = ToRoman(i+1).ToLower() + ". " + reportlevel.GetValue(data) + " - " + reportytype.GetValue(data);
+                    tableHeader = ToRoman(i + 1).ToLower() + ". " + reportlevel.GetValue(data) + " - " + reportytype.GetValue(data);
+                }
+                else if (thematicinfo != null)
+                {
+                    tableHeader = ToRoman(i + 1).ToLower() + ". " + reportlevel.GetValue(data) + " - " + thematicinfo.GetValue(data);
                 }
                 else
                 {
-                    tableHeader = ToRoman(i+1).ToLower() + ". " + reportlevel.GetValue(data) + " - " + thematicinfo.GetValue(data);
-                }
-               
+                    tableHeader = ToRoman(i + 1).ToLower() + ". " + reportlevel.GetValue(data);
+                 }
 
                 PdfPCell hd = GenerateHeaderCell(tableHeader);
                 hd.BackgroundColor = new BaseColor(System.Drawing.Color.FromArgb(130, System.Drawing.Color.SteelBlue)); 
@@ -475,6 +651,203 @@ namespace ShieldPortal.Services
                 docTable.Add(CreateDocumentRevision(revisions.Version, firstVersion));
                 firstVersion = false;
             }
+
+            return docTable;
+        }
+
+        PdfPTable CreateDocumentRevisionPage2(DAL.Entities.Version version)
+        {
+            PdfPTable docTable = new PdfPTable(2);
+
+            PdfPCell PdfPCell = null;
+            Paragraph pp = null;
+            BaseColor blackColor = new BaseColor(0, 0, 0);
+            Font font8 = new Font(Font.FontFamily.TIMES_ROMAN, 11, (int)System.Drawing.FontStyle.Italic, blackColor);
+
+            Font fontValue = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.ITALIC, fadedBlue);
+
+            pp = new Paragraph(new Chunk("Version date", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(version.VersionMetadata.VersionDate, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Version Number", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(version.VersionMetadata.VersionNumber, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Author", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(version.VersionAuthor.DisplayName, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Job designation", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(version.VersionAuthor.JobDesignation, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Phone number of author", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(version.VersionAuthor.PhoneNumberOfAuthor, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+            
+            pp = new Paragraph(new Chunk("Email address of author", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(version.VersionAuthor.EmailAddressOfAuthor, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            var approver = version.Approval;
+            pp = new Paragraph(new Chunk("Approver", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(approver == null ? "": approver.DisplayName, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Job Designation", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            
+            pp = new Paragraph(new Chunk(approver == null ? "" :approver.JobdesignationApprover, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Phone number of Approver", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(approver == null ? "" : approver.PhonenumberofApprover, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk("Email of Approver", font8));
+            pp.IndentationLeft = 20;
+            pp.PaddingTop = 10f;
+            pp.SpacingAfter = 5f;
+            pp.SpacingBefore = 5f;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
+            pp = new Paragraph(new Chunk(approver == null ? "" : approver.EmailaddressofApprover, fontValue));
+            PdfPCell = new PdfPCell();
+            pp.IndentationLeft = 10;
+            PdfPCell = new PdfPCell();
+            PdfPCell.AddElement(pp);
+            PdfPCell.BorderColor = fadedBlue;
+            docTable.AddCell(PdfPCell);
+
 
             return docTable;
         }
@@ -618,7 +991,7 @@ namespace ShieldPortal.Services
             PdfPTable bodyTable = new PdfPTable(1);
             bodyTable.AddCell(GenerateHeaderCell("Project Details")); 
 
-            pp = new Paragraph(new Chunk("Programme title", font8));
+            pp = new Paragraph(new Chunk("Mechanism Name", font8));
             pp.IndentationLeft = 20;
             pp.PaddingTop = 10f;
             pp.SpacingAfter = 5f;
@@ -646,7 +1019,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectDetails.NameOfImplementingPartner, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.Organization.Name, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -664,7 +1037,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectDetails.AbreviationOfImplementingPartner, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.Organization.ShortName, fontValue));
             PdfPCell = new PdfPCell();
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
@@ -682,7 +1055,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectDetails.MissionPartner, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.Organization.MissionPartner, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
             pp.SpacingBefore = 1f;
@@ -718,7 +1091,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectDetails.AddressOfOrganization, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.Organization.Address, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
             pp.SpacingBefore = 1f;
@@ -735,7 +1108,7 @@ namespace ShieldPortal.Services
             PdfPCell.BackgroundColor = new BaseColor(tanColor);
             projectProfileTable.AddCell(PdfPCell);
 
-            pp = new Paragraph(new Chunk(ProjectDetails.PhoneNumber, fontValue));
+            pp = new Paragraph(new Chunk(ProjectDetails.Organization.PhoneNumber, fontValue));
             pp.IndentationLeft = 10;
             pp.SpacingAfter = 0.1f;
             pp.SpacingBefore = 1f;
@@ -1028,19 +1401,19 @@ namespace ShieldPortal.Services
         {
             if ((number < 0) || (number > 3999)) throw new ArgumentOutOfRangeException("insert value betwheen 1 and 3999");
             if (number < 1) return string.Empty;
-            if (number >= 1000) return "M" + ToRoman(number - 1000);
-            if (number >= 900) return "CM" + ToRoman(number - 900); //EDIT: i've typed 400 instead 900
-            if (number >= 500) return "D" + ToRoman(number - 500);
-            if (number >= 400) return "CD" + ToRoman(number - 400);
-            if (number >= 100) return "C" + ToRoman(number - 100);
-            if (number >= 90) return "XC" + ToRoman(number - 90);
-            if (number >= 50) return "L" + ToRoman(number - 50);
-            if (number >= 40) return "XL" + ToRoman(number - 40);
-            if (number >= 10) return "X" + ToRoman(number - 10);
-            if (number >= 9) return "IX" + ToRoman(number - 9);
-            if (number >= 5) return "V" + ToRoman(number - 5);
-            if (number >= 4) return "IV" + ToRoman(number - 4);
-            if (number >= 1) return "I" + ToRoman(number - 1);
+            if (number >= 1000) return "m" + ToRoman(number - 1000);
+            if (number >= 900) return "cm" + ToRoman(number - 900); //EDIT: i've typed 400 instead 900
+            if (number >= 500) return "d" + ToRoman(number - 500);
+            if (number >= 400) return "c" + ToRoman(number - 400);
+            if (number >= 100) return "c" + ToRoman(number - 100);
+            if (number >= 90) return "xc" + ToRoman(number - 90);
+            if (number >= 50) return "l" + ToRoman(number - 50);
+            if (number >= 40) return "xl" + ToRoman(number - 40);
+            if (number >= 10) return "x" + ToRoman(number - 10);
+            if (number >= 9) return "ix" + ToRoman(number - 9);
+            if (number >= 5) return "v" + ToRoman(number - 5);
+            if (number >= 4) return "iv" + ToRoman(number - 4);
+            if (number >= 1) return "i" + ToRoman(number - 1);
             throw new ArgumentOutOfRangeException("something bad happened");
         }
     }

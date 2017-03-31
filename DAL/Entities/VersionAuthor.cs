@@ -23,7 +23,7 @@ namespace DAL.Entities
         {
             get
             {
-                return string.Format("{0} {1}", TitleOfAuthor, SurnameAuthor);
+                return string.Format("{0} {1} {2}", TitleOfAuthor, FirstNameOfAuthor, SurnameAuthor);
             }
         }
     }

@@ -33,12 +33,12 @@ namespace Test
         static void Main(string[] args)
         {
             Console.WriteLine("started");
-            new Program().RetrieveDimensionValue();
+           // new Program().RetrieveDimensionValue();
 
            // new Program().RetrieveExcelValue();
 
 
-            // DMPSummary();
+             DMPSummary();
 
             //new Program().UpdateFacilities();
           //    new Program().GenerateFacilityTargetCSV();
@@ -262,113 +262,127 @@ namespace Test
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("IP,Project Title,Document Title,Organization,Lead Activity Manager,Address of Organization,	Mission Partner,Project Start Date,	Project End Date,Grant Reference Number,Ethical approval for the project,Rational,Aprroving instititional review board,Type of ethical approval,VERSION AUTHOR,VERSION NUMBER,VERSION DATE,	APPROVAL,Program Objective,	Roles,Number of staff site,	Number of staff state,	Number of staff HQ,	Responsibilities, Responsibility at site,Responsibility at State,	Responsibility at HQ,Name of training,Implementing partner M & E process,Report level,Data collation types,	Data collation frequency,Data garnering,Data use,Data improvement approach,	Project equipments,	States covered by implementing partners,Contracts and agreements,Ownership,Use of third party data sources,Data To Retain,Pre-Existing Data,Duration,Licensing,Digital Data Retention,Non Digital Data Retention"); //others
 
-            // sb.AppendLine("IP,Reporting Level, Data Type, Reporting Tools, Collection process");//data collection 
-            //sb.AppendLine("IP,Reporting Level,Reports Type,Reported To,Program Area,Frequency of Reporting,Duration of Reporting,Timelines");// report
-            //sb.AppendLine("IP,Reporting Level,ThematicArea,DataVerificationApproach,Types,Frequency,Duration,Timelines"); //dverification
-            //sb.AppendLine("IP,Reporting Level,Thematic Area,Volume of digital data, Data storage format,Storage location,Backup,Data security, Patient confidentiality policies,Storage of pre existing data"); //digital data
-            //sb.AppendLine("IP,Reporting Level,Thematic Area, data types,Storage location,SafeguardsAndRequirements"); //non digital data
-            //sb.AppendLine("IP,Reporting Level,Thematic Area,Data access, Sharing policies,Data transmission policies,Sharing flatforms"); //sharing
-            //sb.AppendLine("IP,Reporting Level,Thematic Area,Documentation and dataDescriptors, Naming structure and filing structures"); //doc mgt
+            StringBuilder sb_dcollection = new StringBuilder();
+            sb_dcollection.AppendLine("IP,Reporting Level, Data Type, Reporting Tools, Collection process");//data collection 
+
+            StringBuilder sb_report = new StringBuilder();
+            sb_report.AppendLine("IP,Reporting Level,Reports Type,Reported To,Program Area,Frequency of Reporting,Duration of Reporting,Timelines");// report
+
+            StringBuilder sb_dverification = new StringBuilder();
+            sb_dverification.AppendLine("IP,Reporting Level,ThematicArea,DataVerificationApproach,Types,Frequency,Duration,Timelines"); //dverification
+
+            StringBuilder sb_digitaldata = new StringBuilder();
+            sb_digitaldata.AppendLine("IP,Reporting Level,Thematic Area,Volume of digital data, Data storage format,Storage location,Backup,Data security, Patient confidentiality policies,Storage of pre existing data"); //digitaldata
+
+            StringBuilder sb_non_digital_data = new StringBuilder();
+            sb_non_digital_data.AppendLine("IP,Reporting Level,Thematic Area, data types,Storage location,SafeguardsAndRequirements"); //non digital data
+
+            StringBuilder sb_sharing = new StringBuilder();
+            sb_sharing.AppendLine("IP,Reporting Level,Thematic Area,Data access, Sharing policies,Data transmission policies,Sharing flatforms"); //sharing
+
+            StringBuilder sb_doc_mgt = new StringBuilder();
+            sb_doc_mgt.AppendLine("IP,Reporting Level,Thematic Area,Documentation and dataDescriptors, Naming structure and filing structures"); //doc mgt
+
             foreach (var dmp in dmps)
             {
+                string anEntry = "";
                 var doc = dmp.Document;
                 var docRev = doc.DocumentRevisions.LastOrDefault();
 
                 ////data doc mgt
-                //foreach (var dv in doc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(dv.ReportingLevel);
-                //    anEntry += makeCSVEntry(dv.ThematicArea);
-                //    anEntry += makeCSVEntry(dv.StoredDocumentationAndDataDescriptors);
-                //    anEntry += makeCSVEntry(dv.NamingStructureAndFilingStructures);
-                //    sb.AppendLine(anEntry);
-                //}
+                foreach (var dv in doc.DataStorageAccessAndSharing.DataDocumentationManagementAndEntry)
+                {
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(dv.ReportingLevel);
+                    anEntry += makeCSVEntry(dv.ThematicArea);
+                    anEntry += makeCSVEntry(dv.StoredDocumentationAndDataDescriptors);
+                    anEntry += makeCSVEntry(dv.NamingStructureAndFilingStructures);
+                    sb_doc_mgt.AppendLine(anEntry);
+                }
 
                 ////data sharing
-                //foreach (var dv in doc.DataStorageAccessAndSharing.DataAccessAndSharing)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(dv.ReportingLevel);
-                //    anEntry += makeCSVEntry(dv.ThematicArea);
-                //    anEntry += makeCSVEntry(dv.DataAccess);
-                //    anEntry += makeCSVEntry(dv.DataSharingPolicies);
-                //    anEntry += makeCSVEntry(dv.DataTransmissionPolicies);
-                //    anEntry += makeCSVEntry(dv.SharingPlatForms);
-                //    sb.AppendLine(anEntry);
-                //}
+                foreach (var dv in doc.DataStorageAccessAndSharing.DataAccessAndSharing)
+                {
+                     anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(dv.ReportingLevel);
+                    anEntry += makeCSVEntry(dv.ThematicArea);
+                    anEntry += makeCSVEntry(dv.DataAccess);
+                    anEntry += makeCSVEntry(dv.DataSharingPolicies);
+                    anEntry += makeCSVEntry(dv.DataTransmissionPolicies);
+                    anEntry += makeCSVEntry(dv.SharingPlatForms);
+                    sb_sharing.AppendLine(anEntry);
+                }
 
                 ////nondigital
-                //foreach (var dv in doc.DataStorageAccessAndSharing.NonDigital)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(dv.ReportingLevel);
-                //    anEntry += makeCSVEntry(dv.ThematicArea);
-                //    anEntry += makeCSVEntry(dv.NonDigitalDataTypes);
-                //    anEntry += makeCSVEntry(dv.StorageLocation);
-                //    anEntry += makeCSVEntry(dv.SafeguardsAndRequirements);
-                //    sb.AppendLine(anEntry);
-                //}
+                foreach (var dv in doc.DataStorageAccessAndSharing.NonDigital)
+                {
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(dv.ReportingLevel);
+                    anEntry += makeCSVEntry(dv.ThematicArea);
+                    anEntry += makeCSVEntry(dv.NonDigitalDataTypes);
+                    anEntry += makeCSVEntry(dv.StorageLocation);
+                    anEntry += makeCSVEntry(dv.SafeguardsAndRequirements);
+                   sb_non_digital_data.AppendLine(anEntry);
+                }
 
                 //digital data
-                //foreach(var dv in doc.DataStorageAccessAndSharing.Digital)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(dv.ReportingLevel);
-                //    anEntry += makeCSVEntry(dv.ThematicArea);
-                //    anEntry += makeCSVEntry(dv.VolumeOfDigitalData);
-                //    anEntry += makeCSVEntry(dv.DataStorageFormat);
-                //    anEntry += makeCSVEntry(dv.StorageLocation);
-                //    anEntry += makeCSVEntry(dv.Backup);
-                //    anEntry += makeCSVEntry(dv.DataSecurity);
-                //    anEntry += makeCSVEntry(dv.PatientConfidentialityPolicies);
-                //    anEntry += makeCSVEntry(dv.StorageOfPreExistingData);
-                //    sb.AppendLine(anEntry);
-                //}
+                foreach (var dv in doc.DataStorageAccessAndSharing.Digital)
+                {
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(dv.ReportingLevel);
+                    anEntry += makeCSVEntry(dv.ThematicArea);
+                    anEntry += makeCSVEntry(dv.VolumeOfDigitalData);
+                    anEntry += makeCSVEntry(dv.DataStorageFormat);
+                    anEntry += makeCSVEntry(dv.StorageLocation);
+                    anEntry += makeCSVEntry(dv.Backup);
+                    anEntry += makeCSVEntry(dv.DataSecurity);
+                    anEntry += makeCSVEntry(dv.PatientConfidentialityPolicies);
+                    anEntry += makeCSVEntry(dv.StorageOfPreExistingData);
+                    sb_digitaldata.AppendLine(anEntry);
+                }
 
 
                 //dverification
-                //foreach(var dv in doc.QualityAssurance.DataVerification)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(dv.ReportingLevel);
-                //    anEntry += makeCSVEntry(dv.ThematicArea);
-                //    anEntry += makeCSVEntry(dv.DataVerificationApproach);
-                //    anEntry += makeCSVEntry(dv.TypesOfDataVerification);
-                //    anEntry += makeCSVEntry(dv.FrequencyOfDataVerification);
-                //    anEntry += dv.DurationOfDataVerificaion + ",";
-                //    anEntry += makeCSVEntry(string.Join(System.Environment.NewLine, dv.TimelinesForDataVerification.Select(x => x)));
-                //    sb.AppendLine(anEntry);
-                //}
+                foreach (var dv in doc.QualityAssurance.DataVerification)
+                {
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(dv.ReportingLevel);
+                    anEntry += makeCSVEntry(dv.ThematicArea);
+                    anEntry += makeCSVEntry(dv.DataVerificationApproach);
+                    anEntry += makeCSVEntry(dv.TypesOfDataVerification);
+                    anEntry += makeCSVEntry(dv.FrequencyOfDataVerification);
+                    anEntry += dv.DurationOfDataVerificaion + ",";
+                    anEntry += makeCSVEntry(string.Join(System.Environment.NewLine, dv.TimelinesForDataVerification.Select(x => x)));
+                    sb_dverification.AppendLine(anEntry);
+                }
 
 
                 //report
-                //foreach(var rt in doc.DataProcesses.Reports.ReportData)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(rt.ReportingLevel);
-                //    anEntry += makeCSVEntry(rt.ReportsType);
-                //    anEntry += makeCSVEntry(rt.ReportedTo);
-                //    anEntry += makeCSVEntry(rt.ProgramArea);
-                //    anEntry += makeCSVEntry(rt.FrequencyOfReporting);
-                //    anEntry += rt.DurationOfReporting + ",";
-                //    anEntry += makeCSVEntry(string.Join(System.Environment.NewLine, rt.TimelinesForReporting.Select(x => x)));
-                //    sb.AppendLine(anEntry);
-                //}
+                foreach (var rt in doc.DataProcesses.Reports.ReportData)
+                {
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(rt.ReportingLevel);
+                    anEntry += makeCSVEntry(rt.ReportsType);
+                    anEntry += makeCSVEntry(rt.ReportedTo);
+                    anEntry += makeCSVEntry(rt.ProgramArea);
+                    anEntry += makeCSVEntry(rt.FrequencyOfReporting);
+                    anEntry += rt.DurationOfReporting + ",";
+                    anEntry += makeCSVEntry(string.Join(System.Environment.NewLine, rt.TimelinesForReporting.Select(x => x)));
+                    sb_report.AppendLine(anEntry);
+                }
 
                 //data collection             
-                //foreach (var dt in doc.DataProcesses.DataCollection)
-                //{
-                //    string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
-                //    anEntry += makeCSVEntry(dt.ReportingLevel);
-                //    anEntry += makeCSVEntry(dt.DataType);
-                //    anEntry += makeCSVEntry(dt.DataCollectionAndReportingTools);
-                //    anEntry += makeCSVEntry(dt.DataCollectionProcess);
+                foreach (var dt in doc.DataProcesses.DataCollection)
+                {
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry += makeCSVEntry(dt.ReportingLevel);
+                    anEntry += makeCSVEntry(dt.DataType);
+                    anEntry += makeCSVEntry(dt.DataCollectionAndReportingTools);
+                    anEntry += makeCSVEntry(dt.DataCollectionProcess);
+                    sb_dcollection.AppendLine(anEntry);
+                }
 
-                //    sb.AppendLine(anEntry);
-                //}
-
-                string anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
                 anEntry += makeCSVEntry(dmp.TheDMP.TheProject.ProjectTitle);
                 anEntry += makeCSVEntry(dmp.TheDMP.DMPTitle);
                 anEntry += makeCSVEntry(dmp.TheDMP.Organization.ShortName);
@@ -396,7 +410,7 @@ namespace Test
                 anEntry += doc.MonitoringAndEvaluationSystems.People.Responsibilities.Sum(x => x.RegionCount) + ",";
                 anEntry += doc.MonitoringAndEvaluationSystems.People.Responsibilities.Sum(x => x.HQCount) + ",";
                 anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.People.Trainings.Select(x => x.NameOfTraining)));
-                anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Process.ImplementingPartnerMEProcess);
+                //anEntry += makeCSVEntry(doc.MonitoringAndEvaluationSystems.Process.ImplementingPartnerMEProcess);
                 anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.Process.ReportLevel.Select(x => x)));
                 anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.Process.DataCollation.Select(x => x.DataType)));
                 anEntry += makeCSVEntry(string.Join("|", doc.MonitoringAndEvaluationSystems.Process.DataCollation.Select(x => x.CollationFrequency)));
@@ -418,7 +432,14 @@ namespace Test
                 anEntry += makeCSVEntry(doc.PostProjectDataRetentionSharingAndDestruction.NonDigitalRentention.DataRention);
                 sb.AppendLine(anEntry);
             }
-            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummay.csv", sb.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary.csv", sb.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_dcollection.csv", sb_dcollection.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_digitaldata.csv", sb_digitaldata.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_doc_mgt.csv", sb_doc_mgt.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_dverification.csv", sb_dverification.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_non_digital_data.csv", sb_non_digital_data.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_report.csv", sb_report.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_sharing.csv", sb_sharing.ToString());
         }
 
 

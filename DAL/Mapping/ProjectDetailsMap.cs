@@ -9,6 +9,7 @@ namespace DAL.Mapping
         {
             Table("dmp_projectdetails");
             Id(x => x.Id);
+            Map(x => x.ProjectShortName);
             Map(x => x.ProjectTitle);
             Map(x => x.GrantReferenceNumber);
             Map(x => x.ProjectStartDate);

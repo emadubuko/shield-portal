@@ -50,7 +50,7 @@ namespace ShieldPortal.Controllers
                     CreatedBy = x.CreatedBy != null ? x.CreatedBy.FullName : "test",
                     DateCreated = string.Format("{0:dd-MMM-yyy}", x.DateCreated),
                     ProjectTitle = x.TheProject.ProjectTitle,
-                    Title = x.DMPTitle,
+                    Title = "DMP_"+ x.TheProject.ProjectShortName, //x.DMPTitle,
                     Owner = x.Organization.ShortName,
                     StartDate = string.Format("{0:dd-MMM-yyy}", x.StartDate),
                     EndDate = string.Format("{0:dd-MMM-yyy}", x.EndDate)

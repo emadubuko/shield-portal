@@ -23,7 +23,7 @@ namespace DAL.Entities
         {
             get
             {
-                return string.Format("{0} {1}", TitleofApprover, SurnameApprover);
+                return string.Format("{0} {1} {2}", TitleofApprover, FirstnameofApprover, SurnameApprover);
             }
         }
     }

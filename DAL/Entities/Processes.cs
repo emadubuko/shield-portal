@@ -4,7 +4,7 @@ namespace DAL.Entities
 {
     public class Processes
     {
-        public virtual string ImplementingPartnerMEProcess { get; set; }
+      //  public virtual string ImplementingPartnerMEProcess { get; set; }
         public virtual string SiteSupport { get; set; }
 
         public virtual List<string> ReportLevel { get; set; }

@@ -305,7 +305,7 @@ namespace ShieldPortal.Controllers
                 return new HttpStatusCodeResult(400, "invalid documnent Id");
             }
 
-            string fileName = Doc.DocumentTitle + ".pdf";
+            string fileName = "DMP_" + Doc.TheDMP.TheProject.ProjectShortName + ".pdf"; // Doc.DocumentTitle + ".pdf";
             string fullFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Downloads/" + fileName);
 
             using (FileStream fs = new FileStream(fullFilename, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
