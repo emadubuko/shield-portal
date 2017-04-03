@@ -97,7 +97,7 @@
                                 @foreach (ShieldPortal.ViewModel.DMPDocumentDetails item in Model.Documents)
                                 {
                                     <tr>
-                                        <td>@item.DocumentTitle</td>
+                                        <td>@Model.DmpDetails.Title</td>
                                         <td>@item.Version</td>
                                         <td>@CommonUtil.Utilities.Utilities.PasCaseConversion(item.Status)</td>
                                         <td>@item.DocumentCreator</td>
