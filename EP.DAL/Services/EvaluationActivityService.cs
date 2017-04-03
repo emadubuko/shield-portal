@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EvaluationPlan.DAL.Entities
+namespace EP.DAL.Services
 {
-    class EvaluationPlan
+   public class EvaluationActivityService
     {
+
     }
 }

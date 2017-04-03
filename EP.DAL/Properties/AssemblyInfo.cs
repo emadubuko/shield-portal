@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("EvaluationPlan.DAL")]
+[assembly: AssemblyTitle("EP.DAL")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Hewlett-Packard Company")]
-[assembly: AssemblyProduct("EvaluationPlan.DAL")]
+[assembly: AssemblyProduct("EP.DAL")]
 [assembly: AssemblyCopyright("Copyright © Hewlett-Packard Company 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0de3feb8-0203-47c8-a405-31583c31ccaf")]
+[assembly: Guid("afc8203e-c2dc-4896-af36-85b6ccb86349")]
 
 // Version information for an assembly consists of the following four values:
 //

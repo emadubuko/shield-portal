@@ -54,7 +54,7 @@ function uploadfileToServer(e, control, url, controlToUpdate) {
             console.log(er);
         }
     }).error(function (xhr, status, err) {
-        alert(err);
+        alert("System error while reading the file. Ensure you file structure is consistent with the sample file.");
         console.log(err);
     });
     return false;
