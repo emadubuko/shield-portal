@@ -1,0 +1,201 @@
+﻿@model ShieldPortal.ViewModel.EP.EPDetailsViewModel
+@{
+    ViewBag.Title = "EvaluationEdit";
+}
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+    @Styles.Render("~/bundles/mysiteCss")
+    <script src="~/Scripts/Ultilities.js"></script>
+    <script type="text/javascript">
+        {
+            var activityArray = @Html.Raw(Json.Encode(Model.Activities));
+        }
+    </script>
+}
+
+<div class="main-content">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <form id="dmpForm" class="validate">
+                <div class="panel panel-warning">
+                    <div class="panel-heading clearfix">
+                        <h4 class="panel-title">Edit Program details</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="IP">Implementing Partner</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="IP" readonly class="form-control" value="@Model.Evaluation.ImplementingPartner.Name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="ProgramName">Program Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="ep_ProgramName" value="@Model.Evaluation.ProgramName" required title="Program Name is required" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="ExpectedOutcome">Expected Program Outcome</label>
+                                <div class="col-sm-8">
+                                    <textarea id="ep_ExpectedOutcome" rows="4" title="Expected Outcome is required" class="form-control">@Model.Evaluation.ExpectedOutcome</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="StartDate">Start Date</label>
+                                <div class="col-sm-3">
+                                    <div id="ep_Start_date_div" class="input-group date">
+                                        <input type="text" id="ep_Start_date" value="@Model.Evaluation.StartDate" placeholder="select a start date" title="select a start date" data-format="D, dd MM yyyy" class="form-control">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                                <label class="col-sm-2 control-label" for="EndDate">End Date</label>
+                                <div class="col-sm-3">
+                                    <div id="ep_End_date_div" class="input-group date">
+                                        <input type="text" id="ep_End_date" value="@Model.Evaluation.EndDate" placeholder="select an end date" title="select a end date" data-format="D, dd MM yyyy" class="form-control">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="panel panel-warning">
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title">Activities</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="ActivityName">Activity Name</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" id="ActivityName" title="Activity Name is required" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="ac_ExpectedOutcome">Expected Outcome</label>
+                                            <div class="col-sm-7">
+                                                <textarea id="ac_ExpectedOutcome" title="Expected Outcome is required" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="StartDate">Start Date</label>
+                                            <div class="col-sm-3">
+                                                <div id="ac_startdate_div" class="input-group date">
+                                                    <input type="text" id="ac_startdate" placeholder="select a start date" title="select a start date" data-format="D, dd MM yyyy" class="form-control">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                            </div>
+
+                                            <label class="col-sm-1 control-label" for="EndDate" style="padding: 0;">End Date</label>
+                                            <div class="col-sm-3">
+                                                <div id="ac_EndDate_div" class="input-group date">
+                                                    <input type="text" id="ac_EndDate" placeholder="select an end date" title="select a end date" data-format="D, dd MM yyyy" class="form-control">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                            </div>
+                                            <a class="btn btn-black btn-sm btn-outline" id="addtoEP">Add to List</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel-body" id="activitypanel">
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <a href='@Url.Action("index","Home")' class="btn btn-default">
+                                        <i class="fa fa-close"></i> Cancel
+                                    </a>
+                                    &nbsp;&nbsp;
+                                    <button type="submit" id="epSubmit" class="btn btn-warning">Update</button>
+                                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    <script>
+               
+        $("#epSubmit").click(function (e, n) {
+
+            var form = $(e.currentTarget.form);
+            var validator = form.validate();
+            if (form.valid()) {
+  
+                $("#loadImg").show();
+                $('#epSubmit').disabled = true;
+  
+                var Evaluation = {}; @*@Html.Raw(Json.Encode(Model.Evaluation));*@
+                Evaluation.Activities= activityArray;
+                Evaluation.ExpectedOutcome = $("#ep_ExpectedOutcome").val()
+                Evaluation.StartDate = $("#ep_Start_date").val();
+                Evaluation.EndDate = $("#ep_End_date").val();
+                Evaluation.ProgramName = $("#ep_ProgramName").val();
+                Evaluation.Id = @Model.Evaluation.Id;
+
+                var redirectUrl = '@Url.Action("EvaluationDetails", "EvaluationPlan")';
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UpdateEP", "EvaluationPlan")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(Evaluation),
+                    cache: false,
+                }).done(function (id) {
+                    console.log(id);
+                    window.location.replace(redirectUrl + '?Id=' + id);
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                    $("#loadImg").hide();
+                    $('#epSubmit').disabled = false;
+                });
+                return false;
+            }
+        });
+
+        $("#addtoEP").click(function (e, n) {   
+
+            var activity = {};
+            activity.Name = $("#ActivityName").val();
+            activity.ExpectedOutcome = $("#ac_ExpectedOutcome").val();
+            activity.StartDate = $("#ac_startdate").val();
+            activity.EndDate = $("#ac_EndDate").val();
+
+            activityArray.push(activity);
+            BuildUpActivityTable(activity);
+
+            $("#ActivityName").val("");
+            $("#ac_ExpectedOutcome").val("");
+            $("#ac_startdate").val("");
+            $("#ac_EndDate").val("");
+        });
+
+
+        $.each(activityArray, function(i, act){
+            BuildUpActivityTable(act);
+        });
+
+        function BuildUpActivityTable(activity){
+            var html = "<div class='panel panel-default minimal'><div class='panel-body'>";
+            html += "<label class='col-sm-2'>" + activity.StartDate + " - " + activity.EndDate + "</label>";
+            html += "<h3 class='no-margins'><strong>" + activity.Name + "</strong></h3>";
+            html += "<p>" + activity.ExpectedOutcome + "</p></div></div>"
+
+            $("#activitypanel").append(html);
+        }
+
+    </script>
+}

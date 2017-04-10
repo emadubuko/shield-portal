@@ -1,4 +1,5 @@
-﻿using EP.DAL.Entities;
+﻿using CommonUtil.Utilities;
+using EP.DAL.Entities;
 using FluentNHibernate.Mapping;
 
 namespace EP.DAL.Mapping
@@ -15,11 +16,16 @@ namespace EP.DAL.Mapping
             Map(m => m.ProgramName);
             Map(m => m.StartDate);
             Map(m => m.EndDate);
-            Map(m => m.ExpectedOutcome);
+            Map(m => m.ExpectedOutcome).Length(4001);
             HasMany(m => m.Activities)
-                 .Cascade.None()
+                 .Cascade.SaveUpdate()
                 .Inverse()
-                .KeyColumns.Add("ActivityId", mapping => mapping.Name("ActivityId"));
+                .KeyColumns.Add("EvaluationId", mapping => mapping.Name("EvaluationId"));
+            Map(m => m.DateCreated);
+            Map(m => m.LastUpdatedDate);
+            References(m => m.CreatedBy).Column("CreatedBy");
+            Map(m => m.Status);
+            Map(m => m.SupplementaryInfo).CustomType(typeof(XmlType<SupplementaryInfo>));
         }
     }
 }

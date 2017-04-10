@@ -9,5 +9,6 @@ namespace EP.DAL.Entities
         public virtual Profile Commenter { get; set; }
         public virtual string ResultTagId { get; set; }
         public virtual string DateAdded { get; set; } 
+        public virtual EvaluationActivities TheActivity { get; set; }
     }
 }

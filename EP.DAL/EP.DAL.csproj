@@ -56,7 +56,7 @@
     <Compile Include="DAO\EPCommentDAO.cs" />
     <Compile Include="DAO\EvaluationActivityDAO.cs" />
     <Compile Include="DAO\EvaluationDAO.cs" />
-    <Compile Include="Entities\ActivityResult.cs" />
+    <Compile Include="Entities\SupplementaryInfo.cs" />
     <Compile Include="Entities\EPComment.cs" />
     <Compile Include="Entities\EvaluationActivities.cs" />
     <Compile Include="Entities\Evaluation.cs" />

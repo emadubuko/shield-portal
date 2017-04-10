@@ -5,7 +5,6 @@ using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
 using CommonUtil.Utilities;
 using DAL.DAO;
-using DAL.Entities;
 using NHibernate;
 using NHibernate.Engine;
 using OfficeOpenXml;
@@ -19,29 +18,29 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using DQA.DAL.Business;
-using ShieldPortal.Service;
 using System.Reflection;
+using System.Threading;
 
 namespace Test
-{    
-    
+{
+     
     class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("started");
-           // new Program().RetrieveDimensionValue();
 
-           // new Program().RetrieveExcelValue();
+            new ShufflingTest().TestShuffle();
+
+            // new Program().RetrieveDimensionValue();
+
+            // new Program().RetrieveExcelValue();
 
 
-             DMPSummary();
+            //  DMPSummary();
 
             //new Program().UpdateFacilities();
-          //    new Program().GenerateFacilityTargetCSV();
+            //    new Program().GenerateFacilityTargetCSV();
 
             // new Program().GenerateNonDatimCode();
 

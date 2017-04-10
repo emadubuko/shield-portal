@@ -88,7 +88,8 @@
                     </li>
 
                     <li class="has-sub">
-                        <a href='@Url.Action("index", "DQA")'>  <i class="fa fa-check-square-o"></i><span class="title">Data Quality Assesment</span>
+                        <a href='@Url.Action("index", "DQA")'>
+                            <i class="fa fa-check-square-o"></i><span class="title">Data Quality Assesment</span>
                         </a>
                         <ul class="nav collapse">
                             <li>
@@ -116,28 +117,37 @@
                                 <a href=@Url.Action("Dashboard", "BiWeeklyReport")>
                                     <i class="fa fa-area-chart"></i><span class="title">Dashboard</span>
                                 </a>
-                            </li> 
+                            </li>
                             <li>
                                 <a href=@Url.Action("index", "BiWeeklyReport")>
                                     <i class="fa fa-area-chart"></i><span class="title">LGA Level Dashboard</span>
                                 </a>
-                            </li>                            
-                                <li>
-                                    <a href=@Url.Action("BiWeeklyReportUploads", "BiWeeklyReport")>
-                                        <i class="fa fa-newspaper-o"></i><span class="title">IP Upload Reports</span>
-                                    </a>
-                                </li>                            
+                            </li>
+                            <li>
+                                <a href=@Url.Action("BiWeeklyReportUploads", "BiWeeklyReport")>
+                                    <i class="fa fa-newspaper-o"></i><span class="title">IP Upload Reports</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
-                    <li>
-                        <a href=@Url.Action("index","Home")>
-                            <i class="fa fa-line-chart">
-                            </i><span class="title">Evaluation Plan</span>
-                        </a>
+                    <li class="has-sub">
+                        <a href="#/"><i class="icon-clock"></i><span class="title">Evaluation Plan</span></a>
+                        <ul class="nav collapse">
+                            <li>
+                                <a href=@Url.Action("index", "EvaluationPlan")>
+                                    <i class="fa fa-area-chart"></i><span class="title">Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("CreatePlan", "EvaluationPlan")>
+                                    <i class="fa fa-area-chart"></i><span class="title">Create Evaluation Plan</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                   
+
                     @if (HttpContext.Current.User.IsInRole("sys_admin") || HttpContext.Current.User.IsInRole("shield_team"))
                     {
                         <li class="has-sub">

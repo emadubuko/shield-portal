@@ -14,10 +14,11 @@ namespace EP.DAL.Mapping
             Map(m => m.Name);
             Map(m => m.StartDate);
             Map(m => m.EndDate);
-            Map(m => m.ExpectedOutcome);
-            References(r => r.TheEvaluation).Column("EvaluationId");
-            Map(m => m.Results).CustomType(typeof(XmlType<ActivityResult>));
-            //.Cascade.None()                .KeyColumn("") 
+            Map(m => m.ExpectedOutcome).Length(4001);
+            References(r => r.TheEvaluation).Column("EvaluationId");            
+            HasMany(x=>x.Comments).Cascade.SaveUpdate().Inverse()                
+                .KeyColumns.Add("ActivityId", mapping => mapping.Name("ActivityId"));
+            Map(m => m.Status);
         }
     }
 }

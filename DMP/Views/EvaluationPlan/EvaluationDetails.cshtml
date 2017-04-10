@@ -1,0 +1,281 @@
+﻿@model  ShieldPortal.ViewModel.EP.EPDetailsViewModel
+
+@{
+    ViewBag.Title = "Evaluation Plan";
+}
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+
+    <!--Summernote-->
+    <link href="~/plugins/summernote/css/summernote.css" rel="stylesheet" />
+
+    <style>
+        .paddedparagraph {
+            margin-left: 17%;
+        }
+
+        .no-margins {
+            margin: 0 !important;
+            font-size: 25px;
+        }
+
+        .comment-link {
+            color: #000;
+            position: relative;
+            display: inline-block;
+            opacity: 1;
+            height: 80px;
+            margin-top: 8px;
+        }
+
+        .comment-label {
+            color: #848d95;
+            opacity: .6;
+        }
+
+        .comment-button {
+            margin-bottom: 25px;
+        }
+
+        table {
+            margin-left: 17%;
+        }
+
+        tbody > tr {
+            border-bottom: 1px solid #eff0f1;
+            border-top: 1px solid #eff0f1;
+        }
+
+        td, th {
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        .edit-comment {
+            text-decoration: underline;
+            cursor: pointer;
+            color: #036eff;
+            /*float: right;*/
+            padding-left: 250px;
+        }
+
+        .tab-panel-heading {
+            padding-right: 20px;
+            background-color: #f5f5f5;
+            padding-bottom: 5px;
+            padding-left: 5px;
+            height: 40px;
+            color: steelblue;
+        }
+
+        .sumbit-button {
+            margin-top: 10px;
+        }
+
+        .status-button {
+            color: steelblue;
+            float: right;
+            margin-top: 8px;
+        }
+        .dropdown-menu > li > a:hover {
+            color: deeppink;
+        }
+        .status-option{ 
+            cursor:pointer;
+        }
+
+    </style>
+    <script type="text/javascript">
+        {
+            var activities =    @Html.Raw(Json.Encode(Model.Activities));
+            var info_array = @Html.Raw(Json.Encode(Model.Evaluation.SupplementaryInfo.Info));
+
+            function MakeEditable(row){
+                var content = $(row).html();
+                if(content.indexOf('>Edit comment<') !==-1){
+                    content =content.replace('>Edit comment<', '>Save<');
+                    $(row).html(content);
+                    $(row).prop('contenteditable', true)
+                }
+                else{
+                    content =content.replace('>Save<', '>Edit comment<');
+                    $(row).html(content);
+                    $(row).prop('contenteditable', false)
+                    //post update to server
+                    var updatedMsg = row.children[0].children[0].outerText;
+                    var id = row.id.split('_')[1];
+                    var Url = '@Url.Action("UpdateComment", "EvaluationPlan")';
+                    $.ajax({
+                        type: "POST",
+                        url: Url + "?message="+updatedMsg +"&&commentId="+id,
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,
+                    }).done(function (response) {
+                        console.log(response);
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                    });
+                    return false;
+                }
+            }
+        }
+    </script>
+}
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <form id="dmpForm" class="validate">
+                <div class="panel panel-warning">
+                    <div class="panel-heading clearfix">
+                        <h4 class="panel-title">Program Details</h4>
+                        <a href="/EvaluationPlan/EvaluationEdit?id=@Model.Evaluation.Id" class="btn btn-default btn-sm" style="float:right;"><i class="fa fa-paste"></i>&nbsp;&nbsp;Edit</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 " for="IP">Implementing Partner</label>
+                                <div>
+                                    <span id="ep_IP">@Model.Evaluation.ImplementingPartner.Name</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2" for="ProgramName">Program Name</label>
+                                <div>
+                                    <span id="ep_ProgramName">@Model.Evaluation.ProgramName</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2" for="ExpectedOutcome">Expected Program Outcome</label>
+                                <div>
+                                    <span id="ep_ExpectedOutcome">@Model.Evaluation.ExpectedOutcome</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2">Start Date</label>
+                                <div>
+                                    <span id="ep_Start_date">@string.Format("{0:dd-MMM-yyyy}", Model.Evaluation.StartDate)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2">End Date</label>
+                                <div>
+                                    <span id="ep_End_date">@string.Format("{0:dd-MMM-yyyy}", Model.Evaluation.EndDate)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2">Status</label>
+                                <div>
+                                    <span id="ep_End_date">@Model.Evaluation.Status</span>
+                                </div>
+                            </div>
+
+                            <div class="tabs-container">
+                                <ul class="nav nav-tabs">
+                                    <li class="panel-heading active"><a class="panel-title" href="#activitytab" aria-expanded="true" data-toggle="tab" style="text-decoration: underline;">Activities</a></li>
+                                    <li class=""><a aria-expanded="false" href="#otherinfotab" data-toggle="tab" style="text-decoration: underline;">Supplementary Information</a></li>
+                                </ul>
+
+                                <div class="tab-content">
+
+                                    @*activity tab*@
+                                    <div class="tab-pane active" id="activitytab">
+                                        <div class="panel-body" id="activitypanel">
+
+                                            @foreach (ShieldPortal.ViewModel.EP.ActivityViewModel act in Model.Activities)
+                                            {
+                                                <div class="panel panel-default minimal">
+                                                    <div class="tab-panel-heading">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_@act.id" aria-expanded="true">
+                                                            <i class="icon-down-open" style="float:left;"></i>
+                                                            <span class="panel-title">
+                                                                <small class="col-sm-2" style="color: #000;"> @act.StartDate --  @act.EndDate</small> &emsp;
+                                                                <span class="col-sm-push-1" style="color:steelblue;"><strong>@act.Name</strong></span>&nbsp;&nbsp;
+                                                                <span id="status-button_@act.id" style="color: deeppink;">(@act.Status)</span>
+                                                            </span>
+                                                        </a>
+                                                        <div class="dropdown" style="float: right;">
+                                                            <button class="btn btn-default btn-sm status-button dropdown-toggle" type="button" data-toggle="dropdown">
+                                                                change activity status
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @foreach (var item in Enum.GetNames(typeof(EP.DAL.Entities.EPStatus)))
+                                                                {
+                                                                    if (item.Replace("_", " ") != act.Status)
+                                                                    {
+                                                                        <li><a class="status-option" id="@item|@act.id">@item.Replace("_", " ")</a></li>
+                                                                    }
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div id="collapse_@act.id" class="panel-collapse collapse" aria-expanded="true">
+                                                        <div class="panel-body">
+                                                            <p class="col-sm-offset-2">@act.ExpectedOutcome</p>
+                                                            <span class='col-sm-offset-2 comment-label'>Comments</span>
+                                                            <table id="comment_table_@act.id">
+                                                                <tbody>
+                                                                    @foreach(var c in act.Comments)
+                                                                    {
+                                                                        <tr id="comment_@c.id">
+                                                                            <td>
+                                                                                <p>@c.message</p>&nbsp;&nbsp;&nbsp;-
+                                                                                <i>@c.commenter</i>&nbsp;&nbsp;<span dir='ltr' class='comment-label'>@c.dateadded</span>
+                                                                                <a class='edit-comment' onclick="MakeEditable(comment_@c.id)">Edit comment</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                            <label class="col-sm-2 comment-label">add a comment </label>
+                                                            <span> <textarea class="comment-link" id="comment_box_@act.id" cols="92" tabindex="101" data-min-length=""></textarea></span>
+                                                            <span><a class="btn btn-default comment-button">Add</a></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+
+                                    @*supplementary info*@
+                                    <div class="tab-pane" id="otherinfotab">
+                                        <div class="panel-body" id="otherinfopanel">
+                                        </div>
+                                        <div class="col-lg-10 col-sm-10 col-md-10" id="supplementaryInfo_1">
+                                            <div class="form-group" style="margin-top: 10px;padding-left:-60px">
+                                                <label class="col-sm-1 control-label">Title</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="title-info" title="Title is required" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <div id="summernote"></div>
+                                            <span><a class='btn btn-default sumbit-button' style="float:right">Submit</a></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    <script src="~/plugins/summernote/js/summernote.min.js"></script>
+    <script src="~/plugins/summernote/js/summernote-script.js"></script>
+    <script src="~/Scripts/EP/commentbuilder.js"></script>
+    <script>
+        //$(".note-btn-group btn-group note-insert")
+    </script>
+}
+

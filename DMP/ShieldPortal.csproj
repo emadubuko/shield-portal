@@ -217,6 +217,7 @@
     <Compile Include="Controllers\DocumentViewerController.cs" />
     <Compile Include="Controllers\DQAApiController.cs" />
     <Compile Include="Controllers\DQAController.cs" />
+    <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="ViewModel\DMPDocumentViewModel.cs" />
     <Compile Include="ViewModel\DMPViewModel.cs" />
     <Compile Include="ViewModel\EditDocumentViewModel.cs" />
+    <Compile Include="ViewModel\EP\EPDetailsViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
     <Compile Include="ViewModel\TrackerViewModel.cs" />
     <Compile Include="Views\Shared\Error_400.aspx.cs">
@@ -299,8 +301,6 @@
     <Content Include="Content\integral-core.css" />
     <Content Include="Content\integral-forms.css" />
     <Content Include="Content\integral-rtl-core.css" />
-    <Content Include="Content\_old\bootstrap.css" />
-    <Content Include="Content\_old\bootstrap.min.css" />
     <Content Include="images\favicon.ico" />
     <Content Include="images\icon-close.png" />
     <Content Include="images\loading.gif" />
@@ -929,6 +929,7 @@
     <Content Include="Scripts\dmpScripts\datacollationTableLogic.js" />
     <Content Include="Scripts\dmpScripts\datacollectionTableLogic.js" />
     <Content Include="Scripts\dmpScripts\dataverificationTableLogic.js" />
+    <Content Include="Scripts\EP\commentbuilder.js" />
     <Content Include="Scripts\fns\base.js" />
     <Content Include="Scripts\fns\fn_dashboard.js" />
     <Content Include="Scripts\fns\fn_dqa.js" />
@@ -1052,6 +1053,10 @@
     <Content Include="Views\DQA\AllIPDQA.cshtml" />
     <Content Include="Views\DQA\IpDQAAdmin.cshtml" />
     <Content Include="Views\Home\DQARegenerator.cshtml" />
+    <Content Include="Views\EvaluationPlan\CreatePlan.cshtml" />
+    <Content Include="Views\EvaluationPlan\EvaluationDetails.cshtml" />
+    <Content Include="Views\EvaluationPlan\Index.cshtml" />
+    <Content Include="Views\EvaluationPlan\EvaluationEdit.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1121,6 +1126,10 @@
     <ProjectReference Include="..\DQA.DAL\DQA.DAL.csproj">
       <Project>{adc0f63f-ce6c-4be8-867f-16eaf68b00b4}</Project>
       <Name>DQA.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EP.DAL\EP.DAL.csproj">
+      <Project>{afc8203e-c2dc-4896-af36-85b6ccb86349}</Project>
+      <Name>EP.DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

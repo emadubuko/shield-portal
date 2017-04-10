@@ -11,9 +11,10 @@ namespace EP.DAL.Mapping
 
             Id(i => i.Id);
             Map(m => m.DateAdded);
-            Map(m => m.Message);
+            Map(m => m.Message).Length(4001); ;
             Map(m => m.ResultTagId);
             References(m => m.Commenter);
+            References(m => m.TheActivity).Column("ActivityId");
 
         }
     }
