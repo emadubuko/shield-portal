@@ -217,6 +217,8 @@
     <Compile Include="Controllers\DocumentViewerController.cs" />
     <Compile Include="Controllers\DQAApiController.cs" />
     <Compile Include="Controllers\DQAController.cs" />
+    <Compile Include="Controllers\DQAFY2016Controller.cs" />
+    <Compile Include="Controllers\DQAFY2017Q2Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -243,9 +245,11 @@
     <Compile Include="ViewModel\CreateIPViewModel.cs" />
     <Compile Include="ViewModel\DMPDocumentViewModel.cs" />
     <Compile Include="ViewModel\DMPViewModel.cs" />
+    <Compile Include="ViewModel\DMP\StaffStatusByRoles.cs" />
     <Compile Include="ViewModel\EditDocumentViewModel.cs" />
     <Compile Include="ViewModel\EP\EPDetailsViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
+    <Compile Include="ViewModel\RadetReportModel.cs" />
     <Compile Include="ViewModel\TrackerViewModel.cs" />
     <Compile Include="Views\Shared\Error_400.aspx.cs">
       <DependentUpon>Error_400.aspx</DependentUpon>
@@ -274,7 +278,11 @@
     <Content Include="images\background-image.jpg" />
     <Content Include="images\background-image_old.jpg" />
     <Content Include="images\backgroung_image.png" />
+    <Content Include="images\bg-7-full.jpg" />
+    <Content Include="images\cdc.jpg" />
     <Content Include="images\clock.jpg" />
+    <Content Include="images\excel.png" />
+    <Content Include="images\HHS.png" />
     <Content Include="images\imac-40.jpg" />
     <Content Include="Content\images\animated-overlay.gif" />
     <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -291,12 +299,13 @@
     <Content Include="Content\images\ui-icons_888888_256x240.png" />
     <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="images\Loading_icon.gif" />
+    <Content Include="images\pepfar.jpg" />
     <Content Include="images\Profile-image.png" />
     <Content Include="images\favicon.png" />
     <Content Include="images\macbook-40.jpg" />
     <Content Include="images\office-40.jpg" />
     <Content Include="images\shield_login_burned.png" />
-    <Content Include="images\shield_logo.png" />
+    <Content Include="images\shield_logo.jpg" />
     <Content Include="images\snooker.jpg" />
     <Content Include="Content\integral-core.css" />
     <Content Include="Content\integral-forms.css" />
@@ -314,6 +323,7 @@
     <Content Include="images\sort_both.png" />
     <Content Include="images\sort_desc.png" />
     <Content Include="images\spinner.gif" />
+    <Content Include="images\UMB logo.jpg" />
     <Content Include="images\umb-icon.jpg" />
     <Content Include="img\grid.png" />
     <Content Include="img\icon_sprite.png" />
@@ -949,6 +959,7 @@
     <Content Include="Scripts\jsonTable.js" />
     <Content Include="Scripts\loader.js" />
     <Content Include="Scripts\dmpScripts\ReportTableLogic.js" />
+    <Content Include="Scripts\profile-display.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\dmpScripts\trainingreportTableLogic.js" />
     <Content Include="Scripts\Ultilities.js" />
@@ -1047,16 +1058,33 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\DQA\Home.cshtml" />
     <Content Include="Views\DQA\error.cshtml" />
     <Content Include="Views\Shared\Denied.cshtml" />
     <Content Include="Views\DQA\AllIPDQA.cshtml" />
     <Content Include="Views\DQA\IpDQAAdmin.cshtml" />
-    <Content Include="Views\Home\DQARegenerator.cshtml" />
     <Content Include="Views\EvaluationPlan\CreatePlan.cshtml" />
     <Content Include="Views\EvaluationPlan\EvaluationDetails.cshtml" />
     <Content Include="Views\EvaluationPlan\Index.cshtml" />
     <Content Include="Views\EvaluationPlan\EvaluationEdit.cshtml" />
+    <Content Include="Views\DMP\DMPDashboard.cshtml" />
+    <Content Include="Views\Home\submenu.cshtml" />
+    <Content Include="Views\DQA\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\AllIPDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\Dashboard.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\error.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\GetDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\IpDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\IpDQAAdmin.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\PendingFacilities.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\UploadPivotTable.cshtml" />
+    <Content Include="Views\Shared\DQAFY2017Q1Layout.cshtml" />
+    <Content Include="Views\DQA\Analytics.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\Analytics.cshtml" />
+    <Content Include="Views\BiWeeklyReport\UploadNewReport.cshtml" />
+    <Content Include="Views\DQAFY2016\Index.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\UploadRadet.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1075,7 +1103,6 @@
     <Content Include="Views\BiWeeklyReport\BiWeeklyReportUploads.cshtml" />
     <Content Include="Views\DQA\Dashboard.cshtml" />
     <Content Include="Views\DQA\GetDQA.cshtml" />
-    <Content Include="Views\DQA\Index.cshtml" />
     <Content Include="Views\DQA\IpDQA.cshtml" />
     <Content Include="Views\DQA\UploadDQA.cshtml" />
     <Content Include="Views\DMP\Index.cshtml" />
@@ -1090,6 +1117,9 @@
     <Content Include="Views\Home\DynamicTable.cshtml" />
     <Content Include="Views\Home\Tracker.cshtml" />
     <Content Include="Views\BiWeeklyReport\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_DQAFY2017Q2Layout.cshtml" />
+    <Content Include="Views\Shared\_adminLayout.cshtml" />
+    <Content Include="Views\Shared\_bwrLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,56 +1,52 @@
 ﻿@model  CommonUtil.Entities.HealthFacility
 
-@section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
+@{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+@section AddToHead{ 
     @Styles.Render("~/bundles/mysiteCss")
 }
+<div class="col-lg-8">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <h4 class="panel-title">Facility Details</h4>
+            </div>
+            @*<div class="col-lg-2">
+                <a href="~/HealthFacility/HealthFacilityEdit?facilityId=@Model.Id" class="btn btn-black btn-sm btn-outline" style="line-height:10px;">
+                    <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
+                </a>
+            </div>*@
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
 
-<div class="main-content">
-     
-    <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-8">
-            <div class="panel panel-warning">
-                <div class="panel-heading clearfix">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-8">
-                        <h4 class="panel-title">Facility Details</h4>
+                @foreach (var field in typeof(CommonUtil.Entities.HealthFacility).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                {
+                    <div class="form-group">
+                        <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                        <div>
+                            @if (field.Name == "LGA")
+                            {
+                                <span>@(Model.LGA.DisplayName)</span>
+                            }
+                            else if (field.Name == "Organization")
+                            {
+                                <span>@(Model.Organization == null ? "" : (Model.Organization.Name + " - " + @Model.Organization.ShortName))</span>
+                            }
+                            else
+                            {
+                                <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
+                            }
+                        </div>
                     </div>
-                    <div class="col-lg-2">
-                        <a href="~/HealthFacility/HealthFacilityEdit?facilityId=@Model.Id" class="btn btn-black btn-outline" style="line-height:10px;">
-                            <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="form-horizontal">
-
-                        @foreach (var field in typeof(CommonUtil.Entities.HealthFacility).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                        {
-                            <div class="form-group">
-                                <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                <div>
-                                    @if (field.Name == "LGA")
-                                    {
-                                        <span>@(Model.LGA.DisplayName)</span>
-                                    }
-                                    else if (field.Name == "Organization")
-                                    {
-                                        <span>@(Model.Organization ==null ? "" : (Model.Organization.Name  + " - " +@Model.Organization.ShortName))</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts
 {
     @Scripts.Render("~/bundles/CreateDMPJs")

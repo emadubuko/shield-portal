@@ -27,24 +27,46 @@ namespace ShieldPortal.Controllers
             projDAO = new ProjectDetailsDAO();
 
         }
-
-        public ActionResult DQARegenerator()
-        {
-            return View();
-        }
-
+        
         public ActionResult index()
         {
             return View();
         }
 
+        public ActionResult submenu(string id)
+        {
+            if (id.Contains("routine_reporting"))
+            {
+                ViewBag.breadcrumb = "Routine Reporting";
+            }
+            if (id.Contains("dmp"))
+            {
+                ViewBag.breadcrumb = "Data Management";
+            }
+            if (id.Contains("hiv_aid"))
+            {
+                ViewBag.breadcrumb = "Hiv-Aids Monitoring and Evaluation";
+            } 
+            if (id.Contains("outcome"))
+            {
+                ViewBag.breadcrumb = "Outcome Evaluation";
+            }
+            if (id.Contains("admin"))
+            {
+                ViewBag.breadcrumb = "Admin";
+            }
+
+            ViewBag.Container = id;
+            return View();
+        }
+ 
         public async Task<ActionResult> downloadDMPResource(string fileType)
         {
             string filename = "";
             if (fileType.Contains("staffstructure"))
                 filename = "Implementing Partner ME Staff Structure_modified.xlsx";
 
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/"+ filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
@@ -71,6 +93,9 @@ namespace ShieldPortal.Controllers
                 case "RandomNumber":
                     filename = "Random Number Table.pdf";
                     break;
+                case "PivotTable":
+                    filename = "DATIM PIVOT TABLE SAMPLE.xlsx";
+                    break;
             }
             //Report/Template\SHIELD_DQA_v2_20170321.xlsm
             string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/" + filename);
@@ -82,18 +107,9 @@ namespace ShieldPortal.Controllers
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
             }
         }
+         
 
-
-        public ActionResult ViewAllTracker()
-        {
-            List<TrackerViewModel> trackableDMP = new List<TrackerViewModel>();
-
-            //dmpDocDAO.SearchMostRecentByDMP
-
-            return View();
-        }
-
-        [AllowAnonymous]
+        [Authorize(Users = "emadubuko")]
         [HttpGet]
         public ActionResult Tracker(Guid documnentId)
         {

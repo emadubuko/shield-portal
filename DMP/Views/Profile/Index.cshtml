@@ -1,59 +1,53 @@
 ﻿@model List<CommonUtil.Entities.Profile>
+@{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+} 
 
-@section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
-   
-}
+<div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            User Profiles
+            <div class="col-sm-push-9 col-sm-2">
+                @if (System.Web.HttpContext.Current.User.IsInRole("sys_admin"))
+                {
+                    <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-sm btn-outline">
+                        <i class="icon-user-add"></i> Create New Profile
+                    </a>
+                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                }
+            </div>
 
-<div class="main-content">
-    <h1 class="page-title"> </h1>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-warning">
-                <div class="panel-heading clearfix">
-
-                    <div class="col-sm-offset-12">
-                        @if (System.Web.HttpContext.Current.User.IsInRole("sys_admin"))
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>email </th>
+                            <th>IP </th>
+                            <th>Role </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
                         {
-                            <a id="dmpCreate" href='@Url.Action("CreateProfile", "Profile")' class="btn btn-black btn-sm btn-outline">
-                                <i class="icon-user-add"></i> Create New Profile
-                            </a>
-                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">                           
+                            <tr onclick="window.document.location='/Profile/ProfileDetail?profileId=@item.Id'" style="cursor: pointer;">
+                                <td>@item.Username</td>
+                                <td>@item.FullName</td>
+                                <td>@item.ContactEmailAddress</td>
+                                <td>@item.Organization.ShortName</td>
+                                <td>@item.RoleName.ToUpper()</td>
+                            </tr>
                         }
-                    </div>
-
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover dataTables-example">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Full Name</th>
-                                    <th>email </th>                                    
-                                    <th>IP </th>
-                                    <th>Role </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr onclick="window.document.location='/Profile/ProfileDetail?profileId=@item.Id'" style="cursor: pointer;">
-                                        <td>@item.Username</td>
-                                        <td>@item.FullName</td>
-                                        <td>@item.ContactEmailAddress</td>                                        
-                                        <td>@item.Organization.ShortName</td>
-                                        <td>@item.RoleName.ToUpper()</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts
 {
    @Scripts.Render("~/bundles/CreateDMPJs")

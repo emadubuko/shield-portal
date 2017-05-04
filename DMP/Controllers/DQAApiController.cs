@@ -1,4 +1,6 @@
-﻿using CommonUtil.Utilities;
+﻿using CommonUtil.DAO;
+using CommonUtil.Entities;
+using CommonUtil.Utilities;
 using DQA.DAL.Business;
 using DQA.DAL.Model;
 using DQA.ViewModel;
@@ -26,7 +28,7 @@ namespace ShieldPortal.Controllers
     {
         readonly MetaDataService metadataService = new MetaDataService();
         // GET: api/DQA
-         
+
         // POST: api/DQA
         public string Post()
         {
@@ -60,11 +62,11 @@ namespace ShieldPortal.Controllers
                                 messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
                                 var countFailed = 0;
                                 try
-                                {                                                                          
-                                   using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                {
+                                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                                     using (ZipFile zipFile = new ZipFile(fs))
                                     {
-                                         
+
                                         var countProcessed = 0;
 
                                         var countSuccess = 0;
@@ -140,7 +142,7 @@ namespace ShieldPortal.Controllers
             }
             return messages;
         }
-       
+
 
         public HttpResponseMessage GetTestFile()
         {
@@ -291,21 +293,24 @@ namespace ShieldPortal.Controllers
         }
 
 
-        public DataSet GetSummaryResult()
+        public DataSet GetSummaryResult(int year, string Quarter)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_get_dqa_summary_result";
+            cmd.Parameters.AddWithValue("@period", Quarter);
+            cmd.Parameters.AddWithValue("@year", year);
             cmd.CommandType = CommandType.StoredProcedure;
-
             return Utility.GetDataSet(cmd);
         }
 
-        public DataSet GetIpSummaryResult(int id)
+        public DataSet GetIpSummaryResult(int year, string Quarter, int id)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_get_ip_dqa_summary_result";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ip", id);
+            cmd.Parameters.AddWithValue("@year", year);
+            cmd.Parameters.AddWithValue("@period", Quarter);
 
             return Utility.GetDataSet(cmd);
         }
@@ -315,6 +320,69 @@ namespace ShieldPortal.Controllers
         public void Delete(int id)
         {
             new BDQA().Delete(id);
+        }
+
+        [HttpPost]
+        public HttpResponseMessage ProcesssPivotTable(string selectedQuater, int selectedYear)
+        {
+            HttpResponseMessage msg = null;
+            if (HttpContext.Current.Request.Files.Count == 0 || string.IsNullOrEmpty(HttpContext.Current.Request.Files[0].FileName))
+            {
+                msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file was uploaded");
+            }
+            else
+            {
+                string result = "";
+                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
+                Stream uploadedFile = HttpContext.Current.Request.Files[0].InputStream;
+                bool status = new BDQA().ReadDatimPivotTable(uploadedFile, selectedQuater, selectedYear, loggedinProfile, out result);
+                if (status)
+                {
+                    msg = Request.CreateResponse(HttpStatusCode.OK, result);
+                }
+                else
+                    msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, result);
+            }
+            return msg;
+        }
+
+        [HttpPost]
+        public HttpResponseMessage ProcesssRadetFile(string selectedQuater, int selectedYear)
+        {
+            HttpResponseMessage msg = null;
+            if (HttpContext.Current.Request.Files.Count == 0 || string.IsNullOrEmpty(HttpContext.Current.Request.Files[0].FileName))
+            {
+                msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file was uploaded");
+            }
+            else
+            {
+                string result = "";
+                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
+                Stream uploadedFile = HttpContext.Current.Request.Files[0].InputStream;
+                bool status = new RadetUploadReportDAO().ReadRadetFile(uploadedFile, selectedQuater, selectedYear, loggedinProfile, out result);
+                if (status)
+                {
+                    msg = Request.CreateResponse(HttpStatusCode.OK, result);
+                }
+                else
+                    msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, result);
+            }
+            return msg;
+        }
+
+        [HttpPost]
+        public IHttpActionResult DeleteRadetFile(int id)
+        {
+            RadetUploadReportDAO dao = new RadetUploadReportDAO(); 
+            try
+            {
+                dao.DeleteRecord(id); 
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }           
+            return Ok();
         }
     }
 }

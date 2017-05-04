@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
+}
+@section AddToHead{
+<style>
+    .table > thead > tr > th {
+        font-weight: bold;
+    } 
+    .abbrev-full {
+        background-color: lightblue;
+    }
+</style>
+}
+ 
+
+   <div class="col-md-9">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success" id="ip_pnl" style="display:none">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title">DQA Listing By IP</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover" id="ipdqatbl">
+                            <thead>
+                                <tr>
+                                    <th>IP</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-success" id="facilitypnl" style="display:none">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title"> DQA Listing By Facilities</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive" style="overflow-x: initial;">
+                        <table class="table table-bordered table-striped table-hover" id="facilitytbl">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Site</th>
+                                    <th>Lga</th>
+                                    <th>State</th>
+                                    <th>FiscalYear</th>
+                                    <th>UploadDate</th>
+                                    <th>Quarer</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+   @section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".page-container").attr('class', 'page-container sidebar-collapsed');
+             
+            $(document).ready(function () {
+                var ip_id = @ViewBag.ip_id;
+                if(ip_id == 0){
+                    getAllIPDQASummary('ip_pnl',2017,'Q2');
+                }
+                else{
+                    getIPDQASummary(ip_id, 'facilitypnl',2017,'Q2');
+                }                
+            });
+
+            $('.table').DataTable({
+                "language": {
+                    "lengthMenu": " ",
+                    "zeroRecords": "No DQA result found for FY2017 Q2.",
+                    "infoEmpty": "No DQA result found for FY2017 Q2"
+                }
+            });
+        })
+    </script>
+}

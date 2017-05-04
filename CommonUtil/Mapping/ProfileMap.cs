@@ -7,7 +7,7 @@ namespace CommonUtil.Mapping
     {
         public ProfileMap()
         {
-            Table("dmp_Profile");
+            Table("Profile");
             Id(x => x.Id);
             Map(x => x.FirstName);
             Map(x => x.Surname).Not.Nullable();

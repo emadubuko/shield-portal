@@ -1,5 +1,7 @@
 ﻿@model  CommonUtil.Entities.Organizations
-
+@{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
     @Styles.Render("~/bundles/mysiteCss")
@@ -7,71 +9,84 @@
 <script src="~/Scripts/Ultilities.js"></script>
 }
 
-<div class="main-content">
+<div class="col-lg-8">
 
-    <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-8">
-           
-                <div class="panel panel-warning">
-                    <div class="panel-heading clearfix">
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-8">
-                            <h4 class="panel-title">Edit IP Details</h4>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <form id="mainform" class="validate">
-                            <div class="form-horizontal">
-                                @foreach (var field in typeof(CommonUtil.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <h4 class="panel-title">Edit IP Details</h4>
+            </div>
+        </div>
+        <div class="panel-body">
+            <form id="mainform" class="validate">
+                <div class="form-horizontal">
+                    @foreach (var field in typeof(CommonUtil.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                            <div class="col-sm-9">
+                                @if (field.Name == "OrganizationType")
                                 {
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                        <div class="col-sm-9">
-                                            @if (field.Name == "OrganizationType")
+                                    <select id="@field.Name" class="form-control" required>
+                                        @foreach (var orgType in Enum.GetValues(typeof(CommonUtil.Enums.OrganizationType)))
+                                        {
+                                            if (Convert.ToString(orgType) == Convert.ToString(field.GetValue(Model)))
                                             {
-                                                <select id="@field.Name" class="form-control" required>
-                                                    @foreach (var orgType in Enum.GetValues(typeof(CommonUtil.Enums.OrganizationType)))
-                                                    {
-                                                        if (Convert.ToString(orgType) == Convert.ToString(field.GetValue(Model)))
-                                                        {
-                                                            <option value="@orgType" selected>@CommonUtil.Utilities.Utilities.PasCaseConversion(orgType)</option>
-                                                        }
-                                                        <option value="@orgType">@CommonUtil.Utilities.Utilities.PasCaseConversion(orgType)</option>
-                                                    }
-                                                </select>
+                                                <option value="@orgType" selected>@CommonUtil.Utilities.Utilities.PasCaseConversion(orgType)</option>
                                             }
-                                            else if (field.PropertyType == typeof(byte[]))
+                                            <option value="@orgType">@CommonUtil.Utilities.Utilities.PasCaseConversion(orgType)</option>
+                                        }
+                                    </select>
+                                }
+                                else if (field.PropertyType == typeof(byte[]))
+                                {
+                                    <input type="file" onchange="imagePreview(this)" id="@field.Name" accept="image/*" class="form-control">
+                                }
+                                else if (field.Name == "SubscribedApps")
+                                {
+                                    <select id="@field.Name" class="select2 form-control" data-placeholder="Select subscribed apps" multiple required>
+                                        @foreach (var apps in ViewBag.AppServices)
+                                        {
+                                            if (field.GetValue(Model) !=null && (field.GetValue(Model) as List<string>).Contains(apps))
                                             {
-                                                <input type="file" onchange="imagePreview(this)" id="@field.Name" accept="image/*" class="form-control">
+                                                <option value="@apps" selected>@apps</option>
                                             }
                                             else
                                             {
-                                                <input type="text" id="@field.Name" value="@field.GetValue(Model)" required title="required field" class="form-control">
+                                                <option value="@apps">@apps</option>
                                             }
 
-                                        </div>
-                                    </div>
+                                        }
+                                    </select>
                                 }
-                                <div class="form-group">
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-8">
-                                        <a href='@Url.Action("index","Organization")' class="btn btn-default">
-                                            <i class="fa fa-close"></i> Cancel
-                                        </a>
-                                        &nbsp;&nbsp;
-                                        <button type="submit" id="dmpSubmit" class="btn btn-warning">Update</button>
-                                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-                                    </div>
-                                </div>
+                                else
+                                {
+                                    <input type="text" id="@field.Name" value="@field.GetValue(Model)" required title="required field" class="form-control">
+                                }
+
                             </div>
-                        </form>
-        </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-8">
+                            <a href='@Url.Action("index","Organization")' class="btn btn-sm btn-default">
+                                <i class="fa fa-close"></i> Cancel
+                            </a>
+                            &nbsp;&nbsp;
+                            <button type="submit" id="dmpSubmit" class="btn btn-sm btn-danger">Update</button>
+                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                        </div>
+                    </div>
                 </div>
-                          
+            </form>
         </div>
     </div>
+
 </div>
+
+
 @section Scripts
 {
    @Scripts.Render("~/bundles/CreateDMPJs")
@@ -91,7 +106,14 @@
                 if(formElements.id == "Logo" && base64Image != undefined){
 
                     viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,","").replace("data:image/png;base64,","");
-                }else{
+                }else if(formElements.id == "SubscribedApps"){
+                    var selected_services = [];
+                    $("#SubscribedApps option:selected").each(function(){
+                        selected_services.push($(this).val());
+                    });
+                    viewModel["SubscribedApps"] =selected_services;
+                }
+                else{
                     viewModel[formElements.id] = formElements.value;
                 }
             });

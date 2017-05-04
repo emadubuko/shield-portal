@@ -1,53 +1,66 @@
 ﻿@model  CommonUtil.Entities.Organizations
+@{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
 
 @section AddToHead{
     @Styles.Render("~/bundles/CreateDMPCss")
     @Styles.Render("~/bundles/mysiteCss")
 }
 
-<div class="main-content">
-    <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-8">
-            <div class="panel panel-warning">
-                <div class="panel-heading clearfix">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-8">
-                        <h4 class="panel-title">IP Details</h4>
-                    </div>
-                    <div class="col-lg-2">
-                        <a href="~/Organization/OrganizationEdit?orgId=@Model.Id" class="btn btn-black btn-outline" style="line-height:10px;">
-                            <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="form-horizontal">
+<div class="col-lg-8">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <h4 class="panel-title">IP Details</h4>
+            </div>
+            <div class="col-lg-2">
+                <a href="~/Organization/OrganizationEdit?orgId=@Model.Id" class="btn btn-black btn-sm btn-outline" style="line-height:10px;text-transform:capitalize">
+                    <i class="fa fa-paste"></i><span>&nbsp;&nbsp;Edit</span>
+                </a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
 
-                        @foreach (var field in typeof(CommonUtil.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                @foreach (var field in typeof(CommonUtil.Entities.Organizations).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                {
+                    <div class="form-group">
+                        <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+
+                        @if (@field.PropertyType == typeof(byte[]))
                         {
-                            <div class="form-group">
-                                <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                <div>
-                                    @if (@field.PropertyType == typeof(byte[]))
-                                    {
-                                        <img src='@( Model.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.Logo))' height="100">
-                                    }
-                                    else
-                                    {
-                                    <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
-                                    }
-                                </div>
-                            </div>
+                            <img src='@( Model.Logo == null ? "" : "data:image/jpg;base64," + Convert.ToBase64String(Model.Logo))' height="100">
                         }
+                        else if (field.PropertyType == typeof(List<string>))
+                        {
+                            <span class="col-sm-4">
+                                @if (field.GetValue(Model) != null)
+                                {
+                                    foreach (var i in (field.GetValue(Model) as List<string>))
+                                    {
+                                        @i <br />
+                                    }
+                                }
+                            
+                            </span>
+                        }
+                        else
+                        {
+                            <span> @CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model)) </span>
+                        }
+
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
 </div>
+
+
 @section Scripts
 {
     @Scripts.Render("~/bundles/CreateDMPJs")
-     
+
 }

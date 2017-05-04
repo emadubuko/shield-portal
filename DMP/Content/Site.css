@@ -35,7 +35,7 @@ li.removeVisibility {
     padding: 5px 20%;
 }
 
-form{
+/*form{
     color:steelblue;
 }
 .form-control{
@@ -43,19 +43,19 @@ form{
 }
  .btn-warning{
   background-color: steelblue;
-   border-color: steelblue;
+  
         }
  .btn-warning:hover{
   background-color: steelblue;
    border-color: steelblue;
-        }
-body {
+        }*/
+/*body {
     background-image: url('../images/backgroung_image.png'); 
-}
+}*/
 label {
     font-weight: bold;
 }
-.btn-default.btn-outline {
+/*.btn-default.btn-outline {
     color: steelblue;
     background-color: transparent;
     border-color: steelblue;
@@ -64,4 +64,12 @@ label {
 .btn-default:hover {
     color: #333;
     background-color: steelblue;
+}*/
+.page-container {
+    height: 100%;
+    /*width: 100%;*/
+    position: relative;
+    display: table;
+    table-layout: fixed;
+    background-color: #fff;
 }

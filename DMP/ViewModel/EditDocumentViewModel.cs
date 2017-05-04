@@ -113,6 +113,7 @@ namespace ShieldPortal.ViewModel
         public virtual ICollection<Comment> Comments { get; set; }
 
         public string documentID { get; set; }
+        public int dmpId { get; set; }
         public DMPStatus status { get; set; }
 
         public Organizations Organization { get; internal set; }
@@ -323,6 +324,6 @@ namespace ShieldPortal.ViewModel
             }
         }
 
-        public int dmpId { get; set; }
+       
     }
 }

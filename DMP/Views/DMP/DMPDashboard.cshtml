@@ -1,0 +1,74 @@
+﻿@model  List<ShieldPortal.ViewModel.DMP.StaffStatusByRoles>
+@{
+    ViewBag.Title = "DMPDashboard";
+}
+
+@section AddToHead{
+    @Styles.Render("~/bundles/CreateDMPCss")
+<style>
+    .table > thead > tr > th {
+        font-weight: 400;
+        text-transform: capitalize;
+    }
+</style>
+}
+
+<div class="main-content">
+    <div class="table-responsive">
+        @*by position*@
+        <table class="table table-bordered" width="100">
+            <thead>
+                <tr style="color: #FFF;background-color: steelblue;">
+                    <th>IP</th>
+                    @foreach (var t in ViewBag.headers)
+                    {
+                    <th>@t</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model)
+                {
+                <tr>
+                    <th style="color: cornflowerblue;">@m.IP</th>
+                    @foreach(var h in ViewBag.headers)
+                    {
+                    int val = 0;
+                    m.RoleCount.TryGetValue(h, out val);
+                    <td>@(val == 0 ? "-" : val.ToString())</td>
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @*by Workstation*@
+        <table class="table table-bordered" width="100">
+            <thead>
+                <tr style="color: #FFF;background-color: steelblue;">
+                    <th>IP</th>
+                    <th>Site</th>
+                    <th>Region</th>
+                    <th>HQ</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
+
+<script>
+
+</script>
+}

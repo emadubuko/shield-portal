@@ -1,27 +1,43 @@
 ﻿@model  ShieldPortal.ViewModel.EditDocumentViewModel2
 @{
-    ViewBag.Title = "Preview Document";
+    Layout = null;
 }
-@section AddToHead{
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-control" content="no-store, must-revalidate">
+    <meta http-equiv="Vary" content="*">
+
+    <title>Shield Portal</title>
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
+
+    @Styles.Render("~/Content/css") 
     @Styles.Render("~/bundles/CreateDMPCss")
+
     <style>
         .Adjusted-header {
             padding-left: 30%;
             padding-top: 10px;
-            height: 30px;
-            /*background-color: #004b17;*/
-            color: steelblue;
+            height: 30px; 
+            color: chocolate;
             font-weight: bold;
         }
+
         .commentBox {
             float: right;
-            border-color: steelblue;
-            color: steelblue;
+            border-color: cadetblue;
+            color: cadetblue;
         }
+
             .commentBox:hover {
                 color: #333;
-                background-color: steelblue;
+                background-color: cadetblue;
             }
+
         .form-horizontal .form-group {
             border-bottom: 1px solid #ccc;
         }
@@ -29,11 +45,29 @@
         div > span {
             color: #333;
         }
-        .flexheader{
-            /*col-sm-offset-7*/
-            display:flex;
-            flex-direction:row;
-            justify-content:flex-end
+
+        .flexheader { 
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+         .panel-warning {
+            border-color: chocolate;
+        }
+
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: chocolate;
+                border-color: chocolate;
+            }
+             
+        .form-control {
+            border-color: cadetblue;
+        }
+        .title {
+            font-weight: 300;
+            color: #000;
+            padding-left: 10px;
         }
     </style>
 
@@ -70,1078 +104,1173 @@
         var DataVerificationArray =[];
 
     </script>
-}
+</head>
+<body>
 
-<div class="main-content">
-    <div class="row">
-        <div class="col-lg-12">
-            <div>                
-                    <div class="flexheader">
-                        <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-default btn-sm btn-outline">
-                            <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
-                        </a>
-                        <a id="submitbtn" class="btn btn-default btn-sm btn-outline"><i class="icon-check"></i><span>Submit</span></a>
-                        <a id="downloadbtn" class="btn btn-default btn-sm btn-outline"><i class="icon-download"></i><span>Download</span></a>
-                        <a id="approvebtn" class="btn btn-default btn-sm btn-outline"><i class="icon-info"></i><span>Approval</span></a>
-                        <a href="~/Home/tracker?documnentId=@Model.documentID" class="btn btn-default btn-sm btn-outline">
-                            <i class="icon-flow-parallel"></i> View tracker
-                        </a>
+    <div class="page-container">
+         
+        <div class="main-header row">
+
+            <div class="col-lg-8">
+                <a class="col-lg-2">
+                    <img src="~/images/shield_logo.jpg" alt="Shield Logo" width="120" title="SHIELD" />
+                </a>
+                <a class="col-lg-1">
+                    <img src="~/images/pepfar.jpg" alt="pepfar logo" width="60" title="pepfar" />
+                </a>
+                <a class="col-lg-1">
+                    <img src="~/images/HHS.png" alt="HHS logo" width="70" title="HHS" />
+                </a>
+                <a class="col-lg-2">
+                    <img src="~/images/cdc.jpg" alt="cdc logo" width="100" title="cdc" />
+                </a>
+                <a class="col-lg-1">
+                    <img src="~/images/UMB logo.jpg" alt="UMB logo" width="200" title="UMB" />
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <div class="pull-right">
+                    <ul class="user-info">
+                        <li class="profile-info dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
+                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.DisplayBadge </span> <span class="caret"></span>
+                            </a>
+                            <!-- User action menu -->
+                            <ul class="dropdown-menu">
+                                <li><a id="userdetail" style="cursor:pointer"><i class="icon-user"></i>My profile</a></li>
+                                <li><a id="changepassword" style="cursor:pointer"><i class="fa fa-key"></i>Change password</a></li>
+                                <li><a href='#' id="logoff"><i class="icon-logout"></i>Logout</a></li>
+                            </ul>
+                            <!-- /user action menu -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- User info -->
+        </div>
+
+        <div class="main-content" style="padding-top: 0px;">
+
+            <div class="row" id="breadcrumb">
+                <div class="col-sm-7 col-sm-push-3">
+                    <ol class="breadcrumb breadcrumb-2">
+                        <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                        <li><a href="/Home/submenu?id=dmp">Data Management</a></li>
+                        <li><a href="/DMP/index">Data Management Plan</a></li>
+                        <li><a href="/DMP/DMPDetails?dmpId=@Model.dmpId">DMP info page</a></li>
+                        <li class="active">View document</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-warning">
+                        <div class="panel-body" style="padding-top: 20px;padding-bottom: 0px;">
+                            <ul class="list-item mailbox-list">
+                                <li>
+                                    <a href=@Url.Action("DMPDashboard", "DMP") style="color:cadetblue">
+                                        <i class="fa fa-area-chart"></i><span class="title">View Dashboard</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("index", "DMP") style="color:cadetblue">
+                                        <i class="icon-book-open"></i><span class="title">View DMP List</span>
+                                    </a>
+                                </li>
+                                @if (ViewBag.ShowCreateLink)
+                                {
+                                    <li>
+                                        <a href=@Url.Action("CreateDMP", "DMP") style="color:cadetblue">
+                                            <i class="fa fa-file-o"></i><span class="title">Create New DMP</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
-                    <h3 style="text-align:center"> @Model.projectDetails.DocumentTitle </h3> 
-                
+                </div>
 
-                <div class="panel-body">
-                    <form id="previewWizard">
-                        <div class="panel panel-warning" id="ProjectProfile">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">Project Profile</h4>
-                            </div>
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="ProjectDetails">
-                                    <div>
-                                        <h4 class="Adjusted-header">Project Details</h4>
+                <div class="col-md-9">
+                    <div>
+                        <div class="flexheader">
+                            <a href="~/DMPDocument/WizardPages?documnentId=@Model.documentID&&dmpId=@Model.dmpId" class="btn btn-default btn-sm btn-outline">
+                                <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
+                            </a>
+                            <a id="submitbtn" class="btn btn-default btn-sm btn-outline"><i class="icon-check"></i><span>Submit</span></a>
+                            <a id="downloadbtn" class="btn btn-default btn-sm btn-outline"><i class="icon-download"></i><span>Download</span></a>
+                            <a id="approvebtn" class="btn btn-default btn-sm btn-outline"><i class="icon-info"></i><span>Approval</span></a>
+                            <a href="~/Home/tracker?documnentId=@Model.documentID" class="btn btn-default btn-sm btn-outline">
+                                <i class="icon-flow-parallel"></i> View tracker
+                            </a>
+                        </div>
+                        <h3 style="text-align:center"> @Model.projectDetails.DocumentTitle </h3>
+
+
+                        <div class="panel-body">
+                            <form id="previewWizard">
+                                <div class="panel panel-warning" id="ProjectProfile">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Project Profile</h4>
                                     </div>
                                     <div class="panel-body">
-                                        <div class="form-horizontal">
+                                        <div class="panel panel-warning" id="ProjectDetails">
                                             <div>
-                                                <label class="col-sm-3"></label>
-                                                <img src='@(Model.Organization ==null || Model.Organization.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.Organization.Logo))' height="100">
+                                                <h4 class="Adjusted-header">Project Details</h4>
                                             </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div>
+                                                        <label class="col-sm-3"></label>
+                                                        <img src='@(Model.Organization ==null || Model.Organization.Logo ==null ? "":  "data:image/jpg;base64,"+ Convert.ToBase64String(Model.Organization.Logo))' height="100">
+                                                    </div>
 
-                                            <div class="form-group">
-                                                <label class="col-sm-3">Mechanism Name</label>
-                                                <span id="ProjectTitle">@Model.projectDetails.ProjectTitle</span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3">Document Title</label>
-                                                <span id="DocumentTitle">DMP_@Model.projectDetails.ProjectShortName </span>
-                                                <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                            </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3">Mechanism Name</label>
+                                                        <span id="ProjectTitle">@Model.projectDetails.ProjectTitle</span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3">Document Title</label>
+                                                        <span id="DocumentTitle">DMP_@Model.projectDetails.ProjectShortName </span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
 
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="organization">Organization</label>
-                                                <span id="organization">@Model.Organization.Name </span>
-                                            </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="organization">Organization</label>
+                                                        <span id="organization">@Model.Organization.Name </span>
+                                                    </div>
 
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="leadActivityMgr">Lead Activity Manager</label>
-                                                <div>
-                                                    <span id="leadActivityMgr">@(Model.projectDetails.LeadActivityManager != null ? Model.projectDetails.LeadActivityManager.FullName : "")</span>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="leadActivityMgr">Lead Activity Manager</label>
+                                                        <div>
+                                                            <span id="leadActivityMgr">@(Model.projectDetails.LeadActivityManager != null ? Model.projectDetails.LeadActivityManager.FullName : "")</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="AddressOfOrganization">Address of Organization</label>
+                                                        <div>
+                                                            <span id="AddressOfOrganization">@Model.Organization.Address</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="MissionPartner">Mission Partner</label>
+                                                        <div>
+                                                            <span id="MissionPartner">@Model.Organization.MissionPartner</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="ProjectStartDate">Project Start Date</label>
+                                                        <div>
+                                                            <span id="ProjectStartDate">@Model.projectDetails.ProjectStartDate</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3">Project End Date</label>
+                                                        <div>
+                                                            <span id="ProjectEndDate">@Model.projectDetails.ProjectEndDate</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="GrantReferenceNumber">Grant Reference Number</label>
+                                                        <div>
+                                                            <span id="GrantReferenceNumber">@Model.projectDetails.GrantReferenceNumber</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <!--end of project details section-->
 
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="AddressOfOrganization">Address of Organization</label>
-                                                <div>
-                                                    <span id="AddressOfOrganization">@Model.Organization.Address</span>
+                                        <div class="panel panel-warning" id="EthicsApproval">
+                                            <div>
+                                                <h4 class="Adjusted-header">Ethics Approval</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4" for="EthicalApprovalForTheProject">Ethical approval for the project</label>
+                                                        <div>
+                                                            <span id="EthicalApprovalForTheProject">@Model.ethicsApproval.EthicalApprovalForTheProject</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4" for="Rational">Rational</label>
+                                                        <div>
+                                                            <span id="Rational">@Model.ethicsApproval.Rational</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4" for="AprrovingInstititionalReviewBoard">Aprroving instititional review board</label>
+                                                        <div>
+                                                            <span id="AprrovingInstititionalReviewBoard">@Model.ethicsApproval.AprrovingInstititionalReviewBoard</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4" for="TypeOfEthicalApproval">Type of ethical approval</label>
+                                                        <div>
+                                                            <span id="TypeOfEthicalApproval">@Model.ethicsApproval.TypeOfEthicalApproval</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
+                                        </div>
+                                        <!--End of ethic approval section-->
+                                    </div>
+                                </div>
+                                <!-- end of Project profile page-->
 
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="MissionPartner">Mission Partner</label>
-                                                <div>
-                                                    <span id="MissionPartner">@Model.Organization.MissionPartner</span>
-                                                </div>
+                                <div class="panel panel-warning" id="DocumentRevisions">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Document Revisions</b>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="panel panel-warning" id="Version">
+                                            <div>
+                                                <h4 class="Adjusted-header">Versions</h4>
                                             </div>
+                                            <div class="panel-body">
 
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="ProjectStartDate">Project Start Date</label>
-                                                <div>
-                                                    <span id="ProjectStartDate">@Model.projectDetails.ProjectStartDate</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3">Project End Date</label>
-                                                <div>
-                                                    <span id="ProjectEndDate">@Model.projectDetails.ProjectEndDate</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="GrantReferenceNumber">Grant Reference Number</label>
-                                                <div>
-                                                    <span id="GrantReferenceNumber">@Model.projectDetails.GrantReferenceNumber</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                <div class="form-horizontal">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                    <th>Version Author</th>
+                                                                    <th>Version Number</th>
+                                                                    <th>Version Date</th>
+                                                                    <th>Approval</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var item in Model.documentRevisions)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@item.Version.VersionAuthor.DisplayName</td>
+                                                                        <td>@item.Version.VersionMetadata.VersionNumber</td>
+                                                                        <td>@item.Version.VersionMetadata.VersionDate</td>
+                                                                        <td>@item.Version.Approval.DisplayName</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!--end of project details section-->
+                                <!-- end of document revision page-->
 
-                                <div class="panel panel-warning" id="EthicsApproval">
-                                    <div>
-                                        <h4 class="Adjusted-header">Ethics Approval</h4>
+
+                                <div class="panel panel-warning" id="Planning">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Program Objective</b>
+                                        </h4>
                                     </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="col-sm-4" for="EthicalApprovalForTheProject">Ethical approval for the project</label>
-                                                <div>
-                                                    <span id="EthicalApprovalForTheProject">@Model.ethicsApproval.EthicalApprovalForTheProject</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-4" for="Rational">Rational</label>
-                                                <div>
-                                                    <span id="Rational">@Model.ethicsApproval.Rational</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-4" for="AprrovingInstititionalReviewBoard">Aprroving instititional review board</label>
-                                                <div>
-                                                    <span id="AprrovingInstititionalReviewBoard">@Model.ethicsApproval.AprrovingInstititionalReviewBoard</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-4" for="TypeOfEthicalApproval">Type of ethical approval</label>
-                                                <div>
-                                                    <span id="TypeOfEthicalApproval">@Model.ethicsApproval.TypeOfEthicalApproval</span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
 
+                                    <div class="panel-body">
+                                        <div class="panel panel-warning" id="Summary">
+                                            <div>
+                                                <h4 class="Adjusted-header">Summary</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <span id="ProjectSummary">
+                                                                @if (!string.IsNullOrEmpty(Model.summary.ProjectObjectives))
+                                                                {
+                                                                    foreach (var t in Model.summary.ProjectObjectives.Split('\n'))
+                                                                    {
+                                                                        @t <br />
+                                                                    }
+                                                                }
+                                                            </span> <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <!--end of Summary section-->
                                     </div>
                                 </div>
-                                <!--End of ethic approval section-->
-                            </div>
-                        </div>
-                        <!-- end of Project profile page-->
+                                <!-- end of Planning page-->
 
-                        <div class="panel panel-warning" id="DocumentRevisions">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Document Revisions</b>
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="Version">
-                                    <div>
-                                        <h4 class="Adjusted-header">Versions</h4>
+
+                                <div class="panel panel-warning" id="MonitoringAndEvaluation">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Monitoring and Evaluation Systems</b>
+                                        </h4>
                                     </div>
                                     <div class="panel-body">
+                                        <div class="panel panel-warning" id="People">
+                                            <div>
+                                                <h4 class="Adjusted-header">People</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
+                                                        <div>
+                                                            <img id="DataFlowChart">
+                                                        </div>
+                                                    </div>
 
-                                        <div class="form-horizontal">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                            <th>Version Author</th>
-                                                            <th>Version Number</th>
-                                                            <th>Version Date</th>
-                                                            <th>Approval</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var item in Model.documentRevisions)
+                                                    <div class="panel panel-warning" id="roles">
+                                                        <div class="panel-heading clearfix">
+                                                            <h4 class="panel-title">Roles</h4>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                        <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                            <th>Role</th>
+                                                                            <th>Site</th>
+                                                                            <th>Region/State</th>
+                                                                            <th>HQ</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="rolesTable">
+                                                                        @if (Model.People != null)
+                                                                        {
+                                                                            foreach (var item in Model.People.Roles)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@item.Name</td>
+                                                                                    <td>@item.SiteCount</td>
+                                                                                    <td>@item.RegionCount</td>
+                                                                                    <td>@item.HQCount</td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="panel panel-warning" id="resp">
+                                                        <div class="panel-heading clearfix">
+                                                            <h4 class="panel-title">Responsibility</h4>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                        <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                            <th>Responsibility</th>
+                                                                            <th>Site</th>
+                                                                            <th>Region/State</th>
+                                                                            <th>HQ</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="respsTable">
+                                                                        @if (Model.People != null)
+                                                                        {
+                                                                            foreach (var item in Model.People.Responsibilities)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@item.Name</td>
+                                                                                    <td>@item.SiteCount</td>
+                                                                                    <td>@item.RegionCount</td>
+                                                                                    <td>@item.HQCount</td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="panel panel-warning" id="Trainings">
+                                                        <div class="panel-heading clearfix">
+                                                            <h4 class="panel-title">Trainings</h4>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped table-bordered">
+                                                                    <thead>
+                                                                        <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                            <th>Name of Training</th>
+                                                                            <th>Training date (Site)</th>
+                                                                            <th> Training date (Region/State)</th>
+                                                                            <th>Training date (HQ)</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="trainingTable">
+                                                                        @if (Model.People != null)
+                                                                        {
+                                                                            foreach (var item in Model.People.Trainings)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@item.NameOfTraining</td>
+                                                                                    <td>@(item.SiteDisplayDate)</td>
+                                                                                    <td>@(item.RegionDisplayDate)</td>
+                                                                                    <td>@(item.HQDisplayDate)</td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--Trainings-->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-warning" id="Process">
+                                            <div>
+                                                <h4 class="Adjusted-header">Process</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    @foreach (var field in typeof(DAL.Entities.Processes).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                                    {
+                                                        if (field.Name == "DataCollation")
                                                         {
-                                                            <tr>
-                                                                <td>@item.Version.VersionAuthor.DisplayName</td>
-                                                                <td>@item.Version.VersionMetadata.VersionNumber</td>
-                                                                <td>@item.Version.VersionMetadata.VersionDate</td>
-                                                                <td>@item.Version.Approval.DisplayName</td>
-                                                            </tr>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-6">Data Collation</label>
+                                                                <div class="col-sm-6 col-sm-offset-1">
+                                                                    <table class="table">
+                                                                        <thead style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                            <tr>
+                                                                                <th>Types</th>
+                                                                                <th>Frequency</th>
+                                                                                <th></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="datacollationdataTable"> </tbody>
+                                                                    </table>
+                                                                    <span id="DataCollation"></span>
+                                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                                </div>
+                                                            </div>
                                                         }
-                                                    </tbody>
-                                                </table>
+                                                        else if (field.Name == "ReportLevel")
+                                                        {
+                                                            <div class="form-group">
+                                                                <label>Report level</label>
+                                                                <div class="col-sm-offset-1">
+                                                                    <span id="@field.Name">
+                                                                        @if (field.GetValue(Model.processes) != null)
+                                                                        {
+                                                                            foreach (var t in Model.processes.ReportLevel)
+                                                                            {
+                                                                                @t <br />
+                                                                            }
+                                                                        }
+                                                                    </span>
+                                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="form-group">
+                                                                <label>@(field.Name == "ImplementingPartnerMEProcess" ? "Implementing partner M & E process" : CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name))</label>
+                                                                <div class="col-sm-offset-1">
+                                                                    <span id="@field.Name">
+                                                                        @if (field.GetValue(Model.processes) != null)
+                                                                        {
+                                                                            foreach (var t in field.GetValue(Model.processes).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                            {
+                                                                                @t <br />
+                                                                            }
+                                                                        }
+                                                                    </span>
+                                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-warning" id="Equipment">
+                                            <div>
+                                                <h4 class="Adjusted-header">Equipment</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3" for="ProjectEquipments">Project equipments</label>
+                                                        <div>
+                                                            <span id="ProjectEquipments">@Model.Equipment.ProjectEquipments</span>
+                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-warning" id="Environment">
+                                            <div>
+                                                <h4 class="Adjusted-header">Environment</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label for="StatesCoveredByImplementingPartners">States covered by implementing partners</label>
+                                                        <div class="col-sm-offset-1">
+                                                            <span id="StatesCoveredByImplementingPartners">@Model.Environment.StatesCoveredByImplementingPartners</span>
+                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-heading clearfix">
+                                                        <h4 class="panel-title">Number of sites covered by implementing partners</h4>
+                                                        <hr />
+                                                    </div>
+                                                    @foreach (var field in typeof(DAL.Entities.AreaCoveredByIP).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                                    {
+                                                        if (field.Name == "NoOfSitesCoveredByIP")
+                                                        {
+                                                            continue;
+                                                        }
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                            <div class="col-sm-3">
+                                                                <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.Environment.NumberOfSitesCoveredByImplementingPartners))</span>
+
+                                                            </div>
+                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- end of document revision page-->
+                                <!-- end of M&E page-->
+
+                                <div class="panel panel-warning" id="dataprocess">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Data Processes</b>
+                                        </h4>
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <div class="panel panel-warning">
+                                            <div>
+                                                <h4 class="Adjusted-header">Data</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                <th>Level</th>
+                                                                <th>Data Type</th>
+                                                                <th>Reporting Tool</th>
+                                                                <th>Process</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="datacollectiondataTable"> </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-warning" id="ReportData">
+                                            <div>
+                                                <h4 class="Adjusted-header">Reports </h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                <th>Level</th>
+                                                                <th>Reports Type</th>
+                                                                <th>Reported To</th>
+                                                                <th>Program Area</th>
+                                                                <th>Frequency</th>
+                                                                <th>Duration(days)</th>
+                                                                <th>Timelines</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="reportdataTable"> </tbody>
+                                                    </table>
+                                                </div>
+                                                <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
+                                            </div>
+                                        </div>
+                                        <!--End of Report Data section -->
+                                    </div>
+                                </div>
 
 
-                        <div class="panel panel-warning" id="Planning">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Program Objective</b>
-                                </h4>
-                            </div>
+                                <div class="panel panel-warning" id="QualityAssurance">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Quality Assurance</b>
+                                        </h4>
+                                    </div>
 
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="Summary">
-                                    <div>
-                                        <h4 class="Adjusted-header">Summary</h4>
+                                    <div class="panel-body">
+                                        <div class="panel panel-warning" id="DataVerification">
+                                            <div>
+                                                <h4 class="Adjusted-header">Data Verification</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-horizontal">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px">
+                                                                    <th>Level</th>
+                                                                    <th>Thematic area</th>
+                                                                    <th>Verification Approach</th>
+                                                                    <th>Types</th>
+                                                                    <th>Frequency</th>
+                                                                    <th>Duration</th>
+                                                                    <th>Timelines</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="dataVerificationTable"> </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <span id="DataVerificationscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End of Data verificaton section-->
+                                    </div>
+                                </div>
+                                <!-- end of Quality Assurance page-->
+
+
+                                <div class="panel panel-warning" id="DataStorage">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Data Storage, Access & Sharing</b>
+                                        </h4>
                                     </div>
                                     <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                        <div class="panel panel-warning" id="Digital">
+                                            <div>
+                                                <h4 class="Adjusted-header">Digital Data</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px;">
+                                                                <th>Level</th>
+                                                                <th>Thematic Area</th>
+                                                                <th>Volume</th>
+                                                                <th>Format</th>
+                                                                <th>Location</th>
+                                                                <th>Backup</th>
+                                                                <th>Security</th>
+                                                                <th>Confidentiality Policies</th>
+                                                                <th>Pre-existing Data</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="digitaldataTable"> </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end of Digital data section-->
+
+                                        <div class="panel panel-warning" id="NonDigital">
+                                            <div>
+                                                <h4 class="Adjusted-header">Non-Digital Data</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px;">
+                                                                <th>Level</th>
+                                                                <th>Thematic Area</th>
+                                                                <th>Data types</th>
+                                                                <th>Storage location</th>
+                                                                <th>Safeguards and requirement</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="ndigitaldataTable"> </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end of non digital data section -->
+
+                                        <div class="panel panel-warning" id="DataAccessAndSharing">
+                                            <div>
+                                                <h4 class="Adjusted-header">
+                                                    Data Access and Sharing
+                                                </h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px;">
+                                                                <th>Level</th>
+                                                                <th>Thematic Area</th>
+                                                                <th>Data Access</th>
+                                                                <th>Sharing Policies</th>
+                                                                <th>Transmission policies</th>
+                                                                <th>Sharing platform</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="dasTable"> </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end of Data Access and Sharing page-->
+
+                                        <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
+                                            <div>
+                                                <h4 class="Adjusted-header">
+                                                    Data Documentation Management and Entry
+                                                </h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr style="color: #FFF;background-color: cadetblue;border-color: cadetblue;font-size:10px;">
+                                                                <th>Level</th>
+                                                                <th>Thematic Area</th>
+                                                                <th>Descriptors</th>
+                                                                <th>Naming Structure</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="ddocTable"> </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end of Data Documentation Management and Entry page-->
+                                    </div>
+                                </div>
+                                <!-- end of Data Storage page-->
+
+
+                                <div class="panel panel-warning" id="IntellectualPropertyCopyrightAndOwnership">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Intellectual Property Copyright and Ownership</b>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
+                                            {
                                                 <div class="form-group">
-                                                    <span id="ProjectSummary">
-                                                        @if (!string.IsNullOrEmpty(Model.summary.ProjectObjectives))
-                                                        {
-                                                            foreach (var t in Model.summary.ProjectObjectives.Split('\n'))
+                                                    <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                                                    <div class="col-sm-offset-1">
+                                                        <span id="@field.Name">
+                                                            @if (field.GetValue(Model.intelProp) != null)
                                                             {
-                                                    @t <br />
+                                                                foreach (var t in field.GetValue(Model.intelProp).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                                {
+                                                                    @t <br />
+                                                                }
+                                                            }
+                                                        </span>
+                                                        <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end of Intellectual Property Copyright And Ownership page-->
+
+
+                                <div class="panel panel-warning" id="PostProjectDataRetentionSharingAndDestruction">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">
+                                            <b>Post Project Data Retention Sharing and Destruction</b>
+                                        </h4>
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <label>Data To Retain</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="DataToRetain">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.DataToRetain))
+                                                        {
+                                                            foreach (var t in Model.ppData.DataToRetain.Split('\n'))
+                                                            {
+                                                                @t <br />
                                                             }
                                                         }
-                                                    </span> <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--end of Summary section-->
-                            </div>
-                        </div>
-                        <!-- end of Planning page-->
-
-
-                        <div class="panel panel-warning" id="MonitoringAndEvaluation">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Monitoring and Evaluation Systems</b>
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="People">
-                                    <div>
-                                        <h4 class="Adjusted-header">People</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="DataFlowChart">Data Flow Chart</label>
-                                                <div>
-                                                    <img id="DataFlowChart">
-                                                </div>
-                                            </div>
-
-                                            <div class="panel panel-warning" id="roles">
-                                                <div class="panel-heading clearfix">
-                                                    <h4 class="panel-title">Roles</h4>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped">
-                                                            <thead>
-                                                                <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                                    <th>Role</th>
-                                                                    <th>Site</th>
-                                                                    <th>Region/State</th>
-                                                                    <th>HQ</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="rolesTable">
-                                                                @if (Model.People != null)
-                                                                {
-                                                                    foreach (var item in Model.People.Roles)
-                                                                    {
-                                                                        <tr>
-                                                                            <td>@item.Name</td>
-                                                                            <td>@item.SiteCount</td>
-                                                                            <td>@item.RegionCount</td>
-                                                                            <td>@item.HQCount</td>
-                                                                        </tr>
-                                                                    }
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="panel panel-warning" id="resp">
-                                                <div class="panel-heading clearfix">
-                                                    <h4 class="panel-title">Responsibility</h4>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped">
-                                                            <thead>
-                                                                <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                                    <th>Responsibility</th>
-                                                                    <th>Site</th>
-                                                                    <th>Region/State</th>
-                                                                    <th>HQ</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="respsTable">
-                                                                @if (Model.People != null)
-                                                                {
-                                                                    foreach (var item in Model.People.Responsibilities)
-                                                                    {
-                                                                        <tr>
-                                                                            <td>@item.Name</td>
-                                                                            <td>@item.SiteCount</td>
-                                                                            <td>@item.RegionCount</td>
-                                                                            <td>@item.HQCount</td>
-                                                                        </tr>
-                                                                    }
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="panel panel-warning" id="Trainings">
-                                                <div class="panel-heading clearfix">
-                                                    <h4 class="panel-title">Trainings</h4>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped table-bordered">
-                                                            <thead>
-                                                                <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                                    <th>Name of Training</th>
-                                                                    <th>Training date (Site)</th>
-                                                                    <th> Training date (Region/State)</th>
-                                                                    <th>Training date (HQ)</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="trainingTable">
-                                                                @if (Model.People != null)
-                                                                {
-                                                                    foreach (var item in Model.People.Trainings)
-                                                                    {
-                                                                        <tr>
-                                                                            <td>@item.NameOfTraining</td>
-                                                                            <td>@(item.SiteDisplayDate)</td>
-                                                                            <td>@(item.RegionDisplayDate)</td>
-                                                                            <td>@(item.HQDisplayDate)</td>
-                                                                        </tr>
-                                                                    }
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!--Trainings-->
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-warning" id="Process">
-                                    <div>
-                                        <h4 class="Adjusted-header">Process</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
-                                            @foreach (var field in typeof(DAL.Entities.Processes).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                            {
-                                                if (field.Name == "DataCollation")
-                                                {
-                                                    <div class="form-group">
-                                                        <label class="col-sm-6">Data Collation</label>
-                                                        <div class="col-sm-6 col-sm-offset-1">
-                                                            <table class="table">
-                                                                <thead style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                                    <tr>
-                                                                        <th>Types</th>
-                                                                        <th>Frequency</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody id="datacollationdataTable"> </tbody>
-                                                            </table>
-                                                            <span id="DataCollation"></span>
-                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else if (field.Name == "ReportLevel")
-                                                {
-                                                    <div class="form-group">
-                                                        <label>Report level</label>
-                                                        <div class="col-sm-offset-1">
-                                                            <span id="@field.Name">
-                                                                @if (field.GetValue(Model.processes) != null)
-                                                                {
-                                                                    foreach (var t in Model.processes.ReportLevel)
-                                                                    {
-                                                                        @t <br />
-                                                                    }
-                                                                }
-                                                            </span>
-                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="form-group">
-                                                        <label>@(field.Name == "ImplementingPartnerMEProcess" ? "Implementing partner M & E process" : CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name))</label>
-                                                        <div class="col-sm-offset-1">
-                                                            <span id="@field.Name">
-                                                                @if (field.GetValue(Model.processes) != null)
-                                                                {
-                                                                    foreach (var t in field.GetValue(Model.processes).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                                                                    {
-                                                                        @t <br />
-                                                                    }
-                                                                }
-                                                            </span>
-                                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                        </div>
-                                                    </div>
-                                                }
-
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-warning" id="Equipment">
-                                    <div>
-                                        <h4 class="Adjusted-header">Equipment</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="col-sm-3" for="ProjectEquipments">Project equipments</label>
-                                                <div>
-                                                    <span id="ProjectEquipments">@Model.Equipment.ProjectEquipments</span>
+                                                    </span>
                                                     <a class="btn btn-default btn-sm commentBox"> comment</a>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-warning" id="Environment">
-                                    <div>
-                                        <h4 class="Adjusted-header">Environment</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
                                             <div class="form-group">
-                                                <label for="StatesCoveredByImplementingPartners">States covered by implementing partners</label>
+                                                <label>Pre-Existing Data</label>
                                                 <div class="col-sm-offset-1">
-                                                    <span id="StatesCoveredByImplementingPartners">@Model.Environment.StatesCoveredByImplementingPartners</span>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            </div>
-                                            <div class="panel-heading clearfix">
-                                                <h4 class="panel-title">Number of sites covered by implementing partners</h4>
-                                                <hr />
-                                            </div>
-                                            @foreach (var field in typeof(DAL.Entities.AreaCoveredByIP).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                            {
-                                                if (field.Name == "NoOfSitesCoveredByIP")
-                                                {
-                                                    continue;
-                                                }
-                                                <div class="form-group">
-                                                    <label class="col-sm-3 control-label">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                                    <div class="col-sm-3">
-                                                        <span id="@field.Name">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model.Environment.NumberOfSitesCoveredByImplementingPartners))</span>
-
-                                                    </div>
-                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of M&E page-->
-
-                        <div class="panel panel-warning" id="dataprocess">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Data Processes</b>
-                                </h4>
-                            </div>
-
-                            <div class="panel-body">
-                                <div class="panel panel-warning">
-                                    <div>
-                                        <h4 class="Adjusted-header">Data</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                        <th>Level</th>
-                                                        <th>Data Type</th>
-                                                        <th>Reporting Tool</th>
-                                                        <th>Process</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="datacollectiondataTable"> </tbody>
-                                            </table>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-warning" id="ReportData">
-                                    <div>
-                                        <h4 class="Adjusted-header">Reports </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                        <th>Level</th>
-                                                        <th>Reports Type</th>
-                                                        <th>Reported To</th>
-                                                        <th>Program Area</th>
-                                                        <th>Frequency</th>
-                                                        <th>Duration(days)</th>
-                                                        <th>Timelines</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="reportdataTable"> </tbody>
-                                            </table>
-                                        </div>
-                                        <span id="Reportscomment"></span><a class="btn btn-default btn-sm commentBox"> comment</a>
-                                    </div>
-                                </div>
-                                <!--End of Report Data section -->
-                            </div>
-                        </div>
-
-
-                        <div class="panel panel-warning" id="QualityAssurance">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Quality Assurance</b>
-                                </h4>
-                            </div>
-
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="DataVerification">
-                                    <div>
-                                        <h4 class="Adjusted-header">Data Verification</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="form-horizontal">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px">
-                                                            <th>Level</th>
-                                                            <th>Thematic area</th>
-                                                            <th>Verification Approach</th>
-                                                            <th>Types</th>
-                                                            <th>Frequency</th>
-                                                            <th>Duration</th>
-                                                            <th>Timelines</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="dataVerificationTable"> </tbody>
-                                                </table>
-                                            </div>
-                                            <span id="DataVerificationscomment"><a class="btn btn-default btn-sm commentBox"> comment</a></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Data verificaton section-->
-                            </div>
-                        </div>
-                        <!-- end of Quality Assurance page-->
-
-
-                        <div class="panel panel-warning" id="DataStorage">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Data Storage, Access & Sharing</b>
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                <div class="panel panel-warning" id="Digital">
-                                    <div>
-                                        <h4 class="Adjusted-header">Digital Data</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
-                                                        <th>Level</th>
-                                                        <th>Thematic Area</th>
-                                                        <th>Volume</th>
-                                                        <th>Format</th>
-                                                        <th>Location</th>
-                                                        <th>Backup</th>
-                                                        <th>Security</th>
-                                                        <th>Confidentiality Policies</th>
-                                                        <th>Pre-existing Data</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="digitaldataTable"> </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--end of Digital data section-->
-
-                                <div class="panel panel-warning" id="NonDigital">
-                                    <div>
-                                        <h4 class="Adjusted-header">Non-Digital Data</h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
-                                                        <th>Level</th>
-                                                        <th>Thematic Area</th>
-                                                        <th>Data types</th>
-                                                        <th>Storage location</th>
-                                                        <th>Safeguards and requirement</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="ndigitaldataTable"> </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--end of non digital data section -->
-
-                                <div class="panel panel-warning" id="DataAccessAndSharing">
-                                    <div>
-                                        <h4 class="Adjusted-header">
-                                            Data Access and Sharing
-                                        </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
-                                                        <th>Level</th>
-                                                        <th>Thematic Area</th>
-                                                        <th>Data Access</th>
-                                                        <th>Sharing Policies</th>
-                                                        <th>Transmission policies</th>
-                                                        <th>Sharing platform</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="dasTable"> </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- end of Data Access and Sharing page-->
-
-                                <div class="panel panel-warning" id="DataDocumentationManagementAndEntry">
-                                    <div>
-                                        <h4 class="Adjusted-header">
-                                            Data Documentation Management and Entry
-                                        </h4>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;font-size:10px;">
-                                                        <th>Level</th>
-                                                        <th>Thematic Area</th>
-                                                        <th>Descriptors</th>
-                                                        <th>Naming Structure</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="ddocTable"> </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- end of Data Documentation Management and Entry page-->
-                            </div>
-                        </div>
-                        <!-- end of Data Storage page-->
-
-
-                        <div class="panel panel-warning" id="IntellectualPropertyCopyrightAndOwnership">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Intellectual Property Copyright and Ownership</b>
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                <div class="form-horizontal">
-                                    @foreach (var field in typeof(DAL.Entities.IntellectualPropertyCopyrightAndOwnership).GetProperties().Where(x => !Attribute.IsDefined(x, typeof(System.Xml.Serialization.XmlIgnoreAttribute))).ToArray())
-                                    {
-                                    <div class="form-group">
-                                        <label>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="@field.Name">
-                                                @if (field.GetValue(Model.intelProp) != null)
-                                                    {
-                                                        foreach (var t in field.GetValue(Model.intelProp).ToString().Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                                                    <span id="PreExistingData">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.PreExistingData))
                                                         {
-                                                    @t <br />
+                                                            foreach (var t in Model.ppData.PreExistingData.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
                                                         }
-                                                    }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of Intellectual Property Copyright And Ownership page-->
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Duration</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="Duration">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.Duration))
+                                                        {
+                                                            foreach (var t in Model.ppData.Duration.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
+                                                        }
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Licensing</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="Licensing">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.Licensing))
+                                                        {
+                                                            foreach (var t in Model.ppData.Licensing.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
+                                                        }
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Digital Data Retention</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="DataRetention">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.DigitalDataRetention.DataRetention))
+                                                        {
+                                                            foreach (var t in Model.ppData.DigitalDataRetention.DataRetention.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
+                                                        }
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
 
+                                            <div class="form-group">
+                                                <label>Non Digital Data Retention</label>
+                                                <div class="col-sm-offset-1">
+                                                    <span id="nonDigitalDataRetention">
+                                                        @if (!string.IsNullOrEmpty(Model.ppData.NonDigitalRentention.DataRention))
+                                                        {
+                                                            foreach (var t in Model.ppData.NonDigitalRentention.DataRention.Split('\n'))
+                                                            {
+                                                                @t <br />
+                                                            }
+                                                        }
+                                                    </span>
+                                                    <a class="btn btn-default btn-sm commentBox"> comment</a>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                        <div class="panel panel-warning" id="PostProjectDataRetentionSharingAndDestruction">
-                            <div class="panel-heading clearfix">
-                                <h4 class="panel-title">
-                                    <b>Post Project Data Retention Sharing and Destruction</b>
-                                </h4>
-                            </div>
-
-                            <div class="panel-body">
-                                <div class="form-horizontal">
-                                    <div class="form-group">
-                                        <label>Data To Retain</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="DataToRetain">
-                                                @if (!string.IsNullOrEmpty(Model.ppData.DataToRetain))
-                                                {
-                                                    foreach (var t in Model.ppData.DataToRetain.Split('\n'))
-                                                    {
-                                                @t <br />
-                                                    }
-                                                }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Pre-Existing Data</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="PreExistingData">
-                                                @if (!string.IsNullOrEmpty(Model.ppData.PreExistingData))
-                                                {
-                                                    foreach (var t in Model.ppData.PreExistingData.Split('\n'))
-                                                    {
-                                                @t <br />
-                                                    }
-                                                }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Duration</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="Duration">
-                                                @if (!string.IsNullOrEmpty(Model.ppData.Duration))
-                                                {
-                                                    foreach (var t in Model.ppData.Duration.Split('\n'))
-                                                    {
-                                                @t <br />
-                                                    }
-                                                }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Licensing</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="Licensing">
-                                                @if (!string.IsNullOrEmpty(Model.ppData.Licensing))
-                                                {
-                                                    foreach (var t in Model.ppData.Licensing.Split('\n'))
-                                                    {
-                                                @t <br />
-                                                    }
-                                                }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Digital Data Retention</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="DataRetention">
-                                                @if (!string.IsNullOrEmpty(Model.ppData.DigitalDataRetention.DataRetention))
-                                                {
-                                                    foreach (var t in Model.ppData.DigitalDataRetention.DataRetention.Split('\n'))
-                                                    {
-                                                @t <br />
-                                                    }
-                                                }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Non Digital Data Retention</label>
-                                        <div class="col-sm-offset-1">
-                                            <span id="nonDigitalDataRetention">
-                                                @if (!string.IsNullOrEmpty(Model.ppData.NonDigitalRentention.DataRention))
-                                                {
-                                                    foreach (var t in Model.ppData.NonDigitalRentention.DataRention.Split('\n'))
-                                                    {
-                                                @t <br />
-                                                    }
-                                                }
-                                            </span>
-                                            <a class="btn btn-default btn-sm commentBox"> comment</a>
-                                        </div>
                                     </div>
                                 </div>
+                                <!-- end of Post Project Data Retention Sharing and Destruction page-->
+                                <a href="javascript:history.back()"><i class="icon-left-open"></i><b>Go Back</b></a>
+                            </form>
 
-                            </div>
                         </div>
-                        <!-- end of Post Project Data Retention Sharing and Destruction page-->
-                        <a href="javascript:history.back()"><i class="icon-left-open"></i><b>Go Back</b></a>
-                    </form>
+                    </div>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-md-push-3 col-md-5">
+                    <footer class="footer-main">
+                        &copy; @DateTime.Now.Year  <span>University of Maryland</span>
+                    </footer>
                 </div>
             </div>
         </div>
     </div>
-</div>
+     
+    <div class="modal fade" id="commentmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" style="width: 400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">comments</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel-body" style="display: block;">
+                        <div id="UlInModal">
 
-<div class="modal fade" id="commentmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 400px;" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">comments</h4>
-            </div>
-            <div class="modal-body">
-                <div class="panel-body" style="display: block;">
-                    <div id="UlInModal">
-
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control" id="newCC" type="text" placeholder="Your comments" />
-                    </div>
-                    <div class="form-group">
-                        <a id="addcomment" class="btn btn-default" style="float:right">Add</a>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" id="newCC" type="text" placeholder="Your comments" />
+                        </div>
+                        <div class="form-group">
+                            <a id="addcomment" class="btn btn-default" style="float:right">Add</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="ApprovalModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 400px;" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">Please confirm action</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="referback" class="btn btn-default"><i class="icon-reply"></i>Refer back</button>
-                <button id="approveConfirm" type="button" class="btn btn-success"><i class="icon-check"></i>Approve</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="ApprovalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 400px;" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div id="approvedmsg" class="modal-title"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+    <div class="modal fade" id="ApprovalModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" style="width: 400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Please confirm action</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="referback" class="btn btn-default"><i class="icon-reply"></i>Refer back</button>
+                    <button id="approveConfirm" type="button" class="btn btn-success"><i class="icon-check"></i>Approve</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="submitconfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 400px;" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">Please confirm action</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel</button>
-                <button type="button" id="submitbtnModal" class="btn btn-success"><i class="icon-check"></i>Submit</button>
+    <div class="modal fade" id="ApprovalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" style="width: 400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div id="approvedmsg" class="modal-title"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts
-{
-    @Scripts.Render("~/bundles/CreateDMPJs")
-    <script>
-        $(document).ready(function () {
+    <div class="modal fade" id="submitconfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" style="width: 400px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Please confirm action</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel</button>
+                    <button type="button" id="submitbtnModal" class="btn btn-success"><i class="icon-check"></i>Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            base64Image = '@Model.DataFlowChart';
-            if(base64Image !=undefined){
-                BindPureBase64StringToControl($('#DataFlowChart'), base64Image)
-            }
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+        @Scripts.Render("~/bundles/CreateDMPJs")
+        <script>
+            $(document).ready(function () {
 
-            $("#downloadbtn").click(function (e, n) {
-
-                $.ajax({
-                    type: "POST",
-                    url: "/DocumentViewer/DownloadDocument?documnentId=@Model.documentID",
-                    contentType: "application/json; charset=utf-8",
-                    cache: false,
-                }).done(function (filename) {
-                    window.location = '/Downloads/' + filename;
-                }).error(function (xhr, status, err) {
-                    alert(err);
-                    console.log(err);
-                });
-                return false;
-            });
-
-            var isIpUser =  '@HttpContext.Current.User.IsInRole("ip")' == 'True' ? true : false;
-
-            if('@Model.status' != "PendingApproval" || isIpUser){
-                $("#approvebtn").hide();
-            }
-
-            if('@Model.status' == "PendingApproval"){
-                $("#submitbtn").hide();
-            }
-
-
-            $("#approvebtn").click(function (e, n) {
-                $('#ApprovalModal1').modal('show');
-            });
-
-
-            $("#approveConfirm").click(function (e, n) {
-                $('#ApprovalModal1').modal('hide');
-
-                $.ajax({
-                    type: "POST",
-                    url: "/DocumentViewer/ApproveDocument?documnentId=@Model.documentID",
-                    contentType: "application/json; charset=utf-8",
-                    cache: false,
-                }).done(function (response) {
-                    var $msg = $("<span><b>"+ response +"</b></span>");
-                    $("#approvedmsg").append($msg);
-                    $('#ApprovalMessage').modal('show');
-
-                    if(response == "Approved"){
-                        $("#approvebtn").hide();
-                    }
-
-                }).error(function (xhr, status, err) {
-                    alert(err);
-                    console.log(err);
-                });
-                return false;
-            });
-
-            $("#referback").click(function (e, n) {
-                $('#ApprovalModal1').modal('hide');
-
-                $.ajax({
-                    type: "POST",
-                    url: "/DocumentViewer/referback?documnentId=@Model.documentID",
-                    contentType: "application/json; charset=utf-8",
-                    cache: false,
-                }).done(function (response) {
-                    var $msg = $("<span><b>"+ response +"</b></span>");
-                    $("#approvedmsg").append($msg);
-                    $('#ApprovalMessage').modal('show');
-                    $("#approvebtn").hide();
-
-                }).error(function (xhr, status, err) {
-                    var $msg = $("<span><b>"+ err +"</b></span>");
-                    $("#approvedmsg").append($msg);
-                    $('#ApprovalMessage').modal('show');
-                    console.log(err);
-                });
-                return false;
-            });
-
-            $("#submitbtn").click(function (e, n) {
-                $('#submitconfirmModal').modal('show');
-            });
-
-            $("#submitbtnModal").click(function (e, n) {
-                $("#submitconfirmModal").modal('hide');
-
-                $.ajax({
-                    type: "POST",
-                    url: "/DocumentViewer/submit?documnentId=@Model.documentID",
-                    contentType: "application/json; charset=utf-8",
-                    cache: false,
-                }).done(function (response) {
-                    var $msg = $("<span><b>"+ response +"</b></span>");
-                    $("#approvedmsg").append($msg);
-                    $('#ApprovalMessage').modal('show');
-                    $("#submitbtn").hide();
-                }).error(function (xhr, status, err) {
-                    var $msg = $("<span><b>"+ err +"</b></span>");
-                    $("#approvedmsg").append($msg);
-                    $('#ApprovalMessage').modal('show');
-                    console.log(err);
-                });
-                return false;
-            });
-
-            var clickedTag;
-            var comments =@Html.Raw(Json.Encode(Model.Comments));
-
-            //build the comments, auto retrieve from the DB based on the tag name
-            $(".commentBox").click(function (e, n) {
-                clickedTag = $(this).parent().children("span")[0].id;
-
-                $("#UlInModal").html('');
-                if(comments.length > 0){
-                    var selectedComments = $.grep(comments, function(a){
-                        return a.TagName === clickedTag;
-                    });
-                    $.each(selectedComments, function(index, value){
-                        GnerateListElement(value);
-                    })
+                base64Image = '@Model.DataFlowChart';
+                if(base64Image !=undefined){
+                    BindPureBase64StringToControl($('#DataFlowChart'), base64Image)
                 }
-                $('#commentmodal').modal('show');
-            });
 
-            function GnerateListElement(acomments){
-                var newElement = '<div class="form-group">'+
-	                                '<span style="display: block;">'+acomments.Commenter+'</span>'+
-                                    '<span style=" display: block;margin-left: 25px;">'+acomments.Message+' </span>'+
-                                    '<span class="sub-text" style="float: right;">'+acomments.DateAdded+'</span>' +
-                                '</div>'
+                $("#downloadbtn").click(function (e, n) {
 
-                var $li = $(newElement); //$("<li>"+ content +"</li>");
-                $("#UlInModal").append($li);
-            }
-
-            $("#addcomment").click(function (e, n) {
-                var someUrl = '@Url.Action("AddComment", "DocumentViewer")';
-                var data = JSON.stringify({ "TagName": clickedTag, "Message":$('#newCC').val()});
-                $.ajax({
-                    type: "POST",
-                    url: someUrl,
-                    contentType: "application/json; charset=utf-8",
-                    data: data,
-                    cache: false,
-                }).done(function (response) {
-                    if(response.Id != undefined){
-                        comments.push(response);
-                        GnerateListElement(response);
-                        $('#newCC').val('')
-                    }
-                }).error(function (xhr, status, err) {
-                    alert(err);
-                    console.log(err);
+                    $.ajax({
+                        type: "POST",
+                        url: "/DocumentViewer/DownloadDocument?documnentId=@Model.documentID",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,
+                    }).done(function (filename) {
+                        window.location = '/Downloads/' + filename;
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                    });
+                    return false;
                 });
-                return false;
+
+                var isIpUser =  '@HttpContext.Current.User.IsInRole("ip")' == 'True' ? true : false;
+
+                if('@Model.status' != "PendingApproval" || isIpUser){
+                    $("#approvebtn").hide();
+                }
+
+                if('@Model.status' == "PendingApproval"){
+                    $("#submitbtn").hide();
+                }
+
+
+                $("#approvebtn").click(function (e, n) {
+                    $('#ApprovalModal1').modal('show');
+                });
+
+
+                $("#approveConfirm").click(function (e, n) {
+                    $('#ApprovalModal1').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/DocumentViewer/ApproveDocument?documnentId=@Model.documentID",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,
+                    }).done(function (response) {
+                        var $msg = $("<span><b>"+ response +"</b></span>");
+                        $("#approvedmsg").append($msg);
+                        $('#ApprovalMessage').modal('show');
+
+                        if(response == "Approved"){
+                            $("#approvebtn").hide();
+                        }
+
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                    });
+                    return false;
+                });
+
+                $("#referback").click(function (e, n) {
+                    $('#ApprovalModal1').modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/DocumentViewer/referback?documnentId=@Model.documentID",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,
+                    }).done(function (response) {
+                        var $msg = $("<span><b>"+ response +"</b></span>");
+                        $("#approvedmsg").append($msg);
+                        $('#ApprovalMessage').modal('show');
+                        $("#approvebtn").hide();
+
+                    }).error(function (xhr, status, err) {
+                        var $msg = $("<span><b>"+ err +"</b></span>");
+                        $("#approvedmsg").append($msg);
+                        $('#ApprovalMessage').modal('show');
+                        console.log(err);
+                    });
+                    return false;
+                });
+
+                $("#submitbtn").click(function (e, n) {
+                    $('#submitconfirmModal').modal('show');
+                });
+
+                $("#submitbtnModal").click(function (e, n) {
+                    $("#submitconfirmModal").modal('hide');
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/DocumentViewer/submit?documnentId=@Model.documentID",
+                        contentType: "application/json; charset=utf-8",
+                        cache: false,
+                    }).done(function (response) {
+                        var $msg = $("<span><b>"+ response +"</b></span>");
+                        $("#approvedmsg").append($msg);
+                        $('#ApprovalMessage').modal('show');
+                        $("#submitbtn").hide();
+                    }).error(function (xhr, status, err) {
+                        var $msg = $("<span><b>"+ err +"</b></span>");
+                        $("#approvedmsg").append($msg);
+                        $('#ApprovalMessage').modal('show');
+                        console.log(err);
+                    });
+                    return false;
+                });
+
+                var clickedTag;
+                var comments =@Html.Raw(Json.Encode(Model.Comments));
+
+                //build the comments, auto retrieve from the DB based on the tag name
+                $(".commentBox").click(function (e, n) {
+                    clickedTag = $(this).parent().children("span")[0].id;
+
+                    $("#UlInModal").html('');
+                    if(comments.length > 0){
+                        var selectedComments = $.grep(comments, function(a){
+                            return a.TagName === clickedTag;
+                        });
+                        $.each(selectedComments, function(index, value){
+                            GnerateListElement(value);
+                        })
+                    }
+                    $('#commentmodal').modal('show');
+                });
+
+                function GnerateListElement(acomments){
+                    var newElement = '<div class="form-group">'+
+                                        '<span style="display: block;">'+acomments.Commenter+'</span>'+
+                                        '<span style=" display: block;margin-left: 25px;">'+acomments.Message+' </span>'+
+                                        '<span class="sub-text" style="float: right;">'+acomments.DateAdded+'</span>' +
+                                    '</div>'
+
+                    var $li = $(newElement); //$("<li>"+ content +"</li>");
+                    $("#UlInModal").append($li);
+                }
+
+                $("#addcomment").click(function (e, n) {
+                    var someUrl = '@Url.Action("AddComment", "DocumentViewer")';
+                    var data = JSON.stringify({ "TagName": clickedTag, "Message":$('#newCC').val()});
+                    $.ajax({
+                        type: "POST",
+                        url: someUrl,
+                        contentType: "application/json; charset=utf-8",
+                        data: data,
+                        cache: false,
+                    }).done(function (response) {
+                        if(response.Id != undefined){
+                            comments.push(response);
+                            GnerateListElement(response);
+                            $('#newCC').val('')
+                        }
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                    });
+                    return false;
+                });
+
             });
-             
-        });
-    </script>
-    
- @Scripts.Render("~/bundles/dmpScripts")
-}
+        </script>
+
+        @Scripts.Render("~/bundles/dmpScripts")
+    </body>
+</html>

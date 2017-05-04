@@ -1,5 +1,7 @@
-﻿using CommonUtil.Utilities;
+﻿using CommonUtil.Entities;
+using CommonUtil.Utilities;
 using DQA.DAL.Data;
+using DQA.DAL.Model;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing;
 using System;
@@ -128,8 +130,6 @@ namespace DQA.DAL.Business
 
             }
         }
-
-
 
         /// <summary>
         /// Read the result from the summary sheet
@@ -359,7 +359,7 @@ namespace DQA.DAL.Business
         }
 
         public void GenerateDQADimensionsFromDB(string dimension_outputfile, string comparsion_outputfile)
-        { 
+        {
             StringBuilder sb_dimensions = new StringBuilder();
             sb_dimensions.AppendLine("FacilityName, FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr");
             var dqadimensions = entity.dqa_dimensions.ToList();
@@ -374,7 +374,7 @@ namespace DQA.DAL.Business
             StringBuilder sb_comparison = new StringBuilder();
             sb_comparison.AppendLine("facility name,facility code, datim_htc_tst, htc_tst, datim_htc_tst_pos, htc_tst_pos, datim_htc_only, htc_only, datim_htc_pos, htc_pos, datim_pmtct_stat, pmtct_stat, datim_pmtct_stat_pos, pmtct_stat_pos, datim_pmtct_stat_previously, pmtct_stat_previoulsy_known, datim_pmtct_eid,pmtct_eid,datim_pmtct_art,pmtct_art,datim_tx_new,tx_new,datim_tx_curr,tx_curr");
             var dqaComparsion = entity.dqa_comparison.ToList();
-            foreach(var item in dqaComparsion)
+            foreach (var item in dqaComparsion)
             {
                 sb_comparison.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23}",
                    item.FacilityName.Replace(",", "-"), item.FacilityCode, item.Datim_HTC_TST, item.HTC_TST, item.DATIM_HTC_TST_POS, item.HTC_TST_POS, item.DATIM_HTC_ONLY, item.HTC_ONLY, item.DATIM_HTC_POS, item.HTC_POS, item.DATIM_PMTCT_STAT, item.PMTCT_STAT, item.DATIM_PMTCT_STAT_POS, item.PMTCT_STAT_POS, item.DATIM_PMTCT_STAT_Previously, item.PMTCT_STAT_Previoulsy_Known, item.DATIM_PMTCT_EID, item.PMTCT_EID, item.DATIM_PMTCT_ART, item.PMTCT_ART, item.Datim_TX_NEW, item.TX_NEW, item.DATIM_TX_CURR, item.TX_Curr));
@@ -428,22 +428,22 @@ namespace DQA.DAL.Business
                     //TX_CURR_charts = ExcelHelper.ReadCell(sht, 167, 6);
 
                     HTC_Charts_Precisions = ExcelHelper.ReadCell(sht, 2, 6);
-                    HTC_Charts = GetRandomizeDatimValue(HTC_Charts_Precisions);
+                    HTC_Charts = ExcelHelper.GetRandomizeChartNUmber(HTC_Charts_Precisions);
 
                     PMTCT_STAT_Charts_Precisions = ExcelHelper.ReadCell(sht, 46, 6);
-                    PMTCT_STAT_charts = GetRandomizeDatimValue(PMTCT_STAT_Charts_Precisions);
+                    PMTCT_STAT_charts = ExcelHelper.GetRandomizeChartNUmber(PMTCT_STAT_Charts_Precisions);
 
                     PMTCT_EID_Charts_Precisions = ExcelHelper.ReadCell(sht, 117, 6);
-                    PMTCT_EID_charts = GetRandomizeDatimValue(PMTCT_EID_Charts_Precisions);
+                    PMTCT_EID_charts = ExcelHelper.GetRandomizeChartNUmber(PMTCT_EID_Charts_Precisions);
 
                     PMTCT_ARV_Charts_Precisions = ExcelHelper.ReadCell(sht, 91, 6);
-                    PMTCT_ARV_Charts = GetRandomizeDatimValue(PMTCT_ARV_Charts_Precisions);
+                    PMTCT_ARV_Charts = ExcelHelper.GetRandomizeChartNUmber(PMTCT_ARV_Charts_Precisions);
 
                     TX_NEW_Charts_Precisions = ExcelHelper.ReadCell(sht, 141, 6);
-                    TX_NEW_charts = GetRandomizeDatimValue(TX_NEW_Charts_Precisions);
+                    TX_NEW_charts = ExcelHelper.GetRandomizeChartNUmber(TX_NEW_Charts_Precisions);
 
                     TX_CURR_Charts_Precisions = ExcelHelper.ReadCell(sht, 166, 6);
-                    TX_CURR_charts = GetRandomizeDatimValue(TX_CURR_Charts_Precisions);
+                    TX_CURR_charts = ExcelHelper.GetRandomizeChartNUmber(TX_CURR_Charts_Precisions);
 
                     sht = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
 
@@ -543,13 +543,13 @@ namespace DQA.DAL.Business
             entity.SaveChanges();
         }
 
-        
+
         private void SaveDQADimensions(ExcelWorkbook workbook, int metatdata)
-        { 
-            ExcelWorksheet sht = workbook.Worksheets["Worksheet"];            
+        {
+            ExcelWorksheet sht = workbook.Worksheets["Worksheet"];
             string FacilityName = ExcelHelper.ReadCell(sht, 2, 22);
             string FacilityCode = ExcelHelper.ReadCell(sht, 2, 27);
-             
+
             sht = workbook.Worksheets["All Questions"];
 
             string HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts,
@@ -565,24 +565,24 @@ namespace DQA.DAL.Business
             Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr,
             Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID,
             Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr;
-            
+
             HTC_Charts_Precisions = ExcelHelper.ReadCell(sht, 2, 6);
-            HTC_Charts = GetRandomizeDatimValue(HTC_Charts_Precisions);
+            HTC_Charts = ExcelHelper.GetRandomizeChartNUmber(HTC_Charts_Precisions);
 
             PMTCT_STAT_Charts_Precisions = ExcelHelper.ReadCell(sht, 46, 6);
-            PMTCT_STAT_charts = GetRandomizeDatimValue(PMTCT_STAT_Charts_Precisions);
+            PMTCT_STAT_charts = ExcelHelper.GetRandomizeChartNUmber(PMTCT_STAT_Charts_Precisions);
 
             PMTCT_EID_Charts_Precisions = ExcelHelper.ReadCell(sht, 117, 6);
-            PMTCT_EID_charts = GetRandomizeDatimValue(PMTCT_EID_Charts_Precisions);
+            PMTCT_EID_charts = ExcelHelper.GetRandomizeChartNUmber(PMTCT_EID_Charts_Precisions);
 
             PMTCT_ARV_Charts_Precisions = ExcelHelper.ReadCell(sht, 91, 6);
-            PMTCT_ARV_Charts = GetRandomizeDatimValue(PMTCT_ARV_Charts_Precisions);
+            PMTCT_ARV_Charts = ExcelHelper.GetRandomizeChartNUmber(PMTCT_ARV_Charts_Precisions);
 
             TX_NEW_Charts_Precisions = ExcelHelper.ReadCell(sht, 141, 6);
-            TX_NEW_charts = GetRandomizeDatimValue(TX_NEW_Charts_Precisions);
+            TX_NEW_charts = ExcelHelper.GetRandomizeChartNUmber(TX_NEW_Charts_Precisions);
 
             TX_CURR_Charts_Precisions = ExcelHelper.ReadCell(sht, 166, 6);
-            TX_CURR_charts = GetRandomizeDatimValue(TX_CURR_Charts_Precisions);
+            TX_CURR_charts = ExcelHelper.GetRandomizeChartNUmber(TX_CURR_Charts_Precisions);
 
             sht = workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
 
@@ -669,7 +669,7 @@ namespace DQA.DAL.Business
                 TX_NEW_Charts_Precisions = TX_NEW_Charts_Precisions,
                 MetadataId = metatdata
             };
-            entity.dqa_dimensions.Add(aDqaDimension);             
+            entity.dqa_dimensions.Add(aDqaDimension);
             entity.SaveChanges();
         }
 
@@ -697,7 +697,7 @@ namespace DQA.DAL.Business
             comparsion.DATIM_PMTCT_ART = datimNumber[12];
             comparsion.Datim_TX_NEW = datimNumber[7];
             comparsion.DATIM_TX_CURR = datimNumber[4];
-                        
+
             //read the calculated score
             var worksheet = workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
             comparsion.HTC_TST = ExcelHelper.ReadCell(worksheet, 8, 22);
@@ -714,10 +714,8 @@ namespace DQA.DAL.Business
 
             comparsion.metadataId = metadataId;
             entity.dqa_comparison.Add(comparsion);
-            entity.SaveChanges(); 
+            entity.SaveChanges();
         }
-
-
 
         //delete reports of a particular metadataId
         public void Delete(int metadataId)
@@ -739,63 +737,151 @@ namespace DQA.DAL.Business
             entity.SaveChanges();
 
         }
+         
+        public bool ReadDatimPivotTable(Stream datimFile, string quarter, int year, Profile profile, out string result)
+        {             
+            List<dqa_pivot_table> pivotTable = new List<dqa_pivot_table>();
+            try
+            { 
+                using (ExcelPackage package = new ExcelPackage(datimFile))
+                {
+                    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    int row = 2;
+                   
+                    while (true)
+                    {
+                        string fCode = ExcelHelper.ReadCell(worksheet, row, 1);
+                        if (string.IsNullOrEmpty(fCode))
+                        {
+                            break;
+                        } 
+                        string fName = ExcelHelper.ReadCell(worksheet, row, 2);
+                        int tb_art, pmtct_art, tx_curr, ovc = 0;
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 3), out pmtct_art);
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 4), out tx_curr);
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 5), out tb_art);
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 6), out ovc);
 
 
-        private string GetRandomizeDatimValue(string value)
-        {
-            int x = Convert.ToInt32(value);
-            int result = 0;
-            if (x >= 24 && x <= 30)
-                result = 24;
-            else if (x >= 31 && x <= 40)
-                result = 30;
-            else if (x >= 41 && x <= 50)
-                result = 35;
-            else if (x >= 51 && x <= 60)
-                result = 39;
-            else if (x >= 61 && x <= 70)
-                result = 43;
-            else if (x >= 71 && x <= 80)
-                result = 46;
-            else if (x >= 81 && x <= 90)
-                result = 49;
-            else if (x >= 91 && x <= 100)
-                result = 52;
-            else if (x >= 101 && x <= 119)
-                result = 57;
-            else if (x >= 120 && x <= 139)
-                result = 61;
-            else if (x >= 140 && x <= 159)
-                result = 64;
-            else if (x >= 160 && x <= 179)
-                result = 67;
-            else if (x >= 180 && x <= 199)
-                result = 70;
-            else if (x >= 200 && x <= 249)
-                result = 75;
-            else if (x >= 250 && x <= 299)
-                result = 79;
-            else if (x >= 300 && x <= 349)
-                result = 82;
-            else if (x >= 350 && x <= 399)
-                result = 85;
-            else if (x >= 400 && x <= 449)
-                result = 87;
-            else if (x >= 450 && x <= 499)
-                result = 88;
-            else if (x >= 500 && x <= 749)
-                result = 94;
-            else if (x >= 750 && x <= 999)
-                result = 97;
-            else if (x >= 1000 && x <= 4999)
-                result = 105;
-            else if (x >= 5000 && x <= 1000000)
-                result = 107;
-            else
-                result = x;
+                        pivotTable.Add(new dqa_pivot_table
+                        {
+                            FacilityName = fName,
+                            FacilityCode = fCode,
+                            TB_ART = tb_art,
+                            PMTCT_ART = pmtct_art,
+                            TX_CURR = tx_curr,
+                            OVC = ovc,
+                            Year = year,
+                            Quarter = quarter,
+                            IP = profile.Organization.Id,
+                        });
+                        row += 1;                    
+                    }                     
+                }
 
-            return result.ToString();
+                List<dqa_pivot_table> selectedList = new List<dqa_pivot_table>();
+
+                if (Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["Use_top_90_for_dqa_site_selection"]))
+                {
+                    #region top 90%
+                    int total_tx = pivotTable.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART));
+                    double _90_percent_of_Total_tx = total_tx * 0.9;
+                    pivotTable = pivotTable.OrderByDescending(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)).ToList();
+                    foreach (var item in pivotTable)
+                    {
+                        selectedList.Add(item);
+                        if (selectedList.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)) < _90_percent_of_Total_tx)
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "Based on 90% of Tx";
+                        }
+                        else if (item.OVC > 0)//all ovc sites are selected
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "OVC Site";
+                        }
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    #region top 80% and randomized 50% of remaining 
+
+                    //calclaute 80% of tx_curr
+                    int total_tx_curr = pivotTable.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART));
+                    double _80_percent_of_Total_tx_curr = total_tx_curr * 0.8;
+                    pivotTable = pivotTable.OrderByDescending(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)).ToList();
+                    foreach (var item in pivotTable)
+                    {
+                        selectedList.Add(item);
+                        if (selectedList.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)) < _80_percent_of_Total_tx_curr)
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "Based on 80% of Tx_curr";
+                        }
+                        else if (item.OVC > 0)
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "OVC Site";
+                        }
+                    }
+
+                    //Randomize and select 50%
+                    var remaining = selectedList.Where(x => !x.SelectedForDQA).ToList();
+                    remaining.Shuffle();
+                    for (int i = 0; i <= remaining.Count() / 2; i++)
+                    {
+                        if ((remaining[i].TX_CURR + remaining[i].PMTCT_ART + remaining[i].TB_ART) > 0)
+                        {
+                            selectedList.FirstOrDefault(x => x == remaining[i]).SelectedForDQA = true;
+                            selectedList.FirstOrDefault(x => x == remaining[i]).SelectedReason = "Based on randomization";
+                        }
+                    }
+                    #endregion
+                }
+
+                //return result
+                var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Year == year && x.Quarter == quarter.Trim());
+                if (previously != null)
+                {
+                    entity.dqa_pivot_table_upload.Remove(previously);
+                }
+               
+                entity.dqa_pivot_table_upload.Add(
+                    new dqa_pivot_table_upload
+                    {
+                        DateUploaded = DateTime.Now,
+                        dqa_pivot_table = selectedList,
+                        IP = profile.Organization.Id,
+                        Quarter = quarter,
+                        Year = year,
+                        UploadedBy = profile.Id
+                    });
+                entity.dqa_pivot_table.RemoveRange(entity.dqa_pivot_table.Where(x => x.Year == year && x.Quarter == quarter.Trim()).ToList());
+                entity.dqa_pivot_table.AddRange(selectedList);
+                entity.SaveChanges();
+                 
+               result = Newtonsoft.Json.JsonConvert.SerializeObject(
+                   from item in selectedList
+                   select new
+                   {
+                       item.FacilityName,
+                       item.OVC,
+                       item.PMTCT_ART,
+                       item.TB_ART,
+                       item.TX_CURR,
+                       item.SelectedForDQA,
+                       item.SelectedReason
+                   }
+                );
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return false;
+            }
+            return true;
         }
     }
-
 }

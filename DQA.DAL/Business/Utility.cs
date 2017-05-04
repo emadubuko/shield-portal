@@ -1,4 +1,5 @@
-﻿using CommonUtil.Mapping;
+﻿using CommonUtil.DAO;
+using CommonUtil.Mapping;
 using DQA.DAL.Data;
 using DQA.DAL.Model;
 using System;
@@ -28,7 +29,7 @@ namespace DQA.DAL.Business
 
             var result = GetNumberValue(cmd);
 
-            
+
 
             return result; //.Select(e=>e.State).Distinct().Count();
         }
@@ -59,7 +60,7 @@ namespace DQA.DAL.Business
         /// <param name="partnerId">Id of the partner</param>
         /// <param name="month">Reporting period</param>
         /// <returns>Number of facilities</returns>
-        public static int GetIpSubmitted(int partnerId,string month)
+        public static int GetIpSubmitted(int partnerId, string month)
         {
             return entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == month).Count();
         }
@@ -75,7 +76,7 @@ namespace DQA.DAL.Business
         }
 
 
-        public static List<StateSummary> GetStateIpStateSummary(int partnerId,string reporting_period)
+        public static List<StateSummary> GetStateIpStateSummary(int partnerId, string reporting_period)
         {
 
             var cmd = new SqlCommand();
@@ -125,9 +126,9 @@ namespace DQA.DAL.Business
         }
 
 
-        public static List<HealthFacility> GetSubmittedFacilities(int partnerId,string reporting_period)
+        public static List<HealthFacility> GetSubmittedFacilities(int partnerId, string reporting_period)
         {
-            var facility_ids= entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId  && e.ReportPeriod == reporting_period).Select(e=>e.Id).ToList();
+            var facility_ids = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == reporting_period).Select(e => e.Id).ToList();
             return entity.HealthFacilities.Where(x => facility_ids.Contains((int)x.Id)).ToList();
         }
 
@@ -145,13 +146,13 @@ namespace DQA.DAL.Business
 
         public static string GetLgaName(string lgaId)
         {
-            var lga = entity.lgas.FirstOrDefault(e=>e.lga_code==lgaId);
-            return lga !=null? lga.lga_name : "";
+            var lga = entity.lgas.FirstOrDefault(e => e.lga_code == lgaId);
+            return lga != null ? lga.lga_name : "";
         }
 
         public static string GetStateName(string stateId)
         {
-            var state = entity.states.FirstOrDefault(e=>e.state_code==stateId);
+            var state = entity.states.FirstOrDefault(e => e.state_code == stateId);
             return state != null ? state.state_name : "";
         }
 
@@ -166,9 +167,6 @@ namespace DQA.DAL.Business
                 return null;
             }
         }
-
-       
-       
 
         public static DataTable GetDatable(SqlCommand command)
         {
@@ -185,7 +183,7 @@ namespace DQA.DAL.Business
                 // this will query your database and return the result to your datatable
                 da.Fill(dataTable);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -193,12 +191,10 @@ namespace DQA.DAL.Business
             {
                 connection.Close();
             }
-
-
             return dataTable;
-
         }
 
+        /*
         public static lga GetLga(string lgaId)
         {
             return entity.lgas.FirstOrDefault(e=>e.lga_code==lgaId);
@@ -216,7 +212,7 @@ namespace DQA.DAL.Business
                 return "";// entity.dqa_facility_level.FirstOrDefault(e => e.Id == levelId).FacilityLevel;
             }
             
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "";
             }
@@ -261,6 +257,7 @@ namespace DQA.DAL.Business
             return result;
 
         }
+        */
 
         public static int GetNumberValue(SqlCommand command)
         {
@@ -273,8 +270,6 @@ namespace DQA.DAL.Business
                 connection.Open();
 
                 result = (int)command.ExecuteScalar();
-
-
             }
             catch (Exception ex)
             {
@@ -284,9 +279,7 @@ namespace DQA.DAL.Business
             {
                 connection.Close();
             }
-
             return result;
-
         }
 
         public static DataSet GetDataSet(SqlCommand cmd)
@@ -307,7 +300,39 @@ namespace DQA.DAL.Business
             return ds;
         }
 
+        public static List<UploadList> RetrievePivotTables(int ip_id)
+        {
+            List<dqa_pivot_table_upload> result = new List<dqa_pivot_table_upload>();
+            if (ip_id == 0)
+            {
+                result = entity.dqa_pivot_table_upload.ToList();
+            }
+            else
+            {
+                result = entity.dqa_pivot_table_upload.Where(x => x.IP == ip_id).ToList();
+            }
+            IEnumerable<UploadList> list = (from item in result
+                                     select new UploadList
+                                     {
+                                         IP = item.ImplementingPartner.ShortName,
+                                         Period = item.Quarter + " " + item.Year,
+                                         DateUploaded = item.DateUploaded,
+                                         UploadedBy = new ProfileDAO().Retrieve(item.UploadedBy).FullName,
+                                         id = item.Id.ToString(),
+                                         Tables = from table in item.dqa_pivot_table
+                                                  select new PivotUpload
+                                                  {
+                                                      FacilityName = table.FacilityName,
+                                                      OVC = table.OVC,
+                                                      PMTCT_ART = table.PMTCT_ART,
+                                                      TB_ART = table.TB_ART,
+                                                      TX_CURR = table.TX_CURR,
+                                                      SelectedForDQA = table.SelectedForDQA,
+                                                      SelectedReason = table.SelectedReason
+                                                  }
+                                     });
 
-
+            return list.ToList();
+        }
     }
 }

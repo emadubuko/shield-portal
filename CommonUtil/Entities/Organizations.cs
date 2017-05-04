@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace CommonUtil.Entities
 {
@@ -14,6 +16,8 @@ namespace CommonUtil.Entities
         public virtual byte[] Logo { get; set; } 
         public virtual string WebSite { get; set; }
         public virtual string Fax { get; set; }
+ 
+        public virtual List<string> SubscribedApps { get; set; }
 
        // public virtual OrganizationType OrganizationType { get; set; }
 

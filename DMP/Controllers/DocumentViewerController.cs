@@ -92,6 +92,8 @@ namespace ShieldPortal.Controllers
                 DataFlowChart = thepageDoc.MonitoringAndEvaluationSystems.People.DataFlowChart,
             };
 
+            var currentProfile = new Utils().GetloggedInProfile();
+            ViewBag.ShowCreateLink = currentProfile.Organization.SubscribedApps != null && currentProfile.Organization.SubscribedApps.Contains("DMP");
             return View(docVM);
         }
 

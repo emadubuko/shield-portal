@@ -1,0 +1,272 @@
+﻿@model List<ShieldPortal.ViewModel.RadetReportModel>
+@{
+
+    Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
+}
+@section AddToHead{
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
+        { 
+           // var previousUpload ;//= @*@Html.Raw(Json.Encode(Model));*@
+        }
+    </script>
+    <style>
+        .form-control {
+            color: #029b17;
+        }
+
+        form {
+            color: #029b17;
+        }
+
+        .rotate {
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083); /* IE6,IE7 */
+            -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
+            -moz-transform: rotate(-90.0deg); /* FF3.5+ */
+            -ms-transform: rotate(-90.0deg); /* IE9+ */
+            -o-transform: rotate(-90.0deg); /* Opera 10.5 */
+            -webkit-transform: rotate(-90.0deg); /* Safari 3.1+, Chrome */
+            transform: rotate(-90.0deg); /* Standard */
+        }
+    </style>
+}
+
+<div class="col-md-9">
+    <p style="color: red;font-weight: bold;">Upload all RADET files for ART facilities submitted to CDC for the Q2. After the upload is done, download the selection of patients whose Folder/Chart would be reviewed at the facility in order to validate the RADET for the facility. </p>
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">Upload Radet Report</h5>
+        </div>
+        <div class="panel-body">
+            <div class="progress active" id="progress">
+                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    <span class="sr-only">Loading...Please wait</span>
+                </div>
+            </div>
+            <form class="form-horizontal" id="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">File</label>
+                    <div class="col-sm-5">
+                        <input type="file" id="field-file" name="upFile" class="form-control" required>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" id="selected_quarter" required disabled>
+                            @*<option value="" selected disabled> Select Quarter</option>*@
+                            <option value="Q1(Oct - Dec)">October - December</option>
+                            <option value="Q2(Jan-Mar)" selected>January - March</option>
+                            <option value="Q3(Apr-Jun)">April - June</option>
+                            <option value="Q4(Jul-Sep)">July - September</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="selected_year" required disabled>
+                            @*<option value="" selected disabled>Year</option>*@
+                            <option value="2017" selected>2017</option>
+                            <option value="2018">2018</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-push-1 col-sm-1">
+                    <button class="btn btn-success" id="btnSubmit" type="submit">Upload</button>
+                </div>
+            </form>
+            <br /><br />
+            <div class="line-dashed"></div>
+            <div class="table-responsive" id="radetTable">
+                <div class="col-md-push-9 col-md-3">
+                    <a class="btn btn-success" id="save_download" style="text-transform:capitalize">Download Selected Entries</a>
+                </div>
+                <table class="table table-bordered table-hover" id="output" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Selected for DQA</th>
+                            <th>Patient Id</th>
+                            <th>Hospital No</th>
+                            <th>Sex</th>
+                            <th>Age at Start of ART (in Years)</th>
+                            <th>Age at Start of ART (in months)</th>
+                            <th>ART Start Date</th>
+                            <th>Last Pickup Date</th>
+                            <th>Months Of ARV Refill</th>
+                            <th>Regimen Line At ART Start</th>
+                            <th>Regimen At Start of ART</th>
+                            <th>Current Regimen Line</th>
+                            <th>Current ART Regimen</th>
+                            <th>Pregnancy Status</th>
+                            <th>Current Viral Load</th>
+                            <th>Date of Current Viral Load</th>
+                            <th>Viral Load Indication</th>
+                            <th>Current ART Status</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">Previous uploads</h5>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" style="overflow-x:initial">
+                <table class="table table-bordered table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Period</th>
+                            <th>Date Uploaded</th>
+                            <th>Uploaded By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id='@item.Id'>
+                                <td> @item.IP </td>
+                                <td>@(item.dqa_quarter + " " + item.dqa_year)</td>
+                                <td>@item.DateUploaded</td>
+                                <td>@item.UploadedBy</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success downloadsite" id="@item.Id">View Selected Sites</a>
+                                    @if (ViewBag.showdelete)
+                                    {
+                                        <a class="btn btn-sm btn-danger deleteupload" id="@item.Id" style="float:right">Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#progress").hide();
+            $("#radetTable").hide();
+
+            var previousUpload = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+            $(".deleteupload").click(function(e){
+
+                $(e.currentTarget.id).prop("disabled", true);
+                $.ajax({
+                    url: '/api/dqaapi/DeleteRadetFile?id='+e.currentTarget.id,
+                    type: 'POST',
+                    data: new FormData(),
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $(e.currentTarget.id).prop("disabled", false);
+                    window.location.reload();
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    $(e.currentTarget.id).prop("disabled", false);
+                    window.location.reload();
+                });
+                return false;
+
+            });
+
+            $("#btnSubmit").click(function () {
+                $("#output tbody").empty();
+                $("#progress").show();
+
+                var data = new FormData();
+                var file = $('form input[type=file]')[0].files[0];
+                data.append('file', file);
+
+                var selectedQuarter = $("#selected_quarter").val();
+                var selectedYear = $("#selected_year").val();
+                $("#btnSubmit").prop("disabled", true);
+
+                $.ajax({
+                    url: '/api/dqaapi/ProcesssRadetFile?selectedQuater=Q2(Jan-Mar)&&selectedYear=2017',
+                    type: 'POST',
+                    data: data,
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    buildTable($.parseJSON(response).data);
+                    $("#radetTable").show();
+                    $("#btnSubmit").prop("disabled", false);
+                    $("#progress").hide();
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                    $("#progress").hide();
+                    $("#btnSubmit").prop("disabled", false);
+                });
+                return false;
+            });
+
+            function buildTable(dataList) {
+                $("#output tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var html = "<tr> ";
+                    if (d.SelectedForDQA) {
+                        html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    }
+                    else {
+                        html += "<td>-</td>";
+                    }
+                    html += "<td>" + d.PatientId+ "</td>";
+                    html += "<td>" + d.HospitalNo+ "</td>";
+                    html += "<td>" + d.Sex+ "</td>";
+                    html += "<td>" + d.Age_at_start_of_ART_in_months+ "</td>";
+                    html += "<td>" + d.Age_at_start_of_ART_in_years+ "</td>";
+                    html += "<td>" + d.ARTStartDate+ "</td>";
+                    html += "<td>" + d.LastPickupDate+ "</td>";
+                    html += "<td>" + d.MonthsOfARVRefill+ "</td>";
+                    html += "<td>" + d.RegimenLineAtARTStart+ "</td>";
+                    html += "<td>" + d.RegimenAtStartOfART+ "</td>";
+                    html += "<td>" + d.CurrentRegimenLine+ "</td>";
+                    html += "<td>" + d.CurrentARTRegimen+ "</td>";
+                    html += "<td>" + d.Pregnancy_Status+ "</td>";
+                    html += "<td>" + d.Current_Viral_Load+ "</td>";
+                    html += "<td>" + d.Date_of_Current_Viral_Load+ "</td>";
+                    html += "<td>" + d.Viral_Load_Indication+ "</td>";
+                    html += "<td>" + d.CurrentARTStatus+ "</td>";
+                    html += "<td>" + d.RadetYear + "</td>";
+                    html += "</tr>";
+                    $("#output tbody").append(html);
+                });
+            }
+            // This must be a hyperlink
+            $("#save_download").on('click', function (event) {
+                exportTableToCSV.apply(this, [$('#output'), 'selectedsites.csv', '-', 0, 0]);
+            });
+
+
+            $(".downloadsite").click(function (e) {
+                var id = e.currentTarget.id;
+
+                for (var z = 0; z < previousUpload.length; z++) {
+                    if(previousUpload[z].Id == id){
+                        var Uploads = previousUpload[z].Uploads;
+                        buildTable(Uploads);
+                        $("#radetTable").show();
+                        break;
+                    }
+                }
+            });
+
+        });
+    </script>
+}
+
+
+
+

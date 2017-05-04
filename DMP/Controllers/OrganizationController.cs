@@ -32,6 +32,7 @@ namespace ShieldPortal.Controllers
         {
             Organizations previousData = new OrganizationDAO().Retrieve(OrgId);
             HttpContext.Session.Add(":previousData:", previousData);
+            ViewBag.AppServices = new[] { "DQA", "DMP", "Semi-monthly Reporting", "Hiv/Aids Evaluation", "Outcome Evaluation" };
             return View(previousData);
         }
 

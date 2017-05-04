@@ -1,11 +1,11 @@
 ﻿@model ShieldPortal.ViewModel.BWR.YearlyPerfomanceTargetViewModel
 
+@{
+    Layout = "~/Views/Shared/_bwrLayout.cshtml";
+}
 
-@section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
-    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
-     
-
+@section AddToHead{ 
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" /> 
 }
 
 <div class="row">
@@ -173,10 +173,7 @@
 
 
 @section Scripts
-{
-    @Scripts.Render("~/bundles/CreateDMPJs")
-    @Scripts.Render("~/bundles/dataTables")
-
+{ 
     <script>
         $(document).ready(function () {
 

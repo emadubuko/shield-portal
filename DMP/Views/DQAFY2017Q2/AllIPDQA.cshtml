@@ -1,0 +1,72 @@
+﻿@{
+    Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
+}
+
+@section AddToHead{
+    <style>
+        .form-control {
+            color: #029b17;
+        }
+
+        form {
+            color: #029b17;
+        }
+    </style>
+}
+ 
+<div class="col-lg-8">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title">DQA Summary Result</h4>
+                    <a style="float:right" id="downloadbtn" class="btn btn-success btn-sm btn-outline">
+                        <i class="icon-download"></i><span>Download DQA Result</span>
+                    </a>
+                </div>
+                <div class="panel-body" id="resultpnl">
+                    <table class="table table-bordered table-condensed table-hover">
+                        <tr>
+                            <td><strong>LEGEND : </strong></td>
+                            <td class="abbrev">COM</td>
+                            <td class="abbrev-full">COMPLETENESS</td>
+                            <td class="abbrev">CON</td>
+                            <td class="abbrev-full">CONSISTENCY</td>
+                            <td class="abbrev">PRE</td>
+                            <td class="abbrev-full">PRECISION</td>
+                            <td class="abbrev">INT</td>
+                            <td class="abbrev-full">INTEGRITY</td>
+                            <td class="abbrev">VAL</td>
+                            <td class="abbrev-full">VALIDITY</td>
+                        </tr>
+                    </table>
+                    <div id="divTable" class="table-responsive"></div>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+
+    @section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".page-container").attr('class', 'page-container sidebar-collapsed');
+                      
+            $.ajax({
+                url: baseUrl() + "dqaapi/GetSummaryResult?year=2017&quarter=Q2",
+                method: "GET",
+                contentType: "application/json",
+                success: function (data) {
+                    if (data.hasOwnProperty()) {
+                        var jsonHtmlTable = ConvertJsonToTable(data.Table, 'table', "table table-bordered table-striped table-hover", 'Download');
+                        $("#divTable").html(jsonHtmlTable);
+                    }
+                    else {
+                        $("#resultpnl").empty();
+                        $("#resultpnl").append("<b> No DQA uploaded yet </b>");
+                    }
+                }
+            });
+        })
+    </script> 
+}

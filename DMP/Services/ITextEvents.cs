@@ -47,11 +47,11 @@ namespace ShieldPortal.Services
                 headerTemplate = cb.CreateTemplate(100, 100);
                 footerTemplate = cb.CreateTemplate(50, 50);
             }
-            catch (DocumentException de)
+            catch (DocumentException)
             {
 
             }
-            catch (System.IO.IOException ioe)
+            catch (System.IO.IOException)
             {
 
             }

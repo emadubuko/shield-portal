@@ -58,6 +58,7 @@ namespace ShieldPortal.Controllers
             }
             var states = ExcelHelper.RetrieveStatesName();
             var currentUser = new Utils().GetloggedInProfile();
+            ViewBag.ShowCreateLink = currentUser.Organization.SubscribedApps != null && currentUser.Organization.SubscribedApps.Contains("DMP");
             if (dmpDoc != null)
             {                
                 var thepageDoc = dmpDoc.Document;
@@ -88,6 +89,7 @@ namespace ShieldPortal.Controllers
                     roles = thepageDoc.MonitoringAndEvaluationSystems.People !=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Roles : new List<StaffGrouping>(),
                     responsibilities = thepageDoc.MonitoringAndEvaluationSystems.People !=null ? thepageDoc.MonitoringAndEvaluationSystems.People.Responsibilities : new List<StaffGrouping>(),
                     documentID = dmpDoc.Id.ToString(),
+                    dmpId = dmpDoc.TheDMP.Id,
                     EditMode = true,
                     Profiles = profileDAO.GetProfilesByIP(MyDMP.Organization.Id).ToDictionary(x => x.Id),
                     Organization = MyDMP.Organization,
@@ -132,7 +134,7 @@ namespace ShieldPortal.Controllers
                 List<Trainings> training = null;
                 new DAL.Services.DMPExcelFile().ExtractRoles(files[0].InputStream, out roles, out responsibility, out training);
 
-                if(roles == null || roles.Count ==0 || responsibility ==null || responsibility.Count == 0 || training==null || training.Count == 0)
+                if(roles == null || roles.Count ==0 || responsibility ==null || responsibility.Count == 0 || training==null)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid file uploaded");
                 }
@@ -167,6 +169,7 @@ namespace ShieldPortal.Controllers
 
             ProjectDetails ProjDetails = projDTF;
             ProjDetails.Organization = MyDMP.Organization;
+            ProjDetails.OrganizationId = MyDMP.Organization.Id;
             ProjDetails.AbreviationOfImplementingPartner = MyDMP.Organization.ShortName;
             ProjDetails.NameOfImplementingPartner = MyDMP.Organization.Name;
             ProjDetails.AddressOfOrganization = MyDMP.Organization.Address;
@@ -283,6 +286,7 @@ namespace ShieldPortal.Controllers
             {
                 
                 ProjDetails.Organization = previousDoc.TheDMP.Organization;
+                ProjDetails.OrganizationId = previousDoc.TheDMP.Organization.Id;
                 ProjDetails.AbreviationOfImplementingPartner = previousDoc.TheDMP.Organization.ShortName;
                 ProjDetails.NameOfImplementingPartner = previousDoc.TheDMP.Organization.Name;
                 ProjDetails.AddressOfOrganization = previousDoc.TheDMP.Organization.Address;

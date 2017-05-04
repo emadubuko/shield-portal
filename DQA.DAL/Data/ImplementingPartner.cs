@@ -19,6 +19,8 @@ namespace DQA.DAL.Data
         {
             this.HealthFacilities = new HashSet<HealthFacility>();
             this.HealthFacilities1 = new HashSet<HealthFacility>();
+            this.dqa_pivot_table_upload = new HashSet<dqa_pivot_table_upload>();
+            this.dqa_pivot_table = new HashSet<dqa_pivot_table>();
         }
     
         public int Id { get; set; }
@@ -36,5 +38,9 @@ namespace DQA.DAL.Data
         public virtual ICollection<HealthFacility> HealthFacilities { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HealthFacility> HealthFacilities1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<dqa_pivot_table_upload> dqa_pivot_table_upload { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<dqa_pivot_table> dqa_pivot_table { get; set; }
     }
 }

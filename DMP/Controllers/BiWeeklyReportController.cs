@@ -74,6 +74,19 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
+        public ActionResult UploadNewReport()
+        {
+            ViewBag.IndexPeriods = IndexPeriods.Keys.ToList();
+            var vm = new BiWeeklyReportUploadViewModel();
+            var loggedinProfile = new Services.Utils().GetloggedInProfile();
+            vm.IndexPeriods = IndexPeriods;
+
+            vm.ImplementingPartner = loggedinProfile.RoleName == "ip" ? 
+                new List<string> { loggedinProfile.Organization.ShortName } : new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
+           
+            return View(vm);
+        }
+
         [HttpPost]
         public ActionResult Upload(string reportingPeriod, int Year, string ImplementingPartner)
         {

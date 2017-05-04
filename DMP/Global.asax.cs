@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web.SessionState;
 
 namespace ShieldPortal
 {
@@ -25,6 +26,18 @@ namespace ShieldPortal
             Exception exception = Server.GetLastError();
             if (exception != null)
                 CommonUtil.Utilities.Logger.LogError(exception);
+        }
+
+        public override void Init()
+        {
+            PostAuthenticateRequest += MvcApplication_PostAuthenticateRequest;
+            base.Init();
+        }
+
+        void MvcApplication_PostAuthenticateRequest(object sender, EventArgs e)
+        {
+            HttpContext.Current.SetSessionStateBehavior(
+                SessionStateBehavior.Required);
         }
     }
 }

@@ -1,0 +1,137 @@
+﻿@model ShieldPortal.ViewModel.BWR.BiWeeklyReportUploadViewModel
+@{
+
+    Layout = "~/Views/Shared/_bwrLayout.cshtml";
+}
+
+<div class="col-sm-8">
+
+    <div class="panel panel-default" style="border-color: darkorange;">
+        <div class="panel-heading clearfix " style="border-color: darkorange;">
+            Upload Report
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Reporting Period:</label>
+                    <div class="col-sm-4">
+                        <select id="ReportingPeriod" class="form-control" required>
+                            <option value="" disabled selected>Reporting Period</option>
+                            @foreach (var item in ViewBag.IndexPeriods)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <select id="ReportingYear" class="form-control" required>
+                            <option value="" disabled selected>Year</option>
+                            @foreach (var item in Model.Year)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Implementing Partner:</label>
+                    <div class="col-sm-7">
+                        <select id="ImplementingPartner" class="form-control" required>
+                            <option value="" disabled selected>Implementing Partner</option>
+                            @foreach (var item in Model.ImplementingPartner)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label"> Upload:</label>
+                    <div class="col-md-7">
+                        <input type="file" class="form-control" id="fileUpload" />
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group"> 
+                    <div class="col-sm-3 col-sm-push-4">
+                        <button id="upload" type="submit" class="btn btn-sm btn-default" style="background-color:darkorange;color:#fff"><i class="fa fa-upload"></i> &nbsp; Upload</button>
+                        <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                    </div>
+                </div>
+            </form>
+            <label id="error" class="text-danger" style="display:none"></label>
+        </div>
+    </div>
+</div> 
+@section Scripts
+{
+    <script>
+            $(document).ready(function () {
+                
+                $("#upload").click(function (e, n) {
+
+                    $('#upload').disabled = true;
+                    $("#loadImg").show();
+
+                    var data = new FormData();
+                    let reportPeriod = '';
+                    let reportYear = '';
+                    let iP = '';
+
+                    try {
+                        var file = $('form input[type=file]')[0].files[0];
+                        data.append('file', file);
+                        reportPeriod = $("form #ReportingPeriod")[0].value;
+                        reportYear = $("form #ReportingYear")[0].value;
+                        iP = $("form #ImplementingPartner")[0].value;
+                    }
+                    catch (e) {
+                        $('#upload').disabled = false;
+                        $("#loadImg").hide();
+                        $("#error").empty();
+                        $("#error").append("system error occurred. Please provide valid inputs")
+                        $("#error").show();
+                        return false;
+                    }
+
+                    if (reportPeriod == "" || reportYear == "" || iP == "") {
+                        $('#upload').disabled = false;
+                        $("#loadImg").hide();
+                        $("#error").empty();
+                        $("#error").append("Please provide valid inputs")
+                        $("#error").show();
+                        return false;
+                    }
+
+                    let url = '/BiWeeklyReport/Upload?ReportingPeriod=' + reportPeriod + '&Year=' + reportYear + '&ImplementingPartner=' + iP;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        cache: false,
+                    }).done(function (result) {
+                        $('#upload').disabled = false;
+                        $("#loadImg").hide();
+                        console.log(result);
+                        $("#error").empty();
+                        if (result.split('|')[0] == "00") {
+                            $("#error").append('<span style="color:green;">' + result.split('|')[1] + '</span>');
+                        }
+                        else {
+                            $("#error").append('<span style="color:red;">' + result.split('|')[1] + '</span>');
+                        }
+                        $("#error").show();
+                    }).error(function (xhr, status, err) { 
+                        $('#upload').disabled = false;
+                        $("#loadImg").hide();
+                        $("#error").empty();
+                        $("#error").append(err);
+                        $("#error").show();
+                    });
+                    return false; 
+                });
+            });
+    </script>
+}

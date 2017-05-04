@@ -14,10 +14,10 @@ function imagePreview(e, control) {
 }
 
 function BindImageToControl(control, base64ImageString) {
-   // control.attr('src', "/^data:image\/(png|jpg|x-icon);base64,/" + btoa(String.fromCharCode(...new Uint8Array(base64ImageString))));
-    control.attr('src', "data:image/jpg;base64," + btoa(String.fromCharCode(new Uint8Array(base64ImageString))));
+    // control.attr('src', "/^data:image\/(png|jpg|x-icon);base64,/" + btoa(String.fromCharCode(...new Uint8Array(base64ImageString))));
+    control.attr('src', "data:image/jpg;base64," + btoa([].reduce.call(new Uint8Array(base64ImageString), function (p, c) { return p + String.fromCharCode(c) }, '')));
+    //control.attr('src', "data:image/jpg;base64," + btoa(String.fromCharCode(new Uint8Array(base64ImageString))));
 
-    //$('#imageURL').attr('src', "data:image/jpg;base64,"+ btoa(String.fromCharCode(...new Uint8Array(selectedOrg.Logo))));
 }
 
 function BindPureBase64StringToControl(control, base64ImageString) {
@@ -25,7 +25,7 @@ function BindPureBase64StringToControl(control, base64ImageString) {
 }
 
 
-function uploadfileToServer(e, control, url, controlToUpdate) {   
+function uploadfileToServer(e, control, url, controlToUpdate) {
     var data = new FormData();
     try {
         var file = $(control)[0].files[0];
@@ -44,7 +44,7 @@ function uploadfileToServer(e, control, url, controlToUpdate) {
         data: data,
         cache: false,
     }).done(function (result) {
-        try{
+        try {
             CreateRolesTable(result.roles);
             CreateRespTable(result.responsibility);
             CreateTrainingTable(result.trainings);
@@ -72,7 +72,7 @@ function CreateRolesTable(roles) {
         html += '<td>' + roles[i].HQCount + '</td>';
         html += '</tr>';
         $('#rolesTable').append(html);
-    }    
+    }
 }
 
 function CreateRespTable(resps) {
@@ -105,4 +105,52 @@ function CreateTrainingTable(trainings) {
         $('#trainingTable').append(html);
     }
 }
- 
+
+//export table as csv
+function exportTableToCSV($table, filename, ignoredvalue, ignoredValueColumn, ignoredColumnIndex) {
+
+    //rows containing ignoredvalue will be ignored,
+    //ignoredValueColumn is the column where the ignoredvalue is expected
+    //ignoredColumnIndex is totally excluded column
+
+
+    var $rows = $table.find('tr:has(td),tr:has(th)'),
+
+        // Temporary delimiter characters unlikely to be typed by keyboard
+        // This is to avoid accidentally splitting the actual contents
+        tmpColDelim = String.fromCharCode(11), // vertical tab character
+        tmpRowDelim = String.fromCharCode(0), // null character
+
+        // actual delimiter characters for CSV format
+        colDelim = '","',
+        rowDelim = '"\r\n"',
+
+        // Grab text from table into CSV formatted string
+        csv = '"' + $rows.map(function (i, row) {
+            var $row = $(row), $cols = $row.find('td,th');
+
+            //skip ignored values
+            if ($cols[ignoredValueColumn].innerHTML != ignoredvalue.trim()) {
+                return $cols.map(function (j, col) {
+                    if (j != ignoredColumnIndex) {
+                        var $col = $(col), text = $col.text();
+                        return text.replace(/"/g, '""'); // escape double quotes 
+                    }                                      
+                }).get().join(tmpColDelim);
+            } 
+
+        }).get().join(tmpRowDelim)
+            .split(tmpRowDelim).join(rowDelim)
+            .split(tmpColDelim).join(colDelim) + '"',
+
+        // Data URI
+        csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+    //console.log(csv);
+    if (window.navigator.msSaveBlob) {
+        //alert('IE' + csv);
+        window.navigator.msSaveOrOpenBlob(new Blob([csv], { type: "text/plain;charset=utf-8;" }), "csvname.csv")
+    }
+    else {
+        $(this).attr({ 'download': filename, 'href': csvData, 'target': '_blank' });
+    }
+}

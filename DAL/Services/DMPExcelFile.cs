@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Services
 {
@@ -55,34 +53,34 @@ namespace DAL.Services
                             {
                                 role_location[roleKey].SiteCount += 1;
                             }
-                            else if (location.ToLower().Contains("regional"))
+                            else if (location.ToLower().Contains("region"))
                             {
                                 role_location[roleKey].RegionCount += 1;
                             }
                             else if (location.ToLower().Contains("hq"))
                             {
                                 role_location[roleKey].HQCount += 1;
-                            }                            
+                            }
                         }
                         else
                         {
                             role_location.Add(roleKey, new StaffGrouping
-                            { 
+                            {
                                 Name = roleName,
                                 HQCount = location.ToLower().Contains("hq") ? 1 : 0,
-                                RegionCount = location.ToLower().Contains("regional") ? 1 : 0,
+                                RegionCount = location.ToLower().Contains("region") ? 1 : 0,
                                 SiteCount = location.ToLower().Contains("site") ? 1 : 0,
                             });
                         }
 
-                        string resp_key = responsibilityName ;
+                        string resp_key = responsibilityName;
                         if (resp_location.TryGetValue(resp_key, out previously))
                         {
                             if (location.ToLower().Contains("site"))
                             {
                                 resp_location[resp_key].SiteCount += 1;
                             }
-                            else if (location.ToLower().Contains("regional"))
+                            else if (location.ToLower().Contains("region"))
                             {
                                 resp_location[resp_key].RegionCount += 1;
                             }
@@ -97,7 +95,7 @@ namespace DAL.Services
                             {
                                 Name = responsibilityName,
                                 HQCount = location.ToLower().Contains("hq") ? 1 : 0,
-                                RegionCount = location.ToLower().Contains("regional") ? 1 : 0,
+                                RegionCount = location.ToLower().Contains("region") ? 1 : 0,
                                 SiteCount = location.ToLower().Contains("site") ? 1 : 0,
                             });
                         }
@@ -112,39 +110,42 @@ namespace DAL.Services
                         string startDateString = stdt > DateTime.MinValue ? string.Format("{0:dd-MMM-yyyy}", stdt) : "invalid";
                         string EndDateString = stdt > DateTime.MinValue ? string.Format("{0:dd-MMM-yyyy}", edt) : "invalid";
 
-                        string training_key = trainingName;
-                        if (training.TryGetValue(training_key, out tr))
+                        if (!string.IsNullOrEmpty(trainingName))
                         {
-                            if (location.ToLower().Contains("hq"))
+                            string training_key = trainingName;
+                            if (training.TryGetValue(training_key, out tr))
                             {
-                                training[training_key].HQStartDate = startDateString;
-                                training[training_key].HQEndDate = EndDateString;
+                                if (location.ToLower().Contains("hq"))
+                                {
+                                    training[training_key].HQStartDate = startDateString;
+                                    training[training_key].HQEndDate = EndDateString;
+                                }
+                                else if (location.ToLower().Contains("region"))
+                                {
+                                    training[training_key].RegionStartDate = startDateString;
+                                    training[training_key].RegionEndDate = EndDateString;
+                                }
+                                else if (location.ToLower().Contains("site"))
+                                {
+                                    training[training_key].SiteStartDate = startDateString;
+                                    training[training_key].SiteEndDate = EndDateString;
+                                }
                             }
-                            else if (location.ToLower().Contains("regional"))
+                            else
                             {
-                                training[training_key].RegionStartDate = startDateString;
-                                training[training_key].RegionEndDate = EndDateString;
-                            }
-                            else if (location.ToLower().Contains("site"))
-                            {
-                                training[training_key].SiteStartDate = startDateString;
-                                training[training_key].SiteEndDate = EndDateString;
-                            }
-                        }
-                        else
-                        {
-                            training.Add(training_key, new Trainings
-                            {
-                                NameOfTraining = trainingName,
-                                HQStartDate = location.ToLower().Contains("hq") ? startDateString : "",
-                                HQEndDate = location.ToLower().Contains("hq") ? EndDateString : "",
+                                training.Add(training_key, new Trainings
+                                {
+                                    NameOfTraining = trainingName,
+                                    HQStartDate = location.ToLower().Contains("hq") ? startDateString : "",
+                                    HQEndDate = location.ToLower().Contains("hq") ? EndDateString : "",
 
-                                RegionStartDate = location.ToLower().Contains("regional") ? startDateString : "",
-                                RegionEndDate = location.ToLower().Contains("regional") ? EndDateString : "",
+                                    RegionStartDate = location.ToLower().Contains("region") ? startDateString : "",
+                                    RegionEndDate = location.ToLower().Contains("region") ? EndDateString : "",
 
-                                SiteStartDate = location.ToLower().Contains("site") ? startDateString : "",
-                                SiteEndDate = location.ToLower().Contains("site") ? EndDateString : "",
-                            });
+                                    SiteStartDate = location.ToLower().Contains("site") ? startDateString : "",
+                                    SiteEndDate = location.ToLower().Contains("site") ? EndDateString : "",
+                                });
+                            }
                         }
                     }
                 }

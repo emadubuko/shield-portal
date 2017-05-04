@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.Threading;
+using DAL.Entities;
 
 namespace Test
 {
@@ -30,14 +31,18 @@ namespace Test
         {
             Console.WriteLine("started");
 
-            new ShufflingTest().TestShuffle();
+           // AfenetUtil.ReadFile();
+            //RadetExcelDocs.ReadAndMerge();
+
+            //DMPSiteType();
+            //new ShufflingTest().TestShuffle();
 
             // new Program().RetrieveDimensionValue();
 
             // new Program().RetrieveExcelValue();
 
 
-            //  DMPSummary();
+              DMPSummary();
 
             //new Program().UpdateFacilities();
             //    new Program().GenerateFacilityTargetCSV();
@@ -148,9 +153,7 @@ namespace Test
             Console.WriteLine("Press enter to end");
             return;
         }
-
-
-
+         
         private void RetrieveExcelValue()
         {
             string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Downloads\";
@@ -252,6 +255,54 @@ namespace Test
             {
                 return string.Format("\"{0}\",", incoming.Trim().Replace(",", "|"));
             }
+        }
+
+        static void DMPSiteType()
+        {
+            IList<DMPDocument> dmps = null;
+            try
+            {
+                dmps = new DMPDocumentDAO().RetrieveAll();
+            }
+            catch (Exception ex)
+            {
+                var exp = ex.InnerException as ReflectionTypeLoadException;
+                if(exp != null)
+                {
+                    var le = exp.LoaderExceptions;
+                }
+            }
+            StringBuilder siteno = new StringBuilder();
+            siteno.AppendLine("IP, ART, PMTCT, HTC, OVC, Community");            
+            StringBuilder sb_dr = new StringBuilder();
+            sb_dr.AppendLine("IP, Version Date, Version Number, Title of Author, Name of Author, Job Designation of Author, Phone No of Author, Email of Author, Title of Approver, Name of Approver, Job Designation of Approver, Phone no. of Approver, Email of Approver");
+
+            foreach (var dmp in dmps)
+            {
+                var tt = dmp.Document.MonitoringAndEvaluationSystems.Environment.NumberOfSitesCoveredByImplementingPartners;
+                string anEntry = string.Format("{0}, {1}, {2}, {3}, {4}, {5} ", dmp.TheDMP.Organization.ShortName, tt.ART, tt.PMTCT, tt.HTC, tt.OVC, tt.Commmunity);
+                siteno.AppendLine(anEntry);
+
+                var version = dmp.Document.DocumentRevisions.LastOrDefault().Version;
+                anEntry = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}",
+                    dmp.TheDMP.Organization.ShortName, version.VersionMetadata.VersionDate, version.VersionMetadata.VersionNumber, version.VersionAuthor.TitleOfAuthor, version.VersionAuthor.DisplayName, version.VersionAuthor.JobDesignation, version.VersionAuthor.PhoneNumberOfAuthor, version.VersionAuthor.EmailAddressOfAuthor, version.Approval.TitleofApprover, version.Approval.DisplayName, version.Approval.JobdesignationApprover, version.Approval.PhonenumberofApprover, version.Approval.EmailaddressofApprover);
+                sb_dr.AppendLine(anEntry);                    
+            }
+            StringBuilder sb_tr = new StringBuilder();
+            foreach (var dmp in dmps)
+            {
+                sb_tr.AppendLine(dmp.TheDMP.Organization.ShortName);
+                sb_tr.AppendLine("Name of Training, Workstation (Site), Workstation (Region/State), Workstation (HQ)");
+                foreach (var tr in dmp.Document.MonitoringAndEvaluationSystems.People.Trainings)
+                {
+                   string anEntry = string.Format("{0}, {1}, {2}, {3}", tr.NameOfTraining, tr.SiteDisplayDate, tr.RegionDisplayDate, tr.HQDisplayDate);
+                    sb_tr.AppendLine(anEntry);
+                }
+            }
+
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpSiteSummary.csv", siteno.ToString());
+            File.AppendAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpSiteSummary.csv", sb_tr.ToString());
+            File.AppendAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpSiteSummary.csv", sb_dr.ToString());
         }
 
 
@@ -440,8 +491,7 @@ namespace Test
             File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_report.csv", sb_report.ToString());
             File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_sharing.csv", sb_sharing.ToString());
         }
-
-
+         
         public void GenerateNonDatimCode()
         {
             string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
@@ -719,29 +769,28 @@ namespace Test
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes("UMB_SHIELD:UMB@sh1eld")));
                 httpClient.Timeout = TimeSpan.FromMinutes(2);
 
-                await httpClient.GetAsync(uri)
-                  .ContinueWith(x =>
-                 {
-                     Console.WriteLine("generated script for hf :{0}", uri);
-                     if (x.IsCompleted && x.Status == TaskStatus.RanToCompletion)
-                     {
-                         var dt = x.Result.Content.ReadAsAsync<DatimResponse>().Result;
-                         if (dt != null && !string.IsNullOrEmpty(dt.coordinates))
-                         {
-                             string[] lnglat = dt.coordinates.Split(new string[] { "[", "]", "," }, StringSplitOptions.RemoveEmptyEntries);
-                             if (lnglat.Count() == 2)
-                             {
-                                 Console.WriteLine("generated script for hf :{0}", hf.Id);
-                                 script = string.Format("Update[HealthFacility] set longitude = '{0}', latitude = '{1}' where id = {2};", lnglat[0], lnglat[1], hf.Id);
-                             }
-                         }
-                     }
-                 });
+                //await httpClient.GetAsync(uri)
+                //  .ContinueWith(x =>
+                // {
+                //     Console.WriteLine("generated script for hf :{0}", uri);
+                //     if (x.IsCompleted && x.Status == TaskStatus.RanToCompletion)
+                //     {
+                //         var dt = x.Result.Content.ReadAsAsync<DatimResponse>().Result;
+                //         if (dt != null && !string.IsNullOrEmpty(dt.coordinates))
+                //         {
+                //             string[] lnglat = dt.coordinates.Split(new string[] { "[", "]", "," }, StringSplitOptions.RemoveEmptyEntries);
+                //             if (lnglat.Count() == 2)
+                //             {
+                //                 Console.WriteLine("generated script for hf :{0}", hf.Id);
+                //                 script = string.Format("Update[HealthFacility] set longitude = '{0}', latitude = '{1}' where id = {2};", lnglat[0], lnglat[1], hf.Id);
+                //             }
+                //         }
+                //     }
+                // });
             }
             return script;
         }
-
-
+         
         void DirectUpdateDB(string script)
         {
             ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;

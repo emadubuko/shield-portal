@@ -1,5 +1,8 @@
 ﻿@model  ShieldPortal.ViewModel.CreateIPViewModel
 @{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+@{
     ViewBag.Title = "Create New IP";
 }
 @section AddToHead{
@@ -7,23 +10,24 @@
     @Styles.Render("~/bundles/mysiteCss")
     <style>
         .form-control {
-            border-color: #000;
+            border-color: #ff0018;
         }
         form {
-            color: #000;
+            color: #ff0018;
         }
 
     </style>
 <script src="~/Scripts/Ultilities.js"></script>
 }
 
-<div class="main-content">
-    <div style="width: 80%;">
-        <div class="row">
 
-            <form id="mainform" class="form-horizontal">
-                <h4 style="text-align: center">Create New IP</h4>
-
+<div class="col-lg-8">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix"> 
+            <h5 style="text-align: center">Setup New Partner Information</h5>
+        </div>
+        <div class="panel-body">
+            <form id="mainform" class="form-horizontal"> 
                 @foreach (var field in Model.FieldCollection)
                 {
                     <div class="form-group">
@@ -43,81 +47,83 @@
 
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-4">
-                        <a href='@Url.Action("index","Home")' class="btn btn-default">
+                        <a href='@Url.Action("index","Home")' class="btn btn-sm btn-default">
                             <i class="fa fa-close"></i> Cancel
                         </a>
                         &nbsp;&nbsp;
-                        <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
+                        <button type="submit" id="dmpSubmit" class="btn btn-sm btn-danger">Save</button>
                         <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                     </div>
                 </div>
             </form>
         </div>
+
+        </div>
     </div>
-</div>
 
 
 
 
-@section Scripts
+
+        @section Scripts
 {
-    @Scripts.Render("~/bundles/CreateDMPJs")
-    <script>
-        $(document).ready(function () {
-            $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
-                if (key.charCode < 48 || key.charCode > 57)
-                    if (key.charCode != 43) {
-                        $('#my_modal').on('show.bs.modal', function (e) {
-                            $('#warningbox').val('invalid input');
-                        });
-                        $('#myModal').modal('show');
-                        return false;
-                    }
-            });
-
-            $("input").attr("autocomplete", "off");
-
-            $("#dmpSubmit").click(function (e, n) {
-
-                var form = $(e.currentTarget.form);
-                var validator = form.validate();
-                if (form.valid()) {
-                    var formdata = $('#mainform')[0].elements;
-                    var viewModel = {};
-
-                    $("#loadImg").show();
-                    $('dmpSubmit').disabled = true;
-
-                    $.each(formdata, function (name, formElements) {
-                        viewModel[formElements.id] = formElements.value;
-                    });
-                    if (base64Image != undefined)
-                        viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "");
-
-                    var someUrl = '@Url.Action("CreateNewOrganization", "Organization")';
-                    $.ajax({
-                        type: "POST",
-                        url: someUrl,
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(viewModel),
-                        cache: false,
-                    }).done(function (dmpId) {
-                        console.log(dmpId);
-                        window.location.replace('@Url.Action("index", "Organization")');
-                        $("#loadImg").hide();
-                        $('dmpSubmit').disabled = false;
-                    }).error(function (xhr, status, err) {
-                        alert(err);
-                        console.log(err);
-                        $("#loadImg").hide();
-                        $('dmpSubmit').disabled = false;
+            @Scripts.Render("~/bundles/CreateDMPJs")
+            <script>
+                $(document).ready(function () {
+                    $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
+                        if (key.charCode < 48 || key.charCode > 57)
+                            if (key.charCode != 43) {
+                                $('#my_modal').on('show.bs.modal', function (e) {
+                                    $('#warningbox').val('invalid input');
+                                });
+                                $('#myModal').modal('show');
+                                return false;
+                            }
                     });
 
-                    return false;
-                }
-            });
-               
-             
-        });
-    </script>
-}
+                    $("input").attr("autocomplete", "off");
+
+                    $("#dmpSubmit").click(function (e, n) {
+
+                        var form = $(e.currentTarget.form);
+                        var validator = form.validate();
+                        if (form.valid()) {
+                            var formdata = $('#mainform')[0].elements;
+                            var viewModel = {};
+
+                            $("#loadImg").show();
+                            $('dmpSubmit').disabled = true;
+
+                            $.each(formdata, function (name, formElements) {
+                                viewModel[formElements.id] = formElements.value;
+                            });
+                            if (base64Image != undefined)
+                                viewModel["Logo"] = base64Image.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "");
+
+                            var someUrl = '@Url.Action("CreateNewOrganization", "Organization")';
+                            $.ajax({
+                                type: "POST",
+                                url: someUrl,
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(viewModel),
+                                cache: false,
+                            }).done(function (dmpId) {
+                                console.log(dmpId);
+                                window.location.replace('@Url.Action("index", "Organization")');
+                                $("#loadImg").hide();
+                                $('dmpSubmit').disabled = false;
+                            }).error(function (xhr, status, err) {
+                                alert(err);
+                                console.log(err);
+                                $("#loadImg").hide();
+                                $('dmpSubmit').disabled = false;
+                            });
+
+                            return false;
+                        }
+                    });
+
+
+                });
+            </script>
+        }

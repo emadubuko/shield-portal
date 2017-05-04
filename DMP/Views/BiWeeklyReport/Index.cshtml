@@ -1,68 +1,80 @@
 ﻿@model ShieldPortal.ViewModel.BWR.ReportViewModel
-
+@{
+    Layout = "~/Views/Shared/_bwrLayout.cshtml";
+}
 
 @section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
     <link href="~/Content/jquery-ui.css" rel="stylesheet" />
 
     <style>
-        
+        .table > thead > tr > th {
+            text-transform: capitalize;
+        }
+
+        th.rotate {
+            height: 90px;
+            white-space: nowrap;
+        }
+
+            th.rotate > div {
+                transform: rotate(-90deg);
+                width: 30px;
+            }
+
+                th.rotate > div > span {
+                    padding: 5px 10px;
+                }
     </style>
 
-<script type="text/javascript">
+    <script type="text/javascript">
         function reloadPage(e) {
             window.location.replace('/BiWeeklyReport/index?fYear=' + e.value);
         }
-</script>
+    </script>
 }
- 
-<div class="row">
-    <div class="col-sm-offset-9 col-xs-offset-4">
-        <a class="btn btn-info" id="uploadRpt" style="margin-top: 2px;">
-            <i class="icon-upload"></i> &nbsp;<span>Upload New Report</span>
-        </a>
-    </div>
-</div>
 
-<div id="page-wrapper" class="main-content">
-
-    <label>Financial Year</label>
-    <select id="fYear" required onchange="reloadPage(this)">
-        <option value="" disabled selected>Finacial year</option>
-        @foreach (var item in Model.Year)
-            {
-                if (item == Model.SelectedYear)
+<div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-2">
+            <label>Financial Year</label>
+            <select id="fYear" required onchange="reloadPage(this)">
+                <option value="" disabled selected>Finacial year</option>
+                @foreach (var item in Model.Year)
                 {
-                <option value="@item" selected>@item</option>
-            }
-            else
-            {
-                <option value="@item">@item</option>
-            }
-        }
-    </select>
+                    if (item == Model.SelectedYear)
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+                }
+            </select>
+        </div> 
+    </div>
 
 
-    <div class="panel panel-warning">
+    <div class="panel panel-default">
         <div class="panel-heading clearfix">
             LGA-Level Achievement per Target & Clinical Cascade
         </div>
         <div class="panel-body">
-            <div class="table-responsive" style="overflow-x: initial;">
-                <table style="width:100%" class="table table-striped table-bordered table-hover" id="dataTables">
+            <div class="table-responsive" style="width:100%">
+                <table class="table table-striped table-bordered table-hover" id="dataTables">
                     <thead>
-                        <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;">
-                            <th>LGA</th>
-                            <th>Linkage Rate</th>
-                            <th>HTC_TST </th>
-                            <td>TARGET</td>
-                            <th>Acht</th>
-                            <th>HTC_TST_pos</th>
-                            <th>TARGET</th>
-                            <th>ACHV</th>
-                            <th>Tx_NEW</th>
-                            <th>TARGET</th>
-                            <th>ACHV</th>
+                        <tr style="color: #FFF;background-color: darkorange;border-color: darkorange;">
+                            <th class="rotate">LGA</th>
+                            <th class="rotate">Linkage Rate</th>
+                            <th class="rotate">HTC_TST </th>
+                            <td class="rotate">Target</td>
+                            <th class="rotate">Achievement</th>
+                            <th class="rotate">HTC_TST_POS</th>
+                            <th class="rotate">Target</th>
+                            <th class="rotate">Achievement</th>
+                            <th class="rotate">Tx_NEW</th>
+                            <th class="rotate">Target</th>
+                            <th class="rotate">Achievement</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,21 +101,21 @@
     </div>
 
 
-    <div class="panel panel-warning">
+    <div class="panel panel-default">
         <div class="panel-heading clearfix">
             Positivity Rates
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="panel panel-warning">
+                    <div class="panel panel-default">
                         <div class="panel-heading clearfix">
                             Facility
                         </div>
                         <div class="table-responsive" style="overflow-x: initial;">
                             <table style="width:100%" class="table table-striped table-bordered table-hover" id="dataTables">
                                 <thead>
-                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;">
+                                    <tr style="color: #FFF;background-color: darkorange;border-color: darkorange;">
                                         <th>LGA</th>
                                         <th>Tested</th>
                                         <th>Positive </th>
@@ -113,12 +125,12 @@
                                 <tbody>
                                     @foreach (var item in Model.FacilityPositivty)
                                     {
-                                    <tr>
-                                        <td>@item.lga_name</td>
-                                        <td>@item.Tested</td>
-                                        <td>@item.Positive</td>
-                                        <td>@item.Positivity.ToString("N") %</td>
-                                    </tr>
+                                        <tr>
+                                            <td>@item.lga_name</td>
+                                            <td>@item.Tested</td>
+                                            <td>@item.Positive</td>
+                                            <td>@item.Positivity.ToString("N") %</td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
@@ -127,14 +139,14 @@
                 </div>
 
                 <div class="col-lg-6">
-                    <div class="panel panel-warning">
+                    <div class="panel panel-default">
                         <div class="panel-heading clearfix">
                             Community
                         </div>
                         <div class="table-responsive" style="overflow-x: initial;">
                             <table style="width:100%" class="table table-striped table-bordered table-hover" id="dataTables">
                                 <thead>
-                                    <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;">
+                                    <tr style="color: #FFF;background-color: darkorange;border-color: darkorange;">
                                         <th>LGA</th>
                                         <th>Tested</th>
                                         <th>Positive </th>
@@ -144,12 +156,12 @@
                                 <tbody>
                                     @foreach (var item in Model.CommunityPositivty)
                                     {
-                                    <tr>
-                                        <td>@item.lga_name</td>
-                                        <td>@item.Tested</td>
-                                        <td>@item.Positive</td>
-                                        <td>@item.Positivity.ToString("N") %</td>
-                                    </tr>
+                                        <tr>
+                                            <td>@item.lga_name</td>
+                                            <td>@item.Tested</td>
+                                            <td>@item.Positive</td>
+                                            <td>@item.Positivity.ToString("N") %</td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
@@ -160,12 +172,12 @@
             </div>
         </div>
     </div>
+
 </div>
-        
 <div class="modal fade" id="uploadModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 45%;border-color: #29b6f6;" role="document">
+    <div class="modal-dialog" style="width: 45%;border-color: darkorange;" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="color: #FFF;background-color: #29b6f6;">
+            <div class="modal-header" style="color: #FFF;background-color: darkorange;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -197,7 +209,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Implementing Partner:</label>
                         <div class="col-sm-7">
-                            <select id="ImplementingPartner" class="form-control" required> 
+                            <select id="ImplementingPartner" class="form-control" required>
                                 @foreach (var item in Model.ImplementingPartner)
                                 {
                                     <option value="@item">@item</option>
@@ -220,103 +232,100 @@
                 <div class="col-sm-2"> </div>
                 <div class="col-sm-7">
                     <button type="button" class="btn btn-default" data-dismiss="modal"> Close</button>
-                    <button id="upload" type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> &nbsp; Upload</button>
+                    <button id="upload" type="submit" class="btn btn-default" style="background-color:darkorange;color:#fff"><i class="fa fa-upload"></i> &nbsp; Upload</button>
                     <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                 </div>
             </div>
         </div>
     </div>
 </div>
- 
-        @section Scripts
+
+@section Scripts
 {
-            @Scripts.Render("~/bundles/CreateDMPJs")
-            @Scripts.Render("~/bundles/dataTables")
+    <script>
 
-            <script>
+        $(document).ready(function () {
 
-                $(document).ready(function () {
+            $(".page-container").attr('class', 'page-container sidebar-collapsed');
 
-                    $(".page-container").attr('class', 'page-container sidebar-collapsed');
-
-                    $('.table').DataTable({
-                        responsive: true
-                    });
+            $('.table').DataTable({
+                responsive: true
+            });
 
 
-                    $("#uploadRpt").click(function () {
-                        $("#uploadModal").draggable({
-                            handle: ".modal-header"
-                        });
-                        $('#uploadModal').modal('show');
-                    });
-
-                    $('#uploadModal').on('hidden.bs.modal', function () {
-                        location.reload();
-                    })
-
-                    $("#upload").click(function (e, n) {
-
-                        $('#upload').disabled = true;
-                        $("#loadImg").show();
-
-                        var data = new FormData();
-
-                        try {
-                            var file = $('form input[type=file]')[0].files[0];
-                            data.append('file', file);
-                            var ReportingPeriod = $("form #ReportingPeriod")[0].value;
-                            var ReportingYear = $("form #ReportingYear")[0].value;
-                            var ImplementingPartner = $("form #ImplementingPartner")[0].value;
-                        }
-                        catch (e) {
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            $("#error").empty();
-                            $("#error").append("system error occurred. Please provide valid inputs")
-                            $("#error").show();
-                            return false;
-                        }
-
-                        if (ReportingPeriod == "" || ReportingYear == "" || ImplementingPartner == "") {
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            $("#error").empty();
-                            $("#error").append("Please provide valid inputs")
-                            $("#error").show();
-                            return false;
-                        }
-
-
-                        $.ajax({
-                            type: "POST",
-                            url: '/BiWeeklyReport/Upload?ReportingPeriod=' + ReportingPeriod + '&Year=' + ReportingYear + '&ImplementingPartner=' + ImplementingPartner,
-                            contentType: false,
-                            processData: false,
-                            data: data,
-                            cache: false,
-                        }).done(function (result) {
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            console.log(result);
-                            $("#error").empty();
-                            if (result.split('|')[0] == "00") {
-                                $("#error").append('<span style="color:green;">' + result.split('|')[1] + '</span>');
-                            }
-                            else {
-                                $("#error").append('<span style="color:red;">' + result.split('|')[1] + '</span>');
-                            }
-                            $("#error").show();
-                        }).error(function (xhr, status, err) {
-                            //alert(err);
-                            $('#upload').disabled = false;
-                            $("#loadImg").hide();
-                            $("#error").empty();
-                            $("#error").append(err);
-                            $("#error").show();
-                        });
-                        return false;
-                    });
+            $("#uploadRpt").click(function () {
+                $("#uploadModal").draggable({
+                    handle: ".modal-header"
                 });
-            </script>
+                $('#uploadModal').modal('show');
+            });
+
+            $('#uploadModal').on('hidden.bs.modal', function () {
+                location.reload();
+            })
+
+            $("#upload").click(function (e, n) {
+
+                $('#upload').disabled = true;
+                $("#loadImg").show();
+
+                var data = new FormData();
+
+                try {
+                    var file = $('form input[type=file]')[0].files[0];
+                    data.append('file', file);
+                    var ReportingPeriod = $("form #ReportingPeriod")[0].value;
+                    var ReportingYear = $("form #ReportingYear")[0].value;
+                    var ImplementingPartner = $("form #ImplementingPartner")[0].value;
+                }
+                catch (e) {
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    $("#error").empty();
+                    $("#error").append("system error occurred. Please provide valid inputs")
+                    $("#error").show();
+                    return false;
+                }
+
+                if (ReportingPeriod == "" || ReportingYear == "" || ImplementingPartner == "") {
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    $("#error").empty();
+                    $("#error").append("Please provide valid inputs")
+                    $("#error").show();
+                    return false;
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '/BiWeeklyReport/Upload?ReportingPeriod=' + ReportingPeriod + '&Year=' + ReportingYear + '&ImplementingPartner=' + ImplementingPartner,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    cache: false,
+                }).done(function (result) {
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    console.log(result);
+                    $("#error").empty();
+                    if (result.split('|')[0] == "00") {
+                        $("#error").append('<span style="color:green;">' + result.split('|')[1] + '</span>');
+                    }
+                    else {
+                        $("#error").append('<span style="color:red;">' + result.split('|')[1] + '</span>');
+                    }
+                    $("#error").show();
+                }).error(function (xhr, status, err) {
+                    //alert(err);
+                    $('#upload').disabled = false;
+                    $("#loadImg").hide();
+                    $("#error").empty();
+                    $("#error").append(err);
+                    $("#error").show();
+                });
+                return false;
+            });
+        });
+    </script>
 }

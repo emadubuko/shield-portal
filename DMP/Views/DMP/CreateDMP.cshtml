@@ -1,114 +1,232 @@
 ﻿@model  ShieldPortal.ViewModel.CreateDMPViewModel
 @{
-    ViewBag.Title = "Create New DMP";
+    Layout = null;
 }
-@section AddToHead{
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-control" content="no-store, must-revalidate">
+    <meta http-equiv="Vary" content="*">
+
+    <title>Shield Portal</title>
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
+
+    @Styles.Render("~/Content/css")
     @Styles.Render("~/bundles/CreateDMPCss")
-    @Styles.Render("~/bundles/mysiteCss")
+    <style>
+        .panel-warning {
+            border-color: darkorange;
+        }
 
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: darkorange;
+                border-color: darkorange;
+            }
+
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+            background-color: darkorange;
+            border-color: darkorange;
+            color: #FFFFFF;
+            z-index: 5;
+        }
+
+        .form-control {
+            border-color: darkorange;
+        }
+
+        .title {
+            font-weight: 300;
+            color: #000;
+            padding-left: 10px;
+        }
+    </style>
     <script src="~/Scripts/Ultilities.js"></script>
-<script type="text/javascript">
+    <script type="text/javascript">
 
-       var selectedOrg;
-                   @{
+        var selectedOrg;
+        @{
                        System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
                        serializer.MaxJsonLength = Int32.MaxValue;
+
                    }
-       var orgs = @Html.Raw(serializer.Serialize(Model.OrganizationList));
+        var orgs = @Html.Raw(serializer.Serialize(Model.OrganizationList));
+         
+        function BindOrganizationImage(e) { 
+            if (e !== undefined) {
+                for (var i = 0; i < orgs.length; i++) {
+                    if (parseInt(e.value) === orgs[i].Id) {
+                        selectedOrg = orgs[i];
+                        BindImageToControl($('#imageURL'), selectedOrg.Logo);
+                        $("#logoDiv").show()
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
 
-       function  BindOrganizationImage(e){
-           console.log(e)
-           if(e !== undefined){
-               for(var i=0; i <orgs.length; i++){
-                   if(parseInt(e.value) === orgs[i].Id){
-                       selectedOrg = orgs[i];
-                       BindImageToControl($('#imageURL'),selectedOrg.Logo );
-                       $("#logoDiv").show()
-                   }
-               }
-           }
-       }
-</script>
-}
+    <div class="page-container">
+         
+        <div class="main-header row">
 
-<div class="main-content">
-    
-    <div class="row">
-        <div class="col-lg-12">
-            <form id="dmpForm" class="validate">
-                <div class="panel panel-warning">
-                    <div class="panel-heading clearfix">
-                        <h4 class="panel-title">Begin a New  DMP</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="form-horizontal">
+            <div class="col-lg-8">
+                <a class="col-lg-2">
+                    <img src="~/images/shield_logo.jpg" alt="Shield Logo" width="120" title="SHIELD" />
+                </a>
+                <a class="col-lg-1">
+                    <img src="~/images/pepfar.jpg" alt="pepfar logo" width="60" title="pepfar" />
+                </a>
+                <a class="col-lg-1">
+                    <img src="~/images/HHS.png" alt="HHS logo" width="70" title="HHS" />
+                </a>
+                <a class="col-lg-2">
+                    <img src="~/images/cdc.jpg" alt="cdc logo" width="100" title="cdc" />
+                </a>
+                <a class="col-lg-1">
+                    <img src="~/images/UMB logo.jpg" alt="UMB logo" width="200" title="UMB" />
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <div class="pull-right">
+                    <ul class="user-info">
+                        <li class="profile-info dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
+                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.DisplayBadge </span> <span class="caret"></span>
+                            </a>
+                            <!-- User action menu -->
+                            <ul class="dropdown-menu">
+                                <li><a id="userdetail" style="cursor:pointer"><i class="icon-user"></i>My profile</a></li>
+                                <li><a id="changepassword" style="cursor:pointer"><i class="fa fa-key"></i>Change password</a></li>
+                                <li><a href='#' id="logoff"><i class="icon-logout"></i>Logout</a></li>
+                            </ul>
+                            <!-- /user action menu -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- User info -->
+        </div>
 
-                            <div id="logoDiv" style="display:none" class="form-group">
-                                <label class="col-sm-2 control-label">Logo</label>
-                                <div class="col-sm-8">
-                                    <img id="imageURL" height="100">
-                                </div>
-                            </div>
-                            
-                            @foreach (var field in Model.FieldCollection)
-                            {
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="@field.Key.Replace(" ","")">@(field.Key == "DMPTitle" ? "DMP Title": field.Key)</label>
-                                    <div class="col-sm-8">
-                                        @if ((string)field.Value == "String")
-                                        {
-                                            <input type="text" placeholder="@Model.ToolTip[field.Key]" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
-                                        }
-                                        else if ((string)field.Value == "Organizations")
-                                        {
-                                            <select  onchange="BindOrganizationImage(this)"  id="OrganizationId" class="form-control" required>
-                                                <option value="" disabled selected>select organization</option>
-                                                @foreach (var item in Model.OrganizationList)
-                                                {
-                                                    <option value="@item.Id">@item.Name (@item.ShortName)</option>
-                                                }
-                                            </select>
-                                        }
-                                        else if ((string)field.Value == "DateTime")
-                                        {
-                                            <div id="@field.Key.Replace(" ","")" class="input-group date">
-                                                <input type="text" required id="@field.Key.Replace(" ","")" placeholder="@field.Key" title="select a end date" data-format="D, dd MM yyyy" class="form-control">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            }
+        <div class="main-content" style="padding-top: 0px;">
+            <div class="row" id="breadcrumb">
+                <div class="col-sm-5 col-sm-push-3">
+                    <ol class="breadcrumb breadcrumb-2">
+                        <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                        <li><a href="/Home/submenu?id=dmp">Data Management</a></li>
+                        <li class="active">Create new document</li>
+                    </ol>
+                </div>
+            </div>
 
-                            <div class="form-group">
-                                <div class="col-sm-4 col-sm-offset-2">
-                                    <a href='@Url.Action("index","Home")' class="btn btn-default">
-                                        <i class="fa fa-close"></i> Cancel
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-warning">
+                        <div class="panel-body" style="padding-top: 20px;padding-bottom: 0px;">
+                            <ul class="list-item mailbox-list">
+                                <li>
+                                    <a href=@Url.Action("DMPDashboard", "DMP") style="color:darkorange">
+                                        <i class="fa fa-area-chart"></i><span class="title">View Dashboard</span>
                                     </a>
-                                    &nbsp;&nbsp;
-                                    <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
-                                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-                                </div>
-                            </div>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("index", "DMP") style="color:darkorange">
+                                        <i class="icon-book-open"></i><span class="title">View DMP List</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("CreateDMP", "DMP") style="color:darkorange">
+                                        <i class="fa fa-file-o"></i><span class="title">Create New DMP</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+
+                <div class="col-md-9">
+                    <form id="dmpForm" class="validate">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading clearfix">
+                                <h4 class="panel-title">Begin a New  DMP</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-horizontal">
+
+                                    <div id="logoDiv" style="display:none" class="form-group">
+                                        <label class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-8">
+                                            <img id="imageURL" height="100">
+                                        </div>
+                                    </div>
+
+                                    @foreach (var field in Model.FieldCollection)
+                                    {
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="@field.Key.Replace(" ","")">@(field.Key == "DMPTitle" ? "DMP Title" : field.Key)</label>
+                                            <div class="col-sm-8">
+                                                @if ((string)field.Value == "String")
+                                                {
+                                                    <input type="text" placeholder="@Model.ToolTip[field.Key]" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                                                }
+                                                else if ((string)field.Value == "Organizations")
+                                                {
+                                                    <select onchange="BindOrganizationImage(this)" id="OrganizationId" class="form-control" required>
+                                                        <option value="" disabled selected>select organization</option>
+                                                        @foreach (var item in Model.OrganizationList)
+                                                        {
+                                                            <option value="@item.Id">@item.Name (@item.ShortName)</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else if ((string)field.Value == "DateTime")
+                                                {
+                                                    <div id="@field.Key.Replace(" ","")" class="input-group date">
+                                                        <input type="text" required id="@field.Key.Replace(" ","")" placeholder="@field.Key" title="select a end date" data-format="D, dd MM yyyy" class="form-control">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <a href='@Url.Action("index","Home")' class="btn btn-default">
+                                                <i class="fa fa-close"></i> Cancel
+                                            </a>
+                                            &nbsp;&nbsp;
+                                            <button type="submit" id="dmpSubmit" class="btn btn-success">Save</button>
+                                            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
 
                 </div>
-            </form>
-
+            </div>
         </div>
     </div>
-</div>
 
-
-
-
-@section Scripts
-{
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    <script src="~/Scripts/profile-display.js"></script>
     @Scripts.Render("~/bundles/CreateDMPJs")
+
     <script>
         $(document).ready(function () {
-                       
+
             $("input").attr("autocomplete", "off");
 
             $("#dmpSubmit").click(function (e, n) {
@@ -116,7 +234,7 @@
                 var form = $(e.currentTarget.form);
                 var validator = form.validate();
                 if (form.valid()) {
-                    
+
                     var formdata = $('#dmpForm')[0].elements;
                     var viewModel = {};
 
@@ -144,9 +262,11 @@
                         $('#dmpSubmit').disabled = false;
                     });
                     return false;
-               }
+                }
             });
 
         });
     </script>
-}
+
+</body>
+</html>

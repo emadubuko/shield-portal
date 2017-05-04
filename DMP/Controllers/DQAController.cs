@@ -1,47 +1,35 @@
 ﻿using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
+using DQA.DAL.Model;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
-    [System.Web.Mvc.Authorize]
+    [Authorize(Roles = "shield_team,sys_admin,ip")]
     public class DQAController : Controller
-    {
+    {        
         public ActionResult Index()
         {
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            int ip_id = 0;
+            if (User.IsInRole("ip"))
             {
-                return View("Home");
+                ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
             }
-            else if (User.IsInRole("ip"))
-            {
-                var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
-                ViewBag.ip_id = ip_id;
-
-                return View("Dashboard");
-            }
-
-            return View("~/Views/Shared/Denied.cshtml");
-        }
-
-        public ActionResult IpHome(int id)
-        {
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                ViewBag.ip_id = id;
-                return View("Dashboard");
-            }
-            return View("~/Views/Shared/Denied.cshtml");
-        }
-
-        public ActionResult UploadDQA()
-        {
-            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
             ViewBag.ip_id = ip_id;
 
+            return View("Dashboard");
+        }
+
+
+
+        public ActionResult Analytics()
+        {
             return View();
         }
+
+
 
         public ActionResult IpDQA()
         {
@@ -65,6 +53,12 @@ namespace ShieldPortal.Controllers
         }
 
 
+        public ActionResult GetDQA(int id)
+        {
+            ViewBag.metadataId = id;
+            return View();
+        }
+
         public ActionResult IPDQAResult(int id)
         {
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
@@ -77,22 +71,34 @@ namespace ShieldPortal.Controllers
             }
             return View("~/Views/Shared/Denied.cshtml");
         }
-
-    
-
-        public ActionResult GetDQA(int id)
+         
+        public ActionResult UploadDQA()
         {
-            ViewBag.metadataId = id;
+            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+            ViewBag.ip_id = ip_id;
+
+            return View();
+        }
+        
+
+        public ActionResult DQAResult()
+        {
+            int ip_id = 0;
+            if (User.IsInRole("ip"))
+            {
+                ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+            }
+            ViewBag.ip_id = ip_id;
             return View();
         }
 
+         
         public void PopulateStates(object selectStatus = null)
         {
             var statusQuery = new BaseDAO<State, long>().RetrieveAll();
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
-
         }
-
+        
 
         //[HttpPost]
         //public ActionResult DownloadDQADimensions()

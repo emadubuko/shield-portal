@@ -1,66 +1,57 @@
 ﻿@model  CommonUtil.Entities.Profile
-
-@section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
-    @Styles.Render("~/bundles/mysiteCss")
-    <style>
-    </style>
+@{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+@section AddToHead{ 
+    @Styles.Render("~/bundles/mysiteCss") 
 }
 
-<div class="main-content">
+<div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title">Profile Details</h4>            
+            <div class="col-sm-push-9 col-sm-2">
+                <a href="~/profile/profileEdit?profileId=@Model.Id" class="btn btn-black btn-sm btn-outline" style="line-height:10px;">
+                    <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
+                </a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
 
-    <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-10">
-            <div class="panel panel-warning">
-                <div class="panel-heading clearfix">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-8">
-                        <h4 class="panel-title">Profile Details</h4>
-                    </div>
-                    <div class="col-lg-2">
-                        <a href="~/profile/profileEdit?profileId=@Model.Id" class="btn btn-black btn-outline" style="line-height:10px;">
-                            <i class="fa fa-paste"></i><span>&nbsp;Edit</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="form-horizontal">
-
-                        @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties())
-                        {
-                            if (field.Name == "Id" || field.Name == "Password"
-                                || field.Name == "OrganizationId" || field.Name == "Title"
-                                || field.Name == "CreationDate" || field.Name == "LastLoginDate"
-                                || field.Name == "Status")
-                            {
-                                continue;
-                            }
-                            else if (field.Name == "Organization" && Model.Organization != null)
-                            {
-                                <div class="form-group">
-                                    <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                    <div>
-                                        <span>@Model.Organization.Name</span>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="form-group">
-                                    <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
-                                    <div>
-                                        <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
+                @foreach (var field in typeof(CommonUtil.Entities.Profile).GetProperties())
+                {
+                    if (field.Name == "Id" || field.Name == "Password"
+                        || field.Name == "OrganizationId" || field.Name == "Title"
+                        || field.Name == "CreationDate" || field.Name == "LastLoginDate"
+                        || field.Name == "Status")
+                    {
+                        continue;
+                    }
+                    else if (field.Name == "Organization" && Model.Organization != null)
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                            <div>
+                                <span>@Model.Organization.Name</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3">@CommonUtil.Utilities.Utilities.PasCaseConversion(field.Name)</label>
+                            <div>
+                                <span>@CommonUtil.Utilities.Utilities.PasCaseConversion(field.GetValue(Model))</span>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>
-    </div>
+</div>
+
     @section Scripts
         {
                  @Scripts.Render("~/bundles/CreateDMPJs")

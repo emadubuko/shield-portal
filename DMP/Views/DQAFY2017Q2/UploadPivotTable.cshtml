@@ -1,0 +1,198 @@
+﻿@model List<DQA.DAL.Model.UploadList>
+@{
+    Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
+}
+@section AddToHead{
+<script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+<script type="text/javascript">
+        {
+            var previousUpload = @Html.Raw(Json.Encode(Model));
+        }
+</script>
+    <style>
+        .form-control {
+            color: #029b17;
+        }
+
+        form {
+            color: #029b17;
+        }
+    </style>
+}
+
+<div class="col-md-8">
+    <p style="color: red;font-weight: bold;">Download pivot table template. Using the pivot table template downloaded, complete it with information reported on DATIM for Q2. After populating the template, upload back on the portal and this information will give you a list of all the sites for which DQAs should be done for Q2. </p>
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">UPLOAD DATIM PIVOT TABLE</h5>
+        </div>
+        <div class="panel-body">
+            <div class="progress active" id="progress">
+                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    <span class="sr-only">Loading...Please wait</span>
+                </div>
+            </div>
+            <form class="form-horizontal" id="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">File</label>
+                    <div class="col-sm-5">
+                        <input type="file" id="field-file" name="upFile" class="form-control" required>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" id="selected_quarter" required>
+                            <option value="" selected disabled> Select Quarter</option>
+                            <option value="Q1(Oct - Dec)">October - December</option>
+                            <option value="Q2(Jan-Mar)">January - March</option>
+                            <option value="Q3(Apr-Jun)">April - June</option>
+                            <option value="Q4(Jul-Sep)">July - September</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="selected_year" required>
+                            <option value="" selected disabled>Year</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-push-1 col-sm-1">
+                    <button class="btn btn-success" id="btnSubmit" type="submit">Upload</button>
+                </div>
+            </form>
+            <br /><br />
+            <div class="line-dashed"></div>
+            <div class="table-responsive" style="overflow-x:initial" id="pivotTable">
+                <div class="col-lg-12">
+                    <a class="btn btn-success" id="save_download" style="float:right">Download Selected Sites</a>
+                </div>
+                <table class="table table-bordered table-hover" id="output" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>PMTCT_ART</th>
+                            <th>TX_CURR</th>
+                            <th>TB_ART</th>
+                            <th>OVC</th>
+                            <th>Total on treatment</th>
+                            <th>Selected for DQA</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">Previous uploads</h5>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" style="overflow-x:initial">
+                <table class="table table-bordered table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Period</th>
+                            <th>Date Uploaded</th>
+                            <th>Uploaded By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td> @item.IP </td>
+                                <td>@item.Period</td>
+                                <td>@item.DateUploaded</td>
+                                <td>@item.UploadedBy</td>
+                                <td><a class="btn btn-sm btn-success downloadsite" id="@item.id" style="float:right">View Selected Sites</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+ 
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#progress").hide();
+            $("#pivotTable").hide();
+
+            $("form").submit(function () {
+                $("#output tbody").empty();
+                $("#progress").show();
+                var formData = new FormData($(this)[0]);
+                var selectedQuarter = $("#selected_quarter").val();
+                var selectedYear = $("#selected_year").val();
+                $("#btnSubmit").prop("disabled", true);
+
+                $.ajax({
+                    url: '/api/dqaapi/ProcesssPivotTable?selectedQuater=' + selectedQuarter + '&&selectedYear=' + selectedYear,
+                    type: 'POST',
+                    data: formData,
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (data) {
+                    buildPivotTable($.parseJSON(data));
+                    $("#pivotTable").show();
+                    $("#btnSubmit").prop("disabled", false);
+                    $("#progress").hide();
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                    $("#progress").hide();
+                    $("#btnSubmit").prop("disabled", false);
+                });
+                return false;
+            });
+
+            function buildPivotTable(dataList) {
+                $("#output tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var html = "<tr> ";
+                    html += "<td>" + d.FacilityName + "</td>";
+                    html += "<td>" + (d.PMTCT_ART == 0 ? '' : d.PMTCT_ART) + "</td>";
+                    html += "<td>" + (d.TX_CURR == 0 ? '' : d.TX_CURR) + "</td>";
+                    html += "<td>" + (d.TB_ART == 0 ? '' : d.TB_ART) + "</td>";
+                    html += "<td>" + (d.OVC == 0 ? '' : d.OVC) + "</td>";
+                    html += "<td>" + (d.PMTCT_ART + d.TX_CURR + d.TB_ART + d.OVC) + "</td>";
+                    if (d.SelectedForDQA) {
+                        html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    }
+                    else {
+                        html += "<td>-</td>";
+                    }
+                    html += "</tr>";
+                    $("#output tbody").append(html);
+                });
+            }
+            // This must be a hyperlink
+            $("#save_download").on('click', function (event) {
+                exportTableToCSV.apply(this, [$('#output'), 'selectedsites.csv', '-', 6, 6]);
+            });
+
+
+            $(".downloadsite").click(function (e) {
+                var id = e.currentTarget.id;
+                for (var z = 0; z < previousUpload.length; z++) {
+                    if(previousUpload[z].id == id){
+                        var sites = previousUpload[z].Tables;
+                        buildPivotTable(sites);
+                        $("#pivotTable").show();
+                        break;
+                    }
+                }
+            });
+
+        });
+    </script>
+}

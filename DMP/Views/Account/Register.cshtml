@@ -1,53 +1,53 @@
 ﻿@model  ShieldPortal.ViewModel.ProfileViewModel
 
-     
 
-    <div class="login-container"> 
-        <div class="login-content" style="width: 100%;">
-            <div class="row">
-                 
-                <form id="mainform" class="form-horizontal" role="form">
-    @Html.AntiForgeryToken()
-    <h4 style="text-align: center">Create New Profile</h4>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label" for="OrganizationId">Organization</label>
-                        <div class="col-sm-6">
-                            <select id="OrganizationId" class="form-control" required>
-                                <option value="" disabled selected>select organization</option>
-                                @foreach (var item in Model.Organization)
-                                {
-                                    <option value="@item.Id">@item.ShortName</option>
-                                }
-                            </select>
-                            </div>
-                        </div>
-                    
-    @foreach (var field in Model.FieldCollection)
-    {
-        if (field.Key == "Id") { continue; }
-        <div class="form-group">
-            <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
-            <div class="col-sm-6">
-                @if (field.Key == "Role name")
-                {
-                    <select id="RoleName" class="form-control" required>
-                        <option value="" disabled selected>select Role</option>
-                        @foreach (var item in Model.Role)
-                        {
-                            <option value="@item.Name">@item.Name</option>
-                        }
-                    </select>
-                }
-                else if (field.Key == "Password")
-                {
-                    <input type="password" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
-                }
-                else if ((string)field.Value == "String")
-                {
-                    <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
-                }                
+
+<div class="login-container">
+    <div class="login-content" style="width: 100%;">
+        <div class="row">
+
+            <form id="mainform" class="form-horizontal" role="form">
+                @Html.AntiForgeryToken()
+                <h4 style="text-align: center">Create New Profile</h4>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="OrganizationId">Organization</label>
+                    <div class="col-sm-6">
+                        <select id="OrganizationId" class="form-control" required>
+                            <option value="" disabled selected>select organization</option>
+                            @foreach (var item in Model.Organization)
+                            {
+                                <option value="@item.Id">@item.ShortName</option>
+                            }
+                        </select>
                     </div>
                 </div>
+
+                @foreach (var field in Model.FieldCollection)
+                {
+                    if (field.Key == "Id") { continue; }
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
+                        <div class="col-sm-6">
+                            @if (field.Key == "Role name")
+                {
+                                <select id="RoleName" class="form-control" required>
+                                    <option value="" disabled selected>select Role</option>
+                                    @foreach (var item in Model.Role)
+                                    {
+                                        <option value="@item.Name">@item.Name</option>
+                                    }
+                                </select>
+                            }
+                            else if (field.Key == "Password")
+                            {
+                                <input type="password" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                            }
+                            else if ((string)field.Value == "String")
+                            {
+                                <input type="text" placeholder="@field.Key" id="@field.Key.Replace(" ","")" required title="@field.Key is required" class="form-control">
+                            }
+                        </div>
+                    </div>
                 }
 
                 <div class="form-group">
@@ -64,14 +64,14 @@
 
             </form>
 
-                </div>
-               
-            </div>
+        </div>
+
     </div>
+</div>
 
 @section Scripts
-{ 
-@Scripts.Render("~/bundles/CreateDMPJs")
+{
+    @Scripts.Render("~/bundles/CreateDMPJs")
     <script>
         $(document).ready(function () {
             $('#PhoneNumberOfAuthor,#PhonenumberofApprover').keypress(function (key) {
@@ -83,7 +83,7 @@
                         $('#myModal').modal('show');
                         return false;
                     }
-            });            
+            });
 
             $("input").attr("autocomplete", "off");
 
@@ -92,39 +92,39 @@
                 var form = $(e.currentTarget.form);
                 //var validator = form.validate();
                 //if (form.valid()) {
-                    var formdata = $('#mainform')[0].elements;
-                    var viewModel = {};
+                var formdata = $('#mainform')[0].elements;
+                var viewModel = {};
 
-                    $("#loadImg").show();
-                    $('#dmpSubmit').disabled = true;
+                $("#loadImg").show();
+                $('#dmpSubmit').disabled = true;
 
-                    $.each(formdata, function (name, formElements) {
-                        viewModel[formElements.id] = formElements.value;
-                    });
-                    viewModel["__RequestVerificationToken"] = $("input[name=__RequestVerificationToken]").val();
+                $.each(formdata, function (name, formElements) {
+                    viewModel[formElements.id] = formElements.value;
+                });
+                viewModel["__RequestVerificationToken"] = $("input[name=__RequestVerificationToken]").val();
 
-                    var someUrl = '@Url.Action("Register","Account")'; //'@Url.Action("CreateNewProfile", "Profile")';
-                    $.ajax({
-                        type: "POST",
-                        url: someUrl,
-                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                        data: viewModel,
-                        cache: false,
-                    }).done(function (dmpId) {
-                        console.log(dmpId);
-                        window.location.replace('@Url.Action("index", "Profile")');
-                        $("#loadImg").hide();
-                        $('#dmpSubmit').disabled = false;
-                    }).error(function (xhr, status, err) {
-                        alert(err);
-                        console.log(err);
-                        $("#loadImg").hide();
-                        $('#dmpSubmit').disabled = false;
-                    });
+                var someUrl = '@Url.Action("Register","Account")'; //'@Url.Action("CreateNewProfile", "Profile")';
+                $.ajax({
+                    type: "POST",
+                    url: someUrl,
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    data: viewModel,
+                    cache: false,
+                }).done(function (dmpId) {
+                    console.log(dmpId);
+                    window.location.replace('@Url.Action("index", "Profile")');
+                    $("#loadImg").hide();
+                    $('#dmpSubmit').disabled = false;
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                    $("#loadImg").hide();
+                    $('#dmpSubmit').disabled = false;
+                });
 
-                    return false;
+                return false;
                 //}
             });
         });
-    </script> 
+    </script>
 }

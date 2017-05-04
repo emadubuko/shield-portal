@@ -54,7 +54,7 @@ namespace ShieldPortal.Services
 
         public Profile GetloggedInProfile()
         {
-            if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
+            if (HttpContext.Current.Session != null && HttpContext.Current.Session[".:LoggedInProfile:."] != null)
             {
                 return HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
             }

@@ -1,8 +1,9 @@
 ﻿@model ShieldPortal.ViewModel.BWR.BiWeeklyReportUploadViewModel
+@{
+    Layout = "~/Views/Shared/_bwrLayout.cshtml";
+}
 
-
-@section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
+@section AddToHead{ 
     <link href="~/Content/jquery-ui.css" rel="stylesheet" />
 
     <style>        
@@ -35,41 +36,33 @@
         }
     </script>
 }
+   
 
-<div class="row">
-    <div class="col-sm-offset-9 col-xs-offset-4">
-        <a class="btn btn-warning" id="uploadRpt" style="margin-top: 10px;">
-            <i class="icon-upload"></i> &nbsp;<span>Upload New Report</span>
-        </a>
-    </div>
-</div>
-
-
-<div id="page-wrapper" class="main-content">
-     
-        <label>Financial Year</label>
-        <select id="fYear" required onchange="reloadPage(this)">
-            <option value="" disabled selected>Finacial year</option>
-            @foreach (var item in Model.Year)
-            {
-                if (item == Model.SelectedYear)
+<div class="col-sm-12"> 
+        <div class="col-sm-2">
+            <label>Financial Year</label>
+            <select id="fYear" required onchange="reloadPage(this)">
+                <option value="" disabled selected>Finacial year</option>
+                @foreach (var item in Model.Year)
                 {
-                    <option value="@item" selected>@item</option>
+                    if (item == Model.SelectedYear)
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
                 }
-                else
-                {
-                    <option value="@item">@item</option>
-                }
-            }
-        </select> 
-
+            </select>
+        </div>   
     <div style="padding-left: 30%; font-weight: bolder;">
         Report Upload Tracker
     </div>
     <div class="table-responsive" style="overflow-x: initial;">
         <table style="width:100%" class="table table-striped table-bordered">
             <thead>
-                <tr style="color: #FFF;background-color: steelblue;border-color: steelblue;">
+                <tr style="color: #FFF;background-color: darkorange;border-color: darkorange;">
                     <th></th>
                     <th>IP</th>
                     @foreach (string item in ViewBag.IndexPeriods)
@@ -83,7 +76,7 @@
                 @foreach (var item in Model.IPReports)
                 {
                     <tr>
-                        <td><a href="~/BiWeeklyReport/BiWeeklyReportDownload?IP=@item.Key&fYear=@Model.SelectedYear" class="btn btn-sm btn-info"><i class="icon-download"></i>Download</a></td>
+                        <td><a href="~/BiWeeklyReport/BiWeeklyReportDownload?IP=@item.Key&fYear=@Model.SelectedYear" class="btn btn-sm btn-danger" style="text-transform:capitalize"><i class="icon-download"></i>Download</a></td>
                         <td>@item.Key</td>
                         @foreach (var date in item.Value)
                         {
@@ -102,160 +95,4 @@
         </table>
     </div>
 </div>
-
-
-<div class="modal fade" id="uploadModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 45%;border-color: #29b6f6;" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="color: #FFF;background-color: #29b6f6;">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" style="text-align: center;">Upload Report</h4>
-            </div>
-            <div style="padding-top: 15px; padding-left: 7px;">
-                <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">Reporting Period:</label>
-                        <div class="col-sm-4">
-                            <select id="ReportingPeriod" class="form-control" required>
-                                <option value="" disabled selected>Reporting Period</option>
-                                @foreach (var item in ViewBag.IndexPeriods)
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <select id="ReportingYear" class="form-control" required>
-                                <option value="" disabled selected>Year</option>
-                                @foreach (var item in Model.Year)
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">Implementing Partner:</label>
-                        <div class="col-sm-7">
-                            <select id="ImplementingPartner" class="form-control" required>
-                                <option value="" disabled selected>Implementing Partner</option>
-                                @foreach (var item in Model.ImplementingPartner)
-                                {
-                                    <option value="@item">@item</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label"> Upload:</label>
-                        <div class="col-md-7">
-                            <input type="file" class="form-control" id="fileUpload" />
-                        </div>
-                    </div>
-                </form>
-
-                <hr />
-                <label id="error" class="text-danger" style="display:none"></label>
-            </div>
-            <div class="modal-footer">
-                <div class="col-sm-2"> </div>
-                <div class="col-sm-7">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"> Close</button>
-                    <button id="upload" type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> &nbsp; Upload</button>
-                    <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts
-{
-    @Scripts.Render("~/bundles/CreateDMPJs")
-    <script>
-        $(document).ready(function () {
-
-            $(".page-container").attr('class', 'page-container sidebar-collapsed');
-
-            $("#uploadRpt").click(function () {
-                $("#uploadModal").draggable({
-                    handle: ".modal-header"
-                });
-                $('#uploadModal').modal('show');
-            });
-
-            $('#uploadModal').on('hidden.bs.modal', function () {
-                location.reload();
-            })
-
-            $("#upload").click(function (e, n) {
-
-                $('#upload').disabled = true;
-                $("#loadImg").show();
-
-                var data = new FormData();
-                let reportPeriod = '';
-                let reportYear ='';
-                let iP = '';
-
-                try {
-                    var file = $('form input[type=file]')[0].files[0];
-                    data.append('file', file);
-                    reportPeriod = $("form #ReportingPeriod")[0].value;
-                    reportYear = $("form #ReportingYear")[0].value;
-                     iP = $("form #ImplementingPartner")[0].value;
-                }
-                catch (e) {
-                    $('#upload').disabled = false;
-                    $("#loadImg").hide();
-                    $("#error").empty();
-                    $("#error").append("system error occurred. Please provide valid inputs")
-                    $("#error").show();
-                    return false;
-                }
-
-                if (reportPeriod == "" || reportYear == "" || iP == "") {
-                    $('#upload').disabled = false;
-                    $("#loadImg").hide();
-                    $("#error").empty();
-                    $("#error").append("Please provide valid inputs")
-                    $("#error").show();
-                    return false;
-                }
-
-                let url = '/BiWeeklyReport/Upload?ReportingPeriod=' + reportPeriod + '&Year=' + reportYear + '&ImplementingPartner=' + iP;
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    contentType: false,
-                    processData: false,
-                    data: data,
-                    cache: false,
-                }).done(function (result) {
-                    $('#upload').disabled = false;
-                    $("#loadImg").hide();
-                    console.log(result);
-                    $("#error").empty();
-                    if (result.split('|')[0] == "00") {
-                        $("#error").append('<span style="color:green;">' + result.split('|')[1] + '</span>');
-                    }
-                    else {
-                        $("#error").append('<span style="color:red;">' + result.split('|')[1] + '</span>');
-                    }
-                    $("#error").show();
-                }).error(function (xhr, status, err) {
-                    //alert(err);
-                    $('#upload').disabled = false;
-                    $("#loadImg").hide();
-                    $("#error").empty();
-                    $("#error").append(err);
-                    $("#error").show();
-                });
-                return false;
-
-            });
-        });
-    </script>
-}
+     

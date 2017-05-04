@@ -1,5 +1,7 @@
 ﻿using CommonUtil.Entities;
+using CommonUtil.Utilities;
 using FluentNHibernate.Mapping;
+using System.Collections.Generic;
 
 namespace CommonUtil.Mapping
 {
@@ -13,10 +15,11 @@ namespace CommonUtil.Mapping
             Map(x => x.ShortName);
             Map(x => x.Address);
             Map(x => x.MissionPartner);
-            Map(x => x.Logo).Length(int.MaxValue); 
+            Map(x => x.Logo).Length(int.MaxValue);
             Map(x => x.WebSite);
             Map(x => x.Fax);
             Map(x => x.PhoneNumber);
-    }
+            Map(x => x.SubscribedApps).CustomType(typeof(XmlType<List<string>>));
+        }
     }
 }

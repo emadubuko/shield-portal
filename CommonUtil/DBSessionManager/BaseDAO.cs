@@ -165,7 +165,149 @@ namespace CommonUtil.DBSessionManager
             }
             return value;
         }
-         
+
+        /// <summary>
+        /// Run and commit
+        /// </summary>
+        /// <param name="commandText"></param>
+        public void RunSQL(string commandText)
+        {
+            if (!string.IsNullOrEmpty(commandText))
+            {
+                ISessionFactory sessionFactory = BuildSession().SessionFactory;
+                var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection();
+                IDbConnection cn = (SqlConnection)connection;
+                IDbCommand cmd = new SqlCommand();
+                cmd.Connection = cn;
+
+                cn.Open();
+                IDbTransaction trans = null;
+                try
+                {
+                    trans = cn.BeginTransaction();
+                    cmd.CommandText = commandText;
+                    cmd.Transaction = trans;
+                    int i = cmd.ExecuteNonQuery();
+                    trans.Commit();
+                }
+                catch
+                {
+                    if (trans != null) trans.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    cn.Close();
+
+                    cn.Dispose();
+                    cmd.Dispose();
+                }
+            }
+        }
+
+        private IDbTransaction _trans;
+
+        /// <summary>
+        /// ExecuteNonQuery
+        /// </summary>
+        /// <param name="commandText"></param>
+        public void StartSQL(string commandText)
+        {
+            if (!string.IsNullOrEmpty(commandText))
+            {
+                ISessionFactory sessionFactory = BuildSession().SessionFactory;
+                var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection();
+                IDbConnection conn = (SqlConnection)connection;
+                IDbCommand cmd = new SqlCommand();
+
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                }
+                
+                try
+                {
+                    _trans = conn.BeginTransaction();
+                    cmd.Connection = conn;
+                    cmd.Transaction = (SqlTransaction)_trans;
+                    cmd.CommandText = commandText;
+
+                    int i = cmd.ExecuteNonQuery();
+                }
+                catch
+                { 
+                    throw;
+                }
+                finally
+                {
+                    cmd.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// ExecuteNonQuery
+        /// </summary>
+        /// <param name="commandText"></param>
+        public void ContinueSQL(string commandText)
+        {
+            if (!string.IsNullOrEmpty(commandText))
+            {                
+                IDbCommand cmd = new SqlCommand(); 
+                try
+                {
+                    cmd.Connection = _trans.Connection;
+                    cmd.Transaction = (SqlTransaction)_trans;
+                    cmd.CommandText = commandText;
+
+                    int i = cmd.ExecuteNonQuery();
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    cmd.Dispose();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// ExecuteNonQuery Commit
+        /// </summary>
+        public void CommitSQL()
+        {
+            if (_trans != null)
+            {
+                _trans.Commit();
+            }
+            if (_trans.Connection != null)
+            {
+                _trans.Connection.Close();
+                _trans.Connection.Dispose();
+            }
+            _trans = null;
+        }
+
+        public void RollbackSQL()
+        {
+            if(_trans == null)
+            {
+                return;
+            }
+            if (_trans != null)
+            {
+                _trans.Rollback();
+            }
+            if (_trans.Connection != null)
+            {
+                _trans.Connection.Close();
+                _trans.Connection.Dispose();
+            }
+            _trans = null;
+        }
 
     }
 }
