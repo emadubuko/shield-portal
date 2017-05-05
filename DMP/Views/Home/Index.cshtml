@@ -1,21 +1,7 @@
 ﻿@{
-    Layout = null;
+    Layout = "~/Views/Shared/_genLayout.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Cache-control" content="no-store, must-revalidate">
-    <meta http-equiv="Vary" content="*">
-
-    <title>Shield Portal</title>
-    <!-- Site favicon -->
-    <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
-
-    @Styles.Render("~/Content/css") 
-    @Styles.Render("~/bundles/CreateDMPCss")
+ @section AddToHead{
     <style>
         .custom-heading-div {
             color: #fff;
@@ -29,197 +15,148 @@
             height: 135px;
         }
     </style>
-</head>
-<body>
-    <div class="page-container">
-       
-        <div class="main-header row">
+}
 
-            <div class="col-lg-8">
-                <a class="col-lg-2">
-                    <img src="~/images/shield_logo.jpg" alt="Shield Logo" width="120" title="SHIELD" />
-                </a>
-                <a class="col-lg-1">
-                    <img src="~/images/pepfar.jpg" alt="pepfar logo" width="60" title="pepfar" />
-                </a>
-                <a class="col-lg-1">
-                    <img src="~/images/HHS.png" alt="HHS logo" width="70" title="HHS" />
-                </a>
-                <a class="col-lg-2">
-                    <img src="~/images/cdc.jpg" alt="cdc logo" width="100" title="cdc" />
-                </a>
-                <a class="col-lg-1">
-                    <img src="~/images/UMB logo.jpg" alt="UMB logo" width="200" title="UMB" />
-                </a>
-            </div>
-            <div class="col-sm-4">
-                <div class="pull-right">
-                    <ul class="user-info">
-                        <li class="profile-info dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
-                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.DisplayBadge </span> <span class="caret"></span>
-                            </a>
-                            <!-- User action menu -->
-                            <ul class="dropdown-menu">
-                                <li><a id="userdetail" style="cursor:pointer"><i class="icon-user"></i>My profile</a></li>
-                                <li><a id="changepassword" style="cursor:pointer"><i class="fa fa-key"></i>Change password</a></li>
-                                <li><a href='#' id="logoff"><i class="icon-logout"></i>Logout</a></li>
-                            </ul>
-                            <!-- /user action menu -->
-                        </li>
-                    </ul>
+<div class="main-content" style="padding-bottom:0px;">
+    <div class="row">
+
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" id="data-mgt">
+            <div class="panel minimal primary-bg" style="background-color:darkorange;border-color:darkorange">
+                <div class="panel-body">
+                    <a href="/home/submenu?id=dmp">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-file-text fa-3x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Management</strong></td>
+                            </tr>
+                        </table>
+                    </a>
+                    @*<div class="mini-progress">
+
+                            <!-- Progress Media -->
+                            <div>
+                                <small>DMP Completion across IPs</small>
+                                <div class="progress sm-progress">
+                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /progress media -->
+                            <!-- Progress Media -->
+                            <div>
+                                <small>FY17 Q1 DQA Upload</small>
+                                <div class="progress sm-progress">
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div>DQI FY17 Q2 Tool &nbsp; <a href="#"><img src="~/images/excel.png" width="20" /></a> </div>
+                                &nbsp; &nbsp;
+                                <div>DQA FY17 Q2 Tool &nbsp;<a href="#"><img src="~/images/excel.png" width="20" /></a></div>
+                            </div>
+                        </div>*@
+
                 </div>
             </div>
-            <!-- User info --> 
         </div>
 
 
-        <div class="main-content" style="padding-bottom:0px;">
-            <div class="row">
-
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4" id="data-mgt">
-                    <div class="panel minimal primary-bg" style="background-color:darkorange;border-color:darkorange">
-                        <div class="panel-body">
-                            <a href="/home/submenu?id=dmp">
-                                <table>
-                                    <tr style="vertical-align: top;">
-                                        <td><i class="fa fa-file-text fa-3x" style="color: #fff;"></i> </td>
-                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Management</strong></td>
-                                    </tr>
-                                </table>
-                            </a>
-                            @*<div class="mini-progress">
-
-                                    <!-- Progress Media -->
-                                    <div>
-                                        <small>DMP Completion across IPs</small>
-                                        <div class="progress sm-progress">
-                                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /progress media -->
-                                    <!-- Progress Media -->
-                                    <div>
-                                        <small>FY17 Q1 DQA Upload</small>
-                                        <div class="progress sm-progress">
-                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <div>DQI FY17 Q2 Tool &nbsp; <a href="#"><img src="~/images/excel.png" width="20" /></a> </div>
-                                        &nbsp; &nbsp;
-                                        <div>DQA FY17 Q2 Tool &nbsp;<a href="#"><img src="~/images/excel.png" width="20" /></a></div>
-                                    </div>
-                                </div>*@
-
-                        </div>
-                    </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" id="r-reporting">
+            <div class="panel minimal secondary-bg">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=routine_reporting"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">Routine Reporting</strong></td>
+                            </tr>
+                        </table>
+                    </a>
                 </div>
-
-
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4" id="r-reporting">
-                    <div class="panel minimal secondary-bg">
-                        <div class="panel-body">
-                            @*href="/home/submenu?id=routine_reporting"*@ 
-                            <a href="/home/submenu?id=routine_reporting">
-                                <table>
-                                    <tr style="vertical-align: top;">
-                                        <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
-                                        <td style="padding-left: 25px;"> <strong class="custom-heading-div">Routine Reporting</strong></td>
-                                    </tr>
-                                </table>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4" id="hiv-aids-eval">
-                    <div class="panel minimal info-bg">
-                        <div class="panel-body">
-                            @*href="/home/submenu?id=hiv_aid"*@
-                            <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
-                                <table>
-                                    <tr style="vertical-align: top;">
-                                        <td><i class="fa fa-history fa-3x" style="color: #fff;"></i> </td>
-                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">HIV/AIDS Monitoring & Evaluation</strong> </td>
-                                    </tr>
-                                </table>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4" id="outcome-eval">
-                    <div class="panel minimal teal-bg ">
-                        <div class="panel-body">
-                            @*href="/home/submenu?id=outcome"*@
-                            <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
-                                <table>
-                                    <tr style="vertical-align: top;">
-                                        <td> <i class="fa fa-calendar-check-o fa-3x" style="color: #fff;"></i></td>
-                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">Outcome Evaluation</strong> </td>
-                                    </tr>
-                                </table>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4" id="data-analytics">
-                    <div class="panel minimal" style="background-color:green; border-color:green">
-                        <div class="panel-body">
-                            <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
-                                <table>
-                                    <tr style="vertical-align: top;">
-                                        <td> <i class="fa fa-bar-chart fa-3x" style="color: lightseagreen;"></i></td>
-                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Analytics</strong> </td>
-                                    </tr>
-                                </table>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-sm-1"></div>
-                <div class="col-sm-4" id="admin" style="display:none">
-                    <div class="panel minimal teal-bg" style="background-color: indianred;border-color:indianred">
-                        <div class="panel-body">
-                            <a href="/home/submenu?id=admin">
-                                <table>
-                                    <tr style="vertical-align: top;">
-                                        <td> <i class="fa fa-cog fa-3x" style="color: #fff;"></i></td>
-                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">Admin</strong> </td>
-                                    </tr>
-                                </table>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-md-push-1 col-md-5">
-                <footer class="footer-main">
-                    &copy; @DateTime.Now.Year  <span>University of Maryland with funding from the US CDC</span>
-                </footer>
             </div>
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" id="hiv-aids-eval">
+            <div class="panel minimal info-bg">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=hiv_aid"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-history fa-3x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HIV/AIDS Monitoring & Evaluation</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" id="outcome-eval">
+            <div class="panel minimal teal-bg ">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=outcome"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td> <i class="fa fa-calendar-check-o fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Outcome Evaluation</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" id="data-analytics">
+            <div class="panel minimal" style="background-color:green; border-color:green">
+                <div class="panel-body">
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td> <i class="fa fa-bar-chart fa-3x" style="color: lightseagreen;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Analytics</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" id="admin" style="display:none">
+            <div class="panel minimal teal-bg" style="background-color: indianred;border-color:indianred">
+                <div class="panel-body">
+                    <a href="/home/submenu?id=admin">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td> <i class="fa fa-cog fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Admin</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+
+
+@section Scripts
+{
     <script src="~/Scripts/jquery.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
@@ -261,5 +198,5 @@
             });
         });
     </script>
-</body>
-</html>
+
+}

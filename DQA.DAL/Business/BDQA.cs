@@ -737,24 +737,36 @@ namespace DQA.DAL.Business
             entity.SaveChanges();
 
         }
-         
+
         public bool ReadDatimPivotTable(Stream datimFile, string quarter, int year, Profile profile, out string result)
-        {             
+        {
+            var hfs = entity.HealthFacilities.ToDictionary(x => x.FacilityCode);
+
             List<dqa_pivot_table> pivotTable = new List<dqa_pivot_table>();
             try
-            { 
+            {
                 using (ExcelPackage package = new ExcelPackage(datimFile))
                 {
                     var worksheet = package.Workbook.Worksheets.FirstOrDefault();
                     int row = 2;
-                   
+
                     while (true)
                     {
+                        Data.HealthFacility hf = null;
                         string fCode = ExcelHelper.ReadCell(worksheet, row, 1);
                         if (string.IsNullOrEmpty(fCode))
                         {
                             break;
-                        } 
+                        }
+                        if (hfs.TryGetValue(fCode, out hf) == false)
+                        {
+                            throw new ApplicationException("unknown facility with code [" + fCode + "] uploaded ");
+                        }
+                        if(hf.ImplementingPartner.Id != profile.Organization.Id)
+                        {
+                            throw new ApplicationException("Facility with code [" + fCode + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                        }
+
                         string fName = ExcelHelper.ReadCell(worksheet, row, 2);
                         int tb_art, pmtct_art, tx_curr, ovc = 0;
                         int.TryParse(ExcelHelper.ReadCell(worksheet, row, 3), out pmtct_art);
@@ -763,20 +775,20 @@ namespace DQA.DAL.Business
                         int.TryParse(ExcelHelper.ReadCell(worksheet, row, 6), out ovc);
 
 
+
                         pivotTable.Add(new dqa_pivot_table
                         {
-                            FacilityName = fName,
-                            FacilityCode = fCode,
+                            HealthFacility = hf,
                             TB_ART = tb_art,
                             PMTCT_ART = pmtct_art,
                             TX_CURR = tx_curr,
                             OVC = ovc,
                             Year = year,
                             Quarter = quarter,
-                            IP = profile.Organization.Id,
+                            ImplementingPartner = hf.ImplementingPartner,
                         });
-                        row += 1;                    
-                    }                     
+                        row += 1;
+                    }
                 }
 
                 List<dqa_pivot_table> selectedList = new List<dqa_pivot_table>();
@@ -847,7 +859,7 @@ namespace DQA.DAL.Business
                 {
                     entity.dqa_pivot_table_upload.Remove(previously);
                 }
-               
+
                 entity.dqa_pivot_table_upload.Add(
                     new dqa_pivot_table_upload
                     {
@@ -861,20 +873,20 @@ namespace DQA.DAL.Business
                 entity.dqa_pivot_table.RemoveRange(entity.dqa_pivot_table.Where(x => x.Year == year && x.Quarter == quarter.Trim()).ToList());
                 entity.dqa_pivot_table.AddRange(selectedList);
                 entity.SaveChanges();
-                 
-               result = Newtonsoft.Json.JsonConvert.SerializeObject(
-                   from item in selectedList
-                   select new
-                   {
-                       item.FacilityName,
-                       item.OVC,
-                       item.PMTCT_ART,
-                       item.TB_ART,
-                       item.TX_CURR,
-                       item.SelectedForDQA,
-                       item.SelectedReason
-                   }
-                );
+
+                result = Newtonsoft.Json.JsonConvert.SerializeObject(
+                    from item in selectedList
+                    select new
+                    {
+                        FacilityName =  item.HealthFacility.Name,
+                        item.OVC,
+                        item.PMTCT_ART,
+                        item.TB_ART,
+                        item.TX_CURR,
+                        item.SelectedForDQA,
+                        item.SelectedReason
+                    }
+                 );
             }
             catch (Exception ex)
             {

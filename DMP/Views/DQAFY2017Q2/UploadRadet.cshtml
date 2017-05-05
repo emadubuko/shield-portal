@@ -18,16 +18,11 @@
         form {
             color: #029b17;
         }
-
-        .rotate {
-            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083); /* IE6,IE7 */
-            -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
-            -moz-transform: rotate(-90.0deg); /* FF3.5+ */
-            -ms-transform: rotate(-90.0deg); /* IE9+ */
-            -o-transform: rotate(-90.0deg); /* Opera 10.5 */
-            -webkit-transform: rotate(-90.0deg); /* Safari 3.1+, Chrome */
-            transform: rotate(-90.0deg); /* Standard */
+        .table > thead > tr > th {
+            text-transform: capitalize;
+            font-weight: 200;
         }
+        
     </style>
 }
 
@@ -116,6 +111,7 @@
                     <thead>
                         <tr>
                             <th>IP</th>
+                            <th>Facility</th>
                             <th>Period</th>
                             <th>Date Uploaded</th>
                             <th>Uploaded By</th>
@@ -127,11 +123,12 @@
                         {
                             <tr id='@item.Id'>
                                 <td> @item.IP </td>
+                                <td>@item.Facility</td>
                                 <td>@(item.dqa_quarter + " " + item.dqa_year)</td>
                                 <td>@item.DateUploaded</td>
                                 <td>@item.UploadedBy</td>
                                 <td>
-                                    <a class="btn btn-sm btn-success downloadsite" id="@item.Id">View Selected Sites</a>
+                                    <a class="btn btn-sm btn-success downloadsite" id="@item.Id">View List</a>
                                     @if (ViewBag.showdelete)
                                     {
                                         <a class="btn btn-sm btn-danger deleteupload" id="@item.Id" style="float:right">Delete</a>

@@ -33,6 +33,7 @@ namespace DQA.DAL.Data
         public string WebSite { get; set; }
         public string Fax { get; set; }
         public string PhoneNumber { get; set; }
+        public string SubscribedApps { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HealthFacility> HealthFacilities { get; set; }

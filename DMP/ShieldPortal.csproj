@@ -280,6 +280,7 @@
     <Content Include="images\backgroung_image.png" />
     <Content Include="images\bg-7-full.jpg" />
     <Content Include="images\cdc.jpg" />
+    <Content Include="images\cdc_logo.png" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\excel.png" />
     <Content Include="images\HHS.png" />
@@ -304,6 +305,7 @@
     <Content Include="images\favicon.png" />
     <Content Include="images\macbook-40.jpg" />
     <Content Include="images\office-40.jpg" />
+    <Content Include="images\shield.jpg" />
     <Content Include="images\shield_login_burned.png" />
     <Content Include="images\shield_logo.jpg" />
     <Content Include="images\snooker.jpg" />
@@ -323,8 +325,8 @@
     <Content Include="images\sort_both.png" />
     <Content Include="images\sort_desc.png" />
     <Content Include="images\spinner.gif" />
-    <Content Include="images\UMB logo.jpg" />
     <Content Include="images\umb-icon.jpg" />
+    <Content Include="images\UMB_logo.png" />
     <Content Include="img\grid.png" />
     <Content Include="img\icon_sprite.png" />
     <Content Include="img\slider_handle.png" />
@@ -1029,6 +1031,9 @@
     <Content Include="Report\Template\GUIDE TO USING THE DATA QUALITY ASSESSMENT %28DQA%29 TOOL.Q1R.pdf" />
     <Content Include="Report\Template\Random Number Table.pdf" />
     <Content Include="Report\Template\SHIELD_DQA_v2_20170321.xlsm" />
+    <Content Include="Report\Template\DQA FY2017 Q2\DATIM PIVOT TABLE SAMPLE.xlsx" />
+    <Content Include="Report\Template\DQA FY2017 Q2\SHIELD_DQA_Q2.xlsm" />
+    <Content Include="Report\Template\DQA FY2017 Q2\USER GUIDE FOR THE DATA QUALITY ASSESSMENT TOOLv2May42017.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1085,6 +1090,7 @@
     <Content Include="Views\BiWeeklyReport\UploadNewReport.cshtml" />
     <Content Include="Views\DQAFY2016\Index.cshtml" />
     <Content Include="Views\DQAFY2017Q2\UploadRadet.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\DownloadDQATool.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1120,6 +1126,8 @@
     <Content Include="Views\Shared\_DQAFY2017Q2Layout.cshtml" />
     <Content Include="Views\Shared\_adminLayout.cshtml" />
     <Content Include="Views\Shared\_bwrLayout.cshtml" />
+    <Content Include="Views\Shared\_genLayout.cshtml" />
+    <Content Include="Views\Shared\_dmpLayoutPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

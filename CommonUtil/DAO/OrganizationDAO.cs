@@ -12,7 +12,7 @@ namespace CommonUtil.DAO
         {
             var session = BuildSession();
             ICriteria criteria = session.CreateCriteria<Organizations>()
-            .Add(Restrictions.Eq("ShortName", shortName));
+            .Add(Restrictions.Like("ShortName", shortName, MatchMode.Anywhere));
             var Ip = criteria.UniqueResult<Organizations>();
 
             return Ip;

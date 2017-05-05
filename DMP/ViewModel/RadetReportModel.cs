@@ -14,6 +14,7 @@ namespace ShieldPortal.ViewModel
         public  string dqa_quarter { get; set; }
         public  IList<RadetListing> Uploads { get; set; }
         public  DateTime DateUploaded { get; set; }
+        public string Facility { get; internal set; }
     }
     public class RadetListing
     {

@@ -300,6 +300,33 @@ namespace DQA.DAL.Business
             return ds;
         }
 
+        public static List<PivotUpload> RetrievePivotTablesForDQATool(int ip_id, string quarter)
+        {
+            var pivotTableUpload = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.IP == ip_id && x.Quarter == quarter);
+            if(pivotTableUpload != null)
+            {
+                var result = (from table in pivotTableUpload.dqa_pivot_table.OrderByDescending(x=>x.SelectedForDQA)
+                             select new PivotUpload
+                             {
+                                 Id = table.Id,
+                                 State = table.HealthFacility.lga.state.state_name,
+                                 Lga = table.HealthFacility.lga.lga_name,
+                                 IP = table.HealthFacility.ImplementingPartner.ShortName,
+                                 FacilityName = table.HealthFacility.Name, //table.FacilityName,
+                                 FacilityCode = table.HealthFacility.FacilityCode,
+                                 OVC = table.OVC,
+                                 PMTCT_ART = table.PMTCT_ART,
+                                 TB_ART = table.TB_ART,
+                                 TX_CURR = table.TX_CURR,
+                                 SelectedForDQA = table.SelectedForDQA,
+                                 SelectedReason = table.SelectedReason
+                             }).ToList();
+                return result;
+            }
+            //return null if nothing is found
+            return null;
+        }
+
         public static List<UploadList> RetrievePivotTables(int ip_id)
         {
             List<dqa_pivot_table_upload> result = new List<dqa_pivot_table_upload>();
@@ -322,7 +349,7 @@ namespace DQA.DAL.Business
                                          Tables = from table in item.dqa_pivot_table
                                                   select new PivotUpload
                                                   {
-                                                      FacilityName = table.FacilityName,
+                                                      FacilityName = table.HealthFacility.Name, //FacilityName,
                                                       OVC = table.OVC,
                                                       PMTCT_ART = table.PMTCT_ART,
                                                       TB_ART = table.TB_ART,

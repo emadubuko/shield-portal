@@ -23,5 +23,21 @@ namespace CommonUtil.DAO
             }
             return lga;
         }
+
+        public LGA RetrievebyLGA_State(string lga, string state)
+        {
+            ISession session = BuildSession();
+            try
+            {
+                ICriteria criteria = session.CreateCriteria<LGA>().Add(Expression.Eq("lga_name", lga));
+                criteria.CreateCriteria("State", "st", NHibernate.SqlCommand.JoinType.InnerJoin)
+               .Add(Restrictions.Eq("state_code", state));
+                return criteria.UniqueResult<LGA>();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

@@ -66,8 +66,7 @@
     <script>
         $(document).ready(function () {
             $(".page-container").attr('class', 'page-container sidebar-collapsed');
-             
-            $(document).ready(function () {
+              
                 var ip_id = @ViewBag.ip_id;
                 if(ip_id == 0){
                     getAllIPDQASummary('ip_pnl',2017,'Q2');
@@ -75,7 +74,7 @@
                 else{
                     getIPDQASummary(ip_id, 'facilitypnl',2017,'Q2');
                 }                
-            });
+          
 
             $('.table').DataTable({
                 "language": {

@@ -1,10 +1,13 @@
 ﻿using CommonUtil.DAO;
 using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
+using DQA.DAL.Business;
 using DQA.DAL.Model;
 using ShieldPortal.ViewModel;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
@@ -107,11 +110,11 @@ namespace ShieldPortal.Controllers
             List<UploadList> previousUploads = null;
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
             {
-                previousUploads = DQA.DAL.Business.Utility.RetrievePivotTables(0);
+                previousUploads = Utility.RetrievePivotTables(0);
             }
             else
             {
-                previousUploads = DQA.DAL.Business.Utility.RetrievePivotTables(profile.Organization.Id);
+                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id);
             }
             return View(previousUploads);
         }
@@ -136,6 +139,7 @@ namespace ShieldPortal.Controllers
                 list = (from entry in previousUploads
                         select new RadetReportModel
                         {
+                            Facility = entry.Facility,
                             IP = entry.IP.ShortName,
                             dqa_quarter = entry.dqa_quarter,
                             dqa_year = entry.dqa_year,
@@ -168,9 +172,55 @@ namespace ShieldPortal.Controllers
                         }).ToList();
             }
 
-            //Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))
-
             return View(list);
+        }
+
+
+        public ActionResult DownloadDQATool()
+        {
+            var profile = new Services.Utils().GetloggedInProfile();
+            List<PivotUpload> sites = new List<PivotUpload>();
+             sites = Utility.RetrievePivotTablesForDQATool(profile.Organization.Id, "Q2(Jan-Mar)");
+            return View(sites);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DownloadDQATool(List<PivotUpload> data)
+        {
+            string filename = "SHIELD_DQA_Q2.xlsm";
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/" + filename);
+
+            var profile = new Services.Utils().GetloggedInProfile();
+
+            using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            {
+                string file = await new BDQAQ2().GenerateDQA(data, stream, profile.Organization);
+
+                return Json(file, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public async Task<ActionResult> downloadDQAResource(string fileType)
+        {
+            string filename = "";
+            switch (fileType)
+            { 
+                case "DQAUserGuide":
+                    filename = "USER GUIDE FOR THE DATA QUALITY ASSESSMENT TOOLv2May42017.pdf";
+                    break;
+                case "PivotTable":
+                    filename = "DATIM PIVOT TABLE SAMPLE.xlsx";
+                    break;
+            }
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/" + filename);
+
+            using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            {
+                byte[] fileBytes = new byte[stream.Length];
+                await stream.ReadAsync(fileBytes, 0, fileBytes.Length);
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
+            }
         }
     }
 }

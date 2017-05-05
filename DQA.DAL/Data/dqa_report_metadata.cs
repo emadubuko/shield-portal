@@ -26,5 +26,6 @@ namespace DQA.DAL.Data
         public System.DateTime CreateDate { get; set; }
         public string CreatedBy { get; set; }
         public string ReportPeriod { get; set; }
+        public Nullable<int> ReportYear { get; set; }
     }
 }

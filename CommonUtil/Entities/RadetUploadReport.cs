@@ -13,5 +13,6 @@ namespace CommonUtil.Entities
         public virtual IList<RadetTable> Uploads { get; set; }
         public virtual DateTime DateUploaded { get; set; }
         public virtual int CurrentYearTx_New { get; set; }
+        public virtual string Facility { get; set; }
     }
 }

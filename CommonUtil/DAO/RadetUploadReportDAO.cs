@@ -18,8 +18,8 @@ namespace CommonUtil.DAO
     {
         public bool DeleteRecord(int id)
         {
-           // ISession session = BuildSession();
-            try 
+            // ISession session = BuildSession();
+            try
             {
                 StartSQL("delete from dbo.dqa_radet where [UploadReportId] =" + id);
                 ContinueSQL("DELETE FROM dbo.dqa_radet_upload_report WHERE Id =" + id);
@@ -33,7 +33,7 @@ namespace CommonUtil.DAO
             return true;
         }
 
-        public List<RadetUploadReport> RetrieveRadetUpload(int IP, int year, string quarter)
+        public List<RadetUploadReport> RetrieveRadetUpload(int IP, int year, string quarter, string facility = null)
         {
             List<RadetUploadReport> result = null;
             ISession session = BuildSession();
@@ -41,31 +41,66 @@ namespace CommonUtil.DAO
             ICriteria criteria = session.CreateCriteria<RadetUploadReport>()
                 .Add(Restrictions.Eq("dqa_year", year))
                  .Add(Restrictions.Eq("dqa_quarter", quarter));
+            if (!string.IsNullOrEmpty(facility))
+            {
+                criteria.Add(Restrictions.Eq("Facility", facility));
+            }
             if (IP != 0)
             {
                 criteria.Add(Restrictions.Eq("IP.Id", IP));
             }
             result = criteria.List<RadetUploadReport>() as List<RadetUploadReport>;
-            return result; 
+            return result;
         }
 
         public bool ReadRadetFile(Stream uploadedFile, string selectedQuater, int selectedYear, Profile loggedinProfile, out string result)
-        {
-            var t = RetrieveRadetUpload(loggedinProfile.Organization.Id, selectedYear, selectedQuater);
-            if (t != null && t.Count() != 0)
-            {
-                result = "Result already exist";
-                return false;
-            }
-
+        { 
             List<RadetTable> table = new List<RadetTable>();
             result = "";
+            string facilityName = "";
 
+            var Ips = new OrganizationDAO().RetrieveAll().ToDictionary(s => s.ShortName);
+            Organizations org = null;
             using (ExcelPackage package = new ExcelPackage(uploadedFile))
             {
                 var worksheets = package.Workbook.Worksheets;
                 foreach (var worksheet in worksheets)
                 {
+                    if (worksheet.Name == "MainPage")
+                    {
+                        facilityName = ExcelHelper.ReadCell(worksheet, 20, 19);
+                        if (!string.IsNullOrEmpty(facilityName) && facilityName.Count() > 4)
+                        {
+                            facilityName = facilityName.Substring(3);
+                        }
+                        else
+                        {
+                            result = "Could not read Facility Name";
+                            return false;
+                        }
+                        string ipshortname = ExcelHelper.ReadCell(worksheet, 24, 19);
+                        
+                        if(Ips.TryGetValue(ipshortname, out org) == false)
+                        {
+                            if(ipshortname == "CCRN")
+                            {
+                                ipshortname = "CCCRN";
+                            }
+                            if (Ips.TryGetValue(ipshortname, out org) == false)
+                            {
+
+                                result = "Ip [" + ipshortname + "] not configured";
+                            } 
+                        }
+
+                        var t = RetrieveRadetUpload(loggedinProfile.Organization.Id, selectedYear, selectedQuater, facilityName);
+                        if (t != null && t.Count() != 0)
+                        {
+                            result = "Result already exist";
+                            return false;
+                        }
+                    }
+
                     var istEntry = ExcelHelper.ReadCell(worksheet, 1, 7);
                     //if the sheet does not have a column named Patiend Id, then skip
                     if (string.IsNullOrEmpty(istEntry) || !istEntry.ToLower().Contains("patient unique id/art"))
@@ -110,7 +145,8 @@ namespace CommonUtil.DAO
             MarkSelectedItems(ref table);
             RadetUploadReport report = new Entities.RadetUploadReport()
             {
-                IP = loggedinProfile.Organization,
+                Facility = facilityName,
+                IP = org, // loggedinProfile.Organization,
                 UploadedBy = loggedinProfile,
                 dqa_year = selectedYear,
                 dqa_quarter = selectedQuater,
@@ -160,12 +196,12 @@ namespace CommonUtil.DAO
 
         private void MarkSelectedItems(ref List<RadetTable> table)
         {
-            string no_to_select = ExcelHelper.GetRandomizeChartNUmber(table.Count.ToString()); 
+            string no_to_select = ExcelHelper.GetRandomizeChartNUmber(table.Count.ToString());
             table.Shuffle();
             foreach (var item in table.Take(Convert.ToInt32(no_to_select)))
             {
-                item.SelectedForDQA = true; 
-            }  
+                item.SelectedForDQA = true;
+            }
         }
 
         private void BulkInser(List<RadetTable> table)

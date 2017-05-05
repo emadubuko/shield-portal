@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+}
+ 
+@section AddToHead{
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <style>
+        .panel-warning {
+            border-color: darkorange;
+        }
+
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: darkorange;
+                border-color: darkorange;
+            }
+
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+            background-color: darkorange;
+            border-color: darkorange;
+            color: #FFFFFF;
+            z-index: 5;
+        }
+
+        .form-control {
+            border-color: darkorange;
+        }
+
+        .title {
+            font-weight: 300;
+            color: #000;
+            padding-left: 10px;
+        }
+    </style>
+@if (IsSectionDefined("AddToHead"))
+    {
+    @RenderSection("AddToHead", required: false)
+    }
+
+}
+<div class="main-content" style="padding-top: 0px;">
+
+    <div class="row" id="breadcrumb">
+        <div class="col-sm-5 col-sm-push-3">
+            <ol class="breadcrumb breadcrumb-2">
+                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                <li><a href="/Home/submenu?id=dmp">Data Management</a></li>
+                <li class="active">Data Management Plan</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-warning">
+                <div class="panel-body" style="padding-top: 20px;padding-bottom: 0px;">
+                    <ul class="list-item mailbox-list">
+                        <li>
+                            <a href=@Url.Action("DMPDashboard", "DMP") style="color:darkorange">
+                                <i class="fa fa-area-chart"></i><span class="title">View Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("index", "DMP") style="color:darkorange">
+                                <i class="icon-book-open"></i><span class="title">View DMP List</span>
+                            </a>
+                        </li>
+                        @if (ViewBag.ShowCreateLink!=null && ViewBag.ShowCreateLink)
+                        {
+                            <li>
+                                <a href=@Url.Action("CreateDMP", "DMP") style="color:darkorange">
+                                    <i class="fa fa-file-o"></i><span class="title">Create New DMP</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+</div>
+
+@section Scripts
+{
+    @RenderSection("scripts", required: false)
+}

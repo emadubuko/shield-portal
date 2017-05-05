@@ -14,6 +14,12 @@ namespace DQA.DAL.Data
     
     public partial class HealthFacility
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public HealthFacility()
+        {
+            this.dqa_pivot_table = new HashSet<dqa_pivot_table>();
+        }
+    
         public long Id { get; set; }
         public string Name { get; set; }
         public string FacilityCode { get; set; }
@@ -28,5 +34,7 @@ namespace DQA.DAL.Data
         public virtual ImplementingPartner ImplementingPartner { get; set; }
         public virtual lga lga1 { get; set; }
         public virtual ImplementingPartner ImplementingPartner1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<dqa_pivot_table> dqa_pivot_table { get; set; }
     }
 }

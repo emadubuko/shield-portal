@@ -16,6 +16,7 @@ namespace CommonUtil.Mapping
             Map(m => m.dqa_quarter);
             Map(m => m.DateUploaded);
             Map(x => x.CurrentYearTx_New).Column("Current_year_tx_new");
+            Map(m => m.Facility);
             HasMany(h => h.Uploads).Cascade.SaveUpdate().Inverse()
                 .KeyColumns.Add("UploadReportId", mapping => mapping.Name("UploadReportId"));
         }

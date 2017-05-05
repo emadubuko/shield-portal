@@ -31,6 +31,8 @@ namespace Test
         {
             Console.WriteLine("started");
 
+            UpdateFacilities();
+
            // AfenetUtil.ReadFile();
             //RadetExcelDocs.ReadAndMerge();
 
@@ -42,7 +44,7 @@ namespace Test
             // new Program().RetrieveExcelValue();
 
 
-              DMPSummary();
+            //  DMPSummary();
 
             //new Program().UpdateFacilities();
             //    new Program().GenerateFacilityTargetCSV();
@@ -54,6 +56,69 @@ namespace Test
             //  new Program().CopyAndPaste();
 
             Console.ReadLine();
+        }
+
+
+        private static void UpdateFacilities()
+        {
+            HealthFacilityDAO dao = new HealthFacilityDAO();
+            var hfs = dao.RetrieveAll().ToDictionary(x => x.FacilityCode);
+            List<HealthFacility> newHfs = new List<HealthFacility>();
+
+            var file = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\HealthFacility.xlsx";
+
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
+            {
+                int row = 2;
+                var sheet = package.Workbook.Worksheets.FirstOrDefault();
+                while (row < 1505)
+                {
+                    string code = sheet.Cells["D" + row].Value.ToString();
+                    HealthFacility hf = null;
+                    bool exist = hfs.TryGetValue(code, out hf);
+                    LGA lga = RetrieveLga(sheet.Cells["A" + row].Value.ToString(), sheet.Cells["B" + row].Value.ToString().Substring(3));
+                    Organizations org = new OrganizationDAO().SearchByShortName(sheet.Cells["E" + row].Value.ToString().Trim());
+                    if (exist)
+                    {
+                        hf.Name = sheet.Cells["C" + row].Value.ToString();
+                        if(lga != null)
+                        {
+                            hf.LGA = lga;
+                        } 
+                        hf.Organization = org;
+                        dao.Update(hf);
+                    }
+                    else
+                    {
+                        newHfs.Add(new HealthFacility
+                        {
+                            FacilityCode = code,
+                            LGA = lga,
+                            Organization = org,
+                            OrganizationType = CommonUtil.Enums.OrganizationType.HealthFacilty,
+                            Name = sheet.Cells["C" + row].Value.ToString(),
+                            lgacode = lga.lga_code,
+                        });
+                    }
+                    row++;
+                }
+                dao.BulkInsert(newHfs);
+                dao.CommitChanges();
+            }
+              
+        }
+
+        public static LGA RetrieveLga(string statename, string lga)
+        {
+            LGA l = null;
+            try
+            {
+                LGADao dao = new LGADao();
+                l = dao.RetrievebyLGA_State(lga, statename);
+
+            }
+            catch { }
+            return l;
         }
 
         private void RetrieveDimensionValue()
@@ -741,25 +806,25 @@ namespace Test
         }
 
 
-        private async void UpdateFacilities()
-        {
-            HealthFacilityDAO hfdao = new HealthFacilityDAO();
-            var hfs = hfdao.RetrieveAll();
-            StringBuilder sb = new StringBuilder();
-            var taskList = new List<Task<string>>();
+        //private async void UpdateFacilities()
+        //{
+        //    HealthFacilityDAO hfdao = new HealthFacilityDAO();
+        //    var hfs = hfdao.RetrieveAll();
+        //    StringBuilder sb = new StringBuilder();
+        //    var taskList = new List<Task<string>>();
 
-            foreach (var hf in hfs)
-            {
-                string baseUrl = "https://www.datim.org/api/organisationUnits/" + hf.FacilityCode + "?fields=coordinates";
-                taskList.Add(RetrieveDatimData(baseUrl, hf));
-            }
+        //    foreach (var hf in hfs)
+        //    {
+        //        string baseUrl = "https://www.datim.org/api/organisationUnits/" + hf.FacilityCode + "?fields=coordinates";
+        //        taskList.Add(RetrieveDatimData(baseUrl, hf));
+        //    }
 
-            var result = await Task.WhenAll(taskList);
-            string query = string.Join(";", result);
-            Console.WriteLine("Finish fetching data. Press enter to update the db");
-            //Console.ReadLine();
-            DirectUpdateDB(query);
-        }
+        //    var result = await Task.WhenAll(taskList);
+        //    string query = string.Join(";", result);
+        //    Console.WriteLine("Finish fetching data. Press enter to update the db");
+        //    //Console.ReadLine();
+        //    DirectUpdateDB(query);
+        //}
 
         private async Task<string> RetrieveDatimData(string uri, HealthFacility hf)
         {
