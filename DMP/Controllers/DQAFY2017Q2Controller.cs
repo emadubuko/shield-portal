@@ -146,29 +146,29 @@ namespace ShieldPortal.Controllers
                             UploadedBy = entry.UploadedBy.FullName,
                             DateUploaded = entry.DateUploaded,
                             Id = entry.Id,
-                            Uploads = (from item in entry.Uploads
-                                       select new RadetListing
-                                       {
-                                           PatientId = item.PatientId,
-                                           HospitalNo = item.HospitalNo,
-                                           Sex = item.Sex,
-                                           Age_at_start_of_ART_in_months = item.Age_at_start_of_ART_in_months,
-                                           Age_at_start_of_ART_in_years = item.Age_at_start_of_ART_in_years,
-                                           ARTStartDate = item.ARTStartDate,
-                                           LastPickupDate = item.LastPickupDate,
-                                           MonthsOfARVRefill = item.MonthsOfARVRefill,
-                                           RegimenLineAtARTStart = item.RegimenLineAtARTStart,
-                                           RegimenAtStartOfART = item.RegimenAtStartOfART,
-                                           CurrentRegimenLine = item.CurrentRegimenLine,
-                                           CurrentARTRegimen = item.CurrentARTRegimen,
-                                           Pregnancy_Status = item.Pregnancy_Status,
-                                           Current_Viral_Load = item.Current_Viral_Load,
-                                           Date_of_Current_Viral_Load = item.Date_of_Current_Viral_Load,
-                                           Viral_Load_Indication = item.Viral_Load_Indication,
-                                           CurrentARTStatus = item.CurrentARTStatus,
-                                           SelectedForDQA = item.SelectedForDQA,
-                                           RadetYear = item.RadetYear
-                                       }).ToList()
+                            //Uploads = (from item in entry.Uploads
+                            //           select new RadetListing
+                            //           {
+                            //               PatientId = item.PatientId,
+                            //               HospitalNo = item.HospitalNo,
+                            //               Sex = item.Sex,
+                            //               Age_at_start_of_ART_in_months = item.Age_at_start_of_ART_in_months,
+                            //               Age_at_start_of_ART_in_years = item.Age_at_start_of_ART_in_years,
+                            //               ARTStartDate = item.ARTStartDate,
+                            //               LastPickupDate = item.LastPickupDate,
+                            //               MonthsOfARVRefill = item.MonthsOfARVRefill,
+                            //               RegimenLineAtARTStart = item.RegimenLineAtARTStart,
+                            //               RegimenAtStartOfART = item.RegimenAtStartOfART,
+                            //               CurrentRegimenLine = item.CurrentRegimenLine,
+                            //               CurrentARTRegimen = item.CurrentARTRegimen,
+                            //               Pregnancy_Status = item.Pregnancy_Status,
+                            //               Current_Viral_Load = item.Current_Viral_Load,
+                            //               Date_of_Current_Viral_Load = item.Date_of_Current_Viral_Load,
+                            //               Viral_Load_Indication = item.Viral_Load_Indication,
+                            //               CurrentARTStatus = item.CurrentARTStatus,
+                            //               SelectedForDQA = item.SelectedForDQA,
+                            //               RadetYear = item.RadetYear
+                            //           }).ToList()
                         }).ToList();
             }
 
@@ -222,5 +222,6 @@ namespace ShieldPortal.Controllers
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
             }
         }
+        
     }
 }

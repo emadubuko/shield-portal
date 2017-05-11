@@ -1,7 +1,12 @@
 ﻿@{
     Layout = "~/Views/Shared/_genLayout.cshtml";
 }
-
+@section AddToHead{
+@if (IsSectionDefined("AddToHead"))
+{
+    @RenderSection("AddToHead", required: false)
+}
+}
 <div class="main-content" style="padding-top: 0px;">
     <div class="row" id="breadcrumb">
         <div class="col-sm-5 col-sm-push-3">

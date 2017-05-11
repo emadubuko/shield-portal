@@ -37,6 +37,7 @@
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot__Facil__6324A15E" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot__Uploa__45A94D10" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot_ta__IP__6BB9E75F" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_FY17Q1_Analysyis" Width="1.5" PointX="9.625" PointY="12.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

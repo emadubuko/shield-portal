@@ -125,15 +125,17 @@
                             </ul>
                         </div>
 
-                        <div>
-                            <h5 style="font-weight: bold">Go to FY2016</h5>
-                            <ul class="list-item todo-list">
-                                <li>
-                                    <a href="/DQAFY2016/index" class="btn btn-sm btn-success btn-outline" style="text-transform: none">DQA</a>
-                                </li>
-                            </ul>
-                        </div>
-
+                        @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+                        {
+                            <div>
+                                <h5 style="font-weight: bold">Go to FY2016</h5>
+                                <ul class="list-item todo-list">
+                                    <li>
+                                        <a href="/DQAFY2016/homepage" class="btn btn-sm btn-success btn-outline" style="text-transform: none">DQA</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
                         <hr />
                         <h5 style="font-weight: bold">Program Overview</h5>
                         <p>

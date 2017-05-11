@@ -25,5 +25,26 @@ namespace ShieldPortal.Controllers
             }
             return View(report);
         }
+
+        public ActionResult HomePage()
+        {
+            var profile = new Services.Utils().GetloggedInProfile();
+            var dao = new AfenetReportDAO();
+            IList<AfenetReport> report = null;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                report = dao.RetrieveAll();
+            }
+            else
+            {
+                report = dao.RetrieveAll().Where(x => x.IP == profile.Organization.ShortName).ToList();
+            }
+            return View(report);
+        }
+
+        public ActionResult Dashboard()
+        {
+            return View();
+        }
     }
 }

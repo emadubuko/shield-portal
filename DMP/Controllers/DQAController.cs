@@ -1,5 +1,6 @@
 ﻿using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
+using DQA.DAL.Business;
 using DQA.DAL.Model;
 using System.Collections.Generic;
 using System.IO;
@@ -98,7 +99,13 @@ namespace ShieldPortal.Controllers
             var statusQuery = new BaseDAO<State, long>().RetrieveAll();
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
         }
-        
+
+        public ActionResult DQAAnalysisReport()
+        {
+            var result = new BDQAQ2().GetAnalysisReport();
+            return View(result);
+        }
+
 
         //[HttpPost]
         //public ActionResult DownloadDQADimensions()

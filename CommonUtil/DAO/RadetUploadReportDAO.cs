@@ -53,13 +53,65 @@ namespace CommonUtil.DAO
             return result;
         }
 
-        public bool ReadRadetFile(Stream uploadedFile, string selectedQuater, int selectedYear, Profile loggedinProfile, out string result)
-        { 
+        public bool CheckPreviousUpload(int IP, int year, string quarter, string facility)
+        {
+            ISession session = BuildSession();
+            ICriteria count = session.CreateCriteria<RadetUploadReport>()
+                 .Add(Restrictions.Eq("dqa_year", year))
+                 .Add(Restrictions.Eq("dqa_quarter", quarter));
+            if (!string.IsNullOrEmpty(facility))
+            {
+                count.Add(Restrictions.Eq("Facility", facility));
+            }
+            if (IP != 0)
+            {
+                count.Add(Restrictions.Eq("IP.Id", IP));
+            }
+            var result = count.SetProjection(Projections.Count(Projections.Id())).UniqueResult<int>();
+            return result != 0;
+        }
+
+        public string RetrieveRadet(int id)
+        {
+            var radet = Retrieve(id);
+            var processData = new
+            {
+                data = from item in radet.Uploads
+                       select new
+                       {
+                           item.PatientId,
+                           item.HospitalNo,
+                           item.Sex,
+                           item.Age_at_start_of_ART_in_months,
+                           item.Age_at_start_of_ART_in_years,
+                           item.ARTStartDate,
+                           item.LastPickupDate,
+                           item.MonthsOfARVRefill,
+                           item.RegimenLineAtARTStart,
+                           item.RegimenAtStartOfART,
+                           item.CurrentRegimenLine,
+                           item.CurrentARTRegimen,
+                           item.Pregnancy_Status,
+                           item.Current_Viral_Load,
+                           item.Date_of_Current_Viral_Load,
+                           item.Viral_Load_Indication,
+                           item.CurrentARTStatus,
+                           item.SelectedForDQA,
+                           item.RadetYear,
+                       },
+                Current_year_tx_new = radet.CurrentYearTx_New
+            };
+
+            string result = Newtonsoft.Json.JsonConvert.SerializeObject(processData);
+            return result;
+        }
+
+        public bool ReadRadetFile(Stream uploadedFile, string selectedQuater, int selectedYear, Profile loggedinProfile, Dictionary<string,Organizations> Ips, string fileName, bool iszip, out string result)
+        {
             List<RadetTable> table = new List<RadetTable>();
             result = "";
             string facilityName = "";
-
-            var Ips = new OrganizationDAO().RetrieveAll().ToDictionary(s => s.ShortName);
+             
             Organizations org = null;
             using (ExcelPackage package = new ExcelPackage(uploadedFile))
             {
@@ -73,28 +125,37 @@ namespace CommonUtil.DAO
                         {
                             facilityName = facilityName.Substring(3);
                         }
+                        else if (worksheets.Count < 6)
+                        {
+                            return true;//empty file
+                        }
+                        else if(!string.IsNullOrEmpty(fileName))
+                        {
+                            facilityName = fileName;
+                        }
                         else
                         {
-                            result = "Could not read Facility Name";
+                            result = "Could not read Facility Name in file ";
                             return false;
                         }
                         string ipshortname = ExcelHelper.ReadCell(worksheet, 24, 19);
-                        
-                        if(Ips.TryGetValue(ipshortname, out org) == false)
+
+                        if (Ips.TryGetValue(ipshortname.ToLower(), out org) == false)
                         {
-                            if(ipshortname == "CCRN")
+                            if (ipshortname == "CCRN")
                             {
                                 ipshortname = "CCCRN";
                             }
-                            if (Ips.TryGetValue(ipshortname, out org) == false)
+                            if (Ips.TryGetValue(ipshortname.ToLower(), out org) == false)
                             {
 
                                 result = "Ip [" + ipshortname + "] not configured";
-                            } 
+                                return false;
+                            }
                         }
 
-                        var t = RetrieveRadetUpload(loggedinProfile.Organization.Id, selectedYear, selectedQuater, facilityName);
-                        if (t != null && t.Count() != 0)
+                        var previousReport = CheckPreviousUpload(org.Id, selectedYear, selectedQuater, facilityName);
+                        if (previousReport)
                         {
                             result = "Result already exist";
                             return false;
@@ -136,60 +197,84 @@ namespace CommonUtil.DAO
                             Viral_Load_Indication = ExcelHelper.ReadCellText(worksheet, row, 22),
                             CurrentARTStatus = ExcelHelper.ReadCellText(worksheet, row, 23),
                             RadetYear = worksheet.Name,
-                            IP = loggedinProfile.Organization
+                            IP = org
                         });
                         row += 1;
                     }
                 }
             }
+            if(table.Count == 0)
+            {
+                result = "no record found";
+                return true;
+            }
             MarkSelectedItems(ref table);
             RadetUploadReport report = new Entities.RadetUploadReport()
             {
                 Facility = facilityName,
-                IP = org, // loggedinProfile.Organization,
+                IP = org,
                 UploadedBy = loggedinProfile,
                 dqa_year = selectedYear,
                 dqa_quarter = selectedQuater,
                 DateUploaded = DateTime.Now,
-                Uploads = table,
+                //Uploads = table,
                 CurrentYearTx_New = table.Count(y => y.RadetYear == DateTime.Now.Year.ToString())
             };
-            foreach (var item in table)
+            try
             {
-                item.UploadReport = report;
+                Save(report);
+                foreach (var item in table)
+                {
+                    item.UploadReport = report;
+                }
+
+                BulkInser(table);
             }
-            Save(report);
+            catch(Exception ex)
+            {
+                RollbackChanges();
+                throw ex;
+            }
+                                 
             CommitChanges();
 
-            result = Newtonsoft.Json.JsonConvert.SerializeObject(
-                new
-                {
-                    data = from item in report.Uploads
-                           select new
-                           {
-                               item.PatientId,
-                               item.HospitalNo,
-                               item.Sex,
-                               item.Age_at_start_of_ART_in_months,
-                               item.Age_at_start_of_ART_in_years,
-                               item.ARTStartDate,
-                               item.LastPickupDate,
-                               item.MonthsOfARVRefill,
-                               item.RegimenLineAtARTStart,
-                               item.RegimenAtStartOfART,
-                               item.CurrentRegimenLine,
-                               item.CurrentARTRegimen,
-                               item.Pregnancy_Status,
-                               item.Current_Viral_Load,
-                               item.Date_of_Current_Viral_Load,
-                               item.Viral_Load_Indication,
-                               item.CurrentARTStatus,
-                               item.SelectedForDQA,
-                               item.RadetYear,
-                           },
-                    Current_year_tx_new = report.CurrentYearTx_New
-                }
-                );
+            if (iszip == false)
+            {
+                result = Newtonsoft.Json.JsonConvert.SerializeObject(
+                                new
+                                {
+                                    data = from item in report.Uploads
+                                           select new
+                                           {
+                                               item.PatientId,
+                                               item.HospitalNo,
+                                               item.Sex,
+                                               item.Age_at_start_of_ART_in_months,
+                                               item.Age_at_start_of_ART_in_years,
+                                               item.ARTStartDate,
+                                               item.LastPickupDate,
+                                               item.MonthsOfARVRefill,
+                                               item.RegimenLineAtARTStart,
+                                               item.RegimenAtStartOfART,
+                                               item.CurrentRegimenLine,
+                                               item.CurrentARTRegimen,
+                                               item.Pregnancy_Status,
+                                               item.Current_Viral_Load,
+                                               item.Date_of_Current_Viral_Load,
+                                               item.Viral_Load_Indication,
+                                               item.CurrentARTStatus,
+                                               item.SelectedForDQA,
+                                               item.RadetYear,
+                                           },
+                                    Current_year_tx_new = report.CurrentYearTx_New
+                                }
+                                );
+            }
+            else
+            {
+                result = "ok";
+            }
+
 
             return true;
         }
@@ -229,7 +314,7 @@ namespace CommonUtil.DAO
             dt.Columns.Add(new DataColumn("SelectedForDQA", typeof(bool)));
             dt.Columns.Add(new DataColumn("RadetYear", typeof(string)));
             dt.Columns.Add(new DataColumn("IP", typeof(int)));
-
+            dt.Columns.Add(new DataColumn("UploadReportId", typeof(int)));
             try
             {
                 foreach (var tx in table)
@@ -258,6 +343,7 @@ namespace CommonUtil.DAO
                         row["SelectedForDQA"] = GetDBValue(tx.SelectedForDQA);
                         row["RadetYear"] = GetDBValue(tx.RadetYear);
                         row["IP"] = GetDBValue(tx.IP.Id);
+                        row["UploadReportId"] = GetDBValue(tx.UploadReport.Id);
 
                         dt.Rows.Add(row);
                     }

@@ -108,6 +108,33 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Funder" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="dqa_FY17Q1_Analysyis">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="IP" Type="nvarchar" MaxLength="255" />
+          <Property Name="Facility" Type="nvarchar" MaxLength="255" />
+          <Property Name="DQA_FY17Q1_HTC_TST" Type="float" />
+          <Property Name="Validated_HTC_TST" Type="float" />
+          <Property Name="CR_HTC_TST" Type="float" />
+          <Property Name="DQA_FY17Q1_PMTCT_STAT" Type="float" />
+          <Property Name="Validated_PMTCT_STAT" Type="float" />
+          <Property Name="CR_PMTCT_STAT" Type="float" />
+          <Property Name="DQA_FY17Q1_PMTCT_EID" Type="float" />
+          <Property Name="Validated_PMTCT_EID" Type="float" />
+          <Property Name="CR_PMTCT_EID" Type="float" />
+          <Property Name="DQA_FY17Q1_PMTCT_ARV" Type="float" />
+          <Property Name="Validated_PMTCT_ARV" Type="float" />
+          <Property Name="CR_PMTCT_ARV" Type="float" />
+          <Property Name="DQA_FY17Q1_TX_NEW" Type="float" />
+          <Property Name="Validated_TX_NEW" Type="float" />
+          <Property Name="CR_TX_NEW" Type="float" />
+          <Property Name="DQA_FY17Q1_TX_CURR" Type="float" />
+          <Property Name="Validated_TX_CURR" Type="float" />
+          <Property Name="CR_TX_CURR" Type="float" />
+          <Property Name="Count_Fails" Type="float" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
         <EntityType Name="dqa_indicator">
           <Key>
             <PropertyRef Name="Id" />
@@ -416,6 +443,7 @@
           <EntitySet Name="dqa_facility_level" EntityType="Self.dqa_facility_level" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_facility_type" EntityType="Self.dqa_facility_type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_funder" EntityType="Self.dqa_funder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqa_FY17Q1_Analysyis" EntityType="Self.dqa_FY17Q1_Analysyis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_indicator" EntityType="Self.dqa_indicator" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_lnk_version_indicators" EntityType="Self.dqa_lnk_version_indicators" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_pivot_table" EntityType="Self.dqa_pivot_table" Schema="dbo" store:Type="Tables" />
@@ -561,6 +589,7 @@
             <End Role="ImplementingPartner" EntitySet="ImplementingPartners" />
             <End Role="dqa_pivot_table" EntitySet="dqa_pivot_table" />
           </AssociationSet>
+          <EntitySet Name="dqa_FY17Q1_Analysyis" EntityType="shield_dmpModel.dqa_FY17Q1_Analysyis" />
           </EntityContainer>
         <EntityType Name="dqa_facility_level">
           <Key>
@@ -1007,6 +1036,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="dqa_FY17Q1_Analysyis">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Facility" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DQA_FY17Q1_HTC_TST" Type="Double" />
+          <Property Name="Validated_HTC_TST" Type="Double" />
+          <Property Name="CR_HTC_TST" Type="Double" />
+          <Property Name="DQA_FY17Q1_PMTCT_STAT" Type="Double" />
+          <Property Name="Validated_PMTCT_STAT" Type="Double" />
+          <Property Name="CR_PMTCT_STAT" Type="Double" />
+          <Property Name="DQA_FY17Q1_PMTCT_EID" Type="Double" />
+          <Property Name="Validated_PMTCT_EID" Type="Double" />
+          <Property Name="CR_PMTCT_EID" Type="Double" />
+          <Property Name="DQA_FY17Q1_PMTCT_ARV" Type="Double" />
+          <Property Name="Validated_PMTCT_ARV" Type="Double" />
+          <Property Name="CR_PMTCT_ARV" Type="Double" />
+          <Property Name="DQA_FY17Q1_TX_NEW" Type="Double" />
+          <Property Name="Validated_TX_NEW" Type="Double" />
+          <Property Name="CR_TX_NEW" Type="Double" />
+          <Property Name="DQA_FY17Q1_TX_CURR" Type="Double" />
+          <Property Name="Validated_TX_CURR" Type="Double" />
+          <Property Name="CR_TX_CURR" Type="Double" />
+          <Property Name="Count_Fails" Type="Double" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1277,6 +1333,34 @@
                 <ScalarProperty Name="TX_CURR" ColumnName="TX_CURR" />
                 <ScalarProperty Name="TB_ART" ColumnName="TB_ART" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_FY17Q1_Analysyis">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_FY17Q1_Analysyis">
+              <MappingFragment StoreEntitySet="dqa_FY17Q1_Analysyis">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Count_Fails" ColumnName="Count_Fails" />
+                <ScalarProperty Name="CR_TX_CURR" ColumnName="CR_TX_CURR" />
+                <ScalarProperty Name="Validated_TX_CURR" ColumnName="Validated_TX_CURR" />
+                <ScalarProperty Name="DQA_FY17Q1_TX_CURR" ColumnName="DQA_FY17Q1_TX_CURR" />
+                <ScalarProperty Name="CR_TX_NEW" ColumnName="CR_TX_NEW" />
+                <ScalarProperty Name="Validated_TX_NEW" ColumnName="Validated_TX_NEW" />
+                <ScalarProperty Name="DQA_FY17Q1_TX_NEW" ColumnName="DQA_FY17Q1_TX_NEW" />
+                <ScalarProperty Name="CR_PMTCT_ARV" ColumnName="CR_PMTCT_ARV" />
+                <ScalarProperty Name="Validated_PMTCT_ARV" ColumnName="Validated_PMTCT_ARV" />
+                <ScalarProperty Name="DQA_FY17Q1_PMTCT_ARV" ColumnName="DQA_FY17Q1_PMTCT_ARV" />
+                <ScalarProperty Name="CR_PMTCT_EID" ColumnName="CR_PMTCT_EID" />
+                <ScalarProperty Name="Validated_PMTCT_EID" ColumnName="Validated_PMTCT_EID" />
+                <ScalarProperty Name="DQA_FY17Q1_PMTCT_EID" ColumnName="DQA_FY17Q1_PMTCT_EID" />
+                <ScalarProperty Name="CR_PMTCT_STAT" ColumnName="CR_PMTCT_STAT" />
+                <ScalarProperty Name="Validated_PMTCT_STAT" ColumnName="Validated_PMTCT_STAT" />
+                <ScalarProperty Name="DQA_FY17Q1_PMTCT_STAT" ColumnName="DQA_FY17Q1_PMTCT_STAT" />
+                <ScalarProperty Name="CR_HTC_TST" ColumnName="CR_HTC_TST" />
+                <ScalarProperty Name="Validated_HTC_TST" ColumnName="Validated_HTC_TST" />
+                <ScalarProperty Name="DQA_FY17Q1_HTC_TST" ColumnName="DQA_FY17Q1_HTC_TST" />
+                <ScalarProperty Name="Facility" ColumnName="Facility" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

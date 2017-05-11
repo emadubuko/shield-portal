@@ -26,7 +26,7 @@ namespace CommonUtil.DBSessionManager
                 throw ex;
             }
         }
-        
+
 
         public virtual void Save(T obj)
         {
@@ -159,6 +159,16 @@ namespace CommonUtil.DBSessionManager
 
         public static object GetDBValue(object value)
         {
+            try
+            {
+                string val = Convert.ToString(value);
+                if (val.Length > 50)
+                {
+                    value = val.Trim();
+                }
+            }
+            catch (Exception ex) { }
+
             if (value == null)
             {
                 return DBNull.Value;
@@ -224,7 +234,7 @@ namespace CommonUtil.DBSessionManager
                 {
                     conn.Open();
                 }
-                
+
                 try
                 {
                     _trans = conn.BeginTransaction();
@@ -235,7 +245,7 @@ namespace CommonUtil.DBSessionManager
                     int i = cmd.ExecuteNonQuery();
                 }
                 catch
-                { 
+                {
                     throw;
                 }
                 finally
@@ -252,8 +262,8 @@ namespace CommonUtil.DBSessionManager
         public void ContinueSQL(string commandText)
         {
             if (!string.IsNullOrEmpty(commandText))
-            {                
-                IDbCommand cmd = new SqlCommand(); 
+            {
+                IDbCommand cmd = new SqlCommand();
                 try
                 {
                     cmd.Connection = _trans.Connection;
@@ -293,7 +303,7 @@ namespace CommonUtil.DBSessionManager
 
         public void RollbackSQL()
         {
-            if(_trans == null)
+            if (_trans == null)
             {
                 return;
             }

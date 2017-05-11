@@ -19,7 +19,14 @@
         /*color: #000;*/
         padding-left: 10px;
     }
+    ul.mailbox-list {
+    font-size: 13px;
+}
 </style> 
+@if (IsSectionDefined("AddToHead"))
+    {
+    @RenderSection("AddToHead", required: false)
+}
 }
 
  <div class="main-content" style="padding-top: 0px;">
@@ -50,6 +57,11 @@
                         <li>
                             <a href=@Url.Action("Analytics", "DQA") style="color:#029b17;">
                                 <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("DQAAnalysisReport", "DQA") style="color:#029b17;">
+                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
                             </a>
                         </li>
                         <li>

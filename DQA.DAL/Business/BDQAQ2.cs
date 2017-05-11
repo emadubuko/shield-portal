@@ -34,8 +34,8 @@ namespace DQA.DAL.Business
             string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/SHIELD_DQA_Q2_" + ip.ShortName);
 
             string zippedFile = directory + "/" + fileName;
-            
-            if(Directory.Exists(directory) == false)
+
+            if (Directory.Exists(directory) == false)
             {
                 Directory.CreateDirectory(directory);
             }
@@ -52,11 +52,11 @@ namespace DQA.DAL.Business
                 catch (Exception ex)
                 {
 
-                } 
+                }
             }
-             
+
             foreach (var site in facilities)
-            { 
+            {
                 using (ExcelPackage package = new ExcelPackage(template))
                 {
                     var radetfile = new RadetUploadReportDAO().RetrieveRadetUpload(ip.Id, 2017, "Q2(Jan-Mar)", site.FacilityName);
@@ -75,15 +75,15 @@ namespace DQA.DAL.Business
                             sheet.Cells["E" + row].Value = radet[i].Age_at_start_of_ART_in_months;
                             sheet.Cells["F" + row].Value = radet[i].ARTStartDate;
                             sheet.Cells["G" + row].Value = radet[i].LastPickupDate;
-                            
+
                             sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill;
-                            
+
                             sheet.Cells["M" + row].Value = radet[i].RegimenLineAtARTStart;
                             sheet.Cells["N" + row].Value = radet[i].RegimenAtStartOfART;
-                            
+
                             sheet.Cells["Q" + row].Value = radet[i].CurrentRegimenLine;
                             sheet.Cells["R" + row].Value = radet[i].CurrentARTRegimen;
-                            
+
                             sheet.Cells["U" + row].Value = radet[i].Pregnancy_Status;
                             sheet.Cells["V" + row].Value = radet[i].Current_Viral_Load;
                             sheet.Cells["W" + row].Value = radet[i].Date_of_Current_Viral_Load;
@@ -111,7 +111,7 @@ namespace DQA.DAL.Business
         private async Task ZipFolder(string filepath)
         {
             string[] filenames = Directory.GetFiles(filepath);
-             
+
             using (ZipOutputStream s = new
             ZipOutputStream(File.Create(filepath + ".zip")))
             {
@@ -168,6 +168,44 @@ namespace DQA.DAL.Business
             {
                 await outputMemStream.CopyToAsync(fileStream);
             }
+        }
+
+        public List<dqaQ1Fy17Analysis> GetAnalysisReport()
+        {
+            var _analysis = entity.dqa_FY17Q1_Analysyis.ToList();
+            List<dqaQ1Fy17Analysis> t = (from item in _analysis
+                                         select new dqaQ1Fy17Analysis
+                                         {
+                                             IP = item.IP,
+                                             Facility = item.Facility,
+
+                                             DQA_FY17Q1_HTC_TST = item.DQA_FY17Q1_HTC_TST,
+                                             Validated_HTC_TST = item.Validated_HTC_TST,
+                                             CR_HTC_TST = item.CR_HTC_TST.HasValue ? (item.CR_HTC_TST.Value * 100).ToString("N1") : " ",
+
+                                             DQA_FY17Q1_PMTCT_STAT = item.DQA_FY17Q1_PMTCT_STAT,
+                                             Validated_PMTCT_STAT = item.Validated_PMTCT_STAT,
+                                             CR_PMTCT_STAT = item.CR_PMTCT_STAT.HasValue ? (item.CR_PMTCT_STAT.Value * 100).ToString("N1") : " ",
+
+                                             DQA_FY17Q1_PMTCT_EID = item.DQA_FY17Q1_PMTCT_EID,
+                                             Validated_PMTCT_EID = item.Validated_PMTCT_EID,
+                                             CR_PMTCT_EID = item.CR_PMTCT_EID.HasValue ? (item.CR_PMTCT_EID.Value * 100).ToString("N1") : " ",
+
+                                             DQA_FY17Q1_PMTCT_ARV = item.DQA_FY17Q1_PMTCT_ARV,
+                                             Validated_PMTCT_ARV = item.Validated_PMTCT_ARV,
+                                             CR_PMTCT_ARV = item.CR_PMTCT_ARV.HasValue ? (item.CR_PMTCT_ARV.Value * 100).ToString("N1") : " ",
+
+                                             DQA_FY17Q1_TX_NEW = item.DQA_FY17Q1_TX_NEW,
+                                             Validated_TX_NEW = item.Validated_TX_NEW,
+                                             CR_TX_NEW = item.CR_TX_NEW.HasValue ? (item.CR_TX_NEW.Value * 100).ToString("N1") : " ",
+
+                                             DQA_FY17Q1_TX_CURR = item.DQA_FY17Q1_TX_CURR,
+                                             Validated_TX_CURR = item.Validated_TX_CURR,
+                                             CR_TX_CURR = item.CR_TX_CURR.HasValue ? (item.CR_TX_CURR.Value * 100).ToString("N1") : " ",
+
+                                             Count_Fails = item.Count_Fails
+                                         }).ToList();
+            return t;
         }
     }
 }

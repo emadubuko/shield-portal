@@ -305,8 +305,6 @@
     <Content Include="images\favicon.png" />
     <Content Include="images\macbook-40.jpg" />
     <Content Include="images\office-40.jpg" />
-    <Content Include="images\shield.jpg" />
-    <Content Include="images\shield_login_burned.png" />
     <Content Include="images\shield_logo.jpg" />
     <Content Include="images\snooker.jpg" />
     <Content Include="Content\integral-core.css" />
@@ -325,6 +323,7 @@
     <Content Include="images\sort_both.png" />
     <Content Include="images\sort_desc.png" />
     <Content Include="images\spinner.gif" />
+    <Content Include="images\summary-icon.png" />
     <Content Include="images\umb-icon.jpg" />
     <Content Include="images\UMB_logo.png" />
     <Content Include="img\grid.png" />
@@ -1091,6 +1090,11 @@
     <Content Include="Views\DQAFY2016\Index.cshtml" />
     <Content Include="Views\DQAFY2017Q2\UploadRadet.cshtml" />
     <Content Include="Views\DQAFY2017Q2\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQA\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2016\Dashboard.cshtml" />
+    <Content Include="Views\DQAFY2016\HomePage.cshtml" />
+    <Content Include="Views\DMP\ScoreCard.cshtml" />
+    <Content Include="Views\DMP\DMPSummary.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

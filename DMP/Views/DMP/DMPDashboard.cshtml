@@ -1,10 +1,10 @@
-﻿@model  List<ShieldPortal.ViewModel.DMP.StaffStatusByRoles>
+﻿ 
 @{
-    ViewBag.Title = "DMPDashboard";
+    Layout = "~/Views/Shared/_dmpLayoutPage.cshtml";
 }
 
 @section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
+   
 <style>
     .table > thead > tr > th {
         font-weight: 400;
@@ -13,10 +13,16 @@
 </style>
 }
 
-<div class="main-content">
-    <div class="table-responsive">
-        @*by position*@
-        <table class="table table-bordered" width="100">
+<div class="col-sm-9">
+     
+    <iframe width="900" height="520" src="https://app.powerbi.com/view?r=eyJrIjoiMjJiM2MxYzItZTllMC00MTdjLWJkYmUtYjc0OWMyMjkyOTNlIiwidCI6Ijg2MWU0MjY3LWQwNDEtNDViZC1hZTI5LTI5ZGEzZTIxNDhkOSIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
+       
+    <iframe width="900" height="520" src="https://app.powerbi.com/view?r=eyJrIjoiNDhiNzc3NGYtMDQxOC00YzI2LWIxMGUtMmI0NTM2Y2ZkMGEzIiwidCI6Ijg2MWU0MjY3LWQwNDEtNDViZC1hZTI5LTI5ZGEzZTIxNDhkOSIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
+     
+
+    @*<div class="table-responsive">
+
+        <table class="table table-bordered" width="100" id="position">
             <thead>
                 <tr style="color: #FFF;background-color: steelblue;">
                     <th>IP</th>
@@ -42,8 +48,8 @@
             </tbody>
         </table>
 
-        @*by Workstation*@
-        <table class="table table-bordered" width="100">
+      
+        <table class="table table-bordered" width="100" id="workstation">
             <thead>
                 <tr style="color: #FFF;background-color: steelblue;">
                     <th>IP</th>
@@ -59,14 +65,15 @@
 
 
 
-    </div>
+    </div>*@
 
 </div>
 
 
 @section Scripts
 {
-    @Scripts.Render("~/bundles/CreateDMPJs")
+    
+@Scripts.Render("~/bundles/dataTables")
 
 <script>
 

@@ -1,0 +1,72 @@
+﻿@model List<CommonUtil.Entities.AfenetReport>
+@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+}
+
+@section AddToHead{
+    <style>
+        
+    </style>
+}
+
+<div class="main-content" style="padding-top: 0px;">
+    <div class="row" id="breadcrumb">
+        <div class="col-sm-push-2 col-sm-5">
+            <ol class="breadcrumb breadcrumb-2">
+                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                <li><a href="/Home/submenu?id=dmp">Data Management</a></li>
+                <li class="active">FY2016 DQA report</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        @*side bar*@
+        <div class="col-md-2" id="sidebar">
+            <div class="panel panel-success">
+                <div class="panel-body" style="padding-bottom: 0px;">
+
+                    <ul class="list-item mailbox-list">
+                        <li>
+                            <a href=@Url.Action("HomePage", "DQAFY2016") style="color:#029b17;">
+                                <i class="fa fa-home"></i><span class="title">Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("Dashboard", "DQAFY2016") style="color:#029b17;">
+                                <i class="fa fa-bar-chart"></i><span class="title">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("index", "DQAFY2016") style="color:#029b17;">
+                                <i class="fa fa-newspaper-o"></i><span class="title">Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-9">
+            
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    @Scripts.Render("~/bundles/dataTables")
+
+    <script src="~/Scripts/profile-display.js"></script>
+    <script>
+        $(document).ready(function () {
+             
+        })
+    </script>
+}

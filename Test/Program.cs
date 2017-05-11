@@ -31,9 +31,11 @@ namespace Test
         {
             Console.WriteLine("started");
 
-            UpdateFacilities();
+            MosisFiles.ProcessFile();
 
-           // AfenetUtil.ReadFile();
+            //UpdateFacilities();
+
+            // AfenetUtil.ReadFile();
             //RadetExcelDocs.ReadAndMerge();
 
             //DMPSiteType();

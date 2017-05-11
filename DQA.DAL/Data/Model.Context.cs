@@ -43,5 +43,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_comparison> dqa_comparison { get; set; }
         public virtual DbSet<dqa_pivot_table_upload> dqa_pivot_table_upload { get; set; }
         public virtual DbSet<dqa_pivot_table> dqa_pivot_table { get; set; }
+        public virtual DbSet<dqa_FY17Q1_Analysyis> dqa_FY17Q1_Analysyis { get; set; }
     }
 }

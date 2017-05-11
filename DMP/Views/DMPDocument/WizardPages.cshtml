@@ -307,27 +307,59 @@
 
             <div class="row">
                 <div class="col-md-3">
-                    <div class="panel panel-warning">
-                        <div class="panel-body" style="padding-top: 20px;padding-bottom: 0px;">
-                            <ul class="list-item mailbox-list">
+                    <div class="page-sidebar">
+                        <div class="sidebar">
+                            <ul id="side-nav" class="main-menu navbar-collapse collapse">
+                                @*"list-item mailbox-list">*@
                                 <li>
                                     <a href=@Url.Action("DMPDashboard", "DMP") style="color:darkorange">
-                                        <i class="fa fa-area-chart"></i><span class="title">View Dashboard</span>
+                                        <i class="fa fa-area-chart"></i><span class="title">Dashboard</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href=@Url.Action("index", "DMP") style="color:darkorange">
-                                        <i class="icon-book-open"></i><span class="title">View DMP List</span>
+                                    @*completion rate*@
+                                    <a href=@Url.Action("ScoreCard", "DMP") style="color:darkorange">
+                                        <i class="fa fa-file-powerpoint-o"></i><span class="title">Score Card</span>
                                     </a>
                                 </li>
-                               @if (ViewBag.ShowCreateLink)
-                               {
-                                <li>
-                                    <a href=@Url.Action("CreateDMP", "DMP") style="color:darkorange">
-                                        <i class="fa fa-file-o"></i><span class="title">Create New DMP</span>
+
+                                <li class="has-sub">
+                                    @*folder*@
+                                    <a href='#' style="color:darkorange">
+                                        <i class="icon-book-open"></i><span class="title">Plans</span>
                                     </a>
+
+                                    <ul class="nav collapse">
+                                        @*dmp listing*@
+                                        <li>
+                                            <a href=@Url.Action("index", "DMP") style="color:darkorange">
+                                                <i class="icon-book-open"></i><span class="title">Individual Plans</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            @*dmp summary*@
+                                            <a href=@Url.Action("index", "DMP") style="color:darkorange">
+                                                <i class="fa fa-file-word-o"></i> <span class="title">All DMP Summary</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            @*cdc plan*@
+                                            <a href=@Url.Action("index", "DMP") style="color:darkorange">
+                                                <i class="icon-book-open"></i><span class="title">CDC </span>
+                                            </a>
+                                        </li>
+                                        @if (ViewBag.ShowCreateLink != null && ViewBag.ShowCreateLink)
+                                        {
+                                            <li>
+                                                <a href=@Url.Action("CreateDMP", "DMP") style="color:darkorange">
+                                                    <i class="fa fa-file-o"></i><span class="title">Create New DMP</span>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
                                 </li>
-                               }                            
+
+
                             </ul>
                         </div>
                     </div>

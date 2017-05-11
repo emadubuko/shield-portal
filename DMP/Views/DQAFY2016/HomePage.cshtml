@@ -1,0 +1,125 @@
+﻿@model List<CommonUtil.Entities.AfenetReport>
+@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+}
+
+@section AddToHead{
+    <style>
+        .title {
+            font-weight: 600;
+            color: #000;
+            padding-left: 10px;
+        }
+    </style>
+}
+
+<div class="main-content" style="padding-top: 0px;">
+    <div class="row" id="breadcrumb">
+        <div class="col-sm-push-2 col-sm-5">
+            <ol class="breadcrumb breadcrumb-2">
+                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                <li><a href="/Home/submenu?id=dmp">Data Management</a></li>
+                <li class="active">FY2016 DQA report</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        @*side bar*@
+        <div class="col-md-2" id="sidebar">
+            <div class="panel panel-success">
+                <div class="panel-body" style="padding-bottom: 0px;">
+
+                    <ul class="list-item mailbox-list">
+                        <li>
+                            <a href=@Url.Action("HomePage", "DQAFY2016") style="color:#029b17;">
+                                <i class="fa fa-home"></i><span class="title">Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("Dashboard", "DQAFY2016") style="color:#029b17;">
+                                <i class="fa fa-bar-chart"></i><span class="title">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("index", "DQAFY2016") style="color:#029b17;">
+                                <i class="fa fa-newspaper-o"></i><span class="title">Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-9">
+            <div class="panel panel-success">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title">IP Summary</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12" id="state_summary">
+                            @foreach (var dt in Model.GroupBy(x => x.IP.Trim()))
+                            {
+                                <div class="col-lg-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body" style="max-height: 120px;">
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <div class="knob-outer">
+                                                        <input type="text" readonly class="knob" data-width="82" data-height="82" data-fgColor="#29B6F6" value="@(100 * dt.ToList().Count()/Model.Count())">
+                                                    </div>
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4 class="media-heading"> @dt.ToList().Count() facilities submitted</h4>
+                                                    <button class="btn btn-sm btn-success">@dt.Key</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="col-lg-4">
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                <div class="media">
+                                                    <div class="media-body">
+                                                        <h4 class="media-heading"><span class="col-sm-4" style="color: rgb(41, 182, 246);font-weight:bold;font-size:30px"> @item.ToList().Count()</span> <span class="col-sm-2"> Facilities submitted</span> </h4>
+                                                        <br /><br />
+                                                        <div class="col-sm-push-4 col-sm-2">
+                                                            <button class="btn btn-sm btn-success"> @item.Key </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    @Scripts.Render("~/bundles/dataTables")
+<!--Knob Charts-->
+<script src="~/plugins/knob/js/jquery.knob.min.js"></script>
+    <script src="~/Scripts/profile-display.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $(".knob").knob();
+
+        })
+    </script>
+}

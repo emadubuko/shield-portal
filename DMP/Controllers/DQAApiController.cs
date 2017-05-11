@@ -347,6 +347,15 @@ namespace ShieldPortal.Controllers
         }
 
         [HttpPost]
+        public HttpResponseMessage RetrieveRadet(int id)
+        {
+            HttpResponseMessage msg = null;
+            string result = new RadetUploadReportDAO().RetrieveRadet(id);
+            msg = Request.CreateResponse(HttpStatusCode.OK, result);
+            return msg;
+        }
+
+        [HttpPost]
         public HttpResponseMessage ProcesssRadetFile(string selectedQuater, int selectedYear)
         {
             HttpResponseMessage msg = null;
@@ -358,8 +367,59 @@ namespace ShieldPortal.Controllers
             {
                 string result = "";
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-                Stream uploadedFile = HttpContext.Current.Request.Files[0].InputStream;
-                bool status = new RadetUploadReportDAO().ReadRadetFile(uploadedFile, selectedQuater, selectedYear, loggedinProfile, out result);
+                var Ips = new OrganizationDAO().RetrieveAll().ToDictionary(s => s.ShortName.ToLower());
+                bool status = false;
+
+                if (Path.GetExtension(HttpContext.Current.Request.Files[0].FileName).Substring(1).ToUpper() == "ZIP")
+                {
+                    try
+                    {
+                        using (ZipFile zipFile = new ZipFile(HttpContext.Current.Request.Files[0].InputStream))
+                        {
+                            for(int i=0; i< zipFile.Count;i++ )
+                           // foreach (ZipEntry zipEntry in zipFile)
+                            {
+                                ZipEntry zipEntry = zipFile[i];
+                                string fileName = ZipEntry.CleanName(zipEntry.Name);
+                                if (!zipEntry.IsFile)
+                                {
+                                    continue;
+                                }
+                                Stream zipStream = zipFile.GetInputStream(zipEntry);
+                                MemoryStream stream = new MemoryStream();
+                                StreamUtils.Copy(zipStream, stream, new byte[4096]);
+                                try
+                                {
+                                    status = new RadetUploadReportDAO().ReadRadetFile(stream, selectedQuater, selectedYear, loggedinProfile, Ips, fileName ,true, out result);
+                                }
+                                catch (Exception ex)
+                                {
+                                    result += " (" + zipEntry.Name + ")";
+                                    Logger.LogError(ex);
+                                    break;
+                                }
+                                if (status == false && result == "Result already exist")
+                                    continue;
+                                else if (status == false)
+                                {
+                                    result += " (" + zipEntry.Name + ")";
+                                    break;
+                                }
+                                    
+                            }
+                        }
+                    }
+                    catch (Exception exp)
+                    {
+                        Logger.LogError(exp);
+                    }
+                }
+                else
+                {
+                    Stream uploadedFile = HttpContext.Current.Request.Files[0].InputStream;
+                    status = new RadetUploadReportDAO().ReadRadetFile(uploadedFile, selectedQuater, selectedYear, loggedinProfile, Ips, null, false, out result);
+                }
+
                 if (status)
                 {
                     msg = Request.CreateResponse(HttpStatusCode.OK, result);
@@ -373,15 +433,15 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public IHttpActionResult DeleteRadetFile(int id)
         {
-            RadetUploadReportDAO dao = new RadetUploadReportDAO(); 
+            RadetUploadReportDAO dao = new RadetUploadReportDAO();
             try
             {
-                dao.DeleteRecord(id); 
+                dao.DeleteRecord(id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }           
+            }
             return Ok();
         }
     }

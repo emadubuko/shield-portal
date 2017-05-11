@@ -24,6 +24,10 @@
             padding-left: 10px;
             font-family: monospace;
         }
+        .main-header {
+            padding: 10px;
+            border-bottom: solid 2px darkorange;
+        }
     </style>
     @if (IsSectionDefined("AddToHead"))
     {
@@ -85,6 +89,7 @@
 
     </div>
 
+   
     @RenderSection("scripts", required: false)
     
 </body>
