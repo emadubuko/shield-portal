@@ -11,6 +11,7 @@ using System.Data;
 using System.Linq;
 using System.Dynamic;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace CommonUtil.DAO
 {
@@ -74,9 +75,10 @@ namespace CommonUtil.DAO
         public string RetrieveRadet(int id)
         {
             var radet = Retrieve(id);
+            ConcurrentBag<RadetTable> table = new ConcurrentBag<Entities.RadetTable>(radet.Uploads);
             var processData = new
             {
-                data = from item in radet.Uploads
+                data = from item in table.AsParallel()
                        select new
                        {
                            item.PatientId,
@@ -99,7 +101,8 @@ namespace CommonUtil.DAO
                            item.SelectedForDQA,
                            item.RadetYear,
                        },
-                Current_year_tx_new = radet.CurrentYearTx_New
+                Current_year_tx_new = radet.CurrentYearTx_New,
+                SelectedForDQA = radet.Uploads.Count(x => x.SelectedForDQA)
             };
 
             string result = Newtonsoft.Json.JsonConvert.SerializeObject(processData);

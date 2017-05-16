@@ -45,6 +45,29 @@ namespace CommonUtil.Utilities
             return "";
         }
 
+        public static string ReadCell(ExcelWorksheet sheet, string address)
+        {
+            var range = sheet.Cells[address] as ExcelRange;
+            if (!string.IsNullOrEmpty(range.Formula))
+            {
+                try
+                {
+                    var calculateOptions = new ExcelCalculationOption();
+                    calculateOptions.AllowCirculareReferences = true;
+                    range.Calculate(calculateOptions);
+                }
+                catch (CircularReferenceException ex)
+                {
+                    throw ex;
+                }
+            }
+            if (range.Value != null)
+            {
+                return range.Value.ToString();
+            }
+            return "";
+        }
+
         public static string GetRandomizeChartNUmber(string value)
         {
             int x = Convert.ToInt32(value);

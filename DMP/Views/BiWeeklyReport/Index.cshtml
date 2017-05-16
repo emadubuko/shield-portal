@@ -10,20 +10,14 @@
         .table > thead > tr > th {
             text-transform: capitalize;
         }
-
-        th.rotate {
-            height: 90px;
-            white-space: nowrap;
+        .panel-default > .panel-heading {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: darkorange;
+            border-color: darkorange;
+            text-decoration: underline;
         }
-
-            th.rotate > div {
-                transform: rotate(-90deg);
-                width: 30px;
-            }
-
-                th.rotate > div > span {
-                    padding: 5px 10px;
-                }
     </style>
 
     <script type="text/javascript">
@@ -60,21 +54,21 @@
             LGA-Level Achievement per Target & Clinical Cascade
         </div>
         <div class="panel-body">
-            <div class="table-responsive" style="width:100%">
+            <div class="table-responsive" style="width:100%; font-size: 12px;">
                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                     <thead>
                         <tr style="color: #FFF;background-color: darkorange;border-color: darkorange;">
-                            <th class="rotate">LGA</th>
-                            <th class="rotate">Linkage Rate</th>
-                            <th class="rotate">HTC_TST </th>
-                            <td class="rotate">Target</td>
-                            <th class="rotate">Achievement</th>
-                            <th class="rotate">HTC_TST_POS</th>
-                            <th class="rotate">Target</th>
-                            <th class="rotate">Achievement</th>
-                            <th class="rotate">Tx_NEW</th>
-                            <th class="rotate">Target</th>
-                            <th class="rotate">Achievement</th>
+                            <th>LGA</th>
+                            <th>Linkage Rate</th>
+                            <th>HTC_TST </th>
+                            <td>Target</td>
+                            <th>Achievement</th>
+                            <th>HTC_TST_POS</th>
+                            <th>Target</th>
+                            <th>Achievement</th>
+                            <th>Tx_NEW</th>
+                            <th>Target</th>
+                            <th>Achievement</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,7 +101,7 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-sm-6">
                     <div class="panel panel-default">
                         <div class="panel-heading clearfix">
                             Facility
@@ -138,7 +132,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6">
+                <div class="col-sm-6">
                     <div class="panel panel-default">
                         <div class="panel-heading clearfix">
                             Community
@@ -245,12 +239,7 @@
     <script>
 
         $(document).ready(function () {
-
-            $(".page-container").attr('class', 'page-container sidebar-collapsed');
-
-            $('.table').DataTable({
-                responsive: true
-            });
+         
 
 
             $("#uploadRpt").click(function () {

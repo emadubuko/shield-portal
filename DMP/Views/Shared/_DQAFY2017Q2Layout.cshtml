@@ -20,11 +20,10 @@
 
     <div class="row">
         @*side bar*@
-        <div class="col-md-3" id="sidebar">
-            <div class="panel panel-success">
-                <div class="panel-body" style="padding-bottom: 0px;">
-
-                    <ul class="list-item mailbox-list">
+        <div class="col-md-3">
+            <div class="page-sidebar">
+                <div class="sidebar"> 
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
                         <li>
                             <a href=@Url.Action("index", "DQAFY2017Q2") style="color:#029b17;">
                                 <i class="fa fa-home"></i><span class="title">&nbsp; Home</span>
@@ -57,7 +56,7 @@
                         </li>
                         <li>
                             <a href=@Url.Action("UploadPivotTable", "DQAFY2017Q2") style="color:#029b17;">
-                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Site selection <br />&nbsp;&nbsp;&nbsp;&nbsp;(Pivot Table)</span>
+                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Site selection <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Pivot Table)</span>
                             </a>
                         </li>
                         <li class="navigation-header">Downloads</li>

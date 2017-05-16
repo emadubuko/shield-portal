@@ -170,10 +170,11 @@
     </div>
 
     <div id="routine_reporting" style="display:none">
+
         <div class="row">
-            <div class="col-sm-1"> </div>
-            <div class="col-sm-5">
-                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+            <div class="col-sm-4">
+                <div class="panel minimal info-bg" style="background-color: #ec407a;border-color:#ec407a">
                     <div class="panel-body">
                         <table>
                             <tr style="vertical-align: top;">
@@ -185,8 +186,23 @@
                 </div>
             </div>
 
-            <div class="col-sm-5">
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-4">
                 <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
+                    <div class="panel-body">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">RADET Report</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
+                <div class="panel minimal teal-bg" style="background-color:deepskyblue; border-color:deepskyblue">
                     <div class="panel-body">
                         <table>
                             <tr style="vertical-align: top;">
@@ -200,34 +216,61 @@
 
         </div>
 
-        <div class="row">
-            <div class="col-sm-1"> </div>
-            <div class="col-sm-5">
-                <div class="panel panel-info" style="border-color:darkorange">
+        <div class="row"> 
+
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-4">
+                <div class="panel panel-info" style="border-color:#ec407a">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
-                                <a href="@Url.Action("Dashboard", "BiWeeklyReport")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize">Go to Semi Monthly Report</a>
+                                <a href="@Url.Action("Dashboard", "BiWeeklyReport")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:#ec407a; border-color:#ec407a">Go to Semi Monthly Report</a>
                             </li>
                         </ul>
                         <hr />
-                        <h5 style="font-weight: bold">Program Overview</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-5">
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-4">
                 <div class="panel panel-success">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
-                                <a class="btn btn-sm btn-success btn-outline disabled" style="text-transform: capitalize">Go to SIMS</a>
+                                <a href="@Url.Action("index","RadetAnalytics")" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize">Go to RADET Report</a>
                             </li>
                         </ul>
                         <hr />
-                        <h5 style="font-weight: bold">Program Overview</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>Retention and Audit Determination Tool (RADET)</p>
+                        <p>The PEPFAR Nigeria SI TWG commenced current on treatment audit using the RADET in October 2014.
+                        Aim was to determine the accurate total number of patients currently on treatment (as at September 30th 2014). 
+                        The process required the implementing partners to submit a line list of all clients enrolled on ART since the beginning of the PEPFAR program</p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
+                <div class="panel panel-default" style="border-color:deepskyblue">
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a class="btn btn-sm btn-default btn-outline disabled" style="text-transform: capitalize;color:deepskyblue;border-color:deepskyblue">Go to SIMS</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>Site Monitoring Systems (SIMS)</p>
+                        <p>SIMS is PEPFAR/CDC Site Monitoring System with a goal of standardizing clinical site quality monitoring by PEPFAR/CDC in-country staff through assessment and scoring of site performance on key program area elements.
+                        SIMS is a comprehensive yet rapid assessment that focus on issues that directly impact service quality</p>
+                        <a style="text-decoration:underline; color:blue" href="https://data.pepfar.net/reference/Global_SMS_summary_and_21_countries_Nov_2014_v5.21.pdf" target="_blank">Global SMS summary and 21 countries (Nov 2014)</a>
+                        <br />
                     </div>
                 </div>
             </div>

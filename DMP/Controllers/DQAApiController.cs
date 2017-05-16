@@ -335,7 +335,7 @@ namespace ShieldPortal.Controllers
                 string result = "";
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
                 Stream uploadedFile = HttpContext.Current.Request.Files[0].InputStream;
-                bool status = new BDQA().ReadDatimPivotTable(uploadedFile, selectedQuater, selectedYear, loggedinProfile, out result);
+                bool status = new BDQAQ2().ReadPivotTable(uploadedFile, selectedQuater, selectedYear, loggedinProfile, out result);
                 if (status)
                 {
                     msg = Request.CreateResponse(HttpStatusCode.OK, result);

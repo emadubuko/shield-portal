@@ -1,14 +1,18 @@
 ﻿@model  ShieldPortal.ViewModel.ProfileViewModel
 
+@{
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
 
-
-<div class="login-container">
-    <div class="login-content" style="width: 100%;">
-        <div class="row">
-
+<div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <h4 style="text-align: center">Create New Profile</h4>
+        </div>
+        <div class="panel-body">
             <form id="mainform" class="form-horizontal" role="form">
                 @Html.AntiForgeryToken()
-                <h4 style="text-align: center">Create New Profile</h4>
+               
                 <div class="form-group">
                     <label class="col-sm-4 control-label" for="OrganizationId">Organization</label>
                     <div class="col-sm-6">
@@ -51,21 +55,18 @@
                 }
 
                 <div class="form-group">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-4">
-                        <a href='@Url.Action("index", "Home")' class="btn btn-default">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-3">
+                        <a href='@Url.Action("index", "Profile")' class="btn btn-default btn-sm">
                             <i class="fa fa-close"></i> Cancel
                         </a>
                         &nbsp;&nbsp;
-                        <button type="submit" id="dmpSubmit" class="btn btn-warning">Save</button>
+                        <button type="submit" id="dmpSubmit" class="btn btn-danger btn-sm">Save</button>
                         <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
                     </div>
                 </div>
-
             </form>
-
         </div>
-
     </div>
 </div>
 

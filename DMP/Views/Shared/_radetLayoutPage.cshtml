@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+}
+
+@section AddToHead{
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <script type="text/javascript">
+        {
+            var profileId = '@ShieldPortal.Services.Utils.LoggedinProfileID';
+        }
+    </script>   
+
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+}
+
+<div class="main-content" style="padding-top: 0px;">
+
+    <div class="row" id="breadcrumb">
+        <div class="col-sm-5 col-sm-push-3">
+            <ol class="breadcrumb breadcrumb-2">
+                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                <li><a href="/Home/submenu?id=routine_reporting">Routine Reporting</a></li>
+                <li class="active">RADET</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+
+        @*side bar*@
+        <div class="col-md-3">
+            <div class="page-sidebar">
+                <div class="sidebar">
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
+                        <li>
+                            <a href=@Url.Action("index", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
+                                <i class="fa fa-area-chart"></i><span class="title" >&nbsp;Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("details", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;pointer-events:none">
+                                <i class="fa fa-bar-chart"></i><span class="title">&nbsp;IP Dashboard</span>
+                            </a>
+                        </li>                        
+                    </ul>
+                    <hr />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-9">
+            @RenderBody()
+        </div>
+    </div>
+
+</div>
+
+@section Scripts
+{
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    @Scripts.Render("~/bundles/dataTables")
+
+    <script src="~/Scripts/profile-display.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        $(".dt-button.buttons-collection.buttons-colvis").css('display', 'none')
+    </script>
+}

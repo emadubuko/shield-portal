@@ -22,7 +22,7 @@
         public virtual string CurrentARTStatus { get; set; }
 
         public virtual bool SelectedForDQA { get; set; } 
-        public virtual string RadetYear { get; set; }
+        public virtual string RadetYear { get; set; } 
         public virtual Organizations IP { get; set; } 
         public virtual RadetUploadReport UploadReport { get; set; }
 

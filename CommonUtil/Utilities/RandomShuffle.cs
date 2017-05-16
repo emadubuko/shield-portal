@@ -39,6 +39,20 @@ namespace CommonUtil.Utilities
             return val;
         }
 
+        public static string GetFirstString(this string item)
+        {
+            if (string.IsNullOrEmpty(item))
+                return "";
+            var items =  item.ToCharArray();
+            string result = "";
+            for (int i=0; i< items.Count(); i++)
+            {
+                if (char.IsLetter(items[i]))
+                    result += items[i];
+            }
+            return result;
+        }
+
         public static decimal ToDecimal(this string item)
         {
             decimal val = 0;

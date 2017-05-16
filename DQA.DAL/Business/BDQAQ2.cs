@@ -207,5 +207,163 @@ namespace DQA.DAL.Business
                                          }).ToList();
             return t;
         }
+
+        public bool ReadPivotTable(Stream datimFile, string quarter, int year, Profile profile, out string result)
+        {
+            var hfs = entity.HealthFacilities.ToDictionary(x => x.FacilityCode);
+
+            List<dqa_pivot_table> pivotTable = new List<dqa_pivot_table>();
+            try
+            {
+                using (ExcelPackage package = new ExcelPackage(datimFile))
+                {
+                    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    int row = 2;
+
+                    while (true)
+                    {
+                        Data.HealthFacility hf = null;
+                        string fCode = ExcelHelper.ReadCell(worksheet, row, 1);
+                        if (string.IsNullOrEmpty(fCode))
+                        {
+                            break;
+                        }
+                        if (hfs.TryGetValue(fCode, out hf) == false)
+                        {
+                            throw new ApplicationException("unknown facility with code [" + fCode + "] uploaded ");
+                        }
+                        if (hf.ImplementingPartner.Id != profile.Organization.Id)
+                        {
+                            throw new ApplicationException("Facility with code [" + fCode + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                        }
+
+                        string fName = ExcelHelper.ReadCell(worksheet, row, 2);
+                        int tb_art, pmtct_art, tx_curr, ovc = 0;
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 3), out pmtct_art);
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 4), out tx_curr);
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 5), out tb_art);
+                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 6), out ovc);
+
+
+
+                        pivotTable.Add(new dqa_pivot_table
+                        {
+                            HealthFacility = hf,
+                            TB_ART = tb_art,
+                            PMTCT_ART = pmtct_art,
+                            TX_CURR = tx_curr,
+                            OVC = ovc,
+                            Year = year,
+                            Quarter = quarter,
+                            ImplementingPartner = hf.ImplementingPartner,
+                        });
+                        row += 1;
+                    }
+                }
+
+                List<dqa_pivot_table> selectedList = new List<dqa_pivot_table>();
+
+                if (Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["Use_top_90_for_dqa_site_selection"]))
+                {
+                    #region top 90%
+                    int total_tx = pivotTable.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART));
+                    double _90_percent_of_Total_tx = total_tx * 0.9;
+                    pivotTable = pivotTable.OrderByDescending(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)).ToList();
+                    foreach (var item in pivotTable)
+                    {
+                        selectedList.Add(item);
+                        if (selectedList.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)) < _90_percent_of_Total_tx)
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "Based on 90% of Tx";
+                        }
+                        else if (item.OVC > 0)//all ovc sites are selected
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "OVC Site";
+                        }
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    #region top 80% and randomized 50% of remaining 
+
+                    //calclaute 80% of tx_curr
+                    int total_tx_curr = pivotTable.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART));
+                    double _80_percent_of_Total_tx_curr = total_tx_curr * 0.8;
+                    pivotTable = pivotTable.OrderByDescending(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)).ToList();
+                    foreach (var item in pivotTable)
+                    {
+                        selectedList.Add(item);
+                        if (selectedList.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)) < _80_percent_of_Total_tx_curr)
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "Based on 80% of Tx_curr";
+                        }
+                        else if (item.OVC > 0)
+                        {
+                            item.SelectedForDQA = true;
+                            item.SelectedReason = "OVC Site";
+                        }
+                    }
+
+                    //Randomize and select 50%
+                    var remaining = selectedList.Where(x => !x.SelectedForDQA).ToList();
+                    remaining.Shuffle();
+                    for (int i = 0; i <= remaining.Count() / 2; i++)
+                    {
+                        if ((remaining[i].TX_CURR + remaining[i].PMTCT_ART + remaining[i].TB_ART) > 0)
+                        {
+                            selectedList.FirstOrDefault(x => x == remaining[i]).SelectedForDQA = true;
+                            selectedList.FirstOrDefault(x => x == remaining[i]).SelectedReason = "Based on randomization";
+                        }
+                    }
+                    #endregion
+                }
+
+                //return result
+                var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Year == year && x.Quarter == quarter.Trim());
+                if (previously != null)
+                {
+                    entity.dqa_pivot_table_upload.Remove(previously);
+                }
+
+                entity.dqa_pivot_table_upload.Add(
+                    new dqa_pivot_table_upload
+                    {
+                        DateUploaded = DateTime.Now,
+                        dqa_pivot_table = selectedList,
+                        IP = profile.Organization.Id,
+                        Quarter = quarter,
+                        Year = year,
+                        UploadedBy = profile.Id
+                    });
+                entity.dqa_pivot_table.RemoveRange(entity.dqa_pivot_table.Where(x => x.Year == year && x.Quarter == quarter.Trim()).ToList());
+                entity.dqa_pivot_table.AddRange(selectedList);
+                entity.SaveChanges();
+
+                result = Newtonsoft.Json.JsonConvert.SerializeObject(
+                    from item in selectedList
+                    select new
+                    {
+                        FacilityName = item.HealthFacility.Name,
+                        item.OVC,
+                        item.PMTCT_ART,
+                        item.TB_ART,
+                        item.TX_CURR,
+                        item.SelectedForDQA,
+                        item.SelectedReason
+                    }
+                 );
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+                return false;
+            }
+            return true;
+        }
     }
 }

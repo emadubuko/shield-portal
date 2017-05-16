@@ -1,6 +1,9 @@
-﻿using CommonUtil.Utilities;
+﻿using CommonUtil.DAO;
+using CommonUtil.Entities;
+using CommonUtil.Utilities;
 using OfficeOpenXml;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,13 +12,77 @@ using System.Threading.Tasks;
 
 namespace Test
 {
-  public  class RadetExcelDocs
+    public class RadetExcelDocs
     {
         public static void ReadAndMerge()
         {
-            ReadAndMergeEnugu();
-            
+            UpdateRadetReport();
+
+
             return;
+        }
+
+        static void UpdateRadetReport()
+        {
+            string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DQA\Live Radet\All IPs Unzipped\";
+            StringBuilder sb = new StringBuilder();
+            StringBuilder err = new StringBuilder();
+            ConcurrentBag<string> files = new ConcurrentBag<string>(Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.AllDirectories));
+
+            LGADao dao = new CommonUtil.DAO.LGADao();
+            var LGAs = dao.RetrieveAll();
+
+            files.AsParallel().ForAll(file =>
+            //foreach(var file in files)
+            {
+                Console.WriteLine(file);
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
+                {
+                    LGA aLga = null;
+                    State st = null;
+                    var sheet = package.Workbook.Worksheets["MainPage"];
+                    if (sheet == null)
+                    {
+                        err.AppendLine(string.Format("invalid file = '{0}'", file));
+                    }
+                    else
+                    {
+                        var stateObj = sheet.Cells["S14"].Value;
+
+                        var slga = sheet.Cells["S17"].Value;
+                        var facility = sheet.Cells["S20"].Value; 
+                        if (stateObj != null && slga != null && facility !=null)
+                        {
+                            facility= facility.ToString().Substring(3);
+
+                            string _l = slga.ToString().Trim().Substring(3).Replace(" Local Government Area", "");
+                            var _tempLgas = LGAs.Where(x => x.lga_name == _l).ToList();
+                            if (_tempLgas.Count == 1)
+                            {
+                                aLga = _tempLgas.FirstOrDefault();
+                            }
+                            else if (_tempLgas.Count > 1)
+                            {
+                                aLga = _tempLgas.FirstOrDefault(x => x.State.state_name == stateObj.ToString().Trim().Substring(3));
+                            }
+                            else if (_tempLgas != null && _tempLgas.Count == 0)
+                            {
+                                err.AppendLine(string.Format("LGA Name = '{0}', Facility = '{1}'", _l, facility));
+                                //throw new ApplicationException(" Unable to locate the LGA");
+                            }
+                            //aLga =  LGAs.FirstOrDefault(x => x.Key == (stateObj.ToString().Trim().Substring(3))).ToList().FirstOrDefault(x => x.lga_name == _l);
+                        }
+
+                        if (aLga != null)
+                        {
+                            sb.AppendLine(string.Format("update dqa_radet_upload_report set LGA_code = '{0}' where Facility = '{1}';", aLga.lga_code, facility));
+                        }
+                    }
+                }
+            }
+            );
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DQA\Live Radet\All IPs Unzipped\err.csv", err.ToString());
+            File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DQA\Live Radet\All IPs Unzipped\Update.sql", sb.ToString());
         }
 
         private static void ReadAndMergeEnugu()
@@ -29,14 +96,14 @@ namespace Test
                 Console.WriteLine(file);
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
                 {
-                    
+
                     var sheet = package.Workbook.Worksheets.FirstOrDefault();
                     string facilitName = ExcelHelper.ReadCellText(sheet, 4, 5);
 
                     int row = 7;
-                    
+
                     while (true)
-                    { 
+                    {
                         string cellContent = ExcelHelper.ReadCellText(sheet, row, 2); //if no dob, end of file!!!
                         if (string.IsNullOrEmpty(cellContent))
                         {
@@ -44,14 +111,14 @@ namespace Test
                         }
                         for (int col = 2; col <= 33; col++)
                         {
-                            if(col == 4 || col == 5 || col==6 || col== 13)
-                            { 
+                            if (col == 4 || col == 5 || col == 6 || col == 13)
+                            {
                                 continue;
                             }
-                            cellContent =  ExcelHelper.ReadCellText(sheet, row, col);
+                            cellContent = ExcelHelper.ReadCellText(sheet, row, col);
                             sb.Append(cellContent + ",");
-                        } 
-                        sb.Append("Enugu,"); 
+                        }
+                        sb.Append("Enugu,");
                         sb.Append(facilitName);
                         sb.AppendLine();
                         row++;

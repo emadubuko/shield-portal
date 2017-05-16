@@ -21,22 +21,25 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.Threading;
 using DAL.Entities;
+using System.Collections.Concurrent;
 
 namespace Test
 {
      
     class Program
-    {
+    { 
         static void Main(string[] args)
         {
             Console.WriteLine("started");
 
-            MosisFiles.ProcessFile();
+            RadetExcelDocs.ReadAndMerge();
+
+            //  MosisFiles.ProcessHTS_TST_File();
 
             //UpdateFacilities();
 
             // AfenetUtil.ReadFile();
-            //RadetExcelDocs.ReadAndMerge();
+            //
 
             //DMPSiteType();
             //new ShufflingTest().TestShuffle();

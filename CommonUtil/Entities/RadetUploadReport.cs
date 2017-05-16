@@ -14,5 +14,6 @@ namespace CommonUtil.Entities
         public virtual DateTime DateUploaded { get; set; }
         public virtual int CurrentYearTx_New { get; set; }
         public virtual string Facility { get; set; }
+        public virtual LGA LGA { get; set; }
     }
 }

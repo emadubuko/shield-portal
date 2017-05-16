@@ -224,6 +224,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\RadetAnalyticsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1095,6 +1096,7 @@
     <Content Include="Views\DQAFY2016\HomePage.cshtml" />
     <Content Include="Views\DMP\ScoreCard.cshtml" />
     <Content Include="Views\DMP\DMPSummary.cshtml" />
+    <Content Include="Views\RadetAnalytics\Index.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1132,6 +1134,7 @@
     <Content Include="Views\Shared\_bwrLayout.cshtml" />
     <Content Include="Views\Shared\_genLayout.cshtml" />
     <Content Include="Views\Shared\_dmpLayoutPage.cshtml" />
+    <Content Include="Views\Shared\_radetLayoutPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
