@@ -69,6 +69,10 @@
             color: #000;
             padding-left: 10px;
         }
+        .table-responsive {
+            min-height: .01%;
+            overflow-x: initial !important;
+        }
     </style>
 
     <script src="~/Scripts/Ultilities.js"></script>
@@ -1305,6 +1309,7 @@
             });
         </script>
 
-        @Scripts.Render("~/bundles/dmpScripts")
+        @*@Scripts.Render("~/bundles/dmpScripts")*@
+    @Scripts.RenderFormat("<script type=\"text/javascript\" src=\"{0}?nocache=" + DateTime.Now + "\"></script>", "~/bundles/dmpScripts")
     </body>
 </html>

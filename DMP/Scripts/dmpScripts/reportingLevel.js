@@ -3,6 +3,7 @@ if (reportingLevelArrayFromServer !=null && reportingLevelArrayFromServer.length
     var reportingLevel = {};
     for (var c = 0; c < reportingLevelArrayFromServer.length; c++) {
         reportingLevel = reportingLevelArrayFromServer[c];
+        reportingLevel.Id = c + 1;
         PopulateReportingLevels(reportingLevel);
         reportingLevelArray.push(reportingLevel);
         CreatereportingLevelTable(reportingLevel);

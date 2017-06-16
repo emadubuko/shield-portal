@@ -2,12 +2,15 @@
 using NHibernate;
 using NHibernate.Engine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.SessionState;
 
 namespace CommonUtil.Utilities
 {
@@ -36,7 +39,7 @@ namespace CommonUtil.Utilities
             }
             return false;
         }
-
+         
         public static string PasCaseConversion(object PascalWord)
         {
             if (PascalWord != null && !string.IsNullOrEmpty(Convert.ToString(PascalWord)))

@@ -3,6 +3,7 @@ if (dasDataCollectionArrayFromServer != null && dasDataCollectionArrayFromServer
     var dataSharing = {};
     for (var c = 0; c < dasDataCollectionArrayFromServer.length; c++) {
         dataSharing = dasDataCollectionArrayFromServer[c];
+        dataSharing.Id = c + 1;
         dasDatacollectionArray.push(dataSharing);
         CreatedasTable(dataSharing);
     }

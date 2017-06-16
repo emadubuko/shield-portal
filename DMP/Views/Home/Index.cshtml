@@ -1,16 +1,18 @@
 ﻿@{
     Layout = "~/Views/Shared/_genLayout.cshtml";
 }
- @section AddToHead{
+@section AddToHead{
     <style>
         .custom-heading-div {
             color: #fff;
             font-size: 20px;
         }
+
         .popover-content {
             padding: 9px 14px;
             color: red;
         }
+
         .panel {
             height: 135px;
         }
@@ -23,25 +25,25 @@
         <div class="col-sm-1"></div>
         <div class="col-sm-5" id="data-mgt">
             <div class="panel minimal primary-bg" style="background-color:darkorange;border-color:darkorange">
-                <div class="panel-body">
-                    <a href="/home/submenu?id=dmp">
+                <a href="/home/submenu?id=dmp">
+                    <div class="panel-body">
                         <table>
                             <tr style="vertical-align: top;">
                                 <td><i class="fa fa-file-text fa-3x" style="color: #fff;"></i> </td>
                                 <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Quality Assesment/Improvement </strong></td>
                             </tr>
                         </table>
-                    </a>
-                </div>
+                    </div>
+                </a>
             </div>
         </div>
 
 
-      
+
         <div class="col-sm-5" id="r-reporting">
             <div class="panel minimal secondary-bg">
                 <div class="panel-body">
-                    <a href="/home/submenu?id=routine_reporting" >
+                    <a href="/home/submenu?id=routine_reporting">
                         <table>
                             <tr style="vertical-align: top;">
                                 <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
@@ -72,7 +74,7 @@
             </div>
         </div>
 
-       
+
         <div class="col-sm-5" id="outcome-eval">
             <div class="panel minimal teal-bg ">
                 <div class="panel-body">
@@ -111,19 +113,25 @@
 
         <div class="col-sm-5" id="admin" style="display:none">
             <div class="panel minimal teal-bg" style="background-color: indianred;border-color:indianred">
-                <div class="panel-body">
-                    <a href="/home/submenu?id=admin">
+                <a href="/home/submenu?id=admin">
+                    <div class="panel-body">
                         <table>
                             <tr style="vertical-align: top;">
                                 <td> <i class="fa fa-cog fa-3x" style="color: #fff;"></i></td>
                                 <td style="padding-left: 25px;"><strong class="custom-heading-div">Admin</strong> </td>
                             </tr>
                         </table>
-                    </a>
-                </div>
+
+                        <h2 style="padding-left: 15%; margin-top: -30px;color:gold">
+                            <strong style="padding-left: 30%;font-size:40px">@MvcApplication.Sessions.Values.Count()</strong>
+                            <br />
+                            <span style="padding-left: 15%;font-size:16px">Active Users within the last 1 hour</span>
+                        </h2>
+                    </div>
+                </a>
             </div>
         </div>
-    </div> 
+    </div>
 </div>
 
 
@@ -138,10 +146,9 @@
     <script>
         $(document).ready(function () {
 
-            var admin = '@(HttpContext.Current.User.IsInRole("sys_admin") || HttpContext.Current.User.IsInRole("shield_team"))' =="True" ? true : false;
+            var admin = '@(HttpContext.Current.User.IsInRole("sys_admin") || HttpContext.Current.User.IsInRole("shield_team"))' == "True" ? true : false;
 
-            if (admin)
-            {
+            if (admin) {
                 $("#admin").css('display', 'block');
             }
 

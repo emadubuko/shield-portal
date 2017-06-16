@@ -3,6 +3,7 @@ using DAL.Entities;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -10,6 +11,163 @@ namespace DAL.Services
 {
     public class DMPExcelFile
     {
+        public void ExtractRolesFromFile(Stream ReportStream, out List<StaffGrouping> roles, out List<StaffGrouping> responsibility, out List<Trainings> trainings)
+        {
+            Dictionary<string, StaffGrouping> role_location = new Dictionary<string, StaffGrouping>();
+            Dictionary<string, StaffGrouping> resp_location = new Dictionary<string, StaffGrouping>();
+            Dictionary<string, Trainings> training = new Dictionary<string, Trainings>();
+
+            using (ExcelPackage package = new ExcelPackage(ReportStream))
+            {
+                ExcelWorksheet roleSheet = package.Workbook.Worksheets.FirstOrDefault();
+
+                int countColumn = 1;
+                int roleColumn = 2;
+                int responsibilityColumn = 3;
+                int locationColumn = 4;
+                int trainingColumn = 5;
+                int training_st_dt_column = 6;
+                int training_ed_dt_column = 7;
+
+                for (int i = 2; ; i++) //this is for the rows
+                {
+
+                    string location = ExcelHelper.ReadCell(roleSheet, i, locationColumn);
+
+                    if (string.IsNullOrEmpty(location) || string.IsNullOrEmpty(location.Trim()))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        location = location.Trim();
+
+                        string roleName = ExcelHelper.ReadCell(roleSheet, i, roleColumn);
+                        string responsibilityName = ExcelHelper.ReadCell(roleSheet, i, responsibilityColumn);
+
+                        string count = ExcelHelper.ReadCell(roleSheet, i, countColumn);
+
+                        string trainingName = ExcelHelper.ReadCell(roleSheet, i, trainingColumn);
+                        string TrainingStartDate = ExcelHelper.ReadCellText(roleSheet, i, training_st_dt_column);
+                        string TrainingEndDate = ExcelHelper.ReadCellText(roleSheet, i, training_ed_dt_column);
+
+                        StaffGrouping previously = null;
+                        try
+                        {
+                            if (role_location.TryGetValue(roleName, out previously))
+                            {
+                                if (location.ToLower() == "site")
+                                {
+                                    role_location[roleName].SiteCount += count.ToInt();
+                                }
+                                else if (location.ToLower() == "region")
+                                {
+                                    role_location[roleName].RegionCount += count.ToInt();
+                                }
+                                else if (location.ToLower() == "hq")
+                                {
+                                    role_location[roleName].HQCount += count.ToInt();
+                                }
+                            }
+                            else
+                            {
+                                role_location.Add(roleName, new StaffGrouping
+                                {
+                                    Name = roleName,
+                                    HQCount = location.ToLower() == "hq" ? count.ToInt() : 0,
+                                    RegionCount = location.ToLower() == "region" ? count.ToInt() : 0,
+                                    SiteCount = location.ToLower() == "site" ? count.ToInt() : 0,
+                                });
+                            }
+
+                            if (resp_location.TryGetValue(responsibilityName, out previously))
+                            {
+                                if (location.ToLower() == "site")
+                                {
+                                    resp_location[responsibilityName].SiteCount += count.ToInt();
+                                }
+                                else if (location.ToLower() == "region")
+                                {
+                                    resp_location[responsibilityName].RegionCount += count.ToInt();
+                                }
+                                else if (location.ToLower() == "hq")
+                                {
+                                    resp_location[responsibilityName].HQCount += count.ToInt();
+                                }
+                            }
+                            else
+                            {
+                                resp_location.Add(responsibilityName, new StaffGrouping
+                                {
+                                    Name = responsibilityName,
+                                    HQCount = location.ToLower() == "hq" ? count.ToInt() : 0,
+                                    RegionCount = location.ToLower() == "region" ? count.ToInt() : 0,
+                                    SiteCount = location.ToLower() == "site" ? count.ToInt() : 0,
+                                });
+                            }
+
+                            if (!string.IsNullOrEmpty(trainingName))
+                            {
+                                DateTime edt = new DateTime();
+                                DateTime stdt = new DateTime();
+
+                                DateTime.TryParseExact(TrainingStartDate, "d-MMM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out stdt);
+                                DateTime.TryParseExact(TrainingEndDate, "d-MMM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out edt);
+
+                                string startDateString = stdt > DateTime.MinValue ? string.Format("{0:d-MMM-yyyy}", stdt) : "invalid";
+                                string EndDateString = stdt > DateTime.MinValue ? string.Format("{0:d-MMM-yyyy}", edt) : "invalid";
+
+                                Trainings tr = null;
+                                if (training.TryGetValue(trainingName, out tr))
+                                {
+                                    if (location.ToLower() == "hq")
+                                    {
+                                        training[trainingName].HQStartDate = startDateString;
+                                        training[trainingName].HQEndDate = EndDateString;
+                                    }
+                                    else if (location.ToLower() == "region")
+                                    {
+                                        training[trainingName].RegionStartDate = startDateString;
+                                        training[trainingName].RegionEndDate = EndDateString;
+                                    }
+                                    else if (location.ToLower() == "site")
+                                    {
+                                        training[trainingName].SiteStartDate = startDateString;
+                                        training[trainingName].SiteEndDate = EndDateString;
+                                    }
+                                }
+                                else
+                                {
+                                    training.Add(trainingName, new Trainings
+                                    {
+                                        NameOfTraining = trainingName,
+                                        HQStartDate = location.ToLower() == "hq" ? startDateString : "",
+                                        HQEndDate = location.ToLower() == "hq" ? EndDateString : "",
+
+                                        RegionStartDate = location.ToLower() == "region" ? startDateString : "",
+                                        RegionEndDate = location.ToLower() == "region" ? EndDateString : "",
+
+                                        SiteStartDate = location.ToLower() == "site" ? startDateString : "",
+                                        SiteEndDate = location.ToLower() == "site" ? EndDateString : "",
+                                    });
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+
+            roles = role_location.Values.ToList();
+            responsibility = resp_location.Values.ToList();
+            trainings = training.Values.ToList();
+        }
+
+
+        [Obsolete]
         public void ExtractRoles(Stream ReportStream, out List<StaffGrouping> roles, out List<StaffGrouping> responsibility, out List<Trainings> trainings)
         {
             Dictionary<string, StaffGrouping> role_location = new Dictionary<string, StaffGrouping>();

@@ -3,6 +3,7 @@ if (digitalDataCollectionArrayFromServer != null && digitalDataCollectionArrayFr
     var digitaldata = {};
     for (var c = 0; c < digitalDataCollectionArrayFromServer.length; c++) {
         digitaldata = digitalDataCollectionArrayFromServer[c];
+        digitaldata.Id = c + 1;
         digitalDatacollectionArray.push(digitaldata);
         CreatedgtTable(digitaldata);
     }

@@ -34,7 +34,7 @@ namespace ShieldPortal.Controllers
         }
 
         public ActionResult submenu(string id)
-        {
+        {    
             if (id.Contains("routine_reporting"))
             {
                 ViewBag.breadcrumb = "Routine Reporting";

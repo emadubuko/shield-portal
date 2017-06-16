@@ -61,6 +61,8 @@ namespace ShieldPortal.Controllers
             }
         }
 
+         
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -89,7 +91,8 @@ namespace ShieldPortal.Controllers
             {
                 case SignInStatus.Success:
                     var profile = new ProfileDAO().GetProfileByUsername(model.Username);
-                    HttpContext.Session[".:LoggedInProfile:."] = profile;
+                    HttpContext.Session[".:LoggedInProfile:."] = profile; 
+
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -441,6 +444,7 @@ namespace ShieldPortal.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+             
             return RedirectToAction("Index", "Home");
         }
 

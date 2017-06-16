@@ -284,6 +284,7 @@
     <Content Include="images\cdc_logo.png" />
     <Content Include="images\clock.jpg" />
     <Content Include="images\excel.png" />
+    <Content Include="images\favicon-32x32.png" />
     <Content Include="images\HHS.png" />
     <Content Include="images\imac-40.jpg" />
     <Content Include="Content\images\animated-overlay.gif" />
@@ -326,7 +327,9 @@
     <Content Include="images\spinner.gif" />
     <Content Include="images\summary-icon.png" />
     <Content Include="images\umb-icon.jpg" />
+    <Content Include="images\UMB.png" />
     <Content Include="images\UMB_logo.png" />
+    <Content Include="images\UMB_logo_full_size.png" />
     <Content Include="img\grid.png" />
     <Content Include="img\icon_sprite.png" />
     <Content Include="img\slider_handle.png" />

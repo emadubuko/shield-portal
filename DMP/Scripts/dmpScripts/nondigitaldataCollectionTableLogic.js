@@ -3,6 +3,7 @@ if (nondigitalDataCollectionArrayFromServer != null && nondigitalDataCollectionA
     var nondigitaldata = {};
     for (var c = 0; c < nondigitalDataCollectionArrayFromServer.length; c++) {
         nondigitaldata = nondigitalDataCollectionArrayFromServer[c];
+        nondigitaldata.Id = c + 1;
         nondigitalDatacollectionArray.push(nondigitaldata);
         CreatendgtTable(nondigitaldata);
     }

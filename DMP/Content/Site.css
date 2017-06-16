@@ -1,4 +1,16 @@
-﻿.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+﻿@media print {
+    a[href]:after {
+        content: none !important;
+    }
+    .table-responsive{
+        font-size:10px
+    }
+    .embeddedLandingRootContent{
+        background-color:darkseagreen
+    }
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
     background-color: #fff;
     font-weight: bold;
 }
@@ -25,6 +37,7 @@ li.removeVisibility {
 .panel-warning {
     border-color: steelblue;
 }
+
     .panel-warning > .panel-heading {
         color: #FFF;
         background-color: steelblue;
@@ -35,39 +48,15 @@ li.removeVisibility {
     padding: 5px 20%;
 }
 
-/*form{
-    color:steelblue;
-}
-.form-control{
-    border-color:steelblue;
-}
- .btn-warning{
-  background-color: steelblue;
-  
-        }
- .btn-warning:hover{
-  background-color: steelblue;
-   border-color: steelblue;
-        }*/
 /*body {
     background-image: url('../images/backgroung_image.png'); 
 }*/
 label {
     font-weight: bold;
 }
-/*.btn-default.btn-outline {
-    color: steelblue;
-    background-color: transparent;
-    border-color: steelblue;
-}
 
-.btn-default:hover {
-    color: #333;
-    background-color: steelblue;
-}*/
 .page-container {
     height: 100%;
-    /*width: 100%;*/
     position: relative;
     display: table;
     table-layout: fixed;

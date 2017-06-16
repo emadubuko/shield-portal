@@ -67,6 +67,9 @@
             color: #000;
             padding-left: 10px;
         }
+        .table {
+            font-size: 12px;
+        }
     </style>
 
     <script src="~/Scripts/Ultilities.js"></script>
@@ -127,30 +130,27 @@
         var reportArray = [];
 
         function DeleteRow(row) {
-            if(row.id.indexOf("report") !== -1){
-                var rowid = row.id.split('x')[1];
+            var rowid = row.id.split('x')[1];
+
+            if(row.id.indexOf("report") !== -1){               
                 $(row).remove();
                 reportArray.splice(rowid-1, 1);
             }
             else  if(row.id.indexOf('datacollation') !==-1){
-                $(row).remove();
-                var rowid = row.id.split('x')[1];
-                datacollationArray.splice(row-1, 1);
+                $(row).remove(); 
+                datacollationArray.splice(rowid-1, 1);
             }
-            else  if(row.id.indexOf('datacollection') !==-1){
-                $(row).remove();
-                var rowid = row.id.split('x')[1];
-                datacollectionArray.splice(row-1, 1);
+            else  if(row.id.indexOf('datacollection') !==-1){ 
+                $(row).remove();                
+                datacollectionArray.splice(rowid-1, 1);
             }
-            else  if(row.id.indexOf('dataverification') !==-1){
-                $(row).remove();
-                var rowid = row.id.split('x')[1];
-                DataVerificationArray.splice(row-1, 1);
+            else  if(row.id.indexOf('dataverification') !==-1){ 
+                $(row).remove();                
+                DataVerificationArray.splice(rowid-1, 1);
             }
-            else  if(row.id.indexOf('training') !== -1){
-                var rowid = row.id.split('x')[1];
+            else  if(row.id.indexOf('training') !== -1){ 
                 $(row).remove();
-                trainingArray.splice(row-1, 1);
+                trainingArray.splice(rowid-1, 1);
             }
         }
 
@@ -169,74 +169,73 @@
                 var rowValues = row.getElementsByTagName('td');
 
                 if(row.id.indexOf("report") !== -1){
-                    var report = reportArray[rowid-1];
-                    report.ReportingLevel = rowValues[0].innerHTML;
-                    report.ReportsType = rowValues[1].innerHTML;
-                    report.ReportedTo = rowValues[2].innerHTML;
-                    report.ProgramArea = rowValues[3].innerHTML;
-                    report.FrequencyOfReporting = rowValues[4].innerHTML;
-                    report.DurationOfReporting = rowValues[5].innerHTML;
+                    var report = reportArray.find(x => x.Id == rowid);// reportArray[rowid-1];
+                    report.ReportingLevel = rowValues[0].innerText;
+                    report.ReportsType = rowValues[1].innerText;
+                    report.ReportedTo = rowValues[2].innerText;
+                    report.ProgramArea = rowValues[3].innerText;
+                    report.FrequencyOfReporting = rowValues[4].innerText;
+                    report.DurationOfReporting = rowValues[5].innerText;
                 }
                 else  if(row.id.indexOf('datacollation') !==-1){
-                    var dtcl =   datacollationArray[rowid-1];
-                    dtcl.ReportingLevel  = rowValues[0].innerHTML;
-                    dtcl.DataType = rowValues[1].innerHTML;
-                    dtcl.CollationFrequency = rowValues[2].innerHTML;
+                    var dtcl =  datacollationArray.find(x => x.Id == rowid); //datacollationArray[rowid-1];
+                    dtcl.ReportingLevel  = rowValues[0].innerText;
+                    dtcl.DataType = rowValues[1].innerText;
+                    dtcl.CollationFrequency = rowValues[2].innerText;
                 }
                 else  if(row.id.indexOf('dataverification') !==-1){
-                    var dv = DataVerificationArray[rowid-1];
-                    dv.ReportingLevel = rowValues[0].innerHTML;
-                    dv.ThematicArea = rowValues[1].innerHTML;
-                    dv.DataVerificationApproach = rowValues[2].innerHTML;
-                    dv.TypesOfDataVerification = rowValues[3].innerHTML;
-                    dv.FrequencyOfDataVerification = rowValues[4].innerHTML;
-                    dv.DurationOfDataVerificaion = rowValues[5].innerHTML;
+                    var dv = DataVerificationArray.find(x => x.Id == rowid); //DataVerificationArray[rowid-1];
+                    dv.ReportingLevel = rowValues[0].innerText;
+                    dv.ThematicArea = rowValues[1].innerText;
+                    dv.DataVerificationApproach = rowValues[2].innerText;
+                    dv.TypesOfDataVerification = rowValues[3].innerText;
+                    dv.FrequencyOfDataVerification = rowValues[4].innerText;
+                    dv.DurationOfDataVerificaion = rowValues[5].innerText;
                 }
                 else  if(row.id.indexOf('datacollection') !== -1){
-                    var dc = datacollectionArray[rowid-1];
-                    dc.ReportingLevel = rowValues[0].innerHTML;
-                    dc.DataType =rowValues[1].innerHTML;
-                    dc.DataCollectionAndReportingTools=rowValues[2].innerHTML;
-                    dc.DataCollectionProcess =rowValues[3].innerHTML;
+                    var dc = datacollectionArray.find(x => x.Id == rowid); //datacollectionArray[rowid-1];
+                    dc.ReportingLevel = rowValues[0].innerText;
+                    dc.DataType =rowValues[1].innerText;
+                    dc.DataCollectionAndReportingTools=rowValues[2].innerText;
+                    dc.DataCollectionProcess =rowValues[3].innerText;
                 }
                 else  if(row.id.indexOf('nondigital') !== -1){
-                    var ndtd = nondigitalDatacollectionArray[rowid-1];
-                    ndtd.ReportingLevel = rowValues[0].innerHTML;
-                    ndtd.ThematicArea = rowValues[1].innerHTML;
-                    ndtd.NonDigitalDataTypes = rowValues[2].innerHTML;
-                    ndtd.StorageLocation = rowValues[3].innerHTML;
-                    ndtd.SafeguardsAndRequirements = rowValues[4].innerHTML;
+                    var ndtd = nondigitalDatacollectionArray.find(x => x.Id == rowid);//nondigitalDatacollectionArray[rowid-1];
+                    ndtd.ReportingLevel = rowValues[0].innerText;
+                    ndtd.ThematicArea = rowValues[1].innerText;
+                    ndtd.NonDigitalDataTypes = rowValues[2].innerText;
+                    ndtd.StorageLocation = rowValues[3].innerText;
+                    ndtd.SafeguardsAndRequirements = rowValues[4].innerText;
                 }
                 else  if(row.id.indexOf('digital') !== -1){
-                    var dtd= digitalDatacollectionArray[rowid-1];
-                    dtd.ReportingLevel = rowValues[0].innerHTML;
-                    dtd.ThematicArea  = rowValues[1].innerHTML;
-                    dtd.VolumeOfDigitalData = rowValues[2].innerHTML;
-                    dtd.DataStorageFormat = rowValues[3].innerHTML;
-                    dtd.StorageLocation = rowValues[4].innerHTML;
-                    dtd.Backup  = rowValues[5].innerHTML;
-                    dtd.DataSecurity  = rowValues[6].innerHTML;
-                    dtd.PatientConfidentialityPolicies = rowValues[7].innerHTML;
-                    dtd.StorageOfPreExistingData = rowValues[8].innerHTML;
+                    var dtd= digitalDatacollectionArray.find(x => x.Id == rowid); //digitalDatacollectionArray[rowid-1];
+                    dtd.ReportingLevel = rowValues[0].innerText;
+                    dtd.ThematicArea  = rowValues[1].innerText;
+                    dtd.VolumeOfDigitalData = rowValues[2].innerText;
+                    dtd.DataStorageFormat = rowValues[3].innerText;
+                    dtd.StorageLocation = rowValues[4].innerText;
+                    dtd.Backup  = rowValues[5].innerText;
+                    dtd.DataSecurity  = rowValues[6].innerText;
+                    dtd.PatientConfidentialityPolicies = rowValues[7].innerText;
+                    dtd.StorageOfPreExistingData = rowValues[8].innerText;
                 }
                 else  if(row.id.indexOf('dataSharing') !== -1){
-                    var dts = dasDatacollectionArray[rowid-1];
-                    dts.ReportingLevel = rowValues[0].innerHTML;
-                    dts.ThematicArea = rowValues[1].innerHTML;
-                    dts.DataAccess = rowValues[2].innerHTML;
-                    dts.DataSharingPolicies = rowValues[3].innerHTML;
-                    dts.DataTransmissionPolicies = rowValues[4].innerHTML;
-                    dts.SharingPlatForms = rowValues[5].innerHTML;
+                    var dts = dasDatacollectionArray.find(x => x.Id == rowid); //dasDatacollectionArray[rowid-1];
+                    dts.ReportingLevel = rowValues[0].innerText;
+                    dts.ThematicArea = rowValues[1].innerText;
+                    dts.DataAccess = rowValues[2].innerText;
+                    dts.DataSharingPolicies = rowValues[3].innerText;
+                    dts.DataTransmissionPolicies = rowValues[4].innerText;
+                    dts.SharingPlatForms = rowValues[5].innerText;
                 }
                 else  if(row.id.indexOf('datadocumentation') !== -1){
-                    var ddoc = ddocDatacollectionArray[rowid-i];
-                    ddoc.ReportingLevel = rowValues[0].innerHTML;
-                    ddoc.ThematicArea = rowValues[1].innerHTML;
-                    ddoc.StoredDocumentationAndDataDescriptors = rowValues[2].innerHTML;
-                    ddoc.NamingStructureAndFilingStructures = rowValues[3].innerHTML;
+                    var ddoc = ddocDatacollectionArray.find(x => x.Id == rowid); ddocDatacollectionArray[rowid-i];
+                    ddoc.ReportingLevel = rowValues[0].innerText;
+                    ddoc.ThematicArea = rowValues[1].innerText;
+                    ddoc.StoredDocumentationAndDataDescriptors = rowValues[2].innerText;
+                    ddoc.NamingStructureAndFilingStructures = rowValues[3].innerText;
                 }
             }
-
         }
     </script>
 
@@ -1851,6 +1850,33 @@
 
     <script>
         $(document).ready(function () {
+            
+            $('tbody').on('change', '[contenteditable]', function() {
+                var $this = $(this);
+                $this.data('before', $this.html());
+                return $this;
+            }).on('blur paste input', '[contenteditable]', function() {
+                var $this = $(this);
+                if ($this.data('before') !== $this.html()) {
+
+                    $(this).find('td').each (function(index, val) {
+
+                        if(val.innerHTML.indexOf('btn-sm btn-outline') == -1){
+                            val.textContent  = stripHTML(val.innerText);
+                            //val.innerText = stripHTML(val.innerText)
+                        }                        
+                    });
+                    $this.data('before', $this.html());
+                    $this.trigger('change');
+                }
+                return $this;
+            });
+            
+            function stripHTML(text){
+                var regex = /(<([^>]+)>)/ig;
+                return text.replace(regex, "");
+            }
+            
 
             $("#previousbtn").click(function(e){
                 $("#finish").css('display','none');
@@ -1981,6 +2007,7 @@
         });
     </script>
 
-    @Scripts.Render("~/bundles/dmpScripts")
+    @*@Scripts.Render("~/bundles/dmpScripts?v=")*@
+    @Scripts.RenderFormat("<script type=\"text/javascript\" src=\"{0}?nocache=" + DateTime.Now + "\"></script>", "~/bundles/dmpScripts")
 </body>
 </html>

@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using System.Web.Optimization;
 
 namespace ShieldPortal
@@ -67,8 +68,7 @@ namespace ShieldPortal
                       "~/plugins/datatables/css/jquery.dataTables.css",
                       "~/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css",
                       "~/plugins/datepicker/css/bootstrap-datepicker.css",
-                        "~/plugins/nouislider/css/nouislider.css",
-                        "~/Content/Site.css"));
+                        "~/plugins/nouislider/css/nouislider.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/CreateDMPJs").Include(
                       "~/plugins/blockui-master/js/jquery-ui.js",

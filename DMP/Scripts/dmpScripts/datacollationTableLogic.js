@@ -2,7 +2,8 @@
 if (datacollationArrayFromServer !=null && datacollationArrayFromServer.length > 0) {
     var datacollation = {};
     for (var c = 0; c < datacollationArrayFromServer.length; c++) {
-        datacollation = datacollationArrayFromServer[c]; 
+        datacollation = datacollationArrayFromServer[c];
+        datacollation.Id = c + 1;
         datacollationArray.push(datacollation);
         CreatedatacollationTable(datacollation);
     }

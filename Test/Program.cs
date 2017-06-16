@@ -32,7 +32,7 @@ namespace Test
         {
             Console.WriteLine("started");
 
-            RadetExcelDocs.ReadAndMerge();
+         //   RadetExcelDocs.ReadAndMerge();
 
             //  MosisFiles.ProcessHTS_TST_File();
 
@@ -49,7 +49,7 @@ namespace Test
             // new Program().RetrieveExcelValue();
 
 
-            //  DMPSummary();
+              DMPSummary();
 
             //new Program().UpdateFacilities();
             //    new Program().GenerateFacilityTargetCSV();

@@ -24,6 +24,10 @@
                 background-color: darkorange;
                 border-color: darkorange;
             }
+
+        .pnl-height {
+            height: 400px;
+        }
     </style>
 }
 <div class="main-content" style="padding-top: 0px;">
@@ -90,7 +94,7 @@
         <div class="row">
 
             <div class="col-md-4">
-                <div class="panel panel-info" style="border-color:darkorange">
+                <div class="panel panel-info pnl-height" style="border-color:darkorange;">
 
                     <!-- panel body -->
                     <div class="panel-body">
@@ -112,7 +116,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="panel panel-success">
+                <div class="panel panel-success pnl-height">
                     <!-- panel body -->
                     <div class="panel-body">
                         <div>
@@ -147,7 +151,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="panel panel-warning">
+                <div class="panel panel-warning pnl-height">
                     <!-- panel body -->
                     <div class="panel-body">
                         <div>
@@ -216,12 +220,12 @@
 
         </div>
 
-        <div class="row"> 
+        <div class="row">
 
             <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
 
             <div class="col-sm-4">
-                <div class="panel panel-info" style="border-color:#ec407a">
+                <div class="panel panel-info pnl-height" style="border-color:#ec407a">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
@@ -238,7 +242,7 @@
             <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
 
             <div class="col-sm-4">
-                <div class="panel panel-success">
+                <div class="panel panel-success pnl-height">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
@@ -248,16 +252,18 @@
                         <hr />
                         <h5 style="font-weight: bold">Overview</h5>
                         <p>Retention and Audit Determination Tool (RADET)</p>
-                        <p>The PEPFAR Nigeria SI TWG commenced current on treatment audit using the RADET in October 2014.
-                        Aim was to determine the accurate total number of patients currently on treatment (as at September 30th 2014). 
-                        The process required the implementing partners to submit a line list of all clients enrolled on ART since the beginning of the PEPFAR program</p>
+                        <p>
+                            The PEPFAR Nigeria SI TWG commenced current on treatment audit using the RADET in October 2014.
+                            Aim was to determine the accurate total number of patients currently on treatment (as at September 30th 2014).
+                            The process required the implementing partners to submit a line list of all clients enrolled on ART since the beginning of the PEPFAR program
+                        </p>
                         </p>
                     </div>
                 </div>
             </div>
 
             <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
-                <div class="panel panel-default" style="border-color:deepskyblue">
+                <div class="panel panel-default pnl-height" style="border-color:deepskyblue">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
@@ -267,9 +273,11 @@
                         <hr />
                         <h5 style="font-weight: bold">Overview</h5>
                         <p>Site Monitoring Systems (SIMS)</p>
-                        <p>SIMS is PEPFAR/CDC Site Monitoring System with a goal of standardizing clinical site quality monitoring by PEPFAR/CDC in-country staff through assessment and scoring of site performance on key program area elements.
-                        SIMS is a comprehensive yet rapid assessment that focus on issues that directly impact service quality</p>
-                        <a style="text-decoration:underline; color:blue" href="https://data.pepfar.net/reference/Global_SMS_summary_and_21_countries_Nov_2014_v5.21.pdf" target="_blank">Global SMS summary and 21 countries (Nov 2014)</a>
+                        <p>
+                            SIMS is PEPFAR/CDC Site Monitoring System with a goal of standardizing clinical site quality monitoring by PEPFAR/CDC in-country staff through assessment and scoring of site performance on key program area elements.
+                            SIMS is a comprehensive yet rapid assessment that focus on issues that directly impact service quality
+                        </p>
+                        <a style="text-decoration:underline; color:blue" href="https://data.pepfar.net/reference/Global_SMS_summary_and_21_countries_Nov_2014_v5.21.pdf" target="_blank">Global SMS summary in 21 countries (Nov 2014)</a>
                         <br />
                     </div>
                 </div>
@@ -312,7 +320,7 @@
         <div class="row">
             <div class="col-sm-1"> </div>
             <div class="col-sm-5">
-                <div class="panel panel-info" style="border-color:darkorange">
+                <div class="panel panel-info pnl-height" style="border-color:darkorange">
                     <div class="panel-heading clearfix" style="background-color: darkorange;border-color:darkorange">
                         <h4 class="panel-title">Info Panel</h4>
                     </div>
@@ -324,7 +332,7 @@
             </div>
 
             <div class="col-sm-5">
-                <div class="panel panel-success">
+                <div class="panel panel-success pnl-height">
                     <div class="panel-heading clearfix">
                         <h4 class="panel-title">Info Panel</h4>
                     </div>
@@ -364,35 +372,35 @@
 
     <div id="admin" style="display:none">
         <div class="row">
-            <div class="col-lg-1"> </div>
+            <div class="col-sm-1"> </div>
 
-            <div class="col-md-7">
-                <div class="panel panel-default" style="border-color:#ff0018">
-                    <div class="panel-heading clearfix" style="background-color: #ff0018;border-color:#ff0018; color:#fff">
+            <div class="col-sm-5">
+                <div class="panel panel-default" style="border-color:#ec407a">
+                    <div class="panel-heading clearfix" style="background-color: #ec407a;border-color:#ec407a; color:#fff">
                         <h4 class="panel-title">Admin page</h4>
                     </div>
                     <!-- panel body -->
                     <div class="panel-body">
                         <ul class="list-item mailbox-list">
                             <li>
-                                <a href=@Url.Action("index", "Organization") style="text-transform: capitalize;color: #ff0018">
+                                <a href=@Url.Action("index", "Organization") style="text-transform: capitalize;color: #ec407a">
                                     <i class="fa fa-bank"></i><span class="title">&nbsp; &nbsp;View List of Implementing Partners</span>
                                 </a>
                             </li>
                             <li>
-                                <a href=@Url.Action("index", "HealthFacility") style="text-transform: capitalize;color: #ff0018">
+                                <a href=@Url.Action("index", "HealthFacility") style="text-transform: capitalize;color: #ec407a">
                                     <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;View List of Health Facilities</span>
                                 </a>
                             </li>
                             <li>
-                                <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport") style="text-transform: capitalize;color: #ff0018">
+                                <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport") style="text-transform: capitalize;color: #ec407a">
                                     <i class="fa fa-hourglass-end"></i><span class="title">&nbsp; &nbsp;View Facility Perfomance Target</span>
                                 </a>
                             </li>
                             @if (HttpContext.Current.User.IsInRole("sys_admin"))
                             {
                                 <li>
-                                    <a href=@Url.Action("index", "Profile") style="text-transform: capitalize;color: #ff0018">
+                                    <a href=@Url.Action("index", "Profile") style="text-transform: capitalize;color: #ec407a">
                                         <i class="fa fa-users">
                                         </i><span class="title">&nbsp; &nbsp;Manage User Profiles</span>
                                     </a>
@@ -403,6 +411,23 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-1"> </div>
+            <div class="col-sm-3">
+                <div class="panel minimal secondary-bg">
+                    <div class="panel-body" style="padding-left: 15%;">
+                        <h1>
+                            <strong style="padding-left: 25%;">@MvcApplication.Sessions.Values.Count()</strong>
+                        </h1>
+                        <p>Active Users within the last 1 hour</p>
+                        <hr />
+                        @foreach (var item in MvcApplication.Sessions.Values)
+                        {
+                            @item <br />
+                        }
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

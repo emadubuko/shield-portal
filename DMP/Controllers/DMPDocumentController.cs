@@ -7,10 +7,8 @@ using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
@@ -132,9 +130,9 @@ namespace ShieldPortal.Controllers
 
                 List<StaffGrouping> roles = null, responsibility = null;
                 List<Trainings> training = null;
-                new DAL.Services.DMPExcelFile().ExtractRoles(files[0].InputStream, out roles, out responsibility, out training);
+                new DAL.Services.DMPExcelFile().ExtractRolesFromFile(files[0].InputStream, out roles, out responsibility, out training);
 
-                if(roles == null || roles.Count ==0 || responsibility ==null || responsibility.Count == 0 || training==null)
+                if(roles == null || roles.Count ==0 || responsibility ==null || responsibility.Count == 0)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid file uploaded");
                 }

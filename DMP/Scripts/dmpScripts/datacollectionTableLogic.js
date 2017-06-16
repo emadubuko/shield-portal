@@ -3,6 +3,7 @@ if (DataCollectionArrayFromServer !=null && DataCollectionArrayFromServer.length
     var datacollection = {};
     for (var c = 0; c < DataCollectionArrayFromServer.length; c++) {
         datacollection = DataCollectionArrayFromServer[c];
+        datacollection.Id = c + 1;
         datacollectionArray.push(datacollection);
         CreatedatacollectionTable(datacollection);
     }

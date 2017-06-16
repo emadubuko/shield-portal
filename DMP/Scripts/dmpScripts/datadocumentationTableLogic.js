@@ -3,6 +3,7 @@ if (ddocDataCollectionArrayFromServer != null && ddocDataCollectionArrayFromServ
     var datadocumentation = {};
     for (var c = 0; c < ddocDataCollectionArrayFromServer.length; c++) {
         datadocumentation = ddocDataCollectionArrayFromServer[c];
+        datadocumentation.Id = c + 1;
         ddocDatacollectionArray.push(datadocumentation);
         CreateddocTable(datadocumentation);
     }

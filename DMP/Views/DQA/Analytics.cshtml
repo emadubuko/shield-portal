@@ -3,10 +3,31 @@
     ViewBag.Title = "Analytics";
     Layout = "~/Views/Shared/DQAFY2017Q1Layout.cshtml";
 }
- 
+
+@*@section AddToHead{
+@Styles.Render("~/bundles/CreateDMPCss")
+ }*@
+
 <div class="col-md-9">
-    <iframe width="800" height="505"
+    <a id="print" class="btn btn-sm"> Print</a>
+    <iframe width="1000" height="615" id="myReport"
              src="https://app.powerbi.com/view?r=eyJrIjoiMWE5ZWNlMTQtZDM3My00MjMyLThkZTAtNWM3NjYxNTc0MDY3IiwidCI6Ijg2MWU0MjY3LWQwNDEtNDViZC1hZTI5LTI5ZGEzZTIxNDhkOSIsImMiOjh9"
             frameborder="0" allowFullScreen="true"></iframe>
     
     </div>
+
+
+@*@section Scripts{
+<script src="~/Scripts/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#print").click(function (e) {
+            var element = document.getElementById('#myReport');
+            var report = powerbi.get(element);
+
+            report.print()
+              .catch(error => { console.log(error) });
+        })
+    })
+</script>
+    }*@

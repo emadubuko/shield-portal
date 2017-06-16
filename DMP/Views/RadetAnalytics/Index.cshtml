@@ -5,6 +5,24 @@
 
 
 <div class="col-sm-12">
-    <iframe width="840" height="530" src="https://app.powerbi.com/view?r=eyJrIjoiZTc4MjQzNTktYjY3Yy00NzU1LWE4ODAtOGMyYmYwODAxY2MwIiwidCI6Ijg2MWU0MjY3LWQwNDEtNDViZC1hZTI5LTI5ZGEzZTIxNDhkOSIsImMiOjh9" 
+    <iframe style="width:100%" id="myframe" src="https://app.powerbi.com/view?r=eyJrIjoiZTc4MjQzNTktYjY3Yy00NzU1LWE4ODAtOGMyYmYwODAxY2MwIiwidCI6Ijg2MWU0MjY3LWQwNDEtNDViZC1hZTI5LTI5ZGEzZTIxNDhkOSIsImMiOjh9" 
             frameborder="0" allowFullScreen="true"></iframe>
 </div>
+
+@section Scripts
+{
+
+    <script>
+        $(document).ready(function () {
+            
+            var height = screen.height * 7.15;
+            $("#myframe").css('height', height);
+
+            $(window).resize(function () {
+                var height = screen.height * 3.08;
+                $("#myframe").css('height', height);
+            });
+
+        });
+    </script>
+}

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
+    [Authorize]
     public class RadetAnalyticsController : Controller
     {
         // GET: RadetAnalytics

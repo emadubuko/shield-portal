@@ -27,10 +27,9 @@
     <div class="row">
         @*side bar*@
         <div class="col-md-2" id="sidebar">
-            <div class="panel panel-success">
-                <div class="panel-body" style="padding-bottom: 0px;">
-
-                    <ul class="list-item mailbox-list">
+            <div class="page-sidebar">
+                <div class="sidebar">
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
                         <li>
                             <a href=@Url.Action("HomePage", "DQAFY2016") style="color:#029b17;">
                                 <i class="fa fa-home"></i><span class="title">Home</span>
@@ -71,29 +70,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="media-body">
-                                                    <h4 class="media-heading"> @dt.ToList().Count() facilities submitted</h4>
+                                                    <h4 class="media-heading"> @dt.ToList().Count() Facilities submitted</h4>
                                                     <button class="btn btn-sm btn-success">@dt.Key</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                @*<div class="col-lg-4">
-                                        <div class="panel panel-default">
-                                            <div class="panel-body">
-                                                <div class="media">
-                                                    <div class="media-body">
-                                                        <h4 class="media-heading"><span class="col-sm-4" style="color: rgb(41, 182, 246);font-weight:bold;font-size:30px"> @item.ToList().Count()</span> <span class="col-sm-2"> Facilities submitted</span> </h4>
-                                                        <br /><br />
-                                                        <div class="col-sm-push-4 col-sm-2">
-                                                            <button class="btn btn-sm btn-success"> @item.Key </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>*@
+                                
                             }
                         </div>
                     </div>
