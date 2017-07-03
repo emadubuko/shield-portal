@@ -1,0 +1,424 @@
+﻿@model List<ShieldPortal.ViewModel.RadetReportModel>
+
+@{
+    Layout = "~/Views/Shared/_radetLayoutPage.cshtml";
+}
+
+@section AddToHead{
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
+        var myconnectionId;
+    </script>
+    <style>
+        .form-control {
+            color: #29b6f6;
+        }
+
+        form {
+            color: #29b6f6;
+        }
+
+        .table > thead > tr > th {
+            text-transform: capitalize;
+            font-weight: bolder;
+        }
+
+        .btn-sm, .btn-group-sm > .btn {
+            padding: 4px 6px;
+            font-size: 10px;
+        }
+    </style>
+}
+
+<div class="tabs-container">
+    <ul class="nav nav-tabs">
+        <li class="active"><a aria-expanded="true" href="#Upload" data-toggle="tab" style="color: #29b6f6;font-size: 25px;font-weight: bold;">Upload RADET Report</a></li>
+        <li><a aria-expanded="false" href="#Previous_upload" data-toggle="tab" style="color: #29b6f6;font-size: 25px;font-weight: bold;">View Previous Uploads</a></li>
+    </ul>
+
+    <div class="tab-content">
+
+        <div class="tab-pane active" id="Upload">
+            <br />
+            <br />
+            <div class="panel-body">
+                 
+                <form class="form-horizontal" id="form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">File</label>
+                        <div class="col-sm-5">
+                            <input type="file" id="field-file" name="upFile" class="form-control" required>
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" id="selected_ip" required>
+                                @foreach (var ip in ViewBag.Orgs)
+                                {
+                                    <option value=@ip.Id>@ip.ShortName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-push-1 col-sm-1">
+                        <button class="btn btn-info" id="btnUpload" type="submit">Upload</button>
+                    </div>
+                </form>
+                
+                <br />
+                <br />
+                <br />
+                <div class="row" style="visibility: hidden;padding-left: 90px; padding-right: 40px;" id="hidden_row">
+                    <h3>Processing...please wait</h3>
+                    <div class="progress active" id="progress">
+                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                        </div>
+                    </div>
+                </div>
+               
+
+                <br /><br />
+                <div class="line-dashed"></div>
+
+                <div class="table-responsive" id="error_report">
+                    <div class="col-sm-3">
+                        <label>Validation summary</label>
+                    </div>
+                    <div class="col-sm-push-7 col-sm-1">
+                        <a class="btn btn-success"  id="downloadFullError" style="text-transform:capitalize">Download</a>
+                    </div>
+                    <table class="table table-bordered table-hover" style="width:100%" id="error_tbl">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>File name</th> 
+                                <th> </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table> 
+                </div> 
+            </div> 
+        </div>
+
+        <div class="tab-pane" id="Previous_upload">
+            <br />
+            <div class="panel-body">
+                <div class="table-responsive" style="overflow-x:initial;font-size: 13px;">
+                    <table class="table table-bordered table-hover" style="width:100%" id="main-table">
+                        <thead>
+                            <tr>
+                                <th>IP</th>
+                                <th style="width: 250px;">Facility</th>
+                                <th>Period</th>
+                                <th>Date Uploaded</th>
+                                <th>Uploaded By</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id='@item.Id'>
+                                    <td> @item.IP </td>
+                                    <td>@item.Facility</td>
+                                    <td>@(item.dqa_quarter + " " + item.dqa_year)</td>
+                                    <td>@item.DateUploaded</td>
+                                    <td>@item.UploadedBy</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-info viewPatientListing" id="@item.Id">View List</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="errorListModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 97%;border-color: darkorange;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="table-responsive" style="font-size: 14px;padding-left: 25px;padding-right: 25px;">  
+                <div class="col-sm-push-10 col-sm-1">
+                    <a class="btn btn-success save-download">Download</a>
+                </div>
+                <table class="table table-bordered table-hover" style="width:100%" id="error_details_tbl">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>File name</th>
+                            <th>Tab name</th>
+                            <th>Error Message</th>
+                            <th>Line No</th>
+                            <th>Patient Id</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-success" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts{
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#progress").hide();
+            $("#error_report").hide();
+
+            $("#main-table").DataTable({
+                "iDisplayLength": 100
+            });
+
+            var errorBag = [];
+
+            //signal R things
+            var myhub = $.connection.radetHub;
+            myconnectionId = (profileId + uuidv4()).replace('-', '');
+
+            // Client side method for receiving the list of notifications on the connected event from the server
+            myhub.client.UpdatePages = function (Id, fileName, errorMessagedata) {
+                if (Id === myconnectionId) {
+                    var bag = { fileName, errorMessagedata };
+                    errorBag.push(bag);
+                    buildErrorSummaryTable(fileName, errorMessagedata);
+                }
+            }
+
+            myhub.client.Percent = function (Id, data) {
+                if (Id === myconnectionId) {
+                    $(".progress-bar.progress-bar-success.progress-bar-striped").css("width", data)
+                }
+            }
+            
+            // Start the connection.
+            $.connection.hub.start().done();
+            // end of signal r config
+
+
+            var previousUpload;
+              
+            $("#btnUpload").click(function () {
+                $("#output tbody").empty();
+                $("#progress").show();
+                $("#hidden_row").css("visibility", "visible");
+
+                var data = new FormData();
+                var file = $('form input[type=file]')[0].files[0];
+                data.append('file', file);
+
+                $("#btnUpload").prop("disabled", true);
+                var theurl = '/RadetAnalytics/RadetFileUpload?connectionId=' + myconnectionId + "&&IP=" + $("#selected_ip").val();
+
+                $.ajax({
+                    url: theurl,
+                    type: 'POST',
+                    data: data,
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $("#progress").hide();
+                    $("#hidden_row").css("visibility", "hidden");
+                    console.log(errorBag);
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                    $("#progress").hide();
+                    $("#btnUpload").prop("disabled", false);
+                });
+                return false;
+            });
+               
+            $(document).on("click", ".error-summary", function (e) {
+                var id = e.currentTarget.id;
+                var error_details;
+                $.each(errorBag, function (i, d) {
+                    if (d.fileName == id) {
+                        error_details = d.errorMessagedata;
+                    }
+                });
+                $("#error_details_tbl tbody").empty();
+                buildErrorDetailsTable(id, error_details);
+                $('.modal-dialog').draggable({
+                    handle: ".modal-header"
+                });
+                $('#errorListModal').modal('show');
+            });
+
+
+            $(".viewPatientListing").click(function (e) {
+                var id = e.currentTarget.id;
+                $.ajax({
+                    url: '/api/dqaapi/RetrieveRadet?id=' + id,
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+
+                    buildTable($.parseJSON(response).data);
+                    $('#patientListModal').modal('show');
+                    $("#current-on-tx").html($.parseJSON(response).Current_year_tx_new);
+                    $("#selected-for-dqa").html($.parseJSON(response).SelectedForDQA)
+                    $("#total-record").html($.parseJSON(response).data.length)
+
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+
+            $(".deleteupload").click(function (e) {
+
+                $(e.currentTarget.id).prop("disabled", true);
+                $.ajax({
+                    url: '/api/dqaapi/DeleteRadetFile?id=' + e.currentTarget.id,
+                    type: 'POST',
+                    data: new FormData(),
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $(e.currentTarget.id).prop("disabled", false);
+                    window.location.reload();
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    $(e.currentTarget.id).prop("disabled", false);
+                    window.location.reload();
+                });
+                return false; 
+            });
+
+            $("#downloadFullError").click(function (e) {
+                $(e.currentTarget.id).prop("disabled", true);
+                var theurl = '/RadetAnalytics/downloaderrorsummary?id=' + myconnectionId;
+                $.ajax({
+                    url: theurl,
+                    type: 'POST',
+                    data: new FormData(),
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $(e.currentTarget.id).prop("disabled", false);
+                    window.location.href = "/downloads/" + response;
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    $(e.currentTarget.id).prop("disabled", false);
+                    window.location.reload();
+                });
+                return false;
+            });
+
+            // This must be a hyperlink
+            $(".save-download").on('click', function (event) {
+                exportTableToCSV.apply(this, [$("#error_details_tbl"), 'report.csv', '-', 0, 0]);
+            });
+
+            function buildErrorSummaryTable(fileName, errorMessagedata) {
+                $("#error_report").show();
+                if (errorMessagedata == null || errorMessagedata.length == 0) {
+                    var html = "<tr> ";
+                    html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    html += "<td>" + fileName + "</td>";
+                    html += "<td></td>";
+                    html += "</tr>";
+                    $("#error_tbl tbody").append(html);
+                }
+                else {
+                    var html = "<tr> ";
+                    html += "<td><i class='icon-cancel' style='color: red;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    html += "<td>" + fileName + "</td>";
+                    html += "<td><a class='btn btn-info error-summary' id='" + fileName + "'>View Error Details</a></td>";
+                    html += "</tr>";
+                    $("#error_tbl tbody").append(html);
+                }
+            }
+             
+            function buildErrorDetailsTable(fileName, errorMessagedata) {
+                if (errorMessagedata != null) {
+                    $.each(errorMessagedata, function (i, v) {
+                        var html = "<tr> ";
+                        html += "<td><i class='icon-cancel' style='color: red;font-weight: bolder;margin-left: 30%;'></i></td>";
+                        html += "<td>" + v.FileName + "</td>";
+                        html += "<td>" + v.FileTab + "</td>";
+                        html += "<td>" + v.ErrorMessage + "</td>";
+                        html += "<td>" + v.LineNo + "</td>";
+                        html += "<td>" + v.PatientNo + "</td>";
+                        html += "</tr>";
+                        $("#error_details_tbl tbody").append(html);
+                    });
+                }
+            }
+             
+
+            function buildTable(dataList) {
+                $("#output tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var html = "<tr> ";
+                    if (d.SelectedForDQA) {
+                        html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    }
+                    else {
+                        html += "<td>-</td>";
+                    }
+                    html += "<td>" + d.PatientId + "</td>";
+                    html += "<td>" + d.HospitalNo + "</td>";
+                    html += "<td>" + d.Sex + "</td>";
+                    html += "<td>" + d.Age_at_start_of_ART_in_years + "</td>";
+                    html += "<td>" + d.Age_at_start_of_ART_in_months + "</td>";
+                    html += "<td>" + d.ARTStartDate + "</td>";
+                    html += "<td>" + d.LastPickupDate + "</td>";
+                    html += "<td>" + d.MonthsOfARVRefill + "</td>";
+                    html += "<td>" + d.RegimenLineAtARTStart + "</td>";
+                    html += "<td>" + d.RegimenAtStartOfART + "</td>";
+                    html += "<td>" + d.CurrentRegimenLine + "</td>";
+                    html += "<td>" + d.CurrentARTRegimen + "</td>";
+                    html += "<td>" + d.Pregnancy_Status + "</td>";
+                    html += "<td>" + d.Current_Viral_Load + "</td>";
+                    html += "<td>" + d.Date_of_Current_Viral_Load + "</td>";
+                    html += "<td>" + d.Viral_Load_Indication + "</td>";
+                    html += "<td>" + d.CurrentARTStatus + "</td>";
+                    html += "<td>" + d.RadetYear + "</td>";
+                    html += "</tr>";
+                    $("#output tbody").append(html);
+                });
+            }
+
+            function uuidv4() {
+                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                )
+            } 
+
+        });
+    </script>
+}
+
+
+
+
+
+

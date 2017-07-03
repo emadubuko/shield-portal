@@ -88,6 +88,14 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -960,6 +968,8 @@
     <Content Include="Scripts\ipdashboard.js" />
     <Content Include="Scripts\jquery-ui.multidatespicker.js" />
     <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.2.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jsonTable.js" />
     <Content Include="Scripts\loader.js" />
@@ -1100,6 +1110,7 @@
     <Content Include="Views\DMP\ScoreCard.cshtml" />
     <Content Include="Views\DMP\DMPSummary.cshtml" />
     <Content Include="Views\RadetAnalytics\Index.cshtml" />
+    <Content Include="Views\RadetAnalytics\UploadPage.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1178,6 +1189,10 @@
     <ProjectReference Include="..\EP.DAL\EP.DAL.csproj">
       <Project>{afc8203e-c2dc-4896-af36-85b6ccb86349}</Project>
       <Name>EP.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RADET.DAL\RADET.DAL.csproj">
+      <Project>{5CB4C593-CE51-434A-B7C2-951FDD4468F5}</Project>
+      <Name>RADET.DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
