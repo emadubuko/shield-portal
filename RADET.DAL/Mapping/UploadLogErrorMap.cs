@@ -1,6 +1,7 @@
 ﻿using CommonUtil.Utilities;
 using FluentNHibernate.Mapping;
 using RADET.DAL.Entities;
+using System.Collections.Generic;
 
 namespace RADET.DAL.Mapping
 {
@@ -13,7 +14,7 @@ namespace RADET.DAL.Mapping
 
             Id(x => x.Id);
             References(x => x.RadetUpload).Column("RadetUploadId");
-            Map(x => x.ErrorDetails).CustomType(typeof(XmlType<ErrorDetails>));
+            Map(x => x.ErrorDetails).CustomType(typeof(XmlType<List<ErrorDetails>>));
             Map(x => x.Status);
         }
     }

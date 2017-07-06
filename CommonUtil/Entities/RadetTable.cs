@@ -1,5 +1,6 @@
 ﻿namespace CommonUtil.Entities
 {
+    /*
     public class RadetTable
     {
         public virtual int Id { get; set; }
@@ -27,4 +28,5 @@
         public virtual RadetUploadReport UploadReport { get; set; }
 
     }
+    */
 }

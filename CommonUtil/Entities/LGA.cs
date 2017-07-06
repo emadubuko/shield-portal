@@ -9,7 +9,7 @@
         public virtual State State { get; set; }
 
         public virtual string lga_hm_longcode { get; set; }
-
+        public virtual string alternative_name { get; set; }
 
         public virtual string DisplayName
         {

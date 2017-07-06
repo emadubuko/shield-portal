@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RADET.DAL.Entities
 {
-    public class RadetMetaData
+    public class RadetMetaData : IEntity
     {
         public virtual int Id { get; set; }
         public virtual string RadetPeriod { get; set; }

@@ -11,6 +11,7 @@ namespace CommonUtil.Mapping
             Id(x => x.lga_code);
             Map(x => x.lga_name);
             Map(x => x.lga_hm_longcode);
+            Map(x => x.alternative_name);
             References(x => x.State).Column("state_code").Not.LazyLoad();
         }
     }

@@ -118,63 +118,7 @@ namespace ShieldPortal.Controllers
             }
             return View(previousUploads);
         }
-
-        public ActionResult UploadRadet()
-        {
-            var profile = new Services.Utils().GetloggedInProfile();
-            List<RadetUploadReport> previousUploads = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(0, 2017, "Q2(Jan-Mar)");
-                ViewBag.showdelete = true;
-            }
-            else
-            {
-                ViewBag.showdelete = false;
-                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(profile.Organization.Id, 2017, "Q2(Jan-Mar)");
-            }
-            List<RadetReportModel> list = new List<ViewModel.RadetReportModel>();
-            if (previousUploads != null)
-            {
-                list = (from entry in previousUploads
-                        select new RadetReportModel
-                        {
-                            Facility = entry.Facility,
-                            IP = entry.IP.ShortName,
-                            dqa_quarter = entry.dqa_quarter,
-                            dqa_year = entry.dqa_year,
-                            UploadedBy = entry.UploadedBy.FullName,
-                            DateUploaded = entry.DateUploaded,
-                            Id = entry.Id,
-                            //Uploads = (from item in entry.Uploads
-                            //           select new RadetListing
-                            //           {
-                            //               PatientId = item.PatientId,
-                            //               HospitalNo = item.HospitalNo,
-                            //               Sex = item.Sex,
-                            //               Age_at_start_of_ART_in_months = item.Age_at_start_of_ART_in_months,
-                            //               Age_at_start_of_ART_in_years = item.Age_at_start_of_ART_in_years,
-                            //               ARTStartDate = item.ARTStartDate,
-                            //               LastPickupDate = item.LastPickupDate,
-                            //               MonthsOfARVRefill = item.MonthsOfARVRefill,
-                            //               RegimenLineAtARTStart = item.RegimenLineAtARTStart,
-                            //               RegimenAtStartOfART = item.RegimenAtStartOfART,
-                            //               CurrentRegimenLine = item.CurrentRegimenLine,
-                            //               CurrentARTRegimen = item.CurrentARTRegimen,
-                            //               Pregnancy_Status = item.Pregnancy_Status,
-                            //               Current_Viral_Load = item.Current_Viral_Load,
-                            //               Date_of_Current_Viral_Load = item.Date_of_Current_Viral_Load,
-                            //               Viral_Load_Indication = item.Viral_Load_Indication,
-                            //               CurrentARTStatus = item.CurrentARTStatus,
-                            //               SelectedForDQA = item.SelectedForDQA,
-                            //               RadetYear = item.RadetYear
-                            //           }).ToList()
-                        }).ToList();
-            }
-
-            return View(list);
-        }
-
+         
 
         public ActionResult DownloadDQATool()
         {
@@ -194,6 +138,8 @@ namespace ShieldPortal.Controllers
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
+
+                //the radet period is hardcoded inside
                 string file = await new BDQAQ2().GenerateDQA(data, stream, profile.Organization);
 
                 return Json(file, JsonRequestBehavior.AllowGet);
@@ -222,6 +168,41 @@ namespace ShieldPortal.Controllers
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
             }
         }
-        
+
+        /*
+        public ActionResult UploadRadet()
+        {
+            var profile = new Services.Utils().GetloggedInProfile();
+            List<RadetUploadReport> previousUploads = null;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(0, 2017, "Q2(Jan-Mar)");
+                ViewBag.showdelete = true;
+            }
+            else
+            {
+                ViewBag.showdelete = false;
+                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(profile.Organization.Id, 2017, "Q2(Jan-Mar)");
+            }
+            List<RadetReportModel> list = new List<ViewModel.RadetReportModel>();
+            if (previousUploads != null)
+            {
+                list = (from entry in previousUploads
+                        select new RadetReportModel
+                        {
+                            Facility = entry.Facility,
+                            IP = entry.IP.ShortName,
+                            dqa_quarter = entry.dqa_quarter,
+                            dqa_year = entry.dqa_year,
+                            UploadedBy = entry.UploadedBy.FullName,
+                            DateUploaded = entry.DateUploaded,
+                            Id = entry.Id, 
+                        }).ToList();
+            }
+
+            return View(list);
+        }
+        */
+
     }
 }

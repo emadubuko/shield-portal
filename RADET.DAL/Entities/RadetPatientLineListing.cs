@@ -19,7 +19,7 @@ namespace RADET.DAL.Entities
         public virtual string ViralLoadIndication { get; set; }
         public virtual string CurrentARTStatus { get; set; }
         public virtual bool SelectedForDQA { get; set; }
-        public virtual string RadetPeriod { get; set; }
+        public virtual string RadetYear { get; set; }
         public virtual RadetMetaData MetaData { get; set; }
     }
        

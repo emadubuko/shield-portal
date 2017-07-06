@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading;
 using DAL.Entities;
 using System.Collections.Concurrent;
+using RADET.DAL.Entities;
 
 namespace Test
 {
@@ -32,7 +33,9 @@ namespace Test
         {
             Console.WriteLine("started");
 
-         //   RadetExcelDocs.ReadAndMerge();
+           
+
+            RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
 
             //  MosisFiles.ProcessHTS_TST_File();
 

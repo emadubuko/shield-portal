@@ -1,11 +1,14 @@
 ﻿using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Engine;
+using NHibernate.Persister.Entity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CommonUtil.DBSessionManager
 {
@@ -139,6 +142,27 @@ namespace CommonUtil.DBSessionManager
             }
         }
 
+        //public TimeSpan NHBulkInsert(List<T> ObjectListing)
+        //{
+        //    var stopwatch = new Stopwatch();
+        //    stopwatch.Start();
+        //    ISessionFactory sessionFactory = BuildSession().SessionFactory;
+
+        //    using (IStatelessSession session = sessionFactory.OpenStatelessSession())
+        //    using (ITransaction transaction = session.BeginTransaction())
+        //    {
+        //        foreach (var obj in ObjectListing)
+        //            session.Insert(obj);
+        //        transaction.Commit();
+        //    }
+
+        //    stopwatch.Stop();
+        //    var time = stopwatch.Elapsed;
+        //    return time;
+        //}
+        
+
+
         public void DirectDBPost(DataTable dt, string tableName)
         {
             ISessionFactory sessionFactory = BuildSession().SessionFactory;
@@ -147,6 +171,24 @@ namespace CommonUtil.DBSessionManager
             {
                 var s = (SqlConnection)connection;
                 var copy = new SqlBulkCopy(s);
+                copy.BulkCopyTimeout = 10000;
+                copy.DestinationTableName = tableName;
+                foreach (DataColumn column in dt.Columns)
+                {
+                    copy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                }
+                copy.WriteToServer(dt);
+            }
+        }
+
+        public void DirectDBPostNew(DataTable dt, string tableName)
+        {
+            ISessionFactory sessionFactory = BuildSession().SessionFactory;
+
+            using (var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection())
+            {
+                var s = (SqlConnection)connection;
+                var copy = new SqlBulkCopy(s, SqlBulkCopyOptions.UseInternalTransaction, null);
                 copy.BulkCopyTimeout = 10000;
                 copy.DestinationTableName = tableName;
                 foreach (DataColumn column in dt.Columns)
@@ -221,28 +263,24 @@ namespace CommonUtil.DBSessionManager
         /// ExecuteNonQuery
         /// </summary>
         /// <param name="commandText"></param>
-        public void StartSQL(string commandText)
+        public int StartSQL(string commandText)
         {
             if (!string.IsNullOrEmpty(commandText))
-            {
-                ISessionFactory sessionFactory = BuildSession().SessionFactory;
-                var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection();
-                IDbConnection conn = (SqlConnection)connection;
-                IDbCommand cmd = new SqlCommand();
-
+            {                 
+                var conn = BuildSession().Connection; 
+                IDbCommand cmd = new SqlCommand(); 
                 if (conn.State != ConnectionState.Open)
                 {
                     conn.Open();
-                }
-
+                } 
                 try
                 {
                     _trans = conn.BeginTransaction();
                     cmd.Connection = conn;
-                    cmd.Transaction = (SqlTransaction)_trans;
-                    cmd.CommandText = commandText;
-
+                    cmd.Transaction = _trans;
+                    cmd.CommandText = commandText; 
                     int i = cmd.ExecuteNonQuery();
+                    return i;
                 }
                 catch
                 {
@@ -253,6 +291,7 @@ namespace CommonUtil.DBSessionManager
                     cmd.Dispose();
                 }
             }
+            return 0;
         }
 
         /// <summary>

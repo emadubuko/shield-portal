@@ -3,6 +3,7 @@ using FluentNHibernate.Mapping;
 
 namespace CommonUtil.Mapping
 {
+    /*
     public class RadetUploadReportMap : ClassMap<RadetUploadReport>
     {
         public RadetUploadReportMap()
@@ -22,4 +23,5 @@ namespace CommonUtil.Mapping
                 .KeyColumns.Add("UploadReportId", mapping => mapping.Name("UploadReportId"));
         }
     }
+    */
 }

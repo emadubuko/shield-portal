@@ -17,6 +17,7 @@ using System.Xml.Linq;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using CommonUtil.DAO;
+using RADET.DAL.DAO;
 
 namespace DQA.DAL.Business
 {
@@ -51,7 +52,7 @@ namespace DQA.DAL.Business
                 }
                 catch (Exception ex)
                 {
-
+                    Logger.LogError(ex);
                 }
             }
 
@@ -59,8 +60,8 @@ namespace DQA.DAL.Business
             {
                 using (ExcelPackage package = new ExcelPackage(template))
                 {
-                    var radetfile = new RadetUploadReportDAO().RetrieveRadetUpload(ip.Id, 2017, "Q2(Jan-Mar)", site.FacilityName);
-                    var radet = radetfile != null && radetfile.FirstOrDefault() != null ? radetfile.FirstOrDefault().Uploads.Where(x => x.SelectedForDQA).ToList() : null;
+                    var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA("Q2 FY17", ip.Id, site.FacilityName); //new RadetUploadReportDAO().RetrieveRadetUpload(ip.Id, 2017, "Q2(Jan-Mar)", site.FacilityName);
+                   // var radet = radetfile != null && radetfile.FirstOrDefault() != null ? radetfile.FirstOrDefault().Uploads.Where(x => x.SelectedForDQA).ToList() : null;
                     if (radet != null)
                     {
                         var sheet = package.Workbook.Worksheets["TX_CURR"];
@@ -68,11 +69,11 @@ namespace DQA.DAL.Business
                         for (int i = 0; i < radet.Count(); i++)
                         {
                             row++;
-                            sheet.Cells["A" + row].Value = radet[i].PatientId;
-                            sheet.Cells["B" + row].Value = radet[i].HospitalNo;
-                            sheet.Cells["C" + row].Value = radet[i].Sex;
-                            sheet.Cells["D" + row].Value = radet[i].Age_at_start_of_ART_in_years;
-                            sheet.Cells["E" + row].Value = radet[i].Age_at_start_of_ART_in_months;
+                            sheet.Cells["A" + row].Value = radet[i].RadetPatient.PatientId;
+                            sheet.Cells["B" + row].Value = radet[i].RadetPatient.HospitalNo;
+                            sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
+                            sheet.Cells["D" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_years;
+                            sheet.Cells["E" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_months;
                             sheet.Cells["F" + row].Value = radet[i].ARTStartDate;
                             sheet.Cells["G" + row].Value = radet[i].LastPickupDate;
 
@@ -84,10 +85,10 @@ namespace DQA.DAL.Business
                             sheet.Cells["Q" + row].Value = radet[i].CurrentRegimenLine;
                             sheet.Cells["R" + row].Value = radet[i].CurrentARTRegimen;
 
-                            sheet.Cells["U" + row].Value = radet[i].Pregnancy_Status;
-                            sheet.Cells["V" + row].Value = radet[i].Current_Viral_Load;
-                            sheet.Cells["W" + row].Value = radet[i].Date_of_Current_Viral_Load;
-                            sheet.Cells["X" + row].Value = radet[i].Viral_Load_Indication;
+                            sheet.Cells["U" + row].Value = radet[i].PregnancyStatus;
+                            sheet.Cells["V" + row].Value = radet[i].CurrentViralLoad;
+                            sheet.Cells["W" + row].Value = radet[i].DateOfCurrentViralLoad;
+                            sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
                             sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
                         }
                     }

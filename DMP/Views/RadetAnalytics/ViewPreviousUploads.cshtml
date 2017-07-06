@@ -1,0 +1,340 @@
+﻿@model List<ShieldPortal.ViewModel.RadetReportModel2>
+
+@{
+    Layout = "~/Views/Shared/_radetLayoutPage.cshtml";
+}
+
+@section AddToHead{
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
+        var myconnectionId;
+    </script>
+    <style>
+        .form-control {
+            color: #29b6f6;
+        }
+
+        form {
+            color: #29b6f6;
+        }
+
+        .error-summary {
+            text-decoration: underline;
+            font-size: 16px;
+            color: red;
+            cursor: pointer;
+        }
+
+        .table > thead > tr > th {
+            text-transform: capitalize;
+            font-weight: bolder;
+        }
+
+        .btn-sm, .btn-group-sm > .btn {
+            padding: 4px 6px;
+            font-size: 10px;
+        }
+    </style>
+}
+<div class="panel panel-info">
+    <div class="panel-heading clearfix" style="padding:8px 20%">
+        <h5 class="panel-title">Previous uploads</h5>
+    </div>
+    <br />
+    <div class="panel-body">
+        <div class="table-responsive" style="overflow-x:initial;font-size: 11px;">
+            <table class="table table-bordered table-hover" style="width:100%" id="main-table">
+                <thead>
+                    <tr>
+                        <th>IP</th>
+                        <th style="width: 250px;">Facility</th>
+                        <th>Period</th>
+                        <th>Date Uploaded</th>
+                        <th>Uploaded By</th>
+                        <th style="width:514px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id='@item.Id'>
+                            <td> @item.IP </td>
+                            <td>@item.Facility</td>
+                            <td>@(item.RadetPeriod)</td>
+                            <td>@string.Format("{0:dd-MM-yyyy hh:mm:ss tt}", item.DateUploaded)</td>
+                            <td>@item.UploadedBy</td>
+                            <td>
+                                <a style="text-transform: capitalize;" class="btn btn-sm btn-info viewPatientListing" id="@item.Id">View List</a>
+                                &nbsp;&nbsp;
+                                <a style="text-transform: capitalize;" class="btn btn-sm btn-info randomizebtn" id="@item.Id">Randomize for DQA</a>
+                                @*&nbsp;&nbsp;
+                                <a class="btn btn-info view-summary" id="@item.Id">View Summary</a>*@
+                                &nbsp;&nbsp;
+                                <a style="text-transform: capitalize;" class="btn btn-sm btn-danger deletebtn" id="@item.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+ 
+ 
+
+<div class="modal fade" id="patientListModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 97%;border-color: darkorange;" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #FFF;background-color: lightgreen;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="table-responsive" style="font-size: 11px;padding-left: 5px;padding-right: 5px;">
+                <div class="col-sm-3" style="font-size: 14px;">
+                    <table>
+                        <tr>
+                            <td><label>New on Treatment:</label></td>
+                            <td><span style="font-weight: bolder; color: red; padding-left: 5px; " id="new-on-tx"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label>Current on Treatment:</label></td>
+                            <td><span style="font-weight: bolder; color: red; padding-left: 5px; " id="current-on-tx"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label>Total Selected for DQA:</label></td>
+                            <td><span style="font-weight: bolder; color: red;padding-left: 5px;  " id="selected-for-dqa"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label style="float:right;">Total Patients:</label></td>
+                            <td><span style="font-weight: bolder; color: red;padding-left: 5px; " id="total-record"></span></td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="col-sm-push-7 col-sm-1">
+                    <a class="btn btn-success" id="download_for_dqa" style="text-transform:capitalize;font-size: 12px;">Download Selected Entries</a>
+                </div>
+                <table class="table table-bordered table-hover" id="output" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Selected for DQA</th>
+                            <th>Patient Id</th>
+                            <th>Hospital No</th>
+                            <th>Sex</th>
+                            <th>Age at Start of ART (in Years)</th>
+                            <th>Age at Start of ART (in months)</th>
+                            <th>ART Start Date</th>
+                            <th>Last Pickup Date</th>
+                            <th>Months Of ARV Refill</th>
+                            <th>Regimen Line At ART Start</th>
+                            <th>Regimen At Start of ART</th>
+                            <th>Current Regimen Line</th>
+                            <th>Current ART Regimen</th>
+                            <th>Pregnancy Status</th>
+                            <th>Current Viral Load</th>
+                            <th>Date of Current Viral Load</th>
+                            <th>Viral Load Indication</th>
+                            <th>Current ART Status</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-success" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="randomizeModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 50%;border-color: darkorange;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="col-sm-push-3 col-sm-3" style="text-decoration:underline;font-size: 16px;color: darkblue;font-weight: bold;">DQA Randomizer</span>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="frm_randomize" class="form-horizontal" style="margin-right: 50px;margin-top: 20px;">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txt-active-patients">Percentage of Active Patients</label>
+                    <div class="col-sm-5">
+                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }" placeholder="% of active patients" id="txt-active-patients" class="form-control">
+                        <p class="help-block">Numbers only. Do not include the percent sign</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txt-inactive-patients">Percentage of Inactive Patients </label>
+                    <div class="col-sm-5">
+                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }" placeholder="% of inactive patients" id="txt-inactive-patients" class="form-control">
+                        <p class="help-block">Numbers only. Do not include the percent sign</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-3">
+                        <button class="btn btn-primary" type="submit" id="btn-compute-random">Submit</button>
+                    </div>
+                </div>
+                <div class="col-sm-offset-3 col-sm-9">
+                    <span style="visibility:hidden;color:red;font-size: 20px;" id="random-summary"></span>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
+@section Scripts{
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $(document).ready(function () {
+            
+            $("#main-table").DataTable({
+                "iDisplayLength": 100
+            });
+
+            $('.modal-dialog').draggable({
+                handle: ".modal-header"
+            });
+            
+            $("#download_for_dqa").on('click', function (event) {
+                exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
+            });
+
+            var selectedRadetId;
+            $(".randomizebtn").click(function (e) {
+                $("#frm_randomize")[0].reset();
+                $("#random-summary").text('');
+                $("#random-summary").css("visibility", "hidden");
+                $('#randomizeModal').modal('show');
+                selectedRadetId = e.currentTarget.id;
+            });
+
+            $("#btn-compute-random").click(function (e) {
+                var active = $("#txt-active-patients").val();
+                var inactive = $("#txt-inactive-patients").val();
+
+                $.ajax({
+                    url: '/RadetAnalytics/RandomizeRadet?id=' + selectedRadetId + "&&active=" + active + "&&inactive=" + inactive,
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $("#random-summary").append(response);
+                    $("#random-summary").css("visibility", "visible");
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+
+            $(".viewPatientListing").click(function (e) {
+                var id = e.currentTarget.id;
+                $.ajax({
+                    url: '/RadetAnalytics/RetrieveRadet?id=' + id,
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+
+                    buildTable($.parseJSON(response).data);
+                    $('#patientListModal').modal('show');
+                    $("#new-on-tx").html($.parseJSON(response).Current_year_tx_new);
+                    $("#current-on-tx").html($.parseJSON(response).Tx_Current);
+                    $("#selected-for-dqa").html($.parseJSON(response).SelectedForDQA)
+                    $("#total-record").html($.parseJSON(response).data.length)
+
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+
+            $(".deletebtn").click(function (e) {
+               // alert("Confirm delete");
+
+                if (confirm('Confirm delete')) {
+                    $(e.currentTarget.id).prop("disabled", true);
+                    $.ajax({
+                        url: '/RadetAnalytics/DeleteRadet?id=' + e.currentTarget.id,
+                        type: 'POST',
+                        data: new FormData(),
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).done(function (response) {
+                        window.location.reload();
+                    }).error(function (xhr, status, err) {
+                        alert($.parseJSON(xhr.responseText).Message);
+                        window.location.reload();
+                    });
+                }               
+                return false;
+            });
+  
+              
+            function buildTable(dataList) {
+                $("#output tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var html = "<tr> ";
+                    if (d.SelectedForDQA) {
+                        html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    }
+                    else {
+                        html += "<td>-</td>";
+                    }
+                    html += "<td>" + d.PatientId + "</td>";
+                    html += "<td>" + d.HospitalNo + "</td>";
+                    html += "<td>" + d.Sex + "</td>";
+                    html += "<td>" + d.Age_at_start_of_ART_in_years + "</td>";
+                    html += "<td>" + d.Age_at_start_of_ART_in_months + "</td>";
+                    html += "<td>" + d.ARTStartDate + "</td>";
+                    html += "<td>" + d.LastPickupDate + "</td>";
+                    html += "<td>" + d.MonthsOfARVRefill + "</td>";
+                    html += "<td>" + d.RegimenLineAtARTStart + "</td>";
+                    html += "<td>" + d.RegimenAtStartOfART + "</td>";
+                    html += "<td>" + d.CurrentRegimenLine + "</td>";
+                    html += "<td>" + d.CurrentARTRegimen + "</td>";
+                    html += "<td>" + d.PregnancyStatus + "</td>";
+                    html += "<td>" + d.CurrentViralLoad + "</td>";
+                    html += "<td>" + d.DateOfCurrentViralLoad + "</td>";
+                    html += "<td>" + d.ViralLoadIndication + "</td>";
+                    html += "<td>" + d.CurrentARTStatus + "</td>";
+                    html += "<td>" + d.RadetYear + "</td>";
+                    html += "</tr>";
+                    $("#output tbody").append(html);
+                });
+            }
+
+            function uuidv4() {
+                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                )
+            }
+
+        });
+    </script>
+}
+
+
+
+
+
+

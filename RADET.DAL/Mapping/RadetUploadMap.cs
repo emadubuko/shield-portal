@@ -14,7 +14,7 @@ namespace RADET.DAL.Mapping
             References(x => x.UploadedBy).Column("UploadedBy"); 
             Map(x => x.DateUploaded); 
             HasMany(x => x.RadetMetaData)
-               .Cascade.SaveUpdate()
+               .Cascade.None()
               .Inverse()
               .KeyColumns.Add("RadetUploadId", mapping => mapping.Name("RadetUploadId"));
         }

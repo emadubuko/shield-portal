@@ -14,6 +14,40 @@ namespace Test
 {
     public class RadetExcelDocs
     {
+       public static string ReturnLGA_n_State(string fileName)
+        {
+            StringBuilder sb = new StringBuilder();
+            var lgas = new LGADao().RetrieveAll();
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(fileName)))
+            {
+                var sheet = package.Workbook.Worksheets["StateLGA"];
+                var query3 = (from c in sheet.Cells 
+                              where c.Value !=null &&c.Value.ToString().Contains("Local Government Area")
+                              select c);
+                foreach (var cell in query3)   
+                {
+                   // Console.WriteLine("Cell {0} has value {1:N0}", cell.Address, cell.Value);
+                    if (FindLGA(lgas,cell.Value.ToString()) ==null) // lgas.FirstOrDefault(x => x.lga_name.ToLower() == cell.Value.ToString().ToLower().Substring(3).Replace(" local government area", "")) == null)
+                    {
+                        sb.AppendLine(string.Format("{0},", cell.Value));
+                    }
+                    
+                } 
+            }
+            File.WriteAllText(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\info_err.csv", sb.ToString());
+            return sb.ToString();
+        }
+
+       static LGA FindLGA(IList<LGA> lgas, string lgaName)
+        {
+            var lga = lgas.FirstOrDefault(x => x.lga_name.ToLower() == lgaName.ToLower().Substring(3).Replace(" local government area", ""));
+            if(lga == null)
+            {
+                lga = lgas.FirstOrDefault(x => !string.IsNullOrEmpty(x.alternative_name) && x.alternative_name.ToLower() == lgaName.ToLower().Substring(3).Replace(" local government area", ""));
+            }
+            return lga;
+        }
+
         public static void ReadAndMerge()
         {
             UpdateRadetReport();

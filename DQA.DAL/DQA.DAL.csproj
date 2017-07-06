@@ -186,6 +186,10 @@
       <Project>{4D8392CE-F3A5-4822-B65D-CE0ED6798638}</Project>
       <Name>CommonUtil</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RADET.DAL\RADET.DAL.csproj">
+      <Project>{5CB4C593-CE51-434A-B7C2-951FDD4468F5}</Project>
+      <Name>RADET.DAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

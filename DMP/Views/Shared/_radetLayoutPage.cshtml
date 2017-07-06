@@ -35,17 +35,22 @@
         <div class="col-md-3">
             <div class="page-sidebar">
                 <div class="sidebar">
-                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse"  style="color:deepskyblue;font-weight:bolder;font-size:18px">
                         <li>
                             <a href=@Url.Action("index", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
-                                <i class="fa fa-area-chart"></i><span class="title" >&nbsp;Dashboard</span>
+                                <i class="fa fa-area-chart"></i><span class="title">&nbsp;Dashboard</span>
                             </a>
                         </li>
                         <li>
                             <a href=@Url.Action("UploadPage", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
                                 <i class="fa fa-upload"></i><span class="title">&nbsp;Upload RADET</span>
                             </a>
-                        </li>                 
+                        </li>
+                        <li>
+                            <a href=@Url.Action("ViewPreviousUploads", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
+                                <i class="fa fa-file-excel-o"></i><span class="title">&nbsp;View Uploads</span>
+                            </a>
+                        </li>
                     </ul>
                     <hr />
                 </div>

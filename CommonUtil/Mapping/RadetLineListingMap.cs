@@ -7,6 +7,7 @@ using System.Text;
 
 namespace CommonUtil.Mapping
 {
+    /*
    public class RadetLineListingMap : ClassMap<RadetTable>
     {
         public RadetLineListingMap()
@@ -38,4 +39,5 @@ namespace CommonUtil.Mapping
             References(m => m.UploadReport).Column("UploadReportId");
         }
     }
+    */
 }

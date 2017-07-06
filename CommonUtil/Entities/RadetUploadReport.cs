@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CommonUtil.Entities
 {
+    /*
     public class RadetUploadReport
     {
         public virtual int Id { get; set; } 
@@ -16,4 +17,5 @@ namespace CommonUtil.Entities
         public virtual string Facility { get; set; }
         public virtual LGA LGA { get; set; }
     }
+    */
 }

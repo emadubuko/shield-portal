@@ -1111,6 +1111,7 @@
     <Content Include="Views\DMP\DMPSummary.cshtml" />
     <Content Include="Views\RadetAnalytics\Index.cshtml" />
     <Content Include="Views\RadetAnalytics\UploadPage.cshtml" />
+    <Content Include="Views\RadetAnalytics\ViewPreviousUploads.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

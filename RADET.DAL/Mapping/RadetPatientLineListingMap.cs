@@ -25,7 +25,7 @@ namespace RADET.DAL.Mapping
             Map(m => m.CurrentARTStatus);
 
             Map(m => m.SelectedForDQA);
-            Map(m => m.RadetPeriod); 
+            Map(m => m.RadetYear); 
             References(m => m.MetaData).Column("RadetMetaDataId");
         }
     }

@@ -1,4 +1,4 @@
-﻿@model List<ShieldPortal.ViewModel.RadetReportModel>
+﻿@model List<ShieldPortal.ViewModel.RadetReportModel2>
 
 @{
     Layout = "~/Views/Shared/_radetLayoutPage.cshtml";
@@ -18,6 +18,13 @@
             color: #29b6f6;
         }
 
+        .error-summary {
+            text-decoration: underline;
+            font-size: 16px;
+            color: red;
+            cursor: pointer;
+        }
+
         .table > thead > tr > th {
             text-transform: capitalize;
             font-weight: bolder;
@@ -32,8 +39,8 @@
 
 <div class="tabs-container">
     <ul class="nav nav-tabs">
-        <li class="active"><a aria-expanded="true" href="#Upload" data-toggle="tab" style="color: #29b6f6;font-size: 25px;font-weight: bold;">Upload RADET Report</a></li>
-        <li><a aria-expanded="false" href="#Previous_upload" data-toggle="tab" style="color: #29b6f6;font-size: 25px;font-weight: bold;">View Previous Uploads</a></li>
+        <li class="active"><a aria-expanded="true" href="#Upload" data-toggle="tab" style="color: #29b6f6;font-size: 18px;font-weight: bold;">Upload RADET Report</a></li>
+        <li><a aria-expanded="false" href="#Previous_upload" data-toggle="tab" style="color: #29b6f6;font-size: 18px;font-weight: bold;">View Previous Uploads</a></li>
     </ul>
 
     <div class="tab-content">
@@ -42,12 +49,13 @@
             <br />
             <br />
             <div class="panel-body">
-                 
+
                 <form class="form-horizontal" id="form" enctype="multipart/form-data">
                     <div class="form-group">
                         <label class="col-sm-1 control-label">File</label>
                         <div class="col-sm-5">
                             <input type="file" id="field-file" name="upFile" class="form-control" required>
+                            <p class="help-block" style="color:red;font-size:16px">File should be less than 1000 MB</p>
                         </div>
                         <div class="col-sm-3">
                             <select class="form-control" id="selected_ip" required>
@@ -61,19 +69,24 @@
                     <div class="col-sm-push-1 col-sm-1">
                         <button class="btn btn-info" id="btnUpload" type="submit">Upload</button>
                     </div>
+
                 </form>
-                
+
                 <br />
                 <br />
                 <br />
+
+                <h3 id="completion_note" style="visibility:hidden"></h3>
                 <div class="row" style="visibility: hidden;padding-left: 90px; padding-right: 40px;" id="hidden_row">
-                    <h3>Processing...please wait</h3>
+                    <h3 id="uploading_note">Uploading files ...please wait</h3>
+                    <h3 id="validate_note" style="visibility:hidden">Validating files ...please wait</h3>
+                    <h3 id="saving_note" style="visibility:hidden"> Commiting valid entries to database . . .</h3>
                     <div class="progress active" id="progress">
                         <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
                         </div>
                     </div>
                 </div>
-               
+
 
                 <br /><br />
                 <div class="line-dashed"></div>
@@ -83,26 +96,27 @@
                         <label>Validation summary</label>
                     </div>
                     <div class="col-sm-push-7 col-sm-1">
-                        <a class="btn btn-success"  id="downloadFullError" style="text-transform:capitalize">Download</a>
+                        <button class="btn btn-success" id="downloadFullError" type="submit" style="text-transform:capitalize">Download</button>
                     </div>
                     <table class="table table-bordered table-hover" style="width:100%" id="error_tbl">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>File name</th> 
+                                <th>File name</th>
+                                <th>Total errors</th>
                                 <th> </th>
                             </tr>
                         </thead>
                         <tbody></tbody>
-                    </table> 
-                </div> 
-            </div> 
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="tab-pane" id="Previous_upload">
             <br />
             <div class="panel-body">
-                <div class="table-responsive" style="overflow-x:initial;font-size: 13px;">
+                <div class="table-responsive" style="overflow-x:initial;font-size: 11px;">
                     <table class="table table-bordered table-hover" style="width:100%" id="main-table">
                         <thead>
                             <tr>
@@ -120,11 +134,13 @@
                                 <tr id='@item.Id'>
                                     <td> @item.IP </td>
                                     <td>@item.Facility</td>
-                                    <td>@(item.dqa_quarter + " " + item.dqa_year)</td>
+                                    <td>@(item.RadetPeriod)</td>
                                     <td>@item.DateUploaded</td>
                                     <td>@item.UploadedBy</td>
                                     <td>
-                                        <a class="btn btn-sm btn-info viewPatientListing" id="@item.Id">View List</a>
+                                        <a style="text-transform: capitalize;" class="btn btn-sm btn-info viewPatientListing" id="@item.Id">View List</a>
+                                        &nbsp;&nbsp;
+                                        <a style="text-transform: capitalize;" class="btn btn-sm btn-info randomizebtn" id="@item.Id">Randomize for DQA</a>
                                     </td>
                                 </tr>
                             }
@@ -145,7 +161,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="table-responsive" style="font-size: 14px;padding-left: 25px;padding-right: 25px;">  
+            <div class="table-responsive" style="font-size: 14px;padding-left: 25px;padding-right: 25px;">
                 <div class="col-sm-push-10 col-sm-1">
                     <a class="btn btn-success save-download">Download</a>
                 </div>
@@ -154,10 +170,10 @@
                         <tr>
                             <th></th>
                             <th>File name</th>
-                            <th>Tab name</th>
-                            <th>Error Message</th>
-                            <th>Line No</th>
+                            <th>Tab name</th> 
+                            <th>S/No</th>
                             <th>Patient Id</th>
+                            <th>Error Message</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -172,9 +188,118 @@
     </div>
 </div>
 
+<div class="modal fade" id="patientListModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 97%;border-color: darkorange;" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #FFF;background-color: lightgreen;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="table-responsive" style="font-size: 11px;padding-left: 5px;padding-right: 5px;">
+                <div class="col-sm-3" style="font-size: 14px;">
+                    <table>
+                        <tr>
+                            <td><label>New on Treatment:</label></td>
+                            <td><span style="font-weight: bolder; color: red; padding-left: 5px; " id="new-on-tx"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label>Current on Treatment:</label></td>
+                            <td><span style="font-weight: bolder; color: red; padding-left: 5px; " id="current-on-tx"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label>Total Selected for DQA:</label></td>
+                            <td><span style="font-weight: bolder; color: red;padding-left: 5px;  " id="selected-for-dqa"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label style="float:right;">Total Patients:</label></td>
+                            <td><span style="font-weight: bolder; color: red;padding-left: 5px; " id="total-record"></span></td>
+                        </tr>
+                    </table>
 
+                </div>
+                <div class="col-sm-push-7 col-sm-1">
+                    <a class="btn btn-success" id="download_for_dqa" style="text-transform:capitalize;font-size: 12px;">Download Selected Entries</a>
+                </div>
+                <table class="table table-bordered table-hover" id="output" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Selected for DQA</th>
+                            <th>Patient Id</th>
+                            <th>Hospital No</th>
+                            <th>Sex</th>
+                            <th>Age at Start of ART (in Years)</th>
+                            <th>Age at Start of ART (in months)</th>
+                            <th>ART Start Date</th>
+                            <th>Last Pickup Date</th>
+                            <th>Months Of ARV Refill</th>
+                            <th>Regimen Line At ART Start</th>
+                            <th>Regimen At Start of ART</th>
+                            <th>Current Regimen Line</th>
+                            <th>Current ART Regimen</th>
+                            <th>Pregnancy Status</th>
+                            <th>Current Viral Load</th>
+                            <th>Date of Current Viral Load</th>
+                            <th>Viral Load Indication</th>
+                            <th>Current ART Status</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-success" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="randomizeModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 50%;border-color: darkorange;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="col-sm-push-3 col-sm-3" style="text-decoration:underline;font-size: 16px;color: darkblue;font-weight: bold;">DQA Randomizer</span>
 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="frm_randomize" class="form-horizontal" style="margin-right: 50px;margin-top: 20px;">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txt-active-patients">Percentage of Active Patients</label>
+                    <div class="col-sm-5">
+                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }"  placeholder="% of active patients" id="txt-active-patients" class="form-control">
+                        <p class="help-block">Numbers only. Do not include the percent sign</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txt-inactive-patients">Percentage of Inactive Patients </label>
+                    <div class="col-sm-5">
+                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }"  placeholder="% of inactive patients" id="txt-inactive-patients" class="form-control">
+                        <p class="help-block">Numbers only. Do not include the percent sign</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-3">
+                        <button class="btn btn-primary" type="submit" id="btn-compute-random">Submit</button>
+                    </div>
+                </div>
+                <div class="col-sm-offset-3 col-sm-9">
+                    <span style="visibility:hidden;color:red;font-size: 20px;" id="random-summary"></span>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*randomizeModal*@
 
 @section Scripts{
     <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
@@ -189,13 +314,26 @@
                 "iDisplayLength": 100
             });
 
+            $('.modal-dialog').draggable({
+                handle: ".modal-header"
+            });
+
+            $('#field-file').bind('change', function () {
+                var filesize = (this.files[0].size / 1024 / 1024).toFixed(2);
+                if (filesize > 1000) {
+                    alert('File size exceeded, selected file size is = ' + filesize + "MB; Uploaded file should be less than 1000 MB");
+                    this.value = "";
+                } 
+            });
+
+
             var errorBag = [];
 
             //signal R things
             var myhub = $.connection.radetHub;
             myconnectionId = (profileId + uuidv4()).replace('-', '');
 
-            // Client side method for receiving the list of notifications on the connected event from the server
+            // Client side method for receiving  notifications from the server
             myhub.client.UpdatePages = function (Id, fileName, errorMessagedata) {
                 if (Id === myconnectionId) {
                     var bag = { fileName, errorMessagedata };
@@ -209,14 +347,36 @@
                     $(".progress-bar.progress-bar-success.progress-bar-striped").css("width", data)
                 }
             }
-            
+
+            myhub.client.ValidateNote = function (Id) {
+                if (Id === myconnectionId) {
+                    $("#uploading_note").css("visibility", "hidden");
+                    $("#validate_note").css("visibility", "visible");
+                }
+            }
+
+            myhub.client.SaveNote = function (Id, data) {
+                if (Id === myconnectionId) {
+                    $("#validate_note").css("visibility", "hidden");
+                    $("#saving_note").css("visibility", "visible");
+                }
+            }
+
+            myhub.client.CompletionNote = function (Id, data) {
+                if (Id === myconnectionId) {
+                    $("#validate_note").css("visibility", "hidden");
+                    $("#saving_note").css("visibility", "hidden");
+                    $("#completion_note").css("visibility", "visible")
+                    $("#completion_note").append(data);
+                }
+            }
+
             // Start the connection.
             $.connection.hub.start().done();
             // end of signal r config
 
 
             var previousUpload;
-              
             $("#btnUpload").click(function () {
                 $("#output tbody").empty();
                 $("#progress").show();
@@ -227,6 +387,8 @@
                 data.append('file', file);
 
                 $("#btnUpload").prop("disabled", true);
+                $("#downloadFullError").prop("disabled", true);
+
                 var theurl = '/RadetAnalytics/RadetFileUpload?connectionId=' + myconnectionId + "&&IP=" + $("#selected_ip").val();
 
                 $.ajax({
@@ -237,19 +399,25 @@
                     cache: false,
                     contentType: false,
                     processData: false
-                }).done(function (response) {
+                }).done(function (data, statusText, xhr) {
+                    if (data.indexOf("StatusCode: 500") !== -1) {
+                        alert("an error occured");
+                    }
+
                     $("#progress").hide();
                     $("#hidden_row").css("visibility", "hidden");
-                    console.log(errorBag);
+                    $("#downloadFullError").prop("disabled", false);
+                    
                 }).error(function (xhr, status, err) {
                     alert($.parseJSON(xhr.responseText).Message);
                     console.log($.parseJSON(xhr.responseText).Message);
                     $("#progress").hide();
                     $("#btnUpload").prop("disabled", false);
+                    $("#downloadFullError").prop("disabled", false);
                 });
                 return false;
             });
-               
+
             $(document).on("click", ".error-summary", function (e) {
                 var id = e.currentTarget.id;
                 var error_details;
@@ -260,17 +428,42 @@
                 });
                 $("#error_details_tbl tbody").empty();
                 buildErrorDetailsTable(id, error_details);
-                $('.modal-dialog').draggable({
-                    handle: ".modal-header"
-                });
                 $('#errorListModal').modal('show');
             });
 
+            var selectedRadetId;
+            $(".randomizebtn").click(function (e) {
+                $("#frm_randomize")[0].reset();
+                $("#random-summary").text('');
+                $("#random-summary").css("visibility", "hidden");
+                $('#randomizeModal').modal('show');
+                selectedRadetId = e.currentTarget.id;
+            });
+
+            $("#btn-compute-random").click(function (e) {
+                var active = $("#txt-active-patients").val();
+                var inactive = $("#txt-inactive-patients").val();
+
+                $.ajax({
+                    url: '/RadetAnalytics/RandomizeRadet?id=' + selectedRadetId + "&&active=" + active + "&&inactive=" + inactive,
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $("#random-summary").append(response);
+                    $("#random-summary").css("visibility", "visible");
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
 
             $(".viewPatientListing").click(function (e) {
                 var id = e.currentTarget.id;
                 $.ajax({
-                    url: '/api/dqaapi/RetrieveRadet?id=' + id,
+                    url: '/RadetAnalytics/RetrieveRadet?id=' + id,
                     type: 'POST',
                     cache: false,
                     contentType: false,
@@ -279,7 +472,8 @@
 
                     buildTable($.parseJSON(response).data);
                     $('#patientListModal').modal('show');
-                    $("#current-on-tx").html($.parseJSON(response).Current_year_tx_new);
+                    $("#new-on-tx").html($.parseJSON(response).Current_year_tx_new);
+                    $("#current-on-tx").html($.parseJSON(response).Tx_Current);
                     $("#selected-for-dqa").html($.parseJSON(response).SelectedForDQA)
                     $("#total-record").html($.parseJSON(response).data.length)
 
@@ -308,7 +502,7 @@
                     $(e.currentTarget.id).prop("disabled", false);
                     window.location.reload();
                 });
-                return false; 
+                return false;
             });
 
             $("#downloadFullError").click(function (e) {
@@ -336,6 +530,9 @@
             $(".save-download").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#error_details_tbl"), 'report.csv', '-', 0, 0]);
             });
+            $("#download_for_dqa").on('click', function (event) {
+                exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
+            });
 
             function buildErrorSummaryTable(fileName, errorMessagedata) {
                 $("#error_report").show();
@@ -343,7 +540,7 @@
                     var html = "<tr> ";
                     html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
                     html += "<td>" + fileName + "</td>";
-                    html += "<td></td>";
+                    html += "<td></td><td></td>";
                     html += "</tr>";
                     $("#error_tbl tbody").append(html);
                 }
@@ -351,28 +548,29 @@
                     var html = "<tr> ";
                     html += "<td><i class='icon-cancel' style='color: red;font-weight: bolder;margin-left: 30%;'></i></td>";
                     html += "<td>" + fileName + "</td>";
-                    html += "<td><a class='btn btn-info error-summary' id='" + fileName + "'>View Error Details</a></td>";
+                    html += "<td>" + errorMessagedata.length + "</td>";
+                    html += "<td><a class='error-summary' id='" + fileName + "'>View Error Details</a></td>";
                     html += "</tr>";
                     $("#error_tbl tbody").append(html);
                 }
             }
-             
+
             function buildErrorDetailsTable(fileName, errorMessagedata) {
                 if (errorMessagedata != null) {
                     $.each(errorMessagedata, function (i, v) {
                         var html = "<tr> ";
                         html += "<td><i class='icon-cancel' style='color: red;font-weight: bolder;margin-left: 30%;'></i></td>";
                         html += "<td>" + v.FileName + "</td>";
-                        html += "<td>" + v.FileTab + "</td>";
-                        html += "<td>" + v.ErrorMessage + "</td>";
+                        html += "<td>" + v.FileTab + "</td>"; 
                         html += "<td>" + v.LineNo + "</td>";
                         html += "<td>" + v.PatientNo + "</td>";
+                        html += "<td>" + v.ErrorMessage + "</td>";
                         html += "</tr>";
                         $("#error_details_tbl tbody").append(html);
                     });
                 }
             }
-             
+
 
             function buildTable(dataList) {
                 $("#output tbody").empty();
@@ -396,10 +594,10 @@
                     html += "<td>" + d.RegimenAtStartOfART + "</td>";
                     html += "<td>" + d.CurrentRegimenLine + "</td>";
                     html += "<td>" + d.CurrentARTRegimen + "</td>";
-                    html += "<td>" + d.Pregnancy_Status + "</td>";
-                    html += "<td>" + d.Current_Viral_Load + "</td>";
-                    html += "<td>" + d.Date_of_Current_Viral_Load + "</td>";
-                    html += "<td>" + d.Viral_Load_Indication + "</td>";
+                    html += "<td>" + d.PregnancyStatus + "</td>";
+                    html += "<td>" + d.CurrentViralLoad + "</td>";
+                    html += "<td>" + d.DateOfCurrentViralLoad + "</td>";
+                    html += "<td>" + d.ViralLoadIndication + "</td>";
                     html += "<td>" + d.CurrentARTStatus + "</td>";
                     html += "<td>" + d.RadetYear + "</td>";
                     html += "</tr>";
@@ -411,7 +609,7 @@
                 return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
                     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
                 )
-            } 
+            }
 
         });
     </script>

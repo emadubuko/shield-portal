@@ -1,8 +1,9 @@
-﻿using CommonUtil.Entities;
-using CommonUtil.Utilities;
+﻿using CommonUtil.Utilities;
 using OfficeOpenXml;
+using RADET.DAL.DAO;
 using RADET.DAL.Entities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,7 +13,46 @@ namespace RADET.DAL.Services
 {
     public class RADETProcessor
     {
-        public bool ReadRadetFile(Stream RadetFile, string fileName, Organizations IP, IList<LGA> LGAs, out RadetMetaData metadata, out List<ErrorDetails> error)
+        public List<RadetPatientLineListing> Randomizetems(int MetadataId, int percent_of_active, int percent_inactive)
+        {
+            RadetMetaDataDAO _dao = new RadetMetaDataDAO();
+            IList<RadetPatientLineListing> table = _dao.RetrievePatientListingByMetaDataId(MetadataId);
+
+            foreach (var item in table) //reset everything
+            {
+                item.SelectedForDQA = false;
+            }
+
+            var active = table.Where(x => x.CurrentARTStatus.Trim() == "Active").ToList();
+            var inactive = table.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList();
+
+            int no_of_active_to_select = (int)(active.Count * (double)percent_of_active / 100);
+            int no_of_inactive_to_select = (int)(inactive.Count * (double)percent_inactive / 100);
+
+            active.Shuffle(); 
+            inactive.Shuffle();
+
+            foreach (var item in active.Take(no_of_active_to_select))
+            {
+                item.SelectedForDQA = true;
+            }
+            foreach (var item in inactive.Take(no_of_inactive_to_select))
+            {
+                item.SelectedForDQA = true;
+            }
+
+            List<RadetPatientLineListing> newTable = new List<RadetPatientLineListing>();
+            newTable.AddRange(active);
+            newTable.AddRange(inactive);
+
+            bool _b = _dao.BulkUpdate(newTable);
+
+            return newTable;
+        }
+
+
+
+        public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, out RadetMetaData metadata, out List<ErrorDetails> error)
         {
             metadata = new RadetMetaData();
             List<RadetPatientLineListing> lineItems = new List<RadetPatientLineListing>();
@@ -20,14 +60,14 @@ namespace RADET.DAL.Services
             error = new List<ErrorDetails>();
             string facilityName = "";
 
-            List<string> validRegimenLine = System.Configuration.ConfigurationSettings.AppSettings["validRegimenLine"].Split(',').ToList();
-            List<string> validRegimen = new List<string> { "AZT-3TC-NVP", "AZT-3TC-EFV", "D4T-3TC-NVP", "D4T-3TC-EFV", "TDF-3TC-NVP", "TDF-3TC-EFV", "TDF-FTC-NVP", "TDF-FTC-EFV", "AZT-3TC-ABC", "AZT-3TC-TDF", "Other" };
-            List<string> validPregnancyStatus = new List<string> { "Not Pregnant", "Pregnant", "Breastfeeding" };
-            List<string> validSex = new List<string> { "Female", "Male" };
-            List<string> validARTStatus = new List<string> { "Active", "Dead", "LTFU", "Stopped", "Transferred Out" };
+            List<string> validRegimenLine = System.Configuration.ConfigurationManager.AppSettings["validRegimenLine"].Split(',').ToList();
+            List<string> validRegimen = System.Configuration.ConfigurationManager.AppSettings["validRegimen"].Split(',').ToList();
+            List<string> validPregnancyStatus = System.Configuration.ConfigurationManager.AppSettings["validPregnancyStatus"].Split(',').ToList();
+            List<string> validSex = System.Configuration.ConfigurationManager.AppSettings["validSex"].Split(',').ToList();
+            List<string> validARTStatus = System.Configuration.ConfigurationManager.AppSettings["validARTStatus"].Split(',').ToList();
 
 
-            LGA _lga = null;
+            CommonUtil.Entities.LGA _lga = null;
 
             using (ExcelPackage package = new ExcelPackage(RadetFile))
             {
@@ -109,7 +149,8 @@ namespace RADET.DAL.Services
                     });
                 }
 
-                _lga = LGAs.FirstOrDefault(x => x.lga_name == lga.Substring(3).Replace(" Local Government Area", "") && x.State.state_name == state.Substring(3).Replace(" State", ""));
+               // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
+                _lga = FindLGA(LGAs, lga, state);
                 if (_lga == null)
                 {
                     error.Add(new ErrorDetails
@@ -133,24 +174,7 @@ namespace RADET.DAL.Services
                         LineNo = "",
                         PatientNo = ""
                     });
-                }
-                else if (!string.IsNullOrEmpty(RadetPeriod) && !string.IsNullOrEmpty(facilityName))
-                {
-                    var previousReport = CheckPreviousUpload(IP, RadetPeriod, facilityName);
-
-                    if (previousReport)
-                    {
-                        error.Add(new ErrorDetails
-                        {
-                            ErrorMessage = "Result already exist",
-                            FileName = fileName,
-                            FileTab = "Main page",
-                            LineNo = "",
-                            PatientNo = ""
-                        });
-                    }
-                }
-
+                } 
 
                 List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic" }; //confirm the names
                 foreach (var worksheet in worksheets)
@@ -205,9 +229,11 @@ namespace RADET.DAL.Services
                                     HospitalNo = ExcelHelper.ReadCellText(worksheet, row, 8),
                                     Sex = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 9), "Sex", fileName, worksheet.Name, row, patientId, validSex, false, false, ref error),
                                     Age_at_start_of_ART_in_years = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 10), "Age at start of ART in years", fileName, worksheet.Name, row, patientId, 120, ref error),
-                                    Age_at_start_of_ART_in_months = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 11), "Age at start of ART in months", fileName, worksheet.Name, row, patientId, 60, ref error)
+                                    Age_at_start_of_ART_in_months = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 11), "Age at start of ART in months", fileName, worksheet.Name, row, patientId, 60, ref error),
+                                    FacilityName = facilityName,
+                                    IP = IP
                                 },
-                                RadetPeriod = worksheet.Name,
+                                RadetYear = worksheet.Name,
                             };
 
                             string _dateOfCurrentViralLoad = ExcelHelper.ReadCellText(worksheet, row, 21);
@@ -226,7 +252,7 @@ namespace RADET.DAL.Services
                                 ErrorMessage = ex.Message,
                                 FileName = fileName,
                                 FileTab = worksheet.Name,
-                                LineNo = row.ToString(),
+                                LineNo = (row - 1).ToString(),
                             });
                         }
 
@@ -247,6 +273,18 @@ namespace RADET.DAL.Services
             return error.Count == 0;
         }
 
+        static CommonUtil.Entities.LGA FindLGA(IList<CommonUtil.Entities.LGA> lgas, string lgaName, string state)
+        {
+            var lga = lgas.FirstOrDefault(x => x.lga_name.ToLower() == lgaName.ToLower().Substring(3).Replace(" local government area", "") 
+            && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
+            if (lga == null)
+            {
+                lga = lgas.FirstOrDefault(x => !string.IsNullOrEmpty(x.alternative_name) 
+                && x.alternative_name.ToLower() == lgaName.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
+            }
+            return lga;
+        }
+
 
         private DateTime? ValidateDateTime(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, ref List<ErrorDetails> error)
         {
@@ -258,7 +296,7 @@ namespace RADET.DAL.Services
                     ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
                     FileName = fileName,
                     FileTab = fileTab,
-                    LineNo = Convert.ToString(LineNo),
+                    LineNo = Convert.ToString(LineNo -1),
                     PatientNo = PatientId
                 });
                 return null;
@@ -279,7 +317,7 @@ namespace RADET.DAL.Services
                     ErrorMessage = "Invalid number supplied for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
                     FileName = fileName,
                     FileTab = fileTab,
-                    LineNo = Convert.ToString(LineNo),
+                    LineNo = Convert.ToString(LineNo - 1),
                     PatientNo = PatientId
                 });
             }
@@ -290,7 +328,7 @@ namespace RADET.DAL.Services
                     ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
                     FileName = fileName,
                     FileTab = fileTab,
-                    LineNo = Convert.ToString(LineNo),
+                    LineNo = Convert.ToString(LineNo - 1),
                     PatientNo = PatientId
                 });
             }
@@ -322,17 +360,12 @@ namespace RADET.DAL.Services
                     ErrorMessage = "Invalid value supplied for '" + fieldName + "' (<span style='color:red'>" + input + "</span>)",
                     FileName = fileName,
                     FileTab = fileTab,
-                    LineNo = Convert.ToString(LineNo),
+                    LineNo = Convert.ToString(LineNo - 1),
                     PatientNo = PatientId
                 });
             }
             return output;
         }
-
-        private bool CheckPreviousUpload(Organizations iP, string radetPeriod, string facilityName)
-        {
-            return false;
-            //throw new NotImplementedException();
-        }
+  
     }
 }

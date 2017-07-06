@@ -88,6 +88,7 @@
     <Compile Include="DBSessionManager\NhibernateSessionManager.cs" />
     <Compile Include="Entities\AfenetReport.cs" />
     <Compile Include="Entities\HealthFacility.cs" />
+    <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\LGA.cs" />
     <Compile Include="Entities\Organizations.cs" />
     <Compile Include="Entities\Profile.cs" />

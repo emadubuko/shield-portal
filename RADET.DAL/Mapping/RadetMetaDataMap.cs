@@ -1,10 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
 using RADET.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RADET.DAL.Mapping
 {
@@ -12,6 +7,8 @@ namespace RADET.DAL.Mapping
     {
         public RadetMetaDataMap()
         {
+            Table("radet_MetaData");
+
             Id(i => i.Id);
 
             References(x => x.IP).Column("IP");
@@ -20,7 +17,7 @@ namespace RADET.DAL.Mapping
             References(x => x.LGA).Column("LGA");
 
             HasMany(x => x.PatientLineListing)
-                .Cascade.SaveUpdate()
+                .Cascade.None()
                .Inverse()
                .KeyColumns.Add("RadetMetaDataId", mapping => mapping.Name("RadetMetaDataId"));
 

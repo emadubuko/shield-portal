@@ -9,12 +9,11 @@ using CommonUtil.Utilities;
 using System;
 using System.Data;
 using System.Linq;
-using System.Dynamic;
-using System.Text;
 using System.Collections.Concurrent;
 
 namespace CommonUtil.DAO
 {
+    /*
     public class RadetUploadReportDAO : BaseDAO<RadetUploadReport, int>
     {
         public bool DeleteRecord(int id)
@@ -282,7 +281,7 @@ namespace CommonUtil.DAO
             return true;
         }
 
-        private void MarkSelectedItems(ref List<RadetTable> table)
+         void MarkSelectedItems(ref List<RadetTable> table)
         {
             string no_to_select = ExcelHelper.GetRandomizeChartNUmber(table.Count.ToString());
             table.Shuffle();
@@ -292,7 +291,7 @@ namespace CommonUtil.DAO
             }
         }
 
-        private void BulkInser(List<RadetTable> table)
+         void BulkInser(List<RadetTable> table)
         {
             string tableName = "dqa_radet";
 
@@ -364,4 +363,6 @@ namespace CommonUtil.DAO
             }
         }
     }
+
+    */
 }

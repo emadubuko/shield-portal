@@ -15,9 +15,11 @@ namespace RADET.DAL.Mapping
             Map(m => m.Sex);
             Map(m => m.Age_at_start_of_ART_in_years);
             Map(m => m.Age_at_start_of_ART_in_months);
+            Map(m => m.FacilityName);
+            References(r => r.IP).Column("IP");
 
             HasMany(x => x.PatientLineListing)
-            .Cascade.SaveUpdate()
+            .Cascade.None()
                 .Inverse()
                 .KeyColumns.Add("RadetPatientId", mapping => mapping.Name("RadetPatientId"));
         }
