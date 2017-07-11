@@ -33,9 +33,9 @@ namespace Test
         {
             Console.WriteLine("started");
 
-           
+            exportRadetErrors();
 
-            RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
+           // RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
 
             //  MosisFiles.ProcessHTS_TST_File();
 
@@ -52,7 +52,7 @@ namespace Test
             // new Program().RetrieveExcelValue();
 
 
-              DMPSummary();
+            //  DMPSummary();
 
             //new Program().UpdateFacilities();
             //    new Program().GenerateFacilityTargetCSV();
@@ -66,6 +66,41 @@ namespace Test
             Console.ReadLine();
         }
 
+        static void exportRadetErrors()
+        {
+            var errors = (from item in new RADET.DAL.DAO.RadetUploadErrorLogDAO().Search()//.RetrieveAll();
+                         where item.RadetUpload.IP.ShortName == "IHVN"
+                         select item).ToList();
+
+            foreach (var err in errors)//.GroupBy(x => x.RadetUpload.IP))
+            {
+                string fileName = "_ihvn.err"; // err.Key.ShortName + ".csv"; //string.Format("{0:dd-MM-yyyy hh.mm.ss. tt}.csv", DateTime.Now);
+                StringBuilder sb = new StringBuilder();
+                sb.Append("File Name,");
+                sb.Append("Tab Name,");
+                sb.Append("Error Message,");
+                sb.Append("Line No,");
+                sb.Append("Patient Id,");
+
+                sb.AppendLine();
+
+                UploadLogError model = err;//.LastOrDefault(x => x.ErrorDetails != null && x.ErrorDetails.Count > 0);
+
+                if (model == null) continue;
+                foreach (var m in model.ErrorDetails)
+                {
+                    sb.Append(string.Format("\"{0}\",", m.FileName));
+                    sb.Append(string.Format("\"{0}\",", m.FileTab));
+                    sb.Append(string.Format("\"{0}\",", m.ErrorMessage.Replace("<span style='color:red'>", "").Replace("</span>", "")));
+                    sb.Append(string.Format("\"{0}\",", m.LineNo));
+                    sb.Append(string.Format("\"{0}\",", m.PatientNo));
+                    sb.AppendLine();
+                }
+
+                File.AppendAllText(@"C:\MGIC\Radet extracted\RADET 2\errors\" + fileName, sb.ToString());
+            }
+            Console.WriteLine("done writting errors to file");    
+        }
 
         private static void UpdateFacilities()
         {

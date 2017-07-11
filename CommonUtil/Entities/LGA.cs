@@ -16,7 +16,7 @@
             get
             {
                 if (this == null) return "";
-                return string.Format("{0} ({1})", lga_name, State.state_name);
+                return string.Format("{0} ({1})", !string.IsNullOrEmpty(alternative_name) ? alternative_name : lga_name, State.state_name);
             }
         }
     }

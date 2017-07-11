@@ -74,6 +74,7 @@
     <Compile Include="Mapping\RadetPatientMap.cs" />
     <Compile Include="Mapping\RadetUploadMap.cs" />
     <Compile Include="Mapping\UploadLogErrorMap.cs" />
+    <Compile Include="Models\RandomizationUpdateModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\RADETProcessor.cs" />
   </ItemGroup>

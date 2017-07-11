@@ -222,39 +222,39 @@ namespace CommonUtil.DBSessionManager
         /// Run and commit
         /// </summary>
         /// <param name="commandText"></param>
-        public void RunSQL(string commandText)
+        public int RunSQL(string commandText)
         {
+            int i = 0;
             if (!string.IsNullOrEmpty(commandText))
-            {
-                ISessionFactory sessionFactory = BuildSession().SessionFactory;
-                var connection = ((ISessionFactoryImplementor)sessionFactory).ConnectionProvider.GetConnection();
-                IDbConnection cn = (SqlConnection)connection;
-                IDbCommand cmd = new SqlCommand();
-                cmd.Connection = cn;
+            {                
+                IDbConnection cn = ((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
+                IDbCommand cmd = new SqlCommand(commandText);
+                cmd.Connection = (SqlConnection)cn;
+                if (cn.State != ConnectionState.Open)
+                    cn.Open();
 
-                cn.Open();
                 IDbTransaction trans = null;
                 try
                 {
-                    trans = cn.BeginTransaction();
-                    cmd.CommandText = commandText;
-                    cmd.Transaction = trans;
-                    int i = cmd.ExecuteNonQuery();
-                    trans.Commit();
+                    cmd.CommandTimeout = 60 * 60;
+                    //trans = cn.BeginTransaction();
+                    //cmd.Transaction = trans;
+                    i = cmd.ExecuteNonQuery();
+                    //trans.Commit(); 
                 }
-                catch
+                catch(Exception ex)
                 {
-                    if (trans != null) trans.Rollback();
+                    //if (trans != null) trans.Rollback();
                     throw;
                 }
                 finally
                 {
-                    cn.Close();
-
+                    cn.Close(); 
                     cn.Dispose();
                     cmd.Dispose();
                 }
             }
+            return i;
         }
 
         private IDbTransaction _trans;

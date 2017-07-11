@@ -1112,6 +1112,7 @@
     <Content Include="Views\RadetAnalytics\Index.cshtml" />
     <Content Include="Views\RadetAnalytics\UploadPage.cshtml" />
     <Content Include="Views\RadetAnalytics\ViewPreviousUploads.cshtml" />
+    <Content Include="Views\RadetAnalytics\Randomizer.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

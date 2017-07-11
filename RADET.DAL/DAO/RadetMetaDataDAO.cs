@@ -1,8 +1,12 @@
 ﻿using CommonUtil.DBSessionManager;
 using NHibernate;
+using NHibernate.Criterion;
 using NHibernate.Linq;
+using NHibernate.Transform;
 using RADET.DAL.Entities;
+using RADET.DAL.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -12,6 +16,68 @@ namespace RADET.DAL.DAO
 {
     public class RadetMetaDataDAO : BaseDAO<RadetMetaData, int>
     {
+        public List<RadetReportModel2> RetrieveUsingPaging(RadetMetaDataSearchModel search, int startIndex, int maxRows, bool order_Asc, out int totalCount)
+        {
+            IStatelessSession session = BuildSession().SessionFactory.OpenStatelessSession();
+            ICriteria criteria = session.CreateCriteria<RadetMetaData>("pt")
+                .CreateAlias("pt.RadetUpload", "rup")
+                .CreateAlias("pt.IP", "ip")
+                .CreateAlias("rup.UploadedBy", "upl")
+                .CreateAlias("pt.LGA", "lga")
+                .SetProjection(Projections.ProjectionList()
+                .Add(Projections.Property("pt.Facility"), "Facility")
+                    .Add(Projections.Property("ip.ShortName"), "IP")
+                    .Add(Projections.Property("pt.RadetPeriod"), "RadetPeriod")
+                     .Add(Projections.SqlFunction("concat",
+                            NHibernateUtil.String,
+                            Projections.Property("upl.FirstName"),
+                            Projections.Constant(" "),
+                           Projections.Property("upl.Surname")), "UploadedBy")
+                   .Add(Projections.Property("rup.DateUploaded"), "DateUploaded")
+                    .Add(Projections.Property("pt.Id"), "Id")
+                   .Add(Projections.Property("pt.Id"), "DT_RowId")
+                   .Add(Projections.Property("lga.lga_code"), "LGA_code")
+                   )
+                .SetResultTransformer(Transformers.AliasToBean<RadetReportModel2>());
+                        
+
+            if (search != null)
+            {
+                if (search.IPs != null && search.IPs.Count > 0)
+                {
+                    criteria.Add(Restrictions.In("ip.ShortName", search.IPs));
+                }
+                if (search.lga_codes != null && search.lga_codes.Count > 0)
+                {
+                    criteria.Add(Restrictions.In("pt.LGA.lga_code", search.lga_codes));
+                }
+                if (search.facilities != null && search.facilities.Count > 0)
+                {
+                    criteria.Add(Restrictions.In("pt.Facility", search.facilities));
+                }
+                if (!string.IsNullOrEmpty(search.RadetPeriod))
+                {
+                    criteria.Add(Restrictions.Eq("pt.RadetPeriod", search.RadetPeriod));
+                }
+            }
+            criteria.SetFirstResult(startIndex);
+            if (maxRows > 0)
+            {
+                criteria.SetMaxResults(maxRows);
+            }
+            
+            var result = criteria.List<RadetReportModel2>() as List<RadetReportModel2>;
+            totalCount = result.Count;
+            return result;
+
+            //ICriteria countCriteria = CriteriaTransformer.Clone(criteria).SetProjection(Projections.RowCount());
+            //ICriteria listCriteria = CriteriaTransformer.Clone(criteria).SetFirstResult(startIndex).SetMaxResults(maxRows);
+            //IList allResults = session.CreateMultiCriteria().Add<T>(listCriteria).Add(countCriteria).List();
+            //totalCount = Convert.ToInt32(((IList)allResults[1])[0]);
+            //return allResults[0] as List<T>;
+        }
+
+
         public IQueryable<RadetMetaData> RetrieveRadetUpload(string RadetPeriod, int IP = 0, string facility = null)
         {
             IQueryable<RadetMetaData> result = null;
@@ -36,14 +102,110 @@ namespace RADET.DAL.DAO
             return result.ToList();
         }
 
-
-        public IList<RadetPatientLineListing> RetrievePatientListingByMetaDataId(int metadataId)
+        public List<T> RetrieveRadetList<T>(List<int> radetIds) where T : class
         {
             ISession session = BuildSession();
-            var result = session.Query<RadetPatientLineListing>().Where(x => x.MetaData.Id == metadataId).ToList();
+
+            var result = session.CreateCriteria<RadetPatientLineListing>("pt")
+                .Add(Restrictions.In("MetaData.Id", radetIds))
+                .CreateAlias("RadetPatient", "rpt")
+                .CreateAlias("rpt.IP", "ip")
+                .SetProjection(Projections.ProjectionList()
+                .Add(Projections.Property("pt.ARTStartDate"), "ARTStartDate")
+                    .Add(Projections.Property("pt.LastPickupDate"), "LastPickupDate")
+                    .Add(Projections.Property("pt.MonthsOfARVRefill"), "MonthsOfARVRefill")
+                   .Add(Projections.Property("pt.RegimenLineAtARTStart"), "RegimenLineAtARTStart")
+                   .Add(Projections.Property("pt.RegimenAtStartOfART"), "RegimenAtStartOfART")
+                   .Add(Projections.Property("pt.CurrentRegimenLine"), "CurrentRegimenLine")
+                   .Add(Projections.Property("pt.CurrentARTRegimen"), "CurrentARTRegimen")
+                   .Add(Projections.Property("pt.PregnancyStatus"), "PregnancyStatus")
+                   .Add(Projections.Property("pt.CurrentViralLoad"), "CurrentViralLoad")
+                    .Add(Projections.Property("pt.DateOfCurrentViralLoad"), "DateOfCurrentViralLoad")
+                   .Add(Projections.Property("pt.ViralLoadIndication"), "ViralLoadIndication")
+                   .Add(Projections.Property("pt.CurrentARTStatus"), "CurrentARTStatus")
+                   .Add(Projections.Property("rpt.PatientId"), "PatientId")
+                   .Add(Projections.Property("rpt.HospitalNo"), "HospitalNo")
+                   .Add(Projections.Property("rpt.Sex"), "Sex")
+                   .Add(Projections.Property("rpt.Age_at_start_of_ART_in_years"), "AgeInYears")
+                   .Add(Projections.Property("rpt.Age_at_start_of_ART_in_months"), "AgeInMonths")
+                   .Add(Projections.Property("rpt.FacilityName"), "Facility")
+                   .Add(Projections.Property("ip.ShortName"), "IPShortName"))
+                .SetResultTransformer(Transformers.AliasToBean<T>())
+                .List<T>() as List<T>;
             return result;
         }
 
+        public IList<RadetMetaData> SearchRadetData(List<string> IPs, List<string> lga_codes, List<string> facilities, string RadetPeriod = "")
+        {
+            ISession session = BuildSession();
+            ICriteria criteria = session.CreateCriteria<RadetMetaData>("rmt");
+            if (IPs != null)
+            {
+                criteria.CreateAlias("IP", "ip");
+                criteria.Add(Restrictions.In("ip.ShortName", IPs));
+            }
+            if (lga_codes != null)
+            {
+                //criteria.CreateAlias("LGA", "lga");
+                criteria.Add(Restrictions.In("rmt.lga.lga_code", lga_codes));
+            }
+            if (facilities != null)
+            {
+                criteria.Add(Restrictions.In("FacilityName", facilities));
+            }
+            if (RadetPeriod != "")
+            {
+                criteria.Add(Restrictions.Eq("RadetPeriod", RadetPeriod));
+            }
+            return criteria.List<RadetMetaData>();
+        }
+
+
+        public IList<RandomizationUpdateModel> SearchPatientLineListing(List<string> IPs, List<string> lga_codes, List<string> facilities, List<string> states, string RadetPeriod = "")
+        {
+            ISession session = BuildSession();
+            ICriteria criteria = session.CreateCriteria<RadetPatientLineListing>("rpt");
+            criteria.CreateAlias("MetaData", "rmt");
+            criteria.CreateAlias("rmt.LGA", "lga");
+            criteria.CreateAlias("rmt.IP", "ip");
+            if (IPs != null && IPs.Count > 0)
+            { 
+                criteria.Add(Restrictions.In("ip.ShortName", IPs));
+            }
+            if (lga_codes != null && lga_codes.Count > 0)
+            {
+                criteria.Add(Restrictions.In("rmt.LGA.lga_code", lga_codes));
+            }
+            if(states !=null && states.Count > 0)
+            {                
+                criteria.CreateAlias("lga.State", "st");
+                criteria.Add(Restrictions.In("st.state_name", states));
+            }
+            if (facilities != null && facilities.Count > 0)
+            {
+                criteria.Add(Restrictions.In("rmt.Facility", facilities));
+            }
+            if (RadetPeriod != "")
+            {
+                criteria.Add(Restrictions.Eq("rmt.RadetPeriod", RadetPeriod));
+            }
+            return criteria.SetProjection(Projections.ProjectionList()
+                    .Add(Projections.Property("rpt.Id"), "Id")
+                    .Add(Projections.Property("rmt.Id"), "MetadataId")
+                    .Add(Projections.Property("rpt.CurrentARTStatus"), "CurrentARTStatus")
+                    .Add(Projections.Property("ip.ShortName"), "IP")
+                    .Add(Projections.Property("rmt.Facility"), "FacilityName")
+                    .Add(Projections.Property("rpt.SelectedForDQA"), "SelectedForDQA"))
+                .SetResultTransformer(Transformers.AliasToBean<RandomizationUpdateModel>())
+                .List<RandomizationUpdateModel>() as List<RandomizationUpdateModel>;
+        }
+
+        public IQueryable<RadetPatientLineListing> SearchPatientLineListing()
+        {
+            ISession session = BuildSession();
+            var result = session.Query<RadetPatientLineListing>();//.Where(x => x.MetaData.Id == metadataId);
+            return result;
+        }
 
         /// <summary>
         /// saves the metadata plus the patient line listing plus the patients entries
@@ -54,35 +216,47 @@ namespace RADET.DAL.DAO
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+            int totalCount = 0;
+            RadetMetaDataSearchModel search = new Models.RadetMetaDataSearchModel
+            {
+                facilities = RadetData.Select(x => x.Facility).Distinct().ToList(),
+                lga_codes = RadetData.Select(x => x.LGA.lga_code).Distinct().ToList(),
+                IPs = RadetData.Select(x => x.IP.ShortName).Distinct().ToList(),
+            };
+            List<RadetReportModel2> previously = RetrieveUsingPaging(search, 0, 0, false, out totalCount);
+
+            
             ISessionFactory sessionFactory = BuildSession().SessionFactory;
 
             using (IStatelessSession session = sessionFactory.OpenStatelessSession())
             using (ITransaction transaction = session.BeginTransaction())
             {
+                var patients = RetrievePatients(session, RadetData.Select(x => x.IP.Id).Distinct().ToList());
+
                 foreach (var entry in RadetData)
                 {
-                    var previousReport = CheckPreviousUpload(session, entry.IP, entry.LGA, entry.RadetPeriod, entry.Facility);
-                    if (!previousReport)
+                    var previousReport = previously.FirstOrDefault(x => x.IP == entry.IP.ShortName && x.LGA_code == entry.LGA.lga_code && x.RadetPeriod == entry.RadetPeriod && x.Facility == entry.Facility); // CheckPreviousUpload(session, entry.IP, entry.LGA, entry.RadetPeriod, entry.Facility);
+                    if (previousReport == null)
                     {
                         if (entry.PatientLineListing != null)
                         {
                             session.Insert(entry);
                             foreach (var item in entry.PatientLineListing)
                             {
-                                var patientExist = CheckIfPatientExists(session, item.RadetPatient);
-                                if (patientExist == null)
+                                var _patient_exist = patients.FirstOrDefault(f => f.PatientId == item.RadetPatient.PatientId && f.HospitalNo == item.RadetPatient.HospitalNo && f.Sex == item.RadetPatient.Sex); //CheckIfPatientExists(session, item.RadetPatient);
+                                if (_patient_exist == null)
                                 {
                                     session.Insert(item.RadetPatient);
                                 }
                                 else
                                 {
-                                    item.RadetPatient = patientExist;
-                                } 
+                                    item.RadetPatient = _patient_exist;
+                                }
                                 item.MetaData = entry;
                                 session.Insert(item);
                             }
                         }
-                    } 
+                    }
                 }
                 transaction.Commit();
             }
@@ -97,8 +271,8 @@ namespace RADET.DAL.DAO
             try
             {
                 string query = string.Format("delete from radet_patient_line_listing where RadetMetaDataId = {0}; delete from radet_MetaData where Id ={0};  ", id);
-                int i = StartSQL(query);
-                CommitSQL();
+                int i = RunSQL(query);
+                //CommitSQL();
             }
             catch (Exception ex)
             {
@@ -106,10 +280,9 @@ namespace RADET.DAL.DAO
                 throw ex;
             }
         }
-    
 
         public bool BulkUpdate(List<RadetPatientLineListing> patientsLineListing)
-        {            
+        {
             ISessionFactory sessionFactory = BuildSession().SessionFactory;
 
             using (IStatelessSession session = sessionFactory.OpenStatelessSession())
@@ -124,24 +297,38 @@ namespace RADET.DAL.DAO
             return true;
         }
 
-        private RadetPatient CheckIfPatientExists(IStatelessSession session, RadetPatient patient)
+
+        private int CheckIfPatientExists(IStatelessSession session, RadetPatient patient)
         {
-            return session.Query<RadetPatient>().FirstOrDefault(f => f.PatientId == patient.PatientId && f.HospitalNo == patient.HospitalNo && f.Sex == patient.Sex && f.IP == patient.IP && f.FacilityName == patient.FacilityName);
-            //string queryString = string.Format("select * from radet_patient where PatientId='{0}'and HospitalNo='{1}' and Sex='{2}' and IP='{3}' and FacilityName='{4}'", patient.PatientId, patient.HospitalNo, patient.Sex, patient.IP.Id, patient.FacilityName);
-            //var result = session.CreateSQLQuery(queryString).AddEntity(typeof(RadetPatient)).UniqueResult<RadetPatient>();
-            //return result;
+            //return session.Query<RadetPatient>().FirstOrDefault(f => f.PatientId == patient.PatientId && f.HospitalNo == patient.HospitalNo && f.Sex == patient.Sex && f.IP == patient.IP && f.FacilityName == patient.FacilityName);
+            var id = (from f in session.Query<RadetPatient>()
+                     where f.PatientId == patient.PatientId && f.HospitalNo == patient.HospitalNo && f.Sex == patient.Sex && f.IP == patient.IP && f.FacilityName == patient.FacilityName
+                     select f.Id).FirstOrDefault();
+            return id;
+        }
+
+        private IList<RadetPatient> RetrievePatients(IStatelessSession session, List<int> Ip)
+        {
+            string queryString = string.Format("select * from dbo.radet_patient where IP in ('{0}')", string.Join(",", Ip));
+            var result = session.CreateSQLQuery(queryString).AddEntity(typeof(RadetPatient)).List<RadetPatient>();
+            return result;
         }
 
         private bool CheckPreviousUpload(IStatelessSession session, CommonUtil.Entities.Organizations iP, CommonUtil.Entities.LGA lGA, string radetPeriod, string facilityName)
         {
-            string queryString = string.Format(" SELECT COUNT(*) FROM [radet_MetaData] where RadetPeriod = '{0}' and Facility = '{1}' and IP = '{2}' and LGA = '{3}'", radetPeriod, facilityName, iP.Id, lGA.lga_code);
+            string queryString = string.Format(" SELECT COUNT(*) FROM [radet_MetaData] where RadetPeriod = '{0}' and Facility = '{1}' and IP = '{2}' and LGA = '{3}'", radetPeriod, facilityName.Replace("'","''"), iP.Id, lGA.lga_code);
             var result = session.CreateSQLQuery(queryString).UniqueResult<int>();
 
             return result != 0;
         }
 
+        /// <summary>
+        /// formatted for the pop up page
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string RetrieveRadetData(int id)
-        { 
+        {
             ISession session = BuildSession();
             var Current_year_tx_new = session.Query<RadetPatientLineListing>().Count(c => c.MetaData.Id == id && c.ARTStartDate.HasValue && c.ARTStartDate.Value.Year == DateTime.Now.Year && c.CurrentARTStatus == "Active");
             var SelectedForDQA = session.Query<RadetPatientLineListing>().Count(x => x.MetaData.Id == id && x.SelectedForDQA);
@@ -166,7 +353,7 @@ namespace RADET.DAL.DAO
                                 item.CurrentARTRegimen,
                                 item.PregnancyStatus,
                                 item.CurrentViralLoad,
-                                DateOfCurrentViralLoad =  string.Format("{0:dd-MM-yyyy}", item.DateOfCurrentViralLoad),
+                                DateOfCurrentViralLoad = string.Format("{0:dd-MM-yyyy}", item.DateOfCurrentViralLoad),
                                 item.ViralLoadIndication,
                                 item.CurrentARTStatus,
                                 item.SelectedForDQA,
@@ -185,7 +372,33 @@ namespace RADET.DAL.DAO
             string result = Newtonsoft.Json.JsonConvert.SerializeObject(processData);
             return result;
         }
-        
+
+        /*
+     public IList<RadetPatientLineListing> SearchPatientLineListing(List<string> IPs, List<string> lga_codes, List<string> facilities, string RadetPeriod = "")
+     {
+         ISession session = BuildSession();
+         ICriteria criteria = session.CreateCriteria<RadetPatientLineListing>("rpt");
+         criteria.CreateAlias("MetaData", "rmt");
+         if (IPs != null)
+         {
+             criteria.CreateAlias("rmt.IP", "ip");
+             criteria.Add(Restrictions.In("ip.ShortName", IPs));
+         }
+         if (lga_codes != null)
+         {
+             criteria.Add(Restrictions.In("rmt.LGA.lga_code", lga_codes));
+         }
+         if (facilities != null)
+         {
+             criteria.Add(Restrictions.In("rmt.Facility", facilities));
+         }
+         if (RadetPeriod != "")
+         {
+             criteria.Add(Restrictions.Eq("rmt.RadetPeriod", RadetPeriod));
+         }
+         return criteria.List<RadetPatientLineListing>();
+     }
+     */
 
         /* 
         /// <summary>

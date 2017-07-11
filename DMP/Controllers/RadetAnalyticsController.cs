@@ -3,8 +3,10 @@ using CommonUtil.Utilities;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNet.SignalR;
+using Newtonsoft.Json;
 using RADET.DAL.DAO;
 using RADET.DAL.Entities;
+using RADET.DAL.Models;
 using RADET.DAL.Services;
 using ShieldPortal.ViewModel;
 using System;
@@ -17,12 +19,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace ShieldPortal.Controllers
 {
     [System.Web.Mvc.Authorize]
     public class RadetAnalyticsController : Controller
-    {      
+    {
         public ActionResult Index()
         {
             return View();
@@ -31,32 +34,125 @@ namespace ShieldPortal.Controllers
         public ActionResult UploadPage()
         {
             var profile = new Services.Utils().GetloggedInProfile();
-              
+
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            { 
+            {
                 ViewBag.showdelete = true;
                 ViewBag.Orgs = new CommonUtil.DAO.OrganizationDAO().RetrieveAll().Where(x => x.ShortName != "MGIC" && x.ShortName != "CDC");
             }
             else
             {
                 ViewBag.Orgs = new List<Organizations> { profile.Organization };
-                ViewBag.showdelete = false; 
+                ViewBag.showdelete = false;
             }
             List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
             return View(list);
         }
 
         public ActionResult ViewPreviousUploads()
-        {  
+        {
             List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
             return View(list);
         }
 
-      
-            [HttpPost]
+        [HttpPost]
+        public string SearchRadet(int? draw, int? start, int? length)
+        {
+            var search = Request["search[value]"];
+            var totalRecords = 0;
+            var recordsFiltered = 0;
+            start = start.HasValue ? start / 10 : 0;
+            RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RadetMetaDataSearchModel>(search);
+
+            RadetMetaDataDAO _dao = new RadetMetaDataDAO();
+            var list = new RadetMetaDataDAO().RetrieveUsingPaging(searchModel, start.Value, length ?? 20, false, out totalRecords);
+            recordsFiltered = list.Count();
+
+            list.ForEach(x =>
+            {
+                x.FirstColumn = string.Format("<input type='checkbox' id='{0}' class='chcktbl' />", x.Id);
+                x.LastColumn = string.Format("<td><a style='text-transform: capitalize;' class='btn btn-sm btn-info viewPatientListing' id='{0}'>View Entries</a>&nbsp;&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a></td>", x.Id);
+            });
+
+            return JsonConvert.SerializeObject(
+                        new
+                        {
+                            sEcho = draw,
+                            iTotalRecords = totalRecords,
+                            iTotalDisplayRecords = recordsFiltered,
+                            aaData = list
+                        });
+        }
+        
+        public ActionResult Randomizer()
+        {
+            IList<RadetMetaData> RadetMetadata = null;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                RadetMetadata = new RadetMetaDataDAO().RetrieveAll();
+            }
+            else
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                RadetMetadata = new RadetMetaDataDAO().SearchRadetData(new List<string> { profile.Organization.ShortName }, null, null, "");
+            }
+            var ip = RadetMetadata.Select(x => x.IP.ShortName).Distinct();
+            var facility = RadetMetadata.Select(x => x.Facility).Distinct();
+            var radetPeriod = RadetMetadata.Select(x => x.RadetPeriod).Distinct();
+            var lga = RadetMetadata.Select(x => x.LGA).Distinct();
+
+            return View(new RandomizerModel
+            {
+                LGA = lga,
+                RadetPeriod = radetPeriod,
+                Facility = facility,
+                IP = ip,
+                AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"))
+            });
+        }
+
+        /// <summary>
+        /// from the select page
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult RandomizeRadet(RadetMetaDataSearchModel model)//(int id, int active, int inactive)
+        {
+            IList<RandomizationUpdateModel> list = null;
+            RadetMetaDataDAO _dao = new RadetMetaDataDAO();
+            if (model !=null && model.MetaDataId == 0)
+            {
+                
+                list = new RadetMetaDataDAO().SearchPatientLineListing(model.IPs, model.lga_codes, model.facilities,model.state_codes, model.RadetPeriod);
+            }
+            else
+            {
+                list = (from item in _dao.SearchPatientLineListing()
+                        where item.Id == model.MetaDataId
+                        select new RandomizationUpdateModel
+                        {
+                            Id = item.Id,
+                            CurrentARTStatus = item.CurrentARTStatus,
+                            SelectedForDQA = item.SelectedForDQA,
+                            FacilityName = item.RadetPatient.FacilityName
+                        }).ToList();
+            }
+            var result = new RADETProcessor().Randomizetems(list, model.Active, model.Inactive);
+            HttpContext.Session["downloadableIds"] = result.Where(x => x.SelectedForDQA).Select(x => x.MetadataId).ToArray();
+            return Json(
+                new
+                {
+                    Message = string.Format("{0} active patients selected out {1}; <br /> {2} inactive patients selected out of {3} <br />", result.Count(x => x.CurrentARTStatus == "Active" && x.SelectedForDQA), result.Count(x => x.CurrentARTStatus == "Active"), result.Count(x => x.CurrentARTStatus != "Active" && x.SelectedForDQA), result.Count(x => x.CurrentARTStatus != "Active")),
+                },
+                JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
         public HttpResponseMessage DeleteRadet(int id)
         {
-            HttpResponseMessage msg = null; 
+            HttpResponseMessage msg = null;
             RadetMetaDataDAO dao = new RadetMetaDataDAO();
             try
             {
@@ -71,7 +167,7 @@ namespace ShieldPortal.Controllers
             return msg;
         }
 
-        public List<RadetReportModel2> GetPreviousUpload(string RadetPeriod, int IP=0)
+        public List<RadetReportModel2> GetPreviousUpload(string RadetPeriod, int IP = 0)
         {
             var profile = new Services.Utils().GetloggedInProfile();
             RadetMetaDataDAO metaDao = new RadetMetaDataDAO();
@@ -98,23 +194,56 @@ namespace ShieldPortal.Controllers
                             RadetPeriod = entry.RadetPeriod,
                             UploadedBy = entry.RadetUpload.UploadedBy.FirstName + " " + entry.RadetUpload.UploadedBy.Surname,
                             DateUploaded = entry.RadetUpload.DateUploaded,
+                            LGA = entry.LGA,
                             Id = entry.Id,
                         }).ToList();
             }
             return list;
         }
 
+        public JsonResult ExportData(bool useSession, string radetIds="")//List<int>
+        {
+            int[] radetIds_int;
+            if(useSession == false && !string.IsNullOrEmpty(radetIds))
+            {
+                radetIds_int = Array.ConvertAll(radetIds.Split(','), int.Parse);
+            }
+            else
+            {
+                radetIds_int = HttpContext.Session["downloadableIds"] as int[];
+            }
+            
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("IP, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status,Radet Period");
+
+            Action<ExportData> _action = (ExportData pt) =>
+            {
+                sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},\'{7:dd-MM-yyyy},\'{8:dd-MM-yyyy},{9},{10},{11},{12},{13},{14},{15},\'{16},{17},{18},{19}",
+                                  pt.IPShortName, pt.Facility, pt.PatientId, pt.HospitalNo, pt.Sex,
+                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, pt.RegimenLineAtARTStart, pt.RegimenAtStartOfART, pt.CurrentRegimenLine, pt.CurrentARTRegimen, pt.PregnancyStatus, pt.CurrentViralLoad, pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus, pt.RadetPeriod));
+            };
+
+            var result = new RadetMetaDataDAO().RetrieveRadetList<ExportData>(radetIds_int.ToList());
+
+            result.ForEach(_action);
+
+            var dt = Json(sb.ToString());
+            dt.MaxJsonLength = int.MaxValue;
+            return dt;
+            //return Json(sb.ToString(), JsonRequestBehavior.AllowGet,); 
+        }
+
+        /// <summary>
+        /// for pop up
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult RetrieveRadet(int id)
         {
             string result = new RadetMetaDataDAO().RetrieveRadetData(id);
             return Json(result);
-        }
-
-        public JsonResult RandomizeRadet(int id, int active, int inactive)
-        {
-           var result =   new RADETProcessor().Randomizetems(id, active, inactive);
-            return Json(string.Format("{0} active patients selected out {1}; <br /> {2} inactive patients out of {3} <br /> Close this dialog and click on view list button to view randoized result", result.Count(x=>x.CurrentARTStatus == "Active" && x.SelectedForDQA), result.Count(x=>x.CurrentARTStatus == "Active"), result.Count(x=>x.CurrentARTStatus !="Active" && x.SelectedForDQA), result.Count(x=>x.CurrentARTStatus !="Active")));
         }
 
         [HttpPost]
@@ -126,7 +255,7 @@ namespace ShieldPortal.Controllers
             var stopwatch = new Stopwatch();
 
             RadetUploadDAO _radetUploadDAO = new RadetUploadDAO();
-             
+
             if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
             {
                 msg = new HttpResponseMessage(HttpStatusCode.InternalServerError);
@@ -213,7 +342,7 @@ namespace ShieldPortal.Controllers
                                     errors.Add(new ErrorDetails
                                     {
                                         ErrorMessage = "No record found",
-                                        FileName = Request.Files[0].FileName,
+                                        FileName = fileName, //Request.Files[0].FileName,
                                         FileTab = "",
                                         LineNo = "",
                                         PatientNo = ""
@@ -223,7 +352,7 @@ namespace ShieldPortal.Controllers
                                 if (errors.Count == 0) //if no errors
                                 {
                                     radetMetaData.RadetUpload = upload;
-                                    upload.RadetMetaData.Add(radetMetaData); 
+                                    upload.RadetMetaData.Add(radetMetaData);
                                 }
 
                                 //what ever status, log feedback to the view via signal R
@@ -243,7 +372,7 @@ namespace ShieldPortal.Controllers
                         msg.Content = new StringContent(exp.Message);
                     }
                 }
-                else if(Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "XLSX")
+                else if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "XLSX")
                 {
                     Stream uploadedFileStream = Request.Files[0].InputStream;
                     var radetMetaData = new RadetMetaData();
@@ -252,7 +381,7 @@ namespace ShieldPortal.Controllers
                     status = new RADETProcessor().ReadRadetFile(uploadedFileStream, Request.Files[0].FileName, IP, LGAs, out radetMetaData, out errors);
                     //what ever status, log feedback to the view via signal R
                     NotifyPage(connectionId, Request.Files[0].FileName, errors);
-                     
+
                     if (errors.Count == 0) //if no errors
                     {
                         if (radetMetaData.PatientLineListing == null || radetMetaData.PatientLineListing.Count == 0)
@@ -270,7 +399,7 @@ namespace ShieldPortal.Controllers
                         {
                             radetMetaData.RadetUpload = upload;
                             upload.RadetMetaData.Add(radetMetaData);
-                        }                        
+                        }
                     }
 
                     //append errors if any
@@ -294,9 +423,9 @@ namespace ShieldPortal.Controllers
             RadetUploadErrorLogDAO _logDao = new RadetUploadErrorLogDAO();
             _logDao.Save(uploadError);
             _logDao.CommitChanges();
-             
+
             RadetMetaDataDAO _radetMetaDataDao = new RadetMetaDataDAO();
-            var timespan = _radetMetaDataDao.BulkSave(upload.RadetMetaData.ToList()); 
+            var timespan = _radetMetaDataDao.BulkSave(upload.RadetMetaData.ToList());
             stopwatch.Stop();
 
 
@@ -330,10 +459,9 @@ namespace ShieldPortal.Controllers
                 sb.AppendLine();
             }
 
-            System.IO.File.WriteAllText(Server.MapPath("~/downloads/" + fileName), sb.ToString()); 
+            System.IO.File.WriteAllText(Server.MapPath("~/downloads/" + fileName), sb.ToString());
             return Json(fileName, JsonRequestBehavior.AllowGet);
         }
-
 
         private void NotifyPage(string connectionId, string fileName, List<ErrorDetails> errorMessagedata)
         {
@@ -346,7 +474,7 @@ namespace ShieldPortal.Controllers
         {
             var context = GlobalHost.ConnectionManager.GetHubContext<RadetHub>();
 
-            context.Clients.All.Percent(connectionId, percent + "%"); 
+            context.Clients.All.Percent(connectionId, percent + "%");
         }
 
         private void NotifyPage(string connectionId)
@@ -354,21 +482,21 @@ namespace ShieldPortal.Controllers
             var context = GlobalHost.ConnectionManager.GetHubContext<RadetHub>();
             context.Clients.All.SaveNote(connectionId);
         }
-         
+
         private void NotifyPage(string connectionId, string message)
         {
             var context = GlobalHost.ConnectionManager.GetHubContext<RadetHub>();
-            if(message == "validation")
+            if (message == "validation")
             {
                 context.Clients.All.ValidateNote(connectionId);
             }
             else
             {
                 context.Clients.All.CompletionNote(connectionId, message);
-            }            
+            }
         }
 
-        
+
     }
 
 

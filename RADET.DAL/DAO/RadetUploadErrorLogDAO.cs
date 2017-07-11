@@ -1,13 +1,22 @@
 ﻿using CommonUtil.DBSessionManager;
+using NHibernate;
+using NHibernate.Linq;
 using RADET.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace RADET.DAL.DAO
 {
     public class RadetUploadErrorLogDAO  : BaseDAO<UploadLogError, int>
     {
+        public IQueryable<UploadLogError> Search()
+        {
+            ISession session = BuildSession();
+            var result = session.Query<UploadLogError>();//.Where(x => x.MetaData.Id == metadataId);
+            return result;
+        }
         private void BulkSaveLog(List<UploadLogError> data)
         {
             string tableName = "radet_upload_log_error";

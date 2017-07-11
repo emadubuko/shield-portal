@@ -2,50 +2,70 @@
 using OfficeOpenXml;
 using RADET.DAL.DAO;
 using RADET.DAL.Entities;
+using RADET.DAL.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace RADET.DAL.Services
 {
     public class RADETProcessor
     {
-        public List<RadetPatientLineListing> Randomizetems(int MetadataId, int percent_of_active, int percent_inactive)
+        public List<RandomizationUpdateModel> Randomizetems(IList<RandomizationUpdateModel> table, int percent_of_active, int percent_inactive)
         {
+            List<RandomizationUpdateModel> newTable = new List<RandomizationUpdateModel>();
             RadetMetaDataDAO _dao = new RadetMetaDataDAO();
-            IList<RadetPatientLineListing> table = _dao.RetrievePatientListingByMetaDataId(MetadataId);
+            //IList<RadetPatientLineListing> table = _dao.RetrievePatientListingByMetaDataId(MetadataId);
 
             foreach (var item in table) //reset everything
             {
                 item.SelectedForDQA = false;
             }
 
-            var active = table.Where(x => x.CurrentARTStatus.Trim() == "Active").ToList();
-            var inactive = table.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList();
-
-            int no_of_active_to_select = (int)(active.Count * (double)percent_of_active / 100);
-            int no_of_inactive_to_select = (int)(inactive.Count * (double)percent_inactive / 100);
-
-            active.Shuffle(); 
-            inactive.Shuffle();
-
-            foreach (var item in active.Take(no_of_active_to_select))
+            var perIp = table.GroupBy(x => x.IP);
+            foreach (var ip in perIp)
             {
-                item.SelectedForDQA = true;
+                var perFacility = ip.ToList().GroupBy(x => x.FacilityName);
+                foreach (var f in perFacility)
+                {
+                    var active = f.ToList().Where(x => x.CurrentARTStatus.Trim() == "Active").ToList(); //table.Where(x => x.CurrentARTStatus.Trim() == "Active").ToList();
+                    var inactive = f.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList(); //table.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList();
+
+                    int no_of_active_to_select = (int)(active.Count * (double)percent_of_active / 100);
+                    int no_of_inactive_to_select = (int)(inactive.Count * (double)percent_inactive / 100);
+
+                    active.Shuffle();
+                    inactive.Shuffle();
+
+
+                    foreach (var item in active.Take(no_of_active_to_select))
+                    {
+                        item.SelectedForDQA = true;
+                    }
+                    foreach (var item in inactive.Take(no_of_inactive_to_select))
+                    {
+                        item.SelectedForDQA = true;
+                    }
+
+                    newTable.AddRange(active);
+                    newTable.AddRange(inactive);
+                }
             }
-            foreach (var item in inactive.Take(no_of_inactive_to_select))
+             
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in newTable)
             {
-                item.SelectedForDQA = true;
+                sb.AppendLine(string.Format("Update radet_patient_line_listing set SelectedForDQA = '{0}' where Id = '{1}';", item.SelectedForDQA ? 1 : 0, item.Id));
             }
 
-            List<RadetPatientLineListing> newTable = new List<RadetPatientLineListing>();
-            newTable.AddRange(active);
-            newTable.AddRange(inactive);
-
-            bool _b = _dao.BulkUpdate(newTable);
+           int i = _dao.RunSQL(sb.ToString()); //.BulkUpdate(newTable);
+            if (i != newTable.Count)
+                throw new ApplicationException("an error occured");
 
             return newTable;
         }
@@ -176,7 +196,7 @@ namespace RADET.DAL.Services
                     });
                 } 
 
-                List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic" }; //confirm the names
+                List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic", "Sheet1" }; //confirm the names
                 foreach (var worksheet in worksheets)
                 {
                     if (skipPages.Any(a => a == worksheet.Name))
@@ -213,21 +233,20 @@ namespace RADET.DAL.Services
                                 LastPickupDate = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 13), "Last Pick up Date", fileName, worksheet.Name, row, patientId, ref error),
                                 MonthsOfARVRefill = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 14), "Month of ARV Refil", fileName, worksheet.Name, row, patientId, 10, ref error),
 
-                                RegimenLineAtARTStart = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 15), "Regimen Line At ART Start", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
-                                RegimenAtStartOfART = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
-                                CurrentRegimenLine = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 17), "Current Regimen Line", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
-                                CurrentARTRegimen = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 18), "Current ART Regimen", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
+                                RegimenLineAtARTStart = ExcelHelper.ReadCellText(worksheet, row, 15), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 15), "Regimen Line At ART Start", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
+                                RegimenAtStartOfART = ExcelHelper.ReadCellText(worksheet, row, 16), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
+                                CurrentRegimenLine = ExcelHelper.ReadCellText(worksheet, row, 17), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 17), "Current Regimen Line", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
+                                CurrentARTRegimen = ExcelHelper.ReadCellText(worksheet, row, 18), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 18), "Current ART Regimen", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
 
-                                PregnancyStatus = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 19), "Pregnancy Status", fileName, worksheet.Name, row, patientId, validPregnancyStatus, true, false, ref error),
+                                PregnancyStatus = ExcelHelper.ReadCellText(worksheet, row, 19), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 19), "Pregnancy Status", fileName, worksheet.Name, row, patientId, validPregnancyStatus, true, false, ref error),
                                 CurrentViralLoad = ExcelHelper.ReadCellText(worksheet, row, 20),
-                                //DateOfCurrentViralLoad = ExcelHelper.ReadCellText(worksheet, row, 21), //ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 21), "Date Of Current Viral Load", fileName, worksheet.Name, row, patientId, ref error),
                                 ViralLoadIndication = ExcelHelper.ReadCellText(worksheet, row, 22),
-                                CurrentARTStatus = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 23), "Current ART Status", fileName, worksheet.Name, row, patientId, validARTStatus, false, true, ref error),
+                                CurrentARTStatus = ExcelHelper.ReadCellText(worksheet, row, 23), //ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 23), "Current ART Status", fileName, worksheet.Name, row, patientId, validARTStatus, false, true, ref error),
                                 RadetPatient = new RadetPatient
                                 {
                                     PatientId = patientId,
                                     HospitalNo = ExcelHelper.ReadCellText(worksheet, row, 8),
-                                    Sex = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 9), "Sex", fileName, worksheet.Name, row, patientId, validSex, false, false, ref error),
+                                    Sex = ExcelHelper.ReadCellText(worksheet, row, 9), //ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 9), "Sex", fileName, worksheet.Name, row, patientId, validSex, false, false, ref error),
                                     Age_at_start_of_ART_in_years = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 10), "Age at start of ART in years", fileName, worksheet.Name, row, patientId, 120, ref error),
                                     Age_at_start_of_ART_in_months = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 11), "Age at start of ART in months", fileName, worksheet.Name, row, patientId, 60, ref error),
                                     FacilityName = facilityName,
@@ -275,12 +294,17 @@ namespace RADET.DAL.Services
 
         static CommonUtil.Entities.LGA FindLGA(IList<CommonUtil.Entities.LGA> lgas, string lgaName, string state)
         {
-            var lga = lgas.FirstOrDefault(x => x.lga_name.ToLower() == lgaName.ToLower().Substring(3).Replace(" local government area", "") 
-            && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
+            CommonUtil.Entities.LGA lga = null;
+            string _lga_name = lgaName.ToLower().Replace(" local government area", ""); //.Substring(3);
+            string _state_name = state.ToLower().Replace(" state", ""); //.Substring(3);
+            _lga_name = _lga_name.Length > 3 ? _lga_name.Substring(3) : _lga_name;
+            _state_name = _state_name.Length > 3 ? _state_name.Substring(3) : _state_name;
+
+            lga = lgas.FirstOrDefault(x => x.lga_name.ToLower() == _lga_name && x.State.state_name.ToLower() == _state_name);
             if (lga == null)
             {
-                lga = lgas.FirstOrDefault(x => !string.IsNullOrEmpty(x.alternative_name) 
-                && x.alternative_name.ToLower() == lgaName.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
+                lga = lgas.FirstOrDefault(x => !string.IsNullOrEmpty(x.alternative_name)
+                && x.alternative_name.ToLower() == _lga_name && x.State.state_name.ToLower() == _state_name);
             }
             return lga;
         }
@@ -288,17 +312,27 @@ namespace RADET.DAL.Services
 
         private DateTime? ValidateDateTime(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, ref List<ErrorDetails> error)
         {
+            if (string.IsNullOrEmpty(input))
+                return null;
+
             DateTime output;
             if (DateTime.TryParse(input, out output) == false)
             {
-                error.Add(new ErrorDetails
+                string[] formats = { "dd/MM/yyyy" };
+                if(DateTime.TryParseExact(input, formats, new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
                 {
-                    ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
-                    FileName = fileName,
-                    FileTab = fileTab,
-                    LineNo = Convert.ToString(LineNo -1),
-                    PatientNo = PatientId
-                });
+                    if(DateTime.TryParseExact(input, "dd-MM-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
+                    {
+                        error.Add(new ErrorDetails
+                        {
+                            ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
+                            FileName = fileName,
+                            FileTab = fileTab,
+                            LineNo = Convert.ToString(LineNo - 1),
+                            PatientNo = PatientId
+                        });
+                    }                    
+                }                
                 return null;
             }
             return output;
@@ -321,17 +355,17 @@ namespace RADET.DAL.Services
                     PatientNo = PatientId
                 });
             }
-            if (output > maxNo)
-            {
-                error.Add(new ErrorDetails
-                {
-                    ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
-                    FileName = fileName,
-                    FileTab = fileTab,
-                    LineNo = Convert.ToString(LineNo - 1),
-                    PatientNo = PatientId
-                });
-            }
+            //if (output > maxNo)
+            //{
+            //    error.Add(new ErrorDetails
+            //    {
+            //        ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+            //        FileName = fileName,
+            //        FileTab = fileTab,
+            //        LineNo = Convert.ToString(LineNo - 1),
+            //        PatientNo = PatientId
+            //    });
+            //}
             return output;
         }
         

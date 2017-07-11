@@ -1,0 +1,237 @@
+﻿@model ShieldPortal.ViewModel.RandomizerModel
+@{
+    Layout = "~/Views/Shared/_radetLayoutPage.cshtml";
+}
+
+
+<div class="panel panel-info" style="font-size:12px">
+    <div class="panel-heading clearfix" style="padding:8px 20%">
+        <h5 class="panel-title">RADET Radomizer</h5>
+    </div>
+    <div class="panel-body">
+
+        <div class="row">
+
+            <form class="form-horizontal">
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="sltIP">IP</label>
+                    <div class="col-sm-3">
+                        <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
+                            @if (Model.IP.Count() > 1)
+                            { 
+                                foreach (var ip in Model.IP)
+                                {
+                                    <option value="@ip">@ip</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="@Model.IP.FirstOrDefault()" selected>@Model.IP.FirstOrDefault()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
+                    <div class="col-sm-4">
+                        <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var f in Model.Facility)
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="sltstate">State</label>
+                    <div class="col-sm-3">
+                        <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple>                           
+                            @foreach (var st in Model.LGA.Select(x => x.State).Distinct())
+                            {
+                                <option value="@st.state_code">@st.state_name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
+                    <div class="col-sm-4">
+                        <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var lga in Model.LGA)
+                            {
+                                <option value="@lga.lga_code">@lga.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="sltReportPeriod">Report Period</label>
+                    <div class="col-sm-3">
+                        <select id="sltReportPeriod" class="form-control"> 
+                            @foreach (var p in Model.RadetPeriod)
+                            {
+                                <option value="@p">@p</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <p class="help-block">Set Randomization criteria</p>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txt-active-patients">Percentage of Active Patients</label>
+                    <div class="col-sm-5">
+                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }" placeholder="% of active patients" id="txt-active-patients" class="form-control">
+                        <p class="help-block">Numbers only. Do not include the percent sign</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txt-inactive-patients">Percentage of Inactive Patients </label>
+                    <div class="col-sm-5"> 
+                            <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }" placeholder="% of inactive patients" id="txt-inactive-patients" class="form-control">
+                            <p class="help-block">Numbers only. Do not include the percent sign</p> 
+                    </div>
+                </div>                
+                <div class="form-group">                    
+                    <div class="col-sm-push-3 col-sm-4">
+                        <a class="btn btn-sm btn-info" id="btnRandomizer">Randomize</a>
+                        <i style="display:none" id="loadImg1"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>                        
+                    </div> 
+                </div>
+                <div class="col-sm-offset-3 col-sm-9">
+                    <span style="visibility:hidden;color:red;font-size: 14px;" id="random-summary"></span>
+                </div>
+                <div class="col-sm-push-3 col-sm-2" style="visibility:hidden;margin-left: -8px;">
+                    <a class="btn btn-sm btn-warning" id="btndownload" style="background-color:#b38900; color:#000"><i class="fa fa-download"></i>&nbsp; Download</a>
+                    <i style="display:none" id="loadImg2"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        var downloadableIds = [];
+        var allowCriteria = '@Model.AllowCriteria';
+        if(allowCriteria == 'False')
+        {
+            $("#txt-active-patients").val('80')
+            $("#txt-active-patients").prop("disabled", true);
+            $("#txt-inactive-patients").val('')
+            $("#txt-inactive-patients").prop("disabled", true);
+            $("#txt-inactive-patients").attr("placeholder", "");
+        }
+
+        var ipscount = '@Model.IP.Count()';
+        if (parseInt(ipscount) == 1) {
+            $("#sltIP").prop("disabled", true);
+        }
+        
+
+        $("#btnRandomizer").click(function (e) {
+            $("#loadImg1").show();
+            $("#btnRandomizer").prop('disabled', true);
+            var active = $("#txt-active-patients").val();
+            var inactive = $("#txt-inactive-patients").val();
+
+            var model = {};
+            model.Active = parseInt(active);
+            model.Inactive = parseInt(inactive);
+            model.RadetPeriod = $("#sltReportPeriod option:selected").val();
+
+            let selectedIP = [];
+            $("#sltIP option:selected").each(function () {
+                selectedIP.push($(this).val());
+            });
+
+            let selectedStates = [];
+            $("#sltstate option:selected").each(function () {
+                var val = $(this).val();
+                if (val != '') {
+                    selectedStates.push(val);
+                }
+            });
+
+            let selectedLGA = [];
+            $("#sltLGA option:selected").each(function () {
+                var val = $(this).val();
+                if (val != '') {
+                    selectedLGA.push(val);
+                }                
+            });
+
+            let selectedFacilitties = [];
+            $("#sltFacility option:selected").each(function () {
+                var val = $(this).val();
+                if (val != '') {
+                    selectedFacilitties.push(val);
+                }
+            });
+            model.IPs = selectedIP;
+            model.state_codes = selectedStates;
+            model.lga_codes = selectedLGA;
+            model.facilities = selectedFacilitties;
+
+            $.ajax({
+                url: '/RadetAnalytics/RandomizeRadet',
+                type: 'POST',
+                data: JSON.stringify(model),
+                cache: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+            }).done(function (response) {
+                $("#random-summary").html('')
+                $("#random-summary").append(response.Message);
+                $("#random-summary").css("visibility", "visible");
+                $("#btndownload").css("visibility", "visible");
+                $("#loadImg1").hide();
+                $("#btnRandomizer").prop('disabled', false);
+            }).error(function (xhr, status, err) {
+                alert($.parseJSON(xhr.responseText).Message);
+                console.log($.parseJSON(xhr.responseText).Message);
+            });
+            return false;
+        });
+
+
+        $("#btndownload").click(function (e) {
+            $("#loadImg2").show();
+            $.ajax({
+                url: '/RadetAnalytics/ExportData?useSession=true', //checkboxId.join(),
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false
+            }).done(function (response) {
+                ExportFormattedData(response);
+                $("#loadImg2").hide();
+            }).error(function (xhr, status, err) {
+                alert($.parseJSON(xhr.responseText).Message);
+                console.log($.parseJSON(xhr.responseText).Message);
+            });
+            return false;
+        });
+
+        function ExportFormattedData(csvFile) {
+            var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+            if (navigator.msSaveBlob) { // IE 10+
+                navigator.msSaveBlob(blob, filename);
+            } else {
+                var link = document.createElement("a");
+                if (link.download !== undefined) { // feature detection
+                    // Browsers that support HTML5 download attribute
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", "mydata.csv");
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        }
+    });
+    </script>
+ }

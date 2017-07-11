@@ -1,10 +1,11 @@
-﻿@model List<ShieldPortal.ViewModel.RadetReportModel2>
+﻿@model List<RADET.DAL.Models.RadetReportModel2>
 
 @{
     Layout = "~/Views/Shared/_radetLayoutPage.cshtml";
 }
 
 @section AddToHead{
+    <link href="~/plugins/select2/css/select2.css" rel="stylesheet" />
     <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script type="text/javascript">
         var myconnectionId;
@@ -36,51 +37,111 @@
         }
     </style>
 }
-<div class="panel panel-info">
+<div class="panel panel-info" style="font-size:12px;">
     <div class="panel-heading clearfix" style="padding:8px 20%">
         <h5 class="panel-title">Previous uploads</h5>
     </div>
-    <br />
     <div class="panel-body">
+
+        <div class="row">
+
+            <form class="form-horizontal" style="margin-left: 50px;">
+                <div class="form-group">
+                    <div class="col-sm-push-1 col-sm-3">
+                        <h5 style="text-decoration:underline;">Search Criteria</h5>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="sltIP">IP</label>
+                    <div class="col-sm-4">
+                        <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
+                            @if (Model.Select(x => x.IP).Distinct().Count() > 1)
+                            {
+                                foreach (var ip in Model.Select(x => x.IP).Distinct())
+                                {
+                                    <option value="@ip">@ip</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="@Model.Select(x => x.IP).FirstOrDefault()" selected>@Model.Select(x => x.IP).FirstOrDefault()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
+                    <div class="col-sm-4">
+                        <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var f in Model.Select(x => x.Facility).Distinct())
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="sltstate">State</label>
+                    <div class="col-sm-4">
+                        <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var st in Model.Select(x => x.LGA.State).Distinct())
+                            {
+                                <option value="@st.state_code">@st.state_name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
+                    <div class="col-sm-4">
+                        <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var lga in Model.Select(x => x.LGA).Distinct())
+                            {
+                                <option value="@lga.lga_code">@lga.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label" for="sltReportPeriod">Report Period</label>
+                    <div class="col-sm-4">
+                        <select id="sltReportPeriod" class="form-control">
+                            @foreach (var p in Model.Select(x => x.RadetPeriod).Distinct())
+                            {
+                                <option value="@p">@p</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-push-1 col-sm-2">
+                        <a class="btn btn-sm btn-info" id="btnSearch">Search</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr />
         <div class="table-responsive" style="overflow-x:initial;font-size: 11px;">
             <table class="table table-bordered table-hover" style="width:100%" id="main-table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="chckHead" /></th>
                         <th>IP</th>
                         <th style="width: 250px;">Facility</th>
                         <th>Period</th>
                         <th>Date Uploaded</th>
                         <th>Uploaded By</th>
-                        <th style="width:514px"></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr id='@item.Id'>
-                            <td> @item.IP </td>
-                            <td>@item.Facility</td>
-                            <td>@(item.RadetPeriod)</td>
-                            <td>@string.Format("{0:dd-MM-yyyy hh:mm:ss tt}", item.DateUploaded)</td>
-                            <td>@item.UploadedBy</td>
-                            <td>
-                                <a style="text-transform: capitalize;" class="btn btn-sm btn-info viewPatientListing" id="@item.Id">View List</a>
-                                &nbsp;&nbsp;
-                                <a style="text-transform: capitalize;" class="btn btn-sm btn-info randomizebtn" id="@item.Id">Randomize for DQA</a>
-                                @*&nbsp;&nbsp;
-                                <a class="btn btn-info view-summary" id="@item.Id">View Summary</a>*@
-                                &nbsp;&nbsp;
-                                <a style="text-transform: capitalize;" class="btn btn-sm btn-danger deletebtn" id="@item.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a>
-                            </td>
-                        </tr>
-                    }
+                   
                 </tbody>
             </table>
         </div>
     </div>
 </div>
- 
- 
 
 <div class="modal fade" id="patientListModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" style="width: 97%;border-color: darkorange;" role="document">
@@ -193,29 +254,173 @@
         </div>
     </div>
 </div>
- 
+
 
 @section Scripts{
-    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
-    <script src="~/signalr/hubs"></script>
-
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+<script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script> 
     <script>
         $(document).ready(function () {
-            
-            $("#main-table").DataTable({
-                "iDisplayLength": 100
+
+            var dataTable = {
+                table: null,
+                initialiazeDataTable: function () {
+                    var $tabela = $("#main-table");
+
+                    dataTable.table = $tabela.DataTable({
+                        processing: true,
+                        serverSide: true,
+                        sEcho: 3,
+                        "aLengthMenu": [[50, 100, 200], [50, 100, 200]],
+                        ajax:
+                            {
+                                url: "/RadetAnalytics/SearchRadet",
+                                type: "POST",
+                            },
+                        "aoColumnDefs": [{
+                                   "bSortable": false,
+                                  "aTargets": [ 0 ]
+                              }],
+                        "aoColumns": [
+                            { "mData": "FirstColumn" },
+                            { "mData": "IP" },
+                             { "mData": "Facility" },
+                             { "mData": "RadetPeriod" },
+                             { "mData": "DateUploaded" },
+                             { "mData": "UploadedBy" },
+                              { "mData": "LastColumn" },
+                        ],
+                        "pagingType": "full_numbers"
+                    });
+                },
+                getData: function () {
+                    if (dataTable.table == null)
+                        dataTable.initialiazeDataTable();
+                    else {
+                        dataTable.table.ajax.reload();
+                    }
+                }
+            }
+
+            $('#btnSearch').click(function (e) {
+                //supply the variables here
+                var model = {}; 
+                model.RadetPeriod = $("#sltReportPeriod option:selected").val();
+
+                let selectedIP = [];
+                $("#sltIP option:selected").each(function () {
+                    selectedIP.push($(this).val());
+                });
+                let selectedStates = [];
+                $("#sltstate option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedStates.push(val);
+                    }
+                });
+                let selectedLGA = [];
+                $("#sltLGA option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedLGA.push(val);
+                    }
+                });
+                let selectedFacilitties = [];
+                $("#sltFacility option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedFacilitties.push(val);
+                    }
+                });
+                model.IPs = selectedIP;
+                model.selectedStates = selectedStates;
+                model.lga_codes = selectedLGA;
+                model.facilities = selectedFacilitties;
+                dataTable.table.search(JSON.stringify(model)).draw(false);
+                
             });
+
+            dataTable.getData();
+
+            $('input.form-control.input-sm[type=search]').unbind();
+            //$('#main-table_filter.dataTables_filter').css("visibility", 'hidden');
+            $("#main-table_length.dataTables_length").parent().removeClass("col-sm-6").addClass('col-sm-push-10 col-sm-3');
+            $('#main-table_filter.dataTables_filter').parent().removeClass("col-sm-6").addClass('col-sm-pull-4 col-sm-1');
+            $('#main-table_filter.dataTables_filter').parent().css("padding-left", "20%");
+            $('#main-table_filter.dataTables_filter').html("<a class='btn btn-sm btn-info' id='export'><i class='fa fa-download'></i> &nbsp; &nbsp; Export data</a>");
+             
+
+            var ipscount = '@Model.Select(x=>x.IP).Distinct().Count()';
+            if (parseInt(ipscount) == 1) {
+                $("#sltIP").prop("disabled", true);
+            }
 
             $('.modal-dialog').draggable({
                 handle: ".modal-header"
             });
-            
+
             $("#download_for_dqa").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
             });
 
+            var checkboxId = [];
+            $('#chckHead').click(function () {
+                if (this.checked == false) {
+                    $('.chcktbl:checked').prop('checked', false);
+                    $.each($('.chcktbl:not(:checked)'), function (i, v) {
+                        var index = checkboxId.indexOf(parseInt(v.id));
+                        if (index > -1) {
+                            checkboxId.splice(index, 1);
+                        }
+                    });
+                }
+                else {
+                    checkboxId = []; //cleared the thing
+                    $('.chcktbl:not(:checked)').prop('checked', true);
+                    $.each($('.chcktbl:checked'), function (i, v) {
+                        var index = checkboxId.indexOf(parseInt(v.id));
+                        if (index < 0) {
+                            checkboxId.push(parseInt(v.id));
+                        }
+                    });
+                }
+            });
+
+            $(document).on('click', '.chcktbl', function (e) {
+                $('#chckHead').prop('checked', false);
+                if (this.checked == false) {
+                    //remove it from the array
+                    var index = checkboxId.indexOf(parseInt(this.id))
+                    if (index > -1) {
+                        checkboxId.splice(index, 1);
+                    }
+                }
+                else {
+                    //add to array
+                    checkboxId.push(parseInt(this.id))
+                }
+            });
+
+
+            $("#export").on('click', function (event) {
+                $.ajax({
+                    url: '/RadetAnalytics/ExportData?useSession=true&&radetIds=' + checkboxId.join(),
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    ExportFormattedData(response);
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+
             var selectedRadetId;
             $(".randomizebtn").click(function (e) {
+                selectedRadetId = '';
                 $("#frm_randomize")[0].reset();
                 $("#random-summary").text('');
                 $("#random-summary").css("visibility", "hidden");
@@ -243,7 +448,7 @@
                 return false;
             });
 
-            $(".viewPatientListing").click(function (e) {
+            $(document).on('click', '.viewPatientListing', function (e) {
                 var id = e.currentTarget.id;
                 $.ajax({
                     url: '/RadetAnalytics/RetrieveRadet?id=' + id,
@@ -267,8 +472,8 @@
                 return false;
             });
 
-            $(".deletebtn").click(function (e) {
-               // alert("Confirm delete");
+            $(document).on('click', '.deletebtn', function (e) {
+                // alert("Confirm delete");
 
                 if (confirm('Confirm delete')) {
                     $(e.currentTarget.id).prop("disabled", true);
@@ -285,11 +490,11 @@
                         alert($.parseJSON(xhr.responseText).Message);
                         window.location.reload();
                     });
-                }               
+                }
                 return false;
             });
-  
-              
+
+
             function buildTable(dataList) {
                 $("#output tbody").empty();
                 $.each(dataList, function (i, d) {
@@ -329,6 +534,24 @@
                 )
             }
 
+            function ExportFormattedData(csvFile) {
+                var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+                if (navigator.msSaveBlob) { // IE 10+
+                    navigator.msSaveBlob(blob, filename);
+                } else {
+                    var link = document.createElement("a");
+                    if (link.download !== undefined) { // feature detection
+                        // Browsers that support HTML5 download attribute
+                        var url = URL.createObjectURL(blob);
+                        link.setAttribute("href", url);
+                        link.setAttribute("download", "mydata.csv");
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                }
+            }
         });
     </script>
 }

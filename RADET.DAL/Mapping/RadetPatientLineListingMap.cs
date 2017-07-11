@@ -10,7 +10,7 @@ namespace RADET.DAL.Mapping
             Table("radet_patient_line_listing");
 
             Id(i => i.Id);
-            References(x => x.RadetPatient).Column("RadetPatientId");
+            References(x => x.RadetPatient).Column("RadetPatientId").Not.LazyLoad();
             Map(m => m.ARTStartDate);
             Map(m => m.LastPickupDate);
             Map(m => m.MonthsOfARVRefill);
