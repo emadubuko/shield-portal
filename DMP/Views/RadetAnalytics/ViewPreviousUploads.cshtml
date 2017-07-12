@@ -404,7 +404,7 @@
 
             $("#export").on('click', function (event) {
                 $.ajax({
-                    url: '/RadetAnalytics/ExportData?useSession=true&&radetIds=' + checkboxId.join(),
+                    url: '/RadetAnalytics/ExportData?useSession=false&&radetIds=' + checkboxId.join(),
                     type: 'POST',
                     cache: false,
                     contentType: false,

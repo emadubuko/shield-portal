@@ -101,8 +101,8 @@
                 <div class="col-sm-offset-3 col-sm-9">
                     <span style="visibility:hidden;color:red;font-size: 14px;" id="random-summary"></span>
                 </div>
-                <div class="col-sm-push-3 col-sm-2" style="visibility:hidden;margin-left: -8px;">
-                    <a class="btn btn-sm btn-warning" id="btndownload" style="background-color:#b38900; color:#000"><i class="fa fa-download"></i>&nbsp; Download</a>
+                <div class="col-sm-push-3 col-sm-3" style="margin-left: -8px;">
+                    <a class="btn btn-sm btn-warning" id="btndownload" style="display:none;background-color:#b38900; color:#000"><i class="fa fa-download"></i>&nbsp; Download</a>
                     <i style="display:none" id="loadImg2"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>
                 </div>
             </form>
@@ -132,7 +132,7 @@
 
         $("#btnRandomizer").click(function (e) {
             $("#loadImg1").show();
-            $("#btnRandomizer").prop('disabled', true);
+            $("#btnRandomizer").prop("disabled", true);
             var active = $("#txt-active-patients").val();
             var inactive = $("#txt-inactive-patients").val();
 
@@ -185,11 +185,13 @@
                 $("#random-summary").html('')
                 $("#random-summary").append(response.Message);
                 $("#random-summary").css("visibility", "visible");
-                $("#btndownload").css("visibility", "visible");
+                $("#btndownload").show();
                 $("#loadImg1").hide();
-                $("#btnRandomizer").prop('disabled', false);
+                $("#btnRandomizer").prop("disabled", false);
             }).error(function (xhr, status, err) {
-                alert($.parseJSON(xhr.responseText).Message);
+                $("#loadImg1").hide();
+                alert("a system error occured");
+                //alert($.parseJSON(xhr.responseText).Message);
                 console.log($.parseJSON(xhr.responseText).Message);
             });
             return false;
@@ -206,9 +208,11 @@
                 processData: false
             }).done(function (response) {
                 ExportFormattedData(response);
-                $("#loadImg2").hide();
+                $("#loadImg2").hide();               
             }).error(function (xhr, status, err) {
-                alert($.parseJSON(xhr.responseText).Message);
+                $("#loadImg2").hide();
+                alert("a system error occured");
+                ///alert($.parseJSON(xhr.responseText).Message);
                 console.log($.parseJSON(xhr.responseText).Message);
             });
             return false;

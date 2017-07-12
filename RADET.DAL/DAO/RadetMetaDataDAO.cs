@@ -102,11 +102,11 @@ namespace RADET.DAL.DAO
             return result.ToList();
         }
 
-        public List<T> RetrieveRadetList<T>(List<int> radetIds) where T : class
+        public List<T> RetrieveRadetList<T>(List<int> radetIds, bool selectedForDQAOnly) where T : class
         {
-            ISession session = BuildSession();
+            IStatelessSession session = BuildSession().SessionFactory.OpenStatelessSession();
 
-            var result = session.CreateCriteria<RadetPatientLineListing>("pt")
+            ICriteria criteria = session.CreateCriteria<RadetPatientLineListing>("pt")
                 .Add(Restrictions.In("MetaData.Id", radetIds))
                 .CreateAlias("RadetPatient", "rpt")
                 .CreateAlias("rpt.IP", "ip")
@@ -129,9 +129,16 @@ namespace RADET.DAL.DAO
                    .Add(Projections.Property("rpt.Age_at_start_of_ART_in_years"), "AgeInYears")
                    .Add(Projections.Property("rpt.Age_at_start_of_ART_in_months"), "AgeInMonths")
                    .Add(Projections.Property("rpt.FacilityName"), "Facility")
-                   .Add(Projections.Property("ip.ShortName"), "IPShortName"))
-                .SetResultTransformer(Transformers.AliasToBean<T>())
-                .List<T>() as List<T>;
+                   .Add(Projections.Property("ip.ShortName"), "IPShortName")
+                   .Add(Projections.Property("pt.SelectedForDQA"), "SelectedForDQA"))
+                .SetResultTransformer(Transformers.AliasToBean<T>());
+
+            if (selectedForDQAOnly)
+            {
+                criteria.Add(Restrictions.Eq("pt.SelectedForDQA", selectedForDQAOnly));
+            }
+
+            var result = criteria.List<T>() as List<T>;
             return result;
         }
 
@@ -163,7 +170,7 @@ namespace RADET.DAL.DAO
 
         public IList<RandomizationUpdateModel> SearchPatientLineListing(List<string> IPs, List<string> lga_codes, List<string> facilities, List<string> states, string RadetPeriod = "")
         {
-            ISession session = BuildSession();
+            IStatelessSession session = BuildSession().SessionFactory.OpenStatelessSession();
             ICriteria criteria = session.CreateCriteria<RadetPatientLineListing>("rpt");
             criteria.CreateAlias("MetaData", "rmt");
             criteria.CreateAlias("rmt.LGA", "lga");

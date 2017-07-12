@@ -8,6 +8,7 @@ using RADET.DAL.DAO;
 using RADET.DAL.Entities;
 using RADET.DAL.Models;
 using RADET.DAL.Services;
+using ShieldPortal.Models;
 using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -135,15 +136,16 @@ namespace ShieldPortal.Controllers
                             Id = item.Id,
                             CurrentARTStatus = item.CurrentARTStatus,
                             SelectedForDQA = item.SelectedForDQA,
-                            FacilityName = item.RadetPatient.FacilityName
+                            FacilityName = item.RadetPatient.FacilityName,
+                            MetadataId = item.MetaData.Id
                         }).ToList();
             }
             var result = new RADETProcessor().Randomizetems(list, model.Active, model.Inactive);
-            HttpContext.Session["downloadableIds"] = result.Where(x => x.SelectedForDQA).Select(x => x.MetadataId).ToArray();
+            HttpContext.Session["downloadableIds"] = result.Where(x => x.SelectedForDQA).Select(x => x.MetadataId).Distinct().ToArray();
             return Json(
                 new
                 {
-                    Message = string.Format("{0} active patients selected out {1}; <br /> {2} inactive patients selected out of {3} <br />", result.Count(x => x.CurrentARTStatus == "Active" && x.SelectedForDQA), result.Count(x => x.CurrentARTStatus == "Active"), result.Count(x => x.CurrentARTStatus != "Active" && x.SelectedForDQA), result.Count(x => x.CurrentARTStatus != "Active")),
+                    Message = string.Format("{0} records selected out {1};", result.Count(x => x.SelectedForDQA), result.Count()),
                 },
                 JsonRequestBehavior.AllowGet);
         }
@@ -201,36 +203,54 @@ namespace ShieldPortal.Controllers
             return list;
         }
 
+        
+        [Compress]
         public JsonResult ExportData(bool useSession, string radetIds="")//List<int>
         {
             int[] radetIds_int;
-            if(useSession == false && !string.IsNullOrEmpty(radetIds))
+            bool selectedForDQAOnly = false;
+            if (useSession == false && !string.IsNullOrEmpty(radetIds))
             {
                 radetIds_int = Array.ConvertAll(radetIds.Split(','), int.Parse);
             }
             else
             {
                 radetIds_int = HttpContext.Session["downloadableIds"] as int[];
+                selectedForDQAOnly = true;
             }
             
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("IP, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status,Radet Period");
+            sb.AppendLine("IP, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status,Selected for DQA");
 
             Action<ExportData> _action = (ExportData pt) =>
             {
-                sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},\'{7:dd-MM-yyyy},\'{8:dd-MM-yyyy},{9},{10},{11},{12},{13},{14},{15},\'{16},{17},{18},{19}",
-                                  pt.IPShortName, pt.Facility, pt.PatientId, pt.HospitalNo, pt.Sex,
-                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, pt.RegimenLineAtARTStart, pt.RegimenAtStartOfART, pt.CurrentRegimenLine, pt.CurrentARTRegimen, pt.PregnancyStatus, pt.CurrentViralLoad, pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus, pt.RadetPeriod));
+                sb.AppendLine(string.Format("\'{0}\',\'{1}\',\'{2}\',\'{3}\',\'{4}\',\'{5}\',\'{6}\',\'{7:dd-MM-yyyy},\'{8:dd-MM-yyyy},\'{9}\',\'{10}\',\'{11}\',\'{12}\',\'{13}\',\'{14}\',\'{15}\',\'{16}\',\'{17}\',\'{18}\',\'{19}\'",
+                                  pt.IPShortName, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo :"", !string.IsNullOrEmpty(pt.Sex) ?  pt.Sex : "",
+                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus, !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "", pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus, pt.SelectedForDQA));
             };
 
-            var result = new RadetMetaDataDAO().RetrieveRadetList<ExportData>(radetIds_int.ToList());
+            List<ExportData> result = new List<ViewModel.ExportData>();
+            const int pageSize = 50;
+            int numberOfPages = (radetIds_int.Count() / pageSize) + (radetIds_int.Count() % pageSize == 0 ? 0 : 1);
+            //int currentPage = 0;
+
+            for(int currentPage = 0; currentPage < numberOfPages; currentPage++)
+            {
+                var _d = radetIds_int.Skip(currentPage * pageSize).Take(pageSize).ToList();
+                result.AddRange(new RadetMetaDataDAO().RetrieveRadetList<ExportData>(_d, selectedForDQAOnly));
+            }            
 
             result.ForEach(_action);
 
             var dt = Json(sb.ToString());
             dt.MaxJsonLength = int.MaxValue;
             return dt;
+
+            //HttpResponseMessage response = new HttpResponseMessage();
+            //response.Content = new StringContent(JsonConvert.SerializeObject(sb.ToString())); // new CompressedContent(new StringContent(JsonConvert.SerializeObject(sb.ToString())), "gzip");
+            //return response;
+
             //return Json(sb.ToString(), JsonRequestBehavior.AllowGet,); 
         }
 
@@ -240,6 +260,7 @@ namespace ShieldPortal.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
+        [Compress]
         public JsonResult RetrieveRadet(int id)
         {
             string result = new RadetMetaDataDAO().RetrieveRadetData(id);

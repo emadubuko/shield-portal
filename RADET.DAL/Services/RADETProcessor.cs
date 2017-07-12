@@ -17,9 +17,8 @@ namespace RADET.DAL.Services
     {
         public List<RandomizationUpdateModel> Randomizetems(IList<RandomizationUpdateModel> table, int percent_of_active, int percent_inactive)
         {
-            List<RandomizationUpdateModel> newTable = new List<RandomizationUpdateModel>();
+             List<RandomizationUpdateModel> newTable = new List<RandomizationUpdateModel>();
             RadetMetaDataDAO _dao = new RadetMetaDataDAO();
-            //IList<RadetPatientLineListing> table = _dao.RetrievePatientListingByMetaDataId(MetadataId);
 
             foreach (var item in table) //reset everything
             {
@@ -33,7 +32,7 @@ namespace RADET.DAL.Services
                 foreach (var f in perFacility)
                 {
                     var active = f.ToList().Where(x => x.CurrentARTStatus.Trim() == "Active").ToList(); //table.Where(x => x.CurrentARTStatus.Trim() == "Active").ToList();
-                    var inactive = f.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList(); //table.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList();
+                    var inactive = f.ToList().Where(x => x.CurrentARTStatus.Trim() != "Active").ToList(); //table.Where(x => x.CurrentARTStatus.Trim() != "Active").ToList();
 
                     int no_of_active_to_select = (int)(active.Count * (double)percent_of_active / 100);
                     int no_of_inactive_to_select = (int)(inactive.Count * (double)percent_inactive / 100);
@@ -53,19 +52,38 @@ namespace RADET.DAL.Services
 
                     newTable.AddRange(active);
                     newTable.AddRange(inactive);
+
+                    //selected 1s
+                    List<int> S_1 = active.Where(x => x.SelectedForDQA).Select(x => x.Id).ToList();
+                    S_1.AddRange(inactive.Where(x => x.SelectedForDQA).Select(x => x.Id).ToList());
+
+                    //select 0s
+                    List<int> S_0 = active.Where(x => !x.SelectedForDQA).Select(x => x.Id).ToList();
+                    S_0.AddRange(inactive.Where(x => !x.SelectedForDQA).Select(x => x.Id).ToList());
+
+                    if(S_1.Count > 0)
+                    {
+                        StringBuilder sb_1 = new StringBuilder();
+                        sb_1.AppendLine(string.Format("Update radet_patient_line_listing set SelectedForDQA =1 where Id in ({0});", string.Join(",", S_1)));
+                        int i = _dao.RunSQL(sb_1.ToString());
+                        if (i != S_1.Count())
+                            throw new ApplicationException("an error occured");
+                    }
+                    
+                    if(S_0.Count > 0)
+                    {
+                        StringBuilder sb_0 = new StringBuilder();
+                        sb_0.AppendLine(string.Format("Update radet_patient_line_listing set SelectedForDQA =0 where Id in ({0});", string.Join(",", S_0)));
+                       int i = _dao.RunSQL(sb_0.ToString());
+                        if (i != S_0.Count())
+                            throw new ApplicationException("an error occured");
+                    }                    
                 }
             }
              
-
-            StringBuilder sb = new StringBuilder();
-            foreach (var item in newTable)
-            {
-                sb.AppendLine(string.Format("Update radet_patient_line_listing set SelectedForDQA = '{0}' where Id = '{1}';", item.SelectedForDQA ? 1 : 0, item.Id));
-            }
-
-           int i = _dao.RunSQL(sb.ToString()); //.BulkUpdate(newTable);
-            if (i != newTable.Count)
-                throw new ApplicationException("an error occured");
+            //    int i = _dao.RunSQL(sb.ToString()); //.BulkUpdate(newTable);
+            //if (i != newTable.Count)
+            //    throw new ApplicationException("an error occured");
 
             return newTable;
         }
@@ -169,7 +187,7 @@ namespace RADET.DAL.Services
                     });
                 }
 
-               // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
+                // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
                 _lga = FindLGA(LGAs, lga, state);
                 if (_lga == null)
                 {
@@ -194,7 +212,7 @@ namespace RADET.DAL.Services
                         LineNo = "",
                         PatientNo = ""
                     });
-                } 
+                }
 
                 List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic", "Sheet1" }; //confirm the names
                 foreach (var worksheet in worksheets)
@@ -319,9 +337,9 @@ namespace RADET.DAL.Services
             if (DateTime.TryParse(input, out output) == false)
             {
                 string[] formats = { "dd/MM/yyyy" };
-                if(DateTime.TryParseExact(input, formats, new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
+                if (DateTime.TryParseExact(input, formats, new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
                 {
-                    if(DateTime.TryParseExact(input, "dd-MM-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
+                    if (DateTime.TryParseExact(input, "dd-MM-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
                     {
                         error.Add(new ErrorDetails
                         {
@@ -331,8 +349,8 @@ namespace RADET.DAL.Services
                             LineNo = Convert.ToString(LineNo - 1),
                             PatientNo = PatientId
                         });
-                    }                    
-                }                
+                    }
+                }
                 return null;
             }
             return output;
@@ -368,10 +386,10 @@ namespace RADET.DAL.Services
             //}
             return output;
         }
-        
+
         private string ValidateGenerics(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, List<string> valids, bool allowEmpty, bool caseSensitive, ref List<ErrorDetails> error)
         {
-            if(allowEmpty && (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim())))
+            if (allowEmpty && (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim())))
             {
                 return input;
             }
@@ -400,6 +418,6 @@ namespace RADET.DAL.Services
             }
             return output;
         }
-  
+
     }
 }
