@@ -46,8 +46,9 @@ namespace ShieldPortal.Controllers
                 ViewBag.Orgs = new List<Organizations> { profile.Organization };
                 ViewBag.showdelete = false;
             }
-            List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
-            return View(list);
+            //List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
+            //return View(list);
+            return View();
         }
 
         public ActionResult ViewPreviousUploads()
@@ -88,28 +89,48 @@ namespace ShieldPortal.Controllers
         public ActionResult Randomizer()
         {
             IList<RadetMetaData> RadetMetadata = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                RadetMetadata = new RadetMetaDataDAO().RetrieveAll();
-            }
-            else
+            List<string> ips = null;
+
+            if (!User.IsInRole("shield_team") && !(User.IsInRole("sys_admin")))
             {
                 var profile = new Services.Utils().GetloggedInProfile();
-                RadetMetadata = new RadetMetaDataDAO().SearchRadetData(new List<string> { profile.Organization.ShortName }, null, null, "");
+                ips = new List<string> { profile.Organization.ShortName };
             }
+            
+            RadetMetadata = new RadetMetaDataDAO().SearchRadetData(ips, null, null, "");
+
             var ip = RadetMetadata.Select(x => x.IP.ShortName).Distinct();
             var facility = RadetMetadata.Select(x => x.Facility).Distinct();
             var radetPeriod = RadetMetadata.Select(x => x.RadetPeriod).Distinct();
             var lga = RadetMetadata.Select(x => x.LGA).Distinct();
 
-            return View(new RandomizerModel
+            RandomizerDropDownModel model = new RandomizerDropDownModel();
+            model.IPLocation = new List<IPLGAFacility>();
+            model.AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"));
+
+            foreach (var rdt in RadetMetadata)
             {
-                LGA = lga,
-                RadetPeriod = radetPeriod,
-                Facility = facility,
-                IP = ip,
-                AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"))
-            });
+                if (!model.IPLocation.Any(a => a.IP == rdt.IP.ShortName && a.FacilityName == rdt.Facility && a.LGA == rdt.LGA && a.RadetPeriod == rdt.RadetPeriod))
+                {
+                    model.IPLocation.Add(
+                new IPLGAFacility
+                {
+                    FacilityName = rdt.Facility,
+                    IP = rdt.IP.ShortName,
+                    LGA = rdt.LGA,
+                    RadetPeriod = rdt.RadetPeriod
+                });
+                }
+            }
+            return View(model);
+            //return View(new RandomizerModel
+            //{
+            //    LGA = lga,
+            //    RadetPeriod = radetPeriod,
+            //    Facility = facility,
+            //    IP = ip,
+            //    AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"))
+            //});
         }
 
         /// <summary>
@@ -246,12 +267,6 @@ namespace ShieldPortal.Controllers
             var dt = Json(sb.ToString());
             dt.MaxJsonLength = int.MaxValue;
             return dt;
-
-            //HttpResponseMessage response = new HttpResponseMessage();
-            //response.Content = new StringContent(JsonConvert.SerializeObject(sb.ToString())); // new CompressedContent(new StringContent(JsonConvert.SerializeObject(sb.ToString())), "gzip");
-            //return response;
-
-            //return Json(sb.ToString(), JsonRequestBehavior.AllowGet,); 
         }
 
         /// <summary>
@@ -261,10 +276,14 @@ namespace ShieldPortal.Controllers
         /// <returns></returns>
         [HttpPost]
         [Compress]
+        [AllowAnonymous]
         public JsonResult RetrieveRadet(int id)
         {
             string result = new RadetMetaDataDAO().RetrieveRadetData(id);
-            return Json(result);
+            var dt = Json(result);
+            dt.MaxJsonLength = int.MaxValue;
+            return dt;
+            //return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

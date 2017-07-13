@@ -261,6 +261,65 @@
 <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script> 
     <script>
         $(document).ready(function () {
+            var J_state_data =  [...new Set(@Html.Raw(Json.Encode(Model.Select(x=>x.LGA))))];
+            var state_data =@Html.Raw(Json.Encode(Model.Select(x=>x.LGA).Distinct()));
+            var model_data =@Html.Raw(Json.Encode(Model));
+
+            //State
+            $("#sltstate").change(function (e) {
+                $("#sltLGA").html("")
+                if (e.currentTarget.selectedOptions.length == 0){
+                    $.each(state_data, function (i, a) {
+                        $("#sltLGA").append($('<option>', {
+                            value: a.lga_code,
+                            text: a.DisplayName
+                        }));
+                    });
+                    return;
+                }
+                $("#sltstate option:selected").each(function (c) {
+                    var val = $(this).val();
+
+                    $.grep(state_data , function(a){
+                        if(a.State.state_code == val){
+                            $("#sltLGA").append($('<option>', {
+                                value: a.lga_code,
+                                text: a.DisplayName
+                            }));
+                            return true;
+                        }
+                    });
+                });
+            });
+
+            //LGA
+            $("#sltLGA").change(function (e) {
+                $("#sltFacility").html("")
+                if (e.currentTarget.selectedOptions.length == 0){
+                    $.each(state_data, function (i, a) {
+                        $("#sltstate").append($('<option>', {
+                            value: a.State.state_code,
+                            text: a.State.state_name
+                        }));
+                    });
+                    return;
+                }
+                $("#sltLGA option:selected").each(function (c) {
+                    var val = $(this).val();
+
+                    $.grep(state_data , function(a){
+                        if(a.State.state_code == val){
+                            $("#sltstate").append($('<option>', {
+                                value: a.State.state_code,
+                                text: a.State.state_name
+                            }));
+                            return true;
+                        }
+                    });
+                });
+            });
+
+
 
             var dataTable = {
                 table: null,
@@ -304,7 +363,7 @@
 
             $('#btnSearch').click(function (e) {
                 //supply the variables here
-                var model = {}; 
+                var model = {};
                 model.RadetPeriod = $("#sltReportPeriod option:selected").val();
 
                 let selectedIP = [];
@@ -333,11 +392,11 @@
                     }
                 });
                 model.IPs = selectedIP;
-                model.selectedStates = selectedStates;
+                model.state_codes = selectedStates;
                 model.lga_codes = selectedLGA;
                 model.facilities = selectedFacilitties;
                 dataTable.table.search(JSON.stringify(model)).draw(false);
-                
+
             });
 
             dataTable.getData();
@@ -348,7 +407,7 @@
             $('#main-table_filter.dataTables_filter').parent().removeClass("col-sm-6").addClass('col-sm-pull-4 col-sm-1');
             $('#main-table_filter.dataTables_filter').parent().css("padding-left", "20%");
             $('#main-table_filter.dataTables_filter').html("<a class='btn btn-sm btn-info' id='export'><i class='fa fa-download'></i> &nbsp; &nbsp; Export data</a>");
-             
+
 
             var ipscount = '@Model.Select(x=>x.IP).Distinct().Count()';
             if (parseInt(ipscount) == 1) {

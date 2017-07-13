@@ -55,6 +55,10 @@ namespace RADET.DAL.DAO
                 {
                     criteria.Add(Restrictions.In("pt.Facility", search.facilities));
                 }
+                if (search.state_codes != null && search.state_codes.Count > 0)
+                {
+                    criteria.Add(Restrictions.In("lga.State.state_code", search.state_codes));
+                }
                 if (!string.IsNullOrEmpty(search.RadetPeriod))
                 {
                     criteria.Add(Restrictions.Eq("pt.RadetPeriod", search.RadetPeriod));
@@ -186,7 +190,7 @@ namespace RADET.DAL.DAO
             if(states !=null && states.Count > 0)
             {                
                 criteria.CreateAlias("lga.State", "st");
-                criteria.Add(Restrictions.In("st.state_name", states));
+                criteria.Add(Restrictions.In("st.state_code", states));
             }
             if (facilities != null && facilities.Count > 0)
             {

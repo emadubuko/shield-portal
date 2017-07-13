@@ -50,5 +50,19 @@ namespace ShieldPortal.ViewModel
     }
 
     
+    public class IPLGAFacility
+    {
+        public string IP { get; set; }
+        public string FacilityName { get; set; }
+        public CommonUtil.Entities.LGA LGA { get; set; }
+        public string RadetPeriod { get; set; }
+    }     
+
+    public class RandomizerDropDownModel
+    {
+        public List<IPLGAFacility> IPLocation { get; set; }
+        public bool AllowCriteria { get; set; }
+    }
+
 }
  
