@@ -2,7 +2,23 @@
 @{
     Layout = "~/Views/Shared/_radetLayoutPage.cshtml";
 }
+@section AddToHead{
+    <script type="text/javascript">
+        {
+            var ipscount = '@Model.IPLocation.Select(x=>x.IP).Distinct().Count()';
 
+            var model_data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.IPLocation, Newtonsoft.Json.Formatting.None,
+                       new Newtonsoft.Json.JsonSerializerSettings()
+            {
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                           ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
+            }));
+            var downloadableIds = [];
+            var allowCriteria = '@Model.AllowCriteria';
+        }
+    </script>
+    
+}
 
 <div class="panel panel-info" style="font-size:12px">
     <div class="panel-heading clearfix" style="padding:8px 20%">
@@ -20,7 +36,7 @@
                         <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
                             @if (Model.IPLocation.Select(ip => ip.IP).Distinct().Count() > 1)
                             {
-                                foreach (var ip in Model.IPLocation.Select(ip=> ip.IP).Distinct())
+                                foreach (var ip in Model.IPLocation.Select(ip => ip.IP).Distinct())
                                 {
                                     <option value="@ip">@ip</option>
                                 }
@@ -35,7 +51,7 @@
                     <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
                     <div class="col-sm-4">
                         <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
-                            @foreach (var f in Model.IPLocation.Select(f=>f.FacilityName).Distinct())
+                            @foreach (var f in Model.IPLocation.Select(f => f.FacilityName).Distinct())
                             {
                                 <option value="@f">@f</option>
                             }
@@ -57,7 +73,7 @@
                     <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
                     <div class="col-sm-4">
                         <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
-                            @foreach (var lga in Model.IPLocation.Select(l=>l.LGA).Distinct())
+                            @foreach (var lga in Model.IPLocation.Select(l => l.LGA).Distinct())
                             {
                                 <option value="@lga.lga_code">@lga.DisplayName</option>
                             }
@@ -69,7 +85,7 @@
                     <label class="col-sm-1 control-label" for="sltReportPeriod">Report Period</label>
                     <div class="col-sm-3">
                         <select id="sltReportPeriod" class="form-control">
-                            @foreach (var p in Model.IPLocation.Select(r=>r.RadetPeriod).Distinct())
+                            @foreach (var p in Model.IPLocation.Select(r => r.RadetPeriod).Distinct())
                             {
                                 <option value="@p">@p</option>
                             }
@@ -111,10 +127,10 @@
 </div>
 @section Scripts{
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
+<script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script>
         $(document).ready(function () {
-            var downloadableIds = [];
-            var allowCriteria = '@Model.AllowCriteria';
+             
             if(allowCriteria == 'False')
             {
                 $("#txt-active-patients").val('80')
@@ -123,227 +139,7 @@
                 $("#txt-inactive-patients").prop("disabled", true);
                 $("#txt-inactive-patients").attr("placeholder", "");
             }
-
-            var lga_data =@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.IPLocation.Select(x=>x.LGA).Distinct(), Newtonsoft.Json.Formatting.None,
-                       new Newtonsoft.Json.JsonSerializerSettings()
-                       {
-                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
-                           ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
-                       }));
              
-            var model_data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.IPLocation, Newtonsoft.Json.Formatting.None,
-                       new Newtonsoft.Json.JsonSerializerSettings()
-            {
-                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
-                           ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
-            }));
-
-            function checkforLga(data, lga_code) { 
-                var _extz =  $.grep(data , function(a){
-                    return a.lga_code == lga_code;
-                });
-                return _extz;
-            }
-
-            function checkforuniqueness(data, key) { 
-                var _extz =  $.grep(data , function(a){
-                    return a == key;
-                });
-                return _extz;
-            }
-
-            //IP
-            $("#sltIP").change(function (e) {
-                var _buildLGA_ = [];
-                var _buildFacility_ = [];
-                var _buildState_ = [];
-
-                $("#sltLGA").html(""); 
-                $("#sltFacility").html("");
-                $("#sltstate").html("");
-                $("#sltstate").select2("val", "");
-                $("#sltLGA").select2("val", "");
-                $("#sltFacility").select2("val", "");
-
-                if (e.currentTarget.selectedOptions.length == 0){
-                    $.each(model_data, function (i, a) {
-                        if(checkforuniqueness(_buildState_, a.LGA.State.state_code).length == 0){
-                            _buildState_.push(a.LGA.State.state_code);
-                            $("#sltstate").append($('<option>', {
-                                value: a.LGA.State.state_code,
-                                text: a.LGA.State.state_name
-                            }));
-                        }
-                        if(checkforLga(_buildLGA_, a.LGA.lga_code).length == 0){
-                            _buildLGA_.push(a.LGA);
-                            $("#sltLGA").append($('<option>', {
-                                value: a.LGA.lga_code,
-                                text: a.LGA.DisplayName
-                            }));
-                        }
-                        if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                            _buildFacility_.push(a.FacilityName);
-                            $("#sltFacility").append($('<option>', {
-                                value: a.FacilityName,
-                                text: a.FacilityName
-                            }));
-                        }
-                    });                    
-                    return;
-                }
-                $("#sltIP option:selected").each(function (c) {
-                    var val = $(this).val();
-
-                    $.grep(model_data , function(a){
-                                                    
-                        if(a.IP == val){
-                            if(checkforuniqueness(_buildState_, a.LGA.State.state_code).length == 0){
-                                _buildState_.push(a.LGA.State.state_code);
-                                $("#sltstate").append($('<option>', {
-                                    value: a.LGA.State.state_code,
-                                    text: a.LGA.State.state_name
-                                }));
-                            }
-                            if(checkforLga(_buildLGA_, a.LGA.lga_code).length == 0){
-                                _buildLGA_.push(a.LGA);
-                                $("#sltLGA").append($('<option>', {
-                                    value: a.LGA.lga_code,
-                                    text: a.LGA.DisplayName
-                                }));                                
-                            }
-                            if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                                _buildFacility_.push(a.FacilityName);
-                                $("#sltFacility").append($('<option>', {
-                                    value: a.FacilityName,
-                                    text: a.FacilityName
-                                }));
-                            }
-                            return true;
-                        }
-                    });
-                });
-            });
-
-
-            //State
-            $("#sltstate").change(function (e) {
-                var _buildLGA_ = [];
-                var _buildFacility_ = [];
-
-                $("#sltLGA").html(""); 
-                $("#sltFacility").html("");
-                $("#sltLGA").select2("val", "");
-                $("#sltFacility").select2("val", "");
-
-                if (e.currentTarget.selectedOptions.length == 0){
-                    $.each(model_data, function (i, a) {
-                        if(checkforLga(_buildLGA_, a.LGA.lga_code).length == 0){
-                            _buildLGA_.push(a.LGA);
-                            $("#sltLGA").append($('<option>', {
-                                value: a.LGA.lga_code,
-                                text: a.LGA.DisplayName
-                            }));
-                        }
-                        if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                            _buildFacility_.push(a.FacilityName);
-                            $("#sltFacility").append($('<option>', {
-                                value: a.FacilityName,
-                                text: a.FacilityName
-                            }));
-                        }
-                    });                    
-                    return;
-                }
-                $("#sltstate option:selected").each(function (c) {
-                    var val = $(this).val();
-
-                    $.grep(model_data , function(a){
-                                                    
-                        if(a.LGA.State.state_code == val){
-                            if(checkforLga(_buildLGA_, a.LGA.lga_code).length == 0){
-                                _buildLGA_.push(a.LGA);
-                                $("#sltLGA").append($('<option>', {
-                                    value: a.LGA.lga_code,
-                                    text: a.LGA.DisplayName
-                                }));                                
-                            }
-                            if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                                _buildFacility_.push(a.FacilityName);
-                                $("#sltFacility").append($('<option>', {
-                                    value: a.FacilityName,
-                                    text: a.FacilityName
-                                }));
-                            }
-                            return true;
-                        }
-                    });
-                });
-            });
-            
-            //LGA
-            $("#sltLGA").change(function (e) {
-                var _buildFacility_ = [];
-
-                $("#sltFacility").html("");
-                $("#sltFacility").select2("val", "");
-
-                if (e.currentTarget.selectedOptions.length == 0){
-                    if($("#sltstate")[0].selectedOptions.length == 0){
-                        $.each(model_data, function (i, a) {
-                            if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                                _buildFacility_.push(a.FacilityName);
-                                $("#sltFacility").append($('<option>', {
-                                    value: a.FacilityName,
-                                    text: a.FacilityName
-                                }));
-                            }
-                        });
-                    }
-                    else{
-                        $("#sltstate option:selected").each(function (c) {
-                            var val = $(this).val();
-
-                            $.grep(model_data , function(a){                                                    
-                                if(a.LGA.State.state_code == val){
-                                    
-                                    if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                                        _buildFacility_.push(a.FacilityName);
-                                        $("#sltFacility").append($('<option>', {
-                                            value: a.FacilityName,
-                                            text: a.FacilityName
-                                        }));
-                                    }
-                                    return true;
-                                }
-                            });
-                        });
-                    }
-                    return;
-                }
-                $("#sltLGA option:selected").each(function (c) {
-                    var val = $(this).val();
-
-                    $.grep(model_data , function(a){                                                    
-                        if(a.LGA.lga_code == val){                            
-                            if(checkforuniqueness(_buildFacility_, a.FacilityName).length == 0){
-                                _buildFacility_.push(a.FacilityName);
-                                $("#sltFacility").append($('<option>', {
-                                    value: a.FacilityName,
-                                    text: a.FacilityName
-                                }));
-                            }
-                            return true;
-                        }
-                    });
-                });
-            });
-            
-
-            var ipscount = '@Model.IPLocation.Select(x=>x.IP).Distinct().Count()';
-            if (parseInt(ipscount) == 1) {
-                $("#sltIP").prop("disabled", true);
-            }
-
 
             $("#btnRandomizer").click(function (e) {
                 $("#loadImg1").show();
@@ -411,8 +207,7 @@
                 });
                 return false;
             });
-
-
+             
             $("#btndownload").click(function (e) {
                 $("#loadImg2").show();
                 $.ajax({
@@ -431,26 +226,7 @@
                     console.log($.parseJSON(xhr.responseText).Message);
                 });
                 return false;
-            });
-
-            function ExportFormattedData(csvFile) {
-                var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-                if (navigator.msSaveBlob) { // IE 10+
-                    navigator.msSaveBlob(blob, filename);
-                } else {
-                    var link = document.createElement("a");
-                    if (link.download !== undefined) { // feature detection
-                        // Browsers that support HTML5 download attribute
-                        var url = URL.createObjectURL(blob);
-                        link.setAttribute("href", url);
-                        link.setAttribute("download", "mydata.csv");
-                        link.style.visibility = 'hidden';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    }
-                }
-            }
+            }); 
         });
     </script>
 }

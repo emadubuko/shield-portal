@@ -8,8 +8,18 @@
     <link href="~/plugins/select2/css/select2.css" rel="stylesheet" />
     <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script type="text/javascript">
-        var myconnectionId;
+        {
+            var ipscount = '@Model.Select(x=>x.IP).Distinct().Count()';
+            var model_data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject((ViewBag.selectModel as ShieldPortal.ViewModel.RandomizerDropDownModel).IPLocation, Newtonsoft.Json.Formatting.None,
+                       new Newtonsoft.Json.JsonSerializerSettings()
+            {
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                           ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
+            }));
+           
+        }
     </script>
+
     <style>
         .form-control {
             color: #29b6f6;
@@ -212,115 +222,14 @@
     </div>
 </div>
 
-<div class="modal fade" id="randomizeModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" style="width: 50%;border-color: darkorange;" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="col-sm-push-3 col-sm-3" style="text-decoration:underline;font-size: 16px;color: darkblue;font-weight: bold;">DQA Randomizer</span>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="frm_randomize" class="form-horizontal" style="margin-right: 50px;margin-top: 20px;">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="txt-active-patients">Percentage of Active Patients</label>
-                    <div class="col-sm-5">
-                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }" placeholder="% of active patients" id="txt-active-patients" class="form-control">
-                        <p class="help-block">Numbers only. Do not include the percent sign</p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="txt-inactive-patients">Percentage of Inactive Patients </label>
-                    <div class="col-sm-5">
-                        <input type="number" min="0" max="100" onkeyUp="if (this.value > 99) { this.text = this.value = this.value.slice(0, 2); return false; }" placeholder="% of inactive patients" id="txt-inactive-patients" class="form-control">
-                        <p class="help-block">Numbers only. Do not include the percent sign</p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-3 col-sm-3">
-                        <button class="btn btn-primary" type="submit" id="btn-compute-random">Submit</button>
-                    </div>
-                </div>
-                <div class="col-sm-offset-3 col-sm-9">
-                    <span style="visibility:hidden;color:red;font-size: 20px;" id="random-summary"></span>
-                </div>
-            </form>
-            <div class="modal-footer">
-                <div>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"> Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @section Scripts{
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
 <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script> 
+ <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script>
         $(document).ready(function () {
-            var J_state_data =  [...new Set(@Html.Raw(Json.Encode(Model.Select(x=>x.LGA))))];
-            var state_data =@Html.Raw(Json.Encode(Model.Select(x=>x.LGA).Distinct()));
-            var model_data =@Html.Raw(Json.Encode(Model));
-
-            //State
-            $("#sltstate").change(function (e) {
-                $("#sltLGA").html("")
-                if (e.currentTarget.selectedOptions.length == 0){
-                    $.each(state_data, function (i, a) {
-                        $("#sltLGA").append($('<option>', {
-                            value: a.lga_code,
-                            text: a.DisplayName
-                        }));
-                    });
-                    return;
-                }
-                $("#sltstate option:selected").each(function (c) {
-                    var val = $(this).val();
-
-                    $.grep(state_data , function(a){
-                        if(a.State.state_code == val){
-                            $("#sltLGA").append($('<option>', {
-                                value: a.lga_code,
-                                text: a.DisplayName
-                            }));
-                            return true;
-                        }
-                    });
-                });
-            });
-
-            //LGA
-            $("#sltLGA").change(function (e) {
-                $("#sltFacility").html("")
-                if (e.currentTarget.selectedOptions.length == 0){
-                    $.each(state_data, function (i, a) {
-                        $("#sltstate").append($('<option>', {
-                            value: a.State.state_code,
-                            text: a.State.state_name
-                        }));
-                    });
-                    return;
-                }
-                $("#sltLGA option:selected").each(function (c) {
-                    var val = $(this).val();
-
-                    $.grep(state_data , function(a){
-                        if(a.State.state_code == val){
-                            $("#sltstate").append($('<option>', {
-                                value: a.State.state_code,
-                                text: a.State.state_name
-                            }));
-                            return true;
-                        }
-                    });
-                });
-            });
-
-
-
+              
             var dataTable = {
                 table: null,
                 initialiazeDataTable: function () {
@@ -407,12 +316,7 @@
             $('#main-table_filter.dataTables_filter').parent().removeClass("col-sm-6").addClass('col-sm-pull-4 col-sm-1');
             $('#main-table_filter.dataTables_filter').parent().css("padding-left", "20%");
             $('#main-table_filter.dataTables_filter').html("<a class='btn btn-sm btn-info' id='export'><i class='fa fa-download'></i> &nbsp; &nbsp; Export data</a>");
-
-
-            var ipscount = '@Model.Select(x=>x.IP).Distinct().Count()';
-            if (parseInt(ipscount) == 1) {
-                $("#sltIP").prop("disabled", true);
-            }
+             
 
             $('.modal-dialog').draggable({
                 handle: ".modal-header"
@@ -421,30 +325,7 @@
             $("#download_for_dqa").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
             });
-
-            var checkboxId = [];
-            $('#chckHead').click(function () {
-                if (this.checked == false) {
-                    $('.chcktbl:checked').prop('checked', false);
-                    $.each($('.chcktbl:not(:checked)'), function (i, v) {
-                        var index = checkboxId.indexOf(parseInt(v.id));
-                        if (index > -1) {
-                            checkboxId.splice(index, 1);
-                        }
-                    });
-                }
-                else {
-                    checkboxId = []; //cleared the thing
-                    $('.chcktbl:not(:checked)').prop('checked', true);
-                    $.each($('.chcktbl:checked'), function (i, v) {
-                        var index = checkboxId.indexOf(parseInt(v.id));
-                        if (index < 0) {
-                            checkboxId.push(parseInt(v.id));
-                        }
-                    });
-                }
-            });
-
+              
             $(document).on('click', '.chcktbl', function (e) {
                 $('#chckHead').prop('checked', false);
                 if (this.checked == false) {
@@ -459,8 +340,7 @@
                     checkboxId.push(parseInt(this.id))
                 }
             });
-
-
+             
             $("#export").on('click', function (event) {
                 $.ajax({
                     url: '/RadetAnalytics/ExportData?useSession=false&&radetIds=' + checkboxId.join(),
@@ -476,37 +356,7 @@
                 });
                 return false;
             });
-
-            var selectedRadetId;
-            $(".randomizebtn").click(function (e) {
-                selectedRadetId = '';
-                $("#frm_randomize")[0].reset();
-                $("#random-summary").text('');
-                $("#random-summary").css("visibility", "hidden");
-                $('#randomizeModal').modal('show');
-                selectedRadetId = e.currentTarget.id;
-            });
-
-            $("#btn-compute-random").click(function (e) {
-                var active = $("#txt-active-patients").val();
-                var inactive = $("#txt-inactive-patients").val();
-
-                $.ajax({
-                    url: '/RadetAnalytics/RandomizeRadet?id=' + selectedRadetId + "&&active=" + active + "&&inactive=" + inactive,
-                    type: 'POST',
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                }).done(function (response) {
-                    $("#random-summary").append(response);
-                    $("#random-summary").css("visibility", "visible");
-                }).error(function (xhr, status, err) {
-                    alert($.parseJSON(xhr.responseText).Message);
-                    console.log($.parseJSON(xhr.responseText).Message);
-                });
-                return false;
-            });
-
+              
             $(document).on('click', '.viewPatientListing', function (e) {
                 var id = e.currentTarget.id;
                 $.ajax({
@@ -532,8 +382,7 @@
             });
 
             $(document).on('click', '.deletebtn', function (e) {
-                // alert("Confirm delete");
-
+               
                 if (confirm('Confirm delete')) {
                     $(e.currentTarget.id).prop("disabled", true);
                     $.ajax({
@@ -552,65 +401,7 @@
                 }
                 return false;
             });
-
-
-            function buildTable(dataList) {
-                $("#output tbody").empty();
-                $.each(dataList, function (i, d) {
-                    var html = "<tr> ";
-                    if (d.SelectedForDQA) {
-                        html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
-                    }
-                    else {
-                        html += "<td>-</td>";
-                    }
-                    html += "<td>" + d.PatientId + "</td>";
-                    html += "<td>" + d.HospitalNo + "</td>";
-                    html += "<td>" + d.Sex + "</td>";
-                    html += "<td>" + d.Age_at_start_of_ART_in_years + "</td>";
-                    html += "<td>" + d.Age_at_start_of_ART_in_months + "</td>";
-                    html += "<td>" + d.ARTStartDate + "</td>";
-                    html += "<td>" + d.LastPickupDate + "</td>";
-                    html += "<td>" + d.MonthsOfARVRefill + "</td>";
-                    html += "<td>" + d.RegimenLineAtARTStart + "</td>";
-                    html += "<td>" + d.RegimenAtStartOfART + "</td>";
-                    html += "<td>" + d.CurrentRegimenLine + "</td>";
-                    html += "<td>" + d.CurrentARTRegimen + "</td>";
-                    html += "<td>" + d.PregnancyStatus + "</td>";
-                    html += "<td>" + d.CurrentViralLoad + "</td>";
-                    html += "<td>" + d.DateOfCurrentViralLoad + "</td>";
-                    html += "<td>" + d.ViralLoadIndication + "</td>";
-                    html += "<td>" + d.CurrentARTStatus + "</td>";
-                    html += "<td>" + d.RadetYear + "</td>";
-                    html += "</tr>";
-                    $("#output tbody").append(html);
-                });
-            }
-
-            function uuidv4() {
-                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-                )
-            }
-
-            function ExportFormattedData(csvFile) {
-                var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-                if (navigator.msSaveBlob) { // IE 10+
-                    navigator.msSaveBlob(blob, filename);
-                } else {
-                    var link = document.createElement("a");
-                    if (link.download !== undefined) { // feature detection
-                        // Browsers that support HTML5 download attribute
-                        var url = URL.createObjectURL(blob);
-                        link.setAttribute("href", url);
-                        link.setAttribute("download", "mydata.csv");
-                        link.style.visibility = 'hidden';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    }
-                }
-            }
+             
         });
     </script>
 }

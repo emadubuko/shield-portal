@@ -45,15 +45,35 @@ namespace ShieldPortal.Controllers
             {
                 ViewBag.Orgs = new List<Organizations> { profile.Organization };
                 ViewBag.showdelete = false;
-            }
-            //List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
-            //return View(list);
+            }  
             return View();
         }
 
         public ActionResult ViewPreviousUploads()
         {
             List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
+
+            RandomizerDropDownModel model = new RandomizerDropDownModel();
+            model.IPLocation = new List<IPLGAFacility>();
+            model.AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"));
+
+            foreach (var rdt in list)
+            {
+                if (!model.IPLocation.Any(a => a.IP == rdt.IP && a.FacilityName == rdt.Facility && a.LGA == rdt.LGA && a.RadetPeriod == rdt.RadetPeriod))
+                {
+                    model.IPLocation.Add(
+                new IPLGAFacility
+                {
+                    FacilityName = rdt.Facility,
+                    IP = rdt.IP,
+                    LGA = rdt.LGA,
+                    RadetPeriod = rdt.RadetPeriod
+                });
+                }
+            }
+
+            ViewBag.selectModel = model;
+
             return View(list);
         }
 
@@ -98,12 +118,7 @@ namespace ShieldPortal.Controllers
             }
             
             RadetMetadata = new RadetMetaDataDAO().SearchRadetData(ips, null, null, "");
-
-            var ip = RadetMetadata.Select(x => x.IP.ShortName).Distinct();
-            var facility = RadetMetadata.Select(x => x.Facility).Distinct();
-            var radetPeriod = RadetMetadata.Select(x => x.RadetPeriod).Distinct();
-            var lga = RadetMetadata.Select(x => x.LGA).Distinct();
-
+             
             RandomizerDropDownModel model = new RandomizerDropDownModel();
             model.IPLocation = new List<IPLGAFacility>();
             model.AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"));
@@ -123,6 +138,11 @@ namespace ShieldPortal.Controllers
                 }
             }
             return View(model);
+
+            //var ip = RadetMetadata.Select(x => x.IP.ShortName).Distinct();
+            //var facility = RadetMetadata.Select(x => x.Facility).Distinct();
+            //var radetPeriod = RadetMetadata.Select(x => x.RadetPeriod).Distinct();
+            //var lga = RadetMetadata.Select(x => x.LGA).Distinct();
             //return View(new RandomizerModel
             //{
             //    LGA = lga,

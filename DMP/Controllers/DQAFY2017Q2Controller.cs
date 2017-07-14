@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
-    [Authorize(Roles = "shield_team,sys_admin,ip")]
+    [Authorize]
     public class DQAFY2017Q2Controller : Controller
     {
         public ActionResult Index()
@@ -131,8 +131,10 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public async Task<ActionResult> DownloadDQATool(List<PivotUpload> data)
         {
-            string filename = "SHIELD_DQA_Q2.xlsm";
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/" + filename);
+            //string filename = "SHIELD_DQA_Q2.xlsm";
+            //string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/" + filename);
+
+            string path = System.Web.Hosting.HostingEnvironment.MapPath(System.Configuration.ConfigurationManager.AppSettings["DQAToolQ3"]);
 
             var profile = new Services.Utils().GetloggedInProfile();
 

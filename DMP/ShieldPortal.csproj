@@ -976,6 +976,7 @@
     <Content Include="Scripts\loader.js" />
     <Content Include="Scripts\dmpScripts\ReportTableLogic.js" />
     <Content Include="Scripts\profile-display.js" />
+    <Content Include="Scripts\randmonizer_utility.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\dmpScripts\trainingreportTableLogic.js" />
     <Content Include="Scripts\Ultilities.js" />
@@ -1048,6 +1049,9 @@
     <Content Include="Report\Template\DQA FY2017 Q2\DATIM PIVOT TABLE SAMPLE.xlsx" />
     <Content Include="Report\Template\DQA FY2017 Q2\SHIELD_DQA_Q2.xlsm" />
     <Content Include="Report\Template\DQA FY2017 Q2\USER GUIDE FOR THE DATA QUALITY ASSESSMENT TOOLv2May42017.pdf" />
+    <Content Include="Report\Template\DQA FY2017 Q3\Data Quality Assessment tool_v3.xlsm" />
+    <Content Include="Report\Template\DQA FY2017 Q3\DATIM PIVOT TABLE SAMPLE.xlsx" />
+    <Content Include="Report\Template\DQA FY2017 Q3\USER GUIDE FOR THE DATA QUALITY ASSESSMENT TOOLv2May42017.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
