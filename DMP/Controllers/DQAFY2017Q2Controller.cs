@@ -118,34 +118,27 @@ namespace ShieldPortal.Controllers
             }
             return View(previousUploads);
         }
-         
+
 
         public ActionResult DownloadDQATool()
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotUpload> sites = new List<PivotUpload>();
-             sites = Utility.RetrievePivotTablesForDQATool(profile.Organization.Id, "Q2(Jan-Mar)");
+            if (User.IsInRole("ip"))
+                sites = Utility.RetrievePivotTablesForDQATool(profile.Organization.Id, "Q2(Jan-Mar)");
+            else
+                sites = Utility.RetrievePivotTablesForDQATool(0, "Q2(Jan-Mar)");
             return View(sites);
         }
 
         [HttpPost]
         public async Task<ActionResult> DownloadDQATool(List<PivotUpload> data)
-        {
-            //string filename = "SHIELD_DQA_Q2.xlsm";
-            //string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/" + filename);
-
-            string path = System.Web.Hosting.HostingEnvironment.MapPath(System.Configuration.ConfigurationManager.AppSettings["DQAToolQ3"]);
-
+        {            
             var profile = new Services.Utils().GetloggedInProfile();
+            //the radet period is on the config file
+            string file = await new BDQAQ2().GenerateDQA(data, profile.Organization);
 
-            using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
-            {
-
-                //the radet period is hardcoded inside
-                string file = await new BDQAQ2().GenerateDQA(data, stream, profile.Organization);
-
-                return Json(file, JsonRequestBehavior.AllowGet);
-            }
+            return Json(file, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -161,7 +154,7 @@ namespace ShieldPortal.Controllers
                     filename = "DATIM PIVOT TABLE SAMPLE.xlsx";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q2/" + filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q3/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {

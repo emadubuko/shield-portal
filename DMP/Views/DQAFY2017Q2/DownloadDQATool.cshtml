@@ -22,7 +22,10 @@
     <div class="panel panel-success">
         <div class="panel-heading clearfix" style="padding:8px 20%">
             <h5 class="panel-title">DQA download page</h5>
-            <a class="btn btn-sm btn-white downloadDQA" style="float:right">Download Tool</a>
+            <div style="float:right">
+                <a class="btn btn-sm btn-white downloadDQA">Download Tool</a>
+                <i style="display:none" id="loadImg"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>
+            </div>            
         </div>
         <div class="panel-body">
             <div class="table-responsive" style="overflow:initial">
@@ -30,6 +33,7 @@
                     <thead>
                         <tr>
                             <th></th>
+                            <th>IP</th>
                             <th>State</th>
                             <th>Lga</th>
                             <th>Site</th>
@@ -44,6 +48,7 @@
                             {
                                 <tr>
                                     <td><input type="checkbox" class="checkbox" id="@item.Id" /></td>
+                                    <td>@item.IP</td>
                                     <td>@item.State</td>
                                     <td>@item.Lga</td>
                                     <td> @item.FacilityName </td>
@@ -75,7 +80,7 @@
                 "iDisplayLength": 50,
                 "language": {
                     "lengthMenu": " ",
-                    "zeroRecords": "No pivot table has been uploaded for FY2017 Q2.",
+                    "zeroRecords": "No pivot table has been uploaded for FY2017 Q3.",
                     "infoEmpty": " "
                 }
             })
@@ -104,15 +109,12 @@
             });
 
             $(".downloadDQA").click(function(e){
-
+                $("#loadImg").show()
                 if(selectedSites.length == 0){
                     alert("No site selected yet.");
                     return;
                 }
-
-                //var model ={};
-                //model.selectedFacilities = selectedSites;
-
+                 
                 $.ajax({
                     url: '/DQAFY2017Q2/DownloadDQATool',
                     type: 'POST',
@@ -120,7 +122,8 @@
                     data: JSON.stringify(selectedSites),
                     cache: false,
                 }).done(function (file) {
-                    window.location = '/Report/Template/DQA FY2017 Q2/'+ file;
+                    window.location = '/Report/Template/DQA FY2017 Q3/'+ file;
+                    $("#loadImg").hide()
                 }).error(function (xhr, status, err) {
                     alert($.parseJSON(xhr.responseText).Message);
                     console.log($.parseJSON(xhr.responseText).Message);

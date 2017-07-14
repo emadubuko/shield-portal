@@ -7,7 +7,7 @@ namespace RADET.DAL.Models
     {
         public int Id { get; set; }
         public string CurrentARTStatus { get; set; }
-        public bool SelectedForDQA { get; set; }
+        public bool RandomlySelect { get; set; }
         public string IP { get; set; }
         public string FacilityName { get; set; }
         public int MetadataId { get; set; }

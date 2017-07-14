@@ -302,13 +302,22 @@ namespace DQA.DAL.Business
 
         public static List<PivotUpload> RetrievePivotTablesForDQATool(int ip_id, string quarter)
         {
-            var pivotTableUpload = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.IP == ip_id && x.Quarter == quarter);
+            dqa_pivot_table_upload pivotTableUpload = null;
+            if (ip_id != 0)
+            {
+                pivotTableUpload = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.IP == ip_id && x.Quarter == quarter);
+            }
+            else
+            {
+                pivotTableUpload = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == quarter);
+            }
+            
             if(pivotTableUpload != null)
             {
                 var result = (from table in pivotTableUpload.dqa_pivot_table.OrderByDescending(x=>x.SelectedForDQA)
                              select new PivotUpload
                              {
-                                 Id = table.Id,
+                                 Id = table.Id,                                  
                                  State = table.HealthFacility.lga.state.state_name,
                                  Lga = table.HealthFacility.lga.lga_name,
                                  IP = table.HealthFacility.ImplementingPartner.ShortName,
@@ -342,7 +351,7 @@ namespace DQA.DAL.Business
                                      select new UploadList
                                      {
                                          IP = item.ImplementingPartner.ShortName,
-                                         Period = item.Quarter + " " + item.Year,
+                                         Period = item.Quarter,
                                          DateUploaded = item.DateUploaded,
                                          UploadedBy = new ProfileDAO().Retrieve(item.UploadedBy).FullName,
                                          id = item.Id.ToString(),

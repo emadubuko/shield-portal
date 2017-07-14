@@ -13,7 +13,7 @@ using System.Collections.Concurrent;
 
 namespace CommonUtil.DAO
 {
-    /*
+   /* 
     public class RadetUploadReportDAO : BaseDAO<RadetUploadReport, int>
     {
         public bool DeleteRecord(int id)

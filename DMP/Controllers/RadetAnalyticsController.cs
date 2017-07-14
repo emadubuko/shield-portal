@@ -176,17 +176,17 @@ namespace ShieldPortal.Controllers
                         {
                             Id = item.Id,
                             CurrentARTStatus = item.CurrentARTStatus,
-                            SelectedForDQA = item.SelectedForDQA,
+                            RandomlySelect = item.RandomlySelect,
                             FacilityName = item.RadetPatient.FacilityName,
                             MetadataId = item.MetaData.Id
                         }).ToList();
             }
             var result = new RADETProcessor().Randomizetems(list, model.Active, model.Inactive);
-            HttpContext.Session["downloadableIds"] = result.Where(x => x.SelectedForDQA).Select(x => x.MetadataId).Distinct().ToArray();
+            HttpContext.Session["downloadableIds"] = result.Where(x => x.RandomlySelect).Select(x => x.MetadataId).Distinct().ToArray();
             return Json(
                 new
                 {
-                    Message = string.Format("{0} records selected out {1};", result.Count(x => x.SelectedForDQA), result.Count()),
+                    Message = string.Format("{0} records selected out {1};", result.Count(x => x.RandomlySelect), result.Count()),
                 },
                 JsonRequestBehavior.AllowGet);
         }
@@ -219,11 +219,11 @@ namespace ShieldPortal.Controllers
 
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
             {
-                previousUploads = metaDao.RetrieveRadetUpload("Q2 FY17", IP);
+                previousUploads = metaDao.RetrieveRadetUpload(RadetPeriod, 0);
             }
             else
             {
-                previousUploads = metaDao.RetrieveRadetUpload("Q2 FY17", profile.Organization.Id);
+                previousUploads = metaDao.RetrieveRadetUpload(RadetPeriod, profile.Organization.Id);
             }
 
             List<RadetReportModel2> list = new List<RadetReportModel2>();
@@ -245,11 +245,15 @@ namespace ShieldPortal.Controllers
         }
 
         
+        
+        /// <param name="useSession"></param>
+        /// <param name="radetIds"></param>
+        /// <returns></returns>
         [Compress]
         public JsonResult ExportData(bool useSession, string radetIds="")//List<int>
         {
             int[] radetIds_int;
-            bool selectedForDQAOnly = false;
+            bool RandomlySelectOnly = false;
             if (useSession == false && !string.IsNullOrEmpty(radetIds))
             {
                 radetIds_int = Array.ConvertAll(radetIds.Split(','), int.Parse);
@@ -257,18 +261,18 @@ namespace ShieldPortal.Controllers
             else
             {
                 radetIds_int = HttpContext.Session["downloadableIds"] as int[];
-                selectedForDQAOnly = true;
+                RandomlySelectOnly = true;
             }
             
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("IP, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status,Selected for DQA");
+            sb.AppendLine("IP, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status");
 
             Action<ExportData> _action = (ExportData pt) =>
             {
-                sb.AppendLine(string.Format("\'{0}\',\'{1}\',\'{2}\',\'{3}\',\'{4}\',\'{5}\',\'{6}\',\'{7:dd-MM-yyyy},\'{8:dd-MM-yyyy},\'{9}\',\'{10}\',\'{11}\',\'{12}\',\'{13}\',\'{14}\',\'{15}\',\'{16}\',\'{17}\',\'{18}\',\'{19}\'",
+                sb.AppendLine(string.Format("\'{0}\',\'{1}\',\'{2}\',\'{3}\',\'{4}\',\'{5}\',\'{6}\',\'{7:dd-MM-yyyy},\'{8:dd-MM-yyyy},\'{9}\',\'{10}\',\'{11}\',\'{12}\',\'{13}\',\'{14}\',\'{15}\',\'{16}\',\'{17}\',\'{18}\'",
                                   pt.IPShortName, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo :"", !string.IsNullOrEmpty(pt.Sex) ?  pt.Sex : "",
-                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus, !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "", pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus, pt.SelectedForDQA));
+                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus, !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "", pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus));
             };
 
             List<ExportData> result = new List<ViewModel.ExportData>();
@@ -279,7 +283,7 @@ namespace ShieldPortal.Controllers
             for(int currentPage = 0; currentPage < numberOfPages; currentPage++)
             {
                 var _d = radetIds_int.Skip(currentPage * pageSize).Take(pageSize).ToList();
-                result.AddRange(new RadetMetaDataDAO().RetrieveRadetList<ExportData>(_d, selectedForDQAOnly));
+                result.AddRange(new RadetMetaDataDAO().RetrieveRadetList<ExportData>(_d, RandomlySelectOnly));
             }            
 
             result.ForEach(_action);

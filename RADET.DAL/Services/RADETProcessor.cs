@@ -15,6 +15,7 @@ namespace RADET.DAL.Services
 {
     public class RADETProcessor
     {
+         
         public List<RandomizationUpdateModel> Randomizetems(IList<RandomizationUpdateModel> table, int percent_of_active, int percent_inactive)
         {
              List<RandomizationUpdateModel> newTable = new List<RandomizationUpdateModel>();
@@ -22,7 +23,7 @@ namespace RADET.DAL.Services
 
             foreach (var item in table) //reset everything
             {
-                item.SelectedForDQA = false;
+                item.RandomlySelect = false;
             }
 
             var perIp = table.GroupBy(x => x.IP);
@@ -43,28 +44,28 @@ namespace RADET.DAL.Services
 
                     foreach (var item in active.Take(no_of_active_to_select))
                     {
-                        item.SelectedForDQA = true;
+                        item.RandomlySelect = true;
                     }
                     foreach (var item in inactive.Take(no_of_inactive_to_select))
                     {
-                        item.SelectedForDQA = true;
+                        item.RandomlySelect = true;
                     }
 
                     newTable.AddRange(active);
                     newTable.AddRange(inactive);
 
                     //selected 1s
-                    List<int> S_1 = active.Where(x => x.SelectedForDQA).Select(x => x.Id).ToList();
-                    S_1.AddRange(inactive.Where(x => x.SelectedForDQA).Select(x => x.Id).ToList());
+                    List<int> S_1 = active.Where(x => x.RandomlySelect).Select(x => x.Id).ToList();
+                    S_1.AddRange(inactive.Where(x => x.RandomlySelect).Select(x => x.Id).ToList());
 
                     //select 0s
-                    List<int> S_0 = active.Where(x => !x.SelectedForDQA).Select(x => x.Id).ToList();
-                    S_0.AddRange(inactive.Where(x => !x.SelectedForDQA).Select(x => x.Id).ToList());
+                    List<int> S_0 = active.Where(x => !x.RandomlySelect).Select(x => x.Id).ToList();
+                    S_0.AddRange(inactive.Where(x => !x.RandomlySelect).Select(x => x.Id).ToList());
 
                     if(S_1.Count > 0)
                     {
                         StringBuilder sb_1 = new StringBuilder();
-                        sb_1.AppendLine(string.Format("Update radet_patient_line_listing set SelectedForDQA =1 where Id in ({0});", string.Join(",", S_1)));
+                        sb_1.AppendLine(string.Format("Update radet_patient_line_listing set RandomlySelect =1 where Id in ({0});", string.Join(",", S_1)));
                         int i = _dao.RunSQL(sb_1.ToString());
                         if (i != S_1.Count())
                             throw new ApplicationException("an error occured");
@@ -73,7 +74,7 @@ namespace RADET.DAL.Services
                     if(S_0.Count > 0)
                     {
                         StringBuilder sb_0 = new StringBuilder();
-                        sb_0.AppendLine(string.Format("Update radet_patient_line_listing set SelectedForDQA =0 where Id in ({0});", string.Join(",", S_0)));
+                        sb_0.AppendLine(string.Format("Update radet_patient_line_listing set RandomlySelect =0 where Id in ({0});", string.Join(",", S_0)));
                        int i = _dao.RunSQL(sb_0.ToString());
                         if (i != S_0.Count())
                             throw new ApplicationException("an error occured");
@@ -87,9 +88,7 @@ namespace RADET.DAL.Services
 
             return newTable;
         }
-
-
-
+         
         public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, out RadetMetaData metadata, out List<ErrorDetails> error)
         {
             metadata = new RadetMetaData();
@@ -297,6 +296,8 @@ namespace RADET.DAL.Services
                     }
                 }
 
+                MarkSelectedItems(ref lineItems);
+
                 metadata = new RadetMetaData
                 {
                     Facility = facilityName,
@@ -306,8 +307,17 @@ namespace RADET.DAL.Services
                     RadetPeriod = RadetPeriod
                 };
             }
-
             return error.Count == 0;
+        }
+
+        void MarkSelectedItems(ref List<RadetPatientLineListing> table)
+        {
+            string no_to_select = ExcelHelper.GetRandomizeChartNUmber(table.Count.ToString());
+            table.Shuffle();
+            foreach (var item in table.Take(Convert.ToInt32(no_to_select)))
+            {
+                item.SelectedForDQA = true;
+            }
         }
 
         static CommonUtil.Entities.LGA FindLGA(IList<CommonUtil.Entities.LGA> lgas, string lgaName, string state)

@@ -86,15 +86,29 @@ namespace RADET.DAL.DAO
         {
             IQueryable<RadetMetaData> result = null;
             ISession session = BuildSession();
-            result = session.Query<RadetMetaData>().Where(x => x.PatientLineListing.Count > 0 && x.RadetPeriod == RadetPeriod);
-
-            if (IP != 0)
+            if (IP != 0 && !string.IsNullOrEmpty(facility))
             {
-                result = result.Where(x => x.IP.Id == IP);
+                result = session.Query<RadetMetaData>().Where(x => x.PatientLineListing.Count > 0
+                                                                    //&& x.RadetPeriod == RadetPeriod
+                                                                    && x.IP.Id == IP && x.IP.Id == IP);
             }
-            if (!string.IsNullOrEmpty(facility))
+            else if (!string.IsNullOrEmpty(facility))
             {
-                result = result.Where(x => x.Facility == facility);
+                result = session.Query<RadetMetaData>().Where(x => x.PatientLineListing.Count > 0
+                                                                    //&& x.RadetPeriod == RadetPeriod
+                                                                    && x.Facility == facility);
+            }
+            else if (IP != 0)
+            {
+                result = session.Query<RadetMetaData>().Where(x => x.PatientLineListing.Count > 0
+                                                                    //&& x.RadetPeriod == RadetPeriod
+                                                                    && x.IP.Id == IP);
+            }
+            else
+            {
+                result = session.Query<RadetMetaData>().Where(x => x.PatientLineListing.Count > 0
+                                                                   //&& x.RadetPeriod == RadetPeriod
+                                                                   );
             }
             return result;
         }
@@ -106,7 +120,7 @@ namespace RADET.DAL.DAO
             return result.ToList();
         }
 
-        public List<T> RetrieveRadetList<T>(List<int> radetIds, bool selectedForDQAOnly) where T : class
+        public List<T> RetrieveRadetList<T>(List<int> radetIds, bool RandomlySelectOnly) where T : class
         {
             IStatelessSession session = BuildSession().SessionFactory.OpenStatelessSession();
 
@@ -134,12 +148,12 @@ namespace RADET.DAL.DAO
                    .Add(Projections.Property("rpt.Age_at_start_of_ART_in_months"), "AgeInMonths")
                    .Add(Projections.Property("rpt.FacilityName"), "Facility")
                    .Add(Projections.Property("ip.ShortName"), "IPShortName")
-                   .Add(Projections.Property("pt.SelectedForDQA"), "SelectedForDQA"))
+                   .Add(Projections.Property("pt.RandomlySelect"), "RandomlySelect"))
                 .SetResultTransformer(Transformers.AliasToBean<T>());
 
-            if (selectedForDQAOnly)
+            if (RandomlySelectOnly)
             {
-                criteria.Add(Restrictions.Eq("pt.SelectedForDQA", selectedForDQAOnly));
+                criteria.Add(Restrictions.Eq("pt.RandomlySelect", RandomlySelectOnly));
             }
 
             var result = criteria.List<T>() as List<T>;
@@ -206,7 +220,7 @@ namespace RADET.DAL.DAO
                     .Add(Projections.Property("rpt.CurrentARTStatus"), "CurrentARTStatus")
                     .Add(Projections.Property("ip.ShortName"), "IP")
                     .Add(Projections.Property("rmt.Facility"), "FacilityName")
-                    .Add(Projections.Property("rpt.SelectedForDQA"), "SelectedForDQA"))
+                    .Add(Projections.Property("rpt.RandomlySelect"), "RandomlySelect"))
                 .SetResultTransformer(Transformers.AliasToBean<RandomizationUpdateModel>())
                 .List<RandomizationUpdateModel>() as List<RandomizationUpdateModel>;
         }

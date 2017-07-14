@@ -36,7 +36,7 @@ namespace ShieldPortal.ViewModel
         public DateTime? DateOfCurrentViralLoad { get; set; }
         public string ViralLoadIndication { get; set; }
         public string CurrentARTStatus { get; set; }
-        public bool SelectedForDQA { get; set; }
+        public bool RandomlySelect { get; set; }
         public string RadetPeriod { get; set; }
     }
 

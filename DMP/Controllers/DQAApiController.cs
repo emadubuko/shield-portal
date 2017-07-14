@@ -142,8 +142,7 @@ namespace ShieldPortal.Controllers
             }
             return messages;
         }
-
-
+        
         public HttpResponseMessage GetTestFile()
         {
             HttpResponseMessage result = null;

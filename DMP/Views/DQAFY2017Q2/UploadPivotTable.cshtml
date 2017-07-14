@@ -40,13 +40,13 @@
                     </div>
                     <div class="col-sm-3">
                         <select class="form-control" id="selected_quarter"  required disabled> 
-                            <option value="Q1(Oct - Dec)">October - December</option>
-                            <option value="Q2(Jan-Mar)" selected>January - March</option>
-                            <option value="Q3(Apr-Jun)">April - June</option>
-                            <option value="Q4(Jul-Sep)">July - September</option>
+                            <option value="Q1 FY17">Q1 FY17</option>
+                            <option value="Q2 FY17" >Q2 FY17</option>
+                            <option value="Q3 FY17" selected>Q3 FY17</option>
+                            <option value="Q4 FY17">Q4 FY17</option>
                         </select>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-2" style="visibility:hidden">
                         <select class="form-control" id="selected_year" required disabled> 
                             <option value="2017" selected>2017</option>
                             <option value="2018">2018</option>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="col-sm-push-1 col-sm-1">
-                    <button class="btn btn-success" id="btnSubmit" type="submit">Upload</button>
+                    <a class="btn btn-success" id="btnSubmit">Upload</a>
                 </div>
             </form>
             <br /><br />
@@ -123,10 +123,14 @@
             $("#progress").hide();
             $("#pivotTable").hide();
 
-            $("form").submit(function () {
+            $("#btnSubmit").click(function () {
                 $("#output tbody").empty();
                 $("#progress").show();
-                var formData = new FormData($(this)[0]);
+                
+                var data = new FormData();
+                var file = $('form input[type=file]')[0].files[0];
+                data.append('file', file);
+
                 var selectedQuarter = $("#selected_quarter").val();
                 var selectedYear = $("#selected_year").val();
                 $("#btnSubmit").prop("disabled", true);
@@ -134,7 +138,7 @@
                 $.ajax({
                     url: '/api/dqaapi/ProcesssPivotTable?selectedQuater=' + selectedQuarter + '&&selectedYear=' + selectedYear,
                     type: 'POST',
-                    data: formData,
+                    data: data,
                     async: true,
                     cache: false,
                     contentType: false,

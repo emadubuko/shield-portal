@@ -235,6 +235,13 @@
                 initialiazeDataTable: function () {
                     var $tabela = $("#main-table");
 
+                    var model = {};
+                    let selectedIP = [];
+                    $("#sltIP option:selected").each(function () {
+                        selectedIP.push($("#sltIP")[0].selectedOptions[0].value);
+                    });
+                    model.IPs = selectedIP;
+
                     dataTable.table = $tabela.DataTable({
                         processing: true,
                         serverSide: true,
@@ -245,6 +252,7 @@
                                 url: "/RadetAnalytics/SearchRadet",
                                 type: "POST",
                             },
+                        "oSearch": {"sSearch": JSON.stringify(model)},
                         "aoColumnDefs": [{
                                    "bSortable": false,
                                   "aTargets": [ 0 ]
