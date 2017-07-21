@@ -17,11 +17,21 @@ namespace CommonUtil.DAO
             HealthFacility sdf = null;
             ISession session = BuildSession();
 
-            ICriteria criteria = session.CreateCriteria<HealthFacility>().Add(Expression.Eq("Name", name));
+            ICriteria criteria = session.CreateCriteria<HealthFacility>().Add(Restrictions.Eq("Name", name));
             sdf = criteria.UniqueResult<HealthFacility>();
 
             return sdf;
         }
+
+        public List<HealthFacility> RetrievebyIP(int IP_id)
+        { 
+            ISession session = BuildSession(); 
+            ICriteria criteria = session.CreateCriteria<HealthFacility>().Add(Restrictions.Eq("Organization.Id", IP_id));
+            var sdfs = criteria.List<HealthFacility>() as List<HealthFacility>;
+            return sdfs;
+        }
+
+
 
         public HealthFacility RetrievebyCode(string code)
         {

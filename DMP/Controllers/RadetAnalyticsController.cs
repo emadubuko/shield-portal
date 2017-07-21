@@ -12,6 +12,7 @@ using ShieldPortal.Models;
 using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,55 @@ namespace ShieldPortal.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult RADETScoreCard()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public string RADETScoreCardData()
+        { 
+            var data = new RadetMetaDataDAO().GetScoreCard();
+            List<dynamic> mydata = new List<dynamic>();
+             
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                foreach (DataRow dr in data.Rows)
+                {
+                    var dtt = new
+                    {
+                        ShortName = dr[0],
+                        RadetPeriod = dr[1],
+                        FacilityCount = dr[2],
+                        ARTSites = dr[3]
+
+                    };
+                    mydata.Add(dtt);
+                }
+            }
+            else
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                foreach (DataRow dr in data.Rows)
+                {
+                    if(dr[0].ToString() == profile.Organization.ShortName)
+                    {
+                        var dtt = new
+                        {
+                            ShortName = dr[0],
+                            RadetPeriod = dr[1],
+                            FacilityCount = dr[2],
+                            ARTSites = dr[3]
+
+                        };
+                        mydata.Add(dtt);
+                    }                   
+                }
+            }
+             
+            return JsonConvert.SerializeObject(mydata);
         }
 
         public ActionResult UploadPage()
@@ -92,8 +142,9 @@ namespace ShieldPortal.Controllers
 
             list.ForEach(x =>
             {
+                
                 x.FirstColumn = string.Format("<input type='checkbox' id='{0}' class='chcktbl' />", x.Id);
-                x.LastColumn = string.Format("<td><a style='text-transform: capitalize;' class='btn btn-sm btn-info viewPatientListing' id='{0}'>View Entries</a>&nbsp;&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a></td>", x.Id);
+                x.LastColumn = string.Format("<td><a style='text-transform: capitalize;' class='btn btn-sm btn-info viewPatientListing' id='{0}'>View Entries</a>&nbsp;&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a> <i style='display:none' id='loadImg2'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i></td>", x.Id);
             });
 
             return JsonConvert.SerializeObject(
@@ -266,12 +317,12 @@ namespace ShieldPortal.Controllers
             
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("IP, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status");
+            sb.AppendLine("IP, State, LGA, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status");
 
             Action<ExportData> _action = (ExportData pt) =>
             {
-                sb.AppendLine(string.Format("\'{0}\',\'{1}\',\'{2}\',\'{3}\',\'{4}\',\'{5}\',\'{6}\',\'{7:dd-MM-yyyy},\'{8:dd-MM-yyyy},\'{9}\',\'{10}\',\'{11}\',\'{12}\',\'{13}\',\'{14}\',\'{15}\',\'{16}\',\'{17}\',\'{18}\'",
-                                  pt.IPShortName, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo :"", !string.IsNullOrEmpty(pt.Sex) ?  pt.Sex : "",
+                sb.AppendLine(string.Format("\'{0}\',\'{1}\',\'{2}\',\'{3}\',\'{4}\',\'{5}\',\'{6}\',\'{7},\'{8},\'{9:dd-MM-yyyy}\',\'{10:dd-MM-yyyy}\',\'{11}\',\'{12}\',\'{13}\',\'{14}\',\'{15}\',\'{16}\',\'{17}\',\'{18}\', \'{19}\', \'{20}\'",
+                                  pt.IPShortName, pt.State, pt.LGA, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo :"", !string.IsNullOrEmpty(pt.Sex) ?  pt.Sex : "",
                                   pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus, !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "", pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus));
             };
 

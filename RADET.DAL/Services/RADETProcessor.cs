@@ -89,6 +89,7 @@ namespace RADET.DAL.Services
             return newTable;
         }
          
+
         public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, out RadetMetaData metadata, out List<ErrorDetails> error)
         {
             metadata = new RadetMetaData();
@@ -139,12 +140,7 @@ namespace RADET.DAL.Services
                         LineNo = "",
                         PatientNo = ""
                     });
-                }
-                else
-                {
-                    facilityName = facilityName.Substring(3);
-                }
-
+                }  
                 string ipshortname = ExcelHelper.ReadCell(mainWorksheet, 24, 19);
                 if (ipshortname == "CCRN")
                 {
@@ -186,6 +182,18 @@ namespace RADET.DAL.Services
                     });
                 }
 
+                if (lga.Length < 3)
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "invalid Lga selected",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
+                }
+
                 // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
                 _lga = FindLGA(LGAs, lga, state);
                 if (_lga == null)
@@ -199,7 +207,13 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 }
-
+                string[] f_n = facilityName.Split(' ');
+                string lga_substr = lga.Split(' ')[0];
+                if (f_n[0] == lga_substr)
+                {
+                    facilityName = facilityName.Substring(3);
+                } 
+                
                 string RadetPeriod = ExcelHelper.ReadCell(mainWorksheet, 7, 19);
                 if (string.IsNullOrEmpty(RadetPeriod))
                 {
@@ -250,20 +264,20 @@ namespace RADET.DAL.Services
                                 LastPickupDate = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 13), "Last Pick up Date", fileName, worksheet.Name, row, patientId, ref error),
                                 MonthsOfARVRefill = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 14), "Month of ARV Refil", fileName, worksheet.Name, row, patientId, 10, ref error),
 
-                                RegimenLineAtARTStart = ExcelHelper.ReadCellText(worksheet, row, 15), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 15), "Regimen Line At ART Start", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
-                                RegimenAtStartOfART = ExcelHelper.ReadCellText(worksheet, row, 16), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
-                                CurrentRegimenLine = ExcelHelper.ReadCellText(worksheet, row, 17), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 17), "Current Regimen Line", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
-                                CurrentARTRegimen = ExcelHelper.ReadCellText(worksheet, row, 18), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 18), "Current ART Regimen", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
+                                RegimenLineAtARTStart = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 15), "Regimen Line At ART Start", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
+                                RegimenAtStartOfART =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
+                                CurrentRegimenLine =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 17), "Current Regimen Line", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
+                                CurrentARTRegimen =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 18), "Current ART Regimen", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
 
-                                PregnancyStatus = ExcelHelper.ReadCellText(worksheet, row, 19), // ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 19), "Pregnancy Status", fileName, worksheet.Name, row, patientId, validPregnancyStatus, true, false, ref error),
+                                PregnancyStatus =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 19), "Pregnancy Status", fileName, worksheet.Name, row, patientId, validPregnancyStatus, true, false, ref error),
                                 CurrentViralLoad = ExcelHelper.ReadCellText(worksheet, row, 20),
                                 ViralLoadIndication = ExcelHelper.ReadCellText(worksheet, row, 22),
-                                CurrentARTStatus = ExcelHelper.ReadCellText(worksheet, row, 23), //ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 23), "Current ART Status", fileName, worksheet.Name, row, patientId, validARTStatus, false, true, ref error),
+                                CurrentARTStatus = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 23), "Current ART Status", fileName, worksheet.Name, row, patientId, validARTStatus, false, true, ref error),
                                 RadetPatient = new RadetPatient
                                 {
                                     PatientId = patientId,
                                     HospitalNo = ExcelHelper.ReadCellText(worksheet, row, 8),
-                                    Sex = ExcelHelper.ReadCellText(worksheet, row, 9), //ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 9), "Sex", fileName, worksheet.Name, row, patientId, validSex, false, false, ref error),
+                                    Sex = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 9), "Sex", fileName, worksheet.Name, row, patientId, validSex, false, false, ref error),
                                     Age_at_start_of_ART_in_years = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 10), "Age at start of ART in years", fileName, worksheet.Name, row, patientId, 120, ref error),
                                     Age_at_start_of_ART_in_months = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 11), "Age at start of ART in months", fileName, worksheet.Name, row, patientId, 60, ref error),
                                     FacilityName = facilityName,

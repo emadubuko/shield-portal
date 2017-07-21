@@ -22,7 +22,7 @@ namespace BWReport.DAL.Entities
             }
         }
 
-        public virtual HealthFacility HealthFacility { get; set; }
+        public virtual bwrHealthFacility HealthFacility { get; set; }
 
         public virtual ReportUploads ReportUpload { get; set; }
 
@@ -40,7 +40,7 @@ namespace BWReport.DAL.Entities
             {
                 if (TOTAL_HTC_TST_POS == 0)
                     return 0;
-                return (Convert.ToDecimal(Total_Tx_New) / Convert.ToDecimal(TOTAL_HTC_TST_POS)) * 100;
+                return Math.Round(100 * Convert.ToDecimal(Total_Tx_New) / Convert.ToDecimal(TOTAL_HTC_TST_POS));
             }
         }
 
@@ -95,7 +95,7 @@ namespace BWReport.DAL.Entities
             {
                 if (Tested == 0)
                     return 0;
-                return (Convert.ToDecimal(Positive) / Convert.ToDecimal(Tested)) * 100;
+                return Math.Round((100 * Convert.ToDecimal(Positive) / Convert.ToDecimal(Tested)), 1);
             }
         }
         public OrganizationType FacilityType { get; set; }

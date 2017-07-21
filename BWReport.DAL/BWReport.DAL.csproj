@@ -70,12 +70,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\bwrHealthFacilityDAO.cs" />
     <Compile Include="DAO\ReportUploadsDao.cs" />
     <Compile Include="DAO\PerformanceDataDao.cs" />
     <Compile Include="DAO\YearlyPerformanceTargetDAO.cs" />
+    <Compile Include="Entities\bwrHealthFacilities.cs" />
     <Compile Include="Entities\ReportUploads.cs" />
     <Compile Include="Entities\PerformanceData.cs" />
     <Compile Include="Entities\YearlyPerformanceTarget.cs" />
+    <Compile Include="Mapping\bwrHealthFacilitiesMap.cs" />
     <Compile Include="Mapping\ReportUploadMap.cs" />
     <Compile Include="Mapping\PerformanceDataMap.cs" />
     <Compile Include="Mapping\YearlyPerformanceTargetMap.cs" />

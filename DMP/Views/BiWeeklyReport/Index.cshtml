@@ -11,12 +11,11 @@
             text-transform: capitalize;
         }
         .panel-default > .panel-heading {
-            font-size: 16px;
             font-weight: bold;
             color: #fff;
             background-color: darkorange;
             border-color: darkorange;
-            text-decoration: underline;
+            text-align:center;
         }
     </style>
 
@@ -32,7 +31,6 @@
         <div class="col-sm-2">
             <label>Financial Year</label>
             <select id="fYear" required onchange="reloadPage(this)">
-                <option value="" disabled selected>Finacial year</option>
                 @foreach (var item in Model.Year)
                 {
                     if (item == Model.SelectedYear)
@@ -72,11 +70,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model.LGAReports)
+                        @foreach (var item in Model.LGAReports.OrderBy(x=>x.lga_name))
                         {
                             <tr>
                                 <td>@item.lga_name</td>
-                                <td>@item.LinkageRate.ToString("N") %</td>
+                                <td>@item.LinkageRate %</td>
                                 <td>@item.TOTAL_HTC_TST</td>
                                 <td>@item.HTC_TST_Target</td>
                                 <td>@item.HTC_TST_Percentage_Achievement.ToString("N") %</td>
@@ -117,13 +115,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.FacilityPositivty)
+                                    @foreach (var item in Model.FacilityPositivty.OrderBy(x => x.lga_name))
                                     {
                                         <tr>
                                             <td>@item.lga_name</td>
                                             <td>@item.Tested</td>
                                             <td>@item.Positive</td>
-                                            <td>@item.Positivity.ToString("N") %</td>
+                                            <td>@item.Positivity %</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -148,13 +146,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.CommunityPositivty)
+                                    @foreach (var item in Model.CommunityPositivty.OrderBy(x => x.lga_name))
                                     {
                                         <tr>
                                             <td>@item.lga_name</td>
                                             <td>@item.Tested</td>
                                             <td>@item.Positive</td>
-                                            <td>@item.Positivity.ToString("N") %</td>
+                                            <td>@item.Positivity %</td>
                                         </tr>
                                     }
                                 </tbody>

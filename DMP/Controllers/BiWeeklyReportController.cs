@@ -88,7 +88,7 @@ namespace ShieldPortal.Controllers
         }
 
         [HttpPost]
-        public ActionResult Upload(string reportingPeriod, int Year, string ImplementingPartner)
+        public ActionResult Upload(string reportingPeriod, int Year)
         {
             var files = Request.Files;
             if (files == null || files.Count == 0)
@@ -96,7 +96,7 @@ namespace ShieldPortal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
             }
             string fileName = files[0].FileName;
-            string fullfilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Uploads/_" + fileName);
+            //string fullfilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Uploads/_" + fileName);
 
             Stream fileContent = files[0].InputStream;
             string loggedInUser = Services.Utils.LoggedinProfileName;
@@ -105,7 +105,7 @@ namespace ShieldPortal.Controllers
 
             try
             {
-                bool result = new ReportLoader().ExtractReport(reportingPeriod, Year, startColumnIndex, ImplementingPartner, fileContent, loggedInUser, fileName);
+                bool result = new ReportLoader().ExtractReport(reportingPeriod, Year, startColumnIndex, fileContent, loggedInUser, fileName);
                 return Json("00|Upload succesful", JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

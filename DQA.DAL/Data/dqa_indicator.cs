@@ -25,6 +25,7 @@ namespace DQA.DAL.Data
         public string IndicatorName { get; set; }
         public string ThematicArea { get; set; }
         public string Readonly { get; set; }
+        public string DQAPeriod { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dqa_report_value> dqa_report_value { get; set; }

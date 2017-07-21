@@ -300,7 +300,7 @@ namespace DQA.DAL.Business
             return ds;
         }
 
-        public static List<PivotUpload> RetrievePivotTablesForDQATool(int ip_id, string quarter)
+        public static List<PivotTableModel> RetrievePivotTablesForDQATool(int ip_id, string quarter)
         {
             dqa_pivot_table_upload pivotTableUpload = null;
             if (ip_id != 0)
@@ -315,7 +315,7 @@ namespace DQA.DAL.Business
             if(pivotTableUpload != null)
             {
                 var result = (from table in pivotTableUpload.dqa_pivot_table.OrderByDescending(x=>x.SelectedForDQA)
-                             select new PivotUpload
+                             select new PivotTableModel
                              {
                                  Id = table.Id,                                  
                                  State = table.HealthFacility.lga.state.state_name,
@@ -348,25 +348,33 @@ namespace DQA.DAL.Business
                 result = entity.dqa_pivot_table_upload.Where(x => x.IP == ip_id).ToList();
             }
             IEnumerable<UploadList> list = (from item in result
-                                     select new UploadList
-                                     {
-                                         IP = item.ImplementingPartner.ShortName,
-                                         Period = item.Quarter,
-                                         DateUploaded = item.DateUploaded,
-                                         UploadedBy = new ProfileDAO().Retrieve(item.UploadedBy).FullName,
-                                         id = item.Id.ToString(),
-                                         Tables = from table in item.dqa_pivot_table
-                                                  select new PivotUpload
-                                                  {
-                                                      FacilityName = table.HealthFacility.Name, //FacilityName,
-                                                      OVC = table.OVC,
-                                                      PMTCT_ART = table.PMTCT_ART,
-                                                      TB_ART = table.TB_ART,
-                                                      TX_CURR = table.TX_CURR,
-                                                      SelectedForDQA = table.SelectedForDQA,
-                                                      SelectedReason = table.SelectedReason
-                                                  }
-                                     });
+                                            select new UploadList
+                                            {
+                                                IP = item.ImplementingPartner.ShortName,
+                                                Period = item.Quarter,
+                                                DateUploaded = item.DateUploaded,
+                                                UploadedBy = new ProfileDAO().Retrieve(item.UploadedBy).FullName,
+                                                id = item.Id.ToString(),
+                                                Tables = from table in item.dqa_pivot_table
+                                                         select new PivotTableModel
+                                                         {
+                                                             FacilityName = table.HealthFacility.Name,
+                                                             OVC = table.OVC,
+                                                             PMTCT_ART = table.PMTCT_ART,
+                                                             TB_ART = table.TB_ART,
+                                                             TX_CURR = table.TX_CURR,
+                                                             PMTCT_STAT = table.PMTCT_STAT,
+                                                             PMTCT_EID = table.PMTCT_EID,
+                                                             PMTCT_STAT_NEW = table.PMTCT_STAT_NEW,
+                                                             PMTCT_STAT_PREV = table.PMTCT_STAT_PREV,
+                                                             HTC_Only = table.HTC_Only,
+                                                             HTC_Only_POS = table.HTC_Only_POS,
+                                                             HTS_TST = table.HTS_TST,
+                                                             TX_NEW = table.TX_NEW,
+                                                             SelectedForDQA = table.SelectedForDQA,
+                                                             SelectedReason = table.SelectedReason
+                                                         }
+                                            });
 
             return list.ToList();
         }

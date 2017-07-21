@@ -1,6 +1,7 @@
 ﻿using CommonUtil.DBSessionManager;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Engine;
 using NHibernate.Linq;
 using NHibernate.Transform;
 using RADET.DAL.Entities;
@@ -9,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 
@@ -16,6 +18,29 @@ namespace RADET.DAL.DAO
 {
     public class RadetMetaDataDAO : BaseDAO<RadetMetaData, int>
     {
+        public DataTable GetScoreCard()
+        {
+            DataTable ds = new  DataTable();
+
+            var cmd = new SqlCommand();
+            cmd.CommandText = "[dbo].sp_getRadetScorecard ";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            using (var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection())
+            {
+                SqlDataAdapter da = new SqlDataAdapter();
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+
+                if (conn.State != ConnectionState.Open)
+                    conn.Open();
+
+                da.Fill(ds);
+            }            
+            return ds;
+        }
+
+
         public List<RadetReportModel2> RetrieveUsingPaging(RadetMetaDataSearchModel search, int startIndex, int maxRows, bool order_Asc, out int totalCount)
         {
             IStatelessSession session = BuildSession().SessionFactory.OpenStatelessSession();
@@ -64,6 +89,7 @@ namespace RADET.DAL.DAO
                     criteria.Add(Restrictions.Eq("pt.RadetPeriod", search.RadetPeriod));
                 }
             }
+            criteria.AddOrder(Order.Desc("pt.RadetPeriod"));
             criteria.SetFirstResult(startIndex);
             if (maxRows > 0)
             {
@@ -113,10 +139,10 @@ namespace RADET.DAL.DAO
             return result;
         }
 
-        public IList<RadetPatientLineListing> RetrieveRadetLineListingForDQA(string RadetPeriod, int IP, string facility)
+        public IList<RadetPatientLineListing> RetrieveRadetLineListingForDQA(string RadetPeriod, string IP, string facility)
         {
             ISession session = BuildSession();
-            var result = session.Query<RadetPatientLineListing>().Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod && x.MetaData.IP.Id == IP && x.MetaData.Facility == facility);
+            var result = session.Query<RadetPatientLineListing>().Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod && x.MetaData.IP.ShortName == IP && x.MetaData.Facility == facility);
             return result.ToList();
         }
 
@@ -128,6 +154,9 @@ namespace RADET.DAL.DAO
                 .Add(Restrictions.In("MetaData.Id", radetIds))
                 .CreateAlias("RadetPatient", "rpt")
                 .CreateAlias("rpt.IP", "ip")
+                .CreateAlias("pt.MetaData", "rmt")
+                .CreateAlias("rmt.LGA", "lga")
+                .CreateAlias("lga.State", "st")
                 .SetProjection(Projections.ProjectionList()
                 .Add(Projections.Property("pt.ARTStartDate"), "ARTStartDate")
                     .Add(Projections.Property("pt.LastPickupDate"), "LastPickupDate")
@@ -148,6 +177,8 @@ namespace RADET.DAL.DAO
                    .Add(Projections.Property("rpt.Age_at_start_of_ART_in_months"), "AgeInMonths")
                    .Add(Projections.Property("rpt.FacilityName"), "Facility")
                    .Add(Projections.Property("ip.ShortName"), "IPShortName")
+                   .Add(Projections.Property("lga.lga_name"), "LGA")
+                   .Add(Projections.Property("st.state_name"), "State")
                    .Add(Projections.Property("pt.RandomlySelect"), "RandomlySelect"))
                 .SetResultTransformer(Transformers.AliasToBean<T>());
 

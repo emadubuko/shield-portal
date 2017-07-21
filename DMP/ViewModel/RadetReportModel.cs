@@ -38,6 +38,8 @@ namespace ShieldPortal.ViewModel
         public string CurrentARTStatus { get; set; }
         public bool RandomlySelect { get; set; }
         public string RadetPeriod { get; set; }
+        public string LGA { get; set; }
+        public string State { get; set; }
     }
 
     public class RandomizerModel

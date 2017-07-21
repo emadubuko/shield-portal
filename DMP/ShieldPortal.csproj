@@ -1051,7 +1051,9 @@
     <Content Include="Report\Template\DQA FY2017 Q2\USER GUIDE FOR THE DATA QUALITY ASSESSMENT TOOLv2May42017.pdf" />
     <Content Include="Report\Template\DQA FY2017 Q3\Data Quality Assessment tool_v3.xlsm" />
     <Content Include="Report\Template\DQA FY2017 Q3\DATIM PIVOT TABLE SAMPLE.xlsx" />
-    <Content Include="Report\Template\DQA FY2017 Q3\USER GUIDE FOR THE DATA QUALITY ASSESSMENT TOOLv2May42017.pdf" />
+    <Content Include="Report\Template\DQA FY2017 Q3\Printable Summary sheet DQA_Q3R.pdf" />
+    <Content Include="Report\Template\DQA FY2017 Q3\THE DATA QUALITY ASSESSMENT USER GUIDE FOR FY17 Q3.pdf" />
+    <Content Include="Report\Template\ART sites.xlsx" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1118,6 +1120,7 @@
     <Content Include="Views\RadetAnalytics\UploadPage.cshtml" />
     <Content Include="Views\RadetAnalytics\ViewPreviousUploads.cshtml" />
     <Content Include="Views\RadetAnalytics\Randomizer.cshtml" />
+    <Content Include="Views\RadetAnalytics\RADETScoreCard.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1164,7 +1167,7 @@
     <Folder Include="Models\Data\" />
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
-    <Folder Include="Report\Uploads\" />
+    <Folder Include="Report\Uploads\DQA Q3 FY16\" />
     <Folder Include="tempData\" />
     <Folder Include="Uploads\" />
   </ItemGroup>

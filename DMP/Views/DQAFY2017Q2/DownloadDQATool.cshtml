@@ -1,4 +1,4 @@
-﻿@model List<DQA.DAL.Model.PivotUpload>
+﻿@model List<DQA.DAL.Model.PivotTableModel>
 
 @{
     Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
@@ -78,6 +78,7 @@
         $(document).ready(function () {
             $('.table').DataTable({
                 "iDisplayLength": 50,
+                "bAutoWidth": false,
                 "language": {
                     "lengthMenu": " ",
                     "zeroRecords": "No pivot table has been uploaded for FY2017 Q3.",

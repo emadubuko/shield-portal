@@ -26,6 +26,14 @@ namespace DQA.DAL.Data
         public int UploadId { get; set; }
         public long FacilityId { get; set; }
         public int IP { get; set; }
+        public Nullable<int> HTS_TST { get; set; }
+        public Nullable<int> HTC_Only { get; set; }
+        public Nullable<int> HTC_Only_POS { get; set; }
+        public Nullable<int> PMTCT_STAT { get; set; }
+        public Nullable<int> PMTCT_STAT_NEW { get; set; }
+        public Nullable<int> PMTCT_STAT_PREV { get; set; }
+        public Nullable<int> PMTCT_EID { get; set; }
+        public Nullable<int> TX_NEW { get; set; }
     
         public virtual HealthFacility HealthFacility { get; set; }
         public virtual dqa_pivot_table_upload dqa_pivot_table_upload { get; set; }

@@ -23,19 +23,77 @@ using System.Threading;
 using DAL.Entities;
 using System.Collections.Concurrent;
 using RADET.DAL.Entities;
+using OfficeOpenXml.DataValidation;
 
 namespace Test
 {
      
     class Program
-    { 
+    {
+        private static void ReadExcelFiles()
+        {
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\DQA\Q2R_CCCRN_HolyRosaryMaternityAborNguru.xlsx")))
+            {
+                var sheet = package.Workbook.Worksheets["StateLGA"];
+                var stateCells = sheet.Cells;
+
+                var mainsheet = package.Workbook.Worksheets["MainPage"];
+                var mainPageCells = mainsheet.Cells;
+                var validations = mainsheet.DataValidations;
+
+                foreach (var validation in validations)
+                {
+                    var list = validation as ExcelDataValidationList;
+                    if (list != null)
+                    {                        
+                        var rowStart = list.Address.Start.Row;
+                        var rowEnd = list.Address.End.Row;
+                        // allowed values probably only in one column....
+                        var colStart = list.Address.Start.Column;
+                        var colEnd = list.Address.End.Column;
+
+                        for (int row = rowStart; row <= rowEnd; ++row)
+                        {
+                            for (int col = colStart; col <= colEnd; col++)
+                            {
+                                Console.WriteLine(mainsheet.Cells[row, col].Value);
+                            }
+                        }
+                    }
+                }
+
+
+                using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\DQA\RADET Meta data.xlsx")))
+                {
+                    var aSheet = excelToExport.Workbook.Worksheets["Sheet1"];
+                    foreach(var cls in stateCells)
+                    {
+                        aSheet.Cells[cls.Address].Value = cls.Value;
+                    }
+
+                    //var main = excelToExport.Workbook.Worksheets["main"];
+                    //foreach (var cls in mainPageCells)
+                    //{
+                    //    main.Cells[cls.Address].DataValidation.AddListDataValidation().Address;
+                    //    main.Cells[cls.Address].Value = cls.Value;
+
+                    //}
+
+                    excelToExport.Save();
+                }
+
+                //package.SaveAs(new FileInfo(@"C:\MGIC\DQA\STATELGA.xlsx"));
+            }
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("started");
+            ReadExcelFiles();
 
-            exportRadetErrors();
+            //exportRadetErrors();
 
-           // RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
+            // RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
 
             //  MosisFiles.ProcessHTS_TST_File();
 

@@ -15,9 +15,9 @@ namespace ShieldPortal.ViewModel.BWR
 
         public List<string> Year = new List<string>
         {
-            (DateTime.Now.Year -1).ToString(),
+            //(DateTime.Now.Year -1).ToString(),
             DateTime.Now.Year.ToString(),
-            (DateTime.Now.Year + 1).ToString()
+            //(DateTime.Now.Year + 1).ToString()
         };
  
         public IList<string> ImplementingPartner { get; set; }
@@ -32,9 +32,9 @@ namespace ShieldPortal.ViewModel.BWR
 
         public List<string> Year = new List<string>
         {
-            (DateTime.Now.Year -1).ToString(),
+            //(DateTime.Now.Year -1).ToString(),
             DateTime.Now.Year.ToString(),
-            (DateTime.Now.Year + 1).ToString()
+            //(DateTime.Now.Year + 1).ToString()
         };
         public Dictionary<string, int> IndexPeriods { get; set; }
         public IList<string> ImplementingPartner { get; set; }

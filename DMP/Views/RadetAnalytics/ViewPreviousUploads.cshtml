@@ -16,7 +16,7 @@
                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
                            ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
             }));
-           
+
         }
     </script>
 
@@ -44,6 +44,20 @@
         .btn-sm, .btn-group-sm > .btn {
             padding: 4px 6px;
             font-size: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_processing {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            width: 100%;
+            height: 60px;
+            margin-left: -50%;
+            margin-top: -25px;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 25px;
+            background: linear-gradient(to right, #f9f9f9 0%, #ccc 25%, #ccc 75%, #f9f9f9 100%);
         }
     </style>
 }
@@ -117,7 +131,7 @@
                     <label class="col-sm-1 control-label" for="sltReportPeriod">Report Period</label>
                     <div class="col-sm-4">
                         <select id="sltReportPeriod" class="form-control">
-                            @foreach (var p in Model.Select(x => x.RadetPeriod).Distinct())
+                            @foreach (var p in Model.Select(x => x.RadetPeriod).Distinct().OrderByDescending(o => o))
                             {
                                 <option value="@p">@p</option>
                             }
@@ -145,9 +159,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                   
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
@@ -225,11 +237,11 @@
 
 @section Scripts{
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
-<script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script> 
- <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script>
         $(document).ready(function () {
-              
+
             var dataTable = {
                 table: null,
                 initialiazeDataTable: function () {
@@ -246,6 +258,7 @@
                         processing: true,
                         serverSide: true,
                         sEcho: 3,
+                        "oLanguage": {"sProcessing": "Loading... Please wait"},
                         "aLengthMenu": [[50, 100, 200], [50, 100, 200]],
                         ajax:
                             {
@@ -254,15 +267,21 @@
                             },
                         "oSearch": {"sSearch": JSON.stringify(model)},
                         "aoColumnDefs": [{
-                                   "bSortable": false,
-                                  "aTargets": [ 0 ]
-                              }],
+                            "bSortable": false,
+                            "aTargets": [ 0 ]
+                        }],
                         "aoColumns": [
                             { "mData": "FirstColumn" },
                             { "mData": "IP" },
                              { "mData": "Facility" },
                              { "mData": "RadetPeriod" },
-                             { "mData": "DateUploaded" },
+                             {
+                                 "mData": "DateUploaded",
+                                 "render": function (data) {
+                                     var date = new Date(data);
+                                     var month = date.getMonth() + 1;
+                                     return date.toLocaleString('en-GB', { day:'numeric', month:'numeric', year: 'numeric',  hour: 'numeric',minute:'numeric', hour12: true });  //date.getDate() + "-" + (month.length > 1 ? month : "0" + month) +  "-" + date.getFullYear() + " " +date.getHours() + ":" +date.getMinutes() + ":" +date.getSeconds();
+                                 }},
                              { "mData": "UploadedBy" },
                               { "mData": "LastColumn" },
                         ],
@@ -321,10 +340,10 @@
             $('input.form-control.input-sm[type=search]').unbind();
             //$('#main-table_filter.dataTables_filter').css("visibility", 'hidden');
             $("#main-table_length.dataTables_length").parent().removeClass("col-sm-6").addClass('col-sm-push-10 col-sm-3');
-            $('#main-table_filter.dataTables_filter').parent().removeClass("col-sm-6").addClass('col-sm-pull-4 col-sm-1');
-            $('#main-table_filter.dataTables_filter').parent().css("padding-left", "20%");
-            $('#main-table_filter.dataTables_filter').html("<a class='btn btn-sm btn-info' id='export'><i class='fa fa-download'></i> &nbsp; &nbsp; Export data</a>");
-             
+            $('#main-table_filter.dataTables_filter').parent().removeClass("col-sm-6").addClass('col-sm-pull-3 col-sm-2');
+            //$('#main-table_filter.dataTables_filter').parent().css("padding-left", "20%");
+            $('#main-table_filter.dataTables_filter').html("<a class='btn btn-sm btn-info' id='export'><i class='fa fa-download'></i> &nbsp; &nbsp; Export data</a> <i style='display:none' id='loadImg'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i>");
+
 
             $('.modal-dialog').draggable({
                 handle: ".modal-header"
@@ -333,7 +352,7 @@
             $("#download_for_dqa").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
             });
-              
+
             $(document).on('click', '.chcktbl', function (e) {
                 $('#chckHead').prop('checked', false);
                 if (this.checked == false) {
@@ -348,8 +367,13 @@
                     checkboxId.push(parseInt(this.id))
                 }
             });
-             
+
             $("#export").on('click', function (event) {
+                if(checkboxId.length == 0){
+                    alert("Please use the checkbox to specify the data to download");
+                    return;
+                }
+                $("#loadImg").show();
                 $.ajax({
                     url: '/RadetAnalytics/ExportData?useSession=false&&radetIds=' + checkboxId.join(),
                     type: 'POST',
@@ -358,14 +382,20 @@
                     processData: false
                 }).done(function (response) {
                     ExportFormattedData(response);
+                    checkboxId = [];
+                    $('.chcktbl:checked').prop('checked', false);
+                    $('#chckHead').prop('checked', false);
+                    $("#loadImg").hide();
                 }).error(function (xhr, status, err) {
                     alert($.parseJSON(xhr.responseText).Message);
                     console.log($.parseJSON(xhr.responseText).Message);
+                    $("#loadImg").hide();
                 });
                 return false;
             });
-              
+
             $(document).on('click', '.viewPatientListing', function (e) {
+                $("#loadImg2").show();
                 var id = e.currentTarget.id;
                 $.ajax({
                     url: '/RadetAnalytics/RetrieveRadet?id=' + id,
@@ -381,16 +411,17 @@
                     $("#current-on-tx").html($.parseJSON(response).Tx_Current);
                     $("#selected-for-dqa").html($.parseJSON(response).SelectedForDQA)
                     $("#total-record").html($.parseJSON(response).data.length)
-
+                    $("#loadImg2").hide();
                 }).error(function (xhr, status, err) {
                     alert($.parseJSON(xhr.responseText).Message);
                     console.log($.parseJSON(xhr.responseText).Message);
+                    $("#loadImg2").hide();
                 });
                 return false;
             });
 
             $(document).on('click', '.deletebtn', function (e) {
-               
+
                 if (confirm('Confirm delete')) {
                     $(e.currentTarget.id).prop("disabled", true);
                     $.ajax({
@@ -409,7 +440,7 @@
                 }
                 return false;
             });
-             
+
         });
     </script>
 }

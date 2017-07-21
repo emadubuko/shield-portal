@@ -3,21 +3,16 @@ using CommonUtil.Utilities;
 using DQA.DAL.Data;
 using DQA.DAL.Model;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Xml.Linq;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using CommonUtil.DAO;
 using RADET.DAL.DAO;
+using System.Text;
 
 namespace DQA.DAL.Business
 {
@@ -29,11 +24,182 @@ namespace DQA.DAL.Business
             entity = new shield_dmpEntities();
         }
 
-        public async Task<string> GenerateDQA(List<PivotUpload> facilities, Organizations ip)
+        public string ReadWorkbook(string filename, string username, string[] datimNumbersRaw)
+        {
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
+            { 
+                //get the metadata of the report
+                    var metadata = new dqa_report_metadata();
+                try
+                {
+                    var worksheet = package.Workbook.Worksheets["Worksheet"];
+                   
+                   var facility_code = worksheet.Cells["AA2"].Value.ToString(); //facility code
+                    var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == facility_code);
+                    if (facility == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
+                    }
+
+                   
+                    metadata.AssessmentWeek = 1;
+                    metadata.CreateDate = DateTime.Now;
+                    metadata.CreatedBy = username;
+                    metadata.FiscalYear = DateTime.Now.Year.ToString();
+                    metadata.FundingAgency = 1;
+                    metadata.ImplementingPartner = facility.ImplementingPartnerId.Value;
+                    metadata.LgaId = facility.LGAId;
+                    metadata.LgaLevel = 2;
+                    metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
+                    metadata.SiteId = Convert.ToInt32(facility.Id);
+                    metadata.StateId = facility.lga.state.state_code; // state.state_code;
+                     
+                    //check if the report exists
+                    var meta_count = entity.dqa_report_metadata.Count(e => e.FiscalYear == metadata.FiscalYear && e.FundingAgency == metadata.FundingAgency && e.ReportPeriod == metadata.ReportPeriod && e.ImplementingPartner == metadata.ImplementingPartner && e.SiteId == metadata.SiteId);
+                    if (meta_count > 0)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
+                    }
+                    entity.dqa_report_metadata.Add(metadata);
+                    entity.SaveChanges();
+                     
+                    worksheet = package.Workbook.Worksheets["All Questions"];
+
+                    //get all the indicators in the system
+                    var indicators = entity.dqa_indicator.Where(x => x.DQAPeriod == metadata.ReportPeriod);
+
+                    for (var i = 7; i < 59; i++)
+                    {
+                         
+
+                        var istValueMonth = worksheet.Cells[i, 4];
+                        var sndValueMonth = worksheet.Cells[i, 5];
+                        var trdValueMonth = worksheet.Cells[i, 6];
+                        var question = worksheet.Cells[i, 2];
+
+                        //check if there is a value for the indicator
+                        if (istValueMonth == null || istValueMonth.Value == null || sndValueMonth == null || sndValueMonth.Value == null || trdValueMonth == null || trdValueMonth.Value == null || question == null || question.Value == null)
+                            continue;
+
+                        var indicator_code = worksheet.Cells[i, 2].Value.ToString();
+                        var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
+                        if (indicator == null)
+                            continue;
+                        var report_value = new dqa_report_value();
+                        report_value.MetadataId = metadata.Id;
+                        report_value.IndicatorId = indicator.Id;
+                        report_value.IndicatorValueMonth1 = Utility.GetDecimal(istValueMonth.Value);
+                        report_value.IndicatorValueMonth2 = Utility.GetDecimal(sndValueMonth.Value);
+                        report_value.IndicatorValueMonth3 = Utility.GetDecimal(trdValueMonth.Value);
+
+                        entity.dqa_report_value.Add(report_value);
+                    }
+                    entity.SaveChanges();
+
+                    ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
+
+                  //  SaveDQADimensions(package.Workbook, metadata.Id);
+
+                  //  SaveDQAComparison(package.Workbook, metadata.Id, datimNumbersRaw);
+
+                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
+                }
+                catch (Exception ex)
+                {
+                    entity.dqa_report_metadata.Remove(metadata);
+                    entity.SaveChanges();
+                    Logger.LogError(ex);
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>There are errors " + filename + "</td></tr>";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Read the result from the summary sheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="medata_data_id"></param>
+        private void ReadSummary(ExcelWorksheet worksheet, int medata_data_id)
+        {
+            int i = 6;
+            var summaries = new XElement("summaries");
+            var reported_data = new XElement("reported_data");
+            reported_data.Add(new XElement("HTC_TST", worksheet.Cells[i, 2].Value.ToString()));
+            reported_data.Add(new XElement("HTC_TST_Pos", worksheet.Cells[i, 3].Value.ToString()));
+            reported_data.Add(new XElement("HTC_Only", worksheet.Cells[i, 4].Value.ToString()));
+            reported_data.Add(new XElement("HTC_Pos", worksheet.Cells[i, 5].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT", worksheet.Cells[i, 6].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT_Pos", worksheet.Cells[i, 7].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT_Knwpos", worksheet.Cells[i, 8].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_ART", worksheet.Cells[i, 9].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_EID", worksheet.Cells[i, 10].Value.ToString()));
+            reported_data.Add(new XElement("TX_NEW", worksheet.Cells[i, 11].Value.ToString()));
+            reported_data.Add(new XElement("TB_STAT", worksheet.Cells[i, 12].Value.ToString()));
+            reported_data.Add(new XElement("TB_ART", worksheet.Cells[i, 13].Value.ToString()));
+            reported_data.Add(new XElement("TX_TB", worksheet.Cells[i, 14].Value.ToString()));
+            reported_data.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
+            reported_data.Add(new XElement("TX_Curr", worksheet.Cells["E12"].Value.ToString()));
+            summaries.Add(reported_data);
+
+            i = 7;
+            var validation = new XElement("validation");
+            validation.Add(new XElement("HTC_TST", worksheet.Cells[i, 2].Value.ToString()));
+            validation.Add(new XElement("HTC_TST_Pos", worksheet.Cells[i, 3].Value.ToString()));
+            validation.Add(new XElement("HTC_Only", worksheet.Cells[i, 4].Value.ToString()));
+            validation.Add(new XElement("HTC_Pos", worksheet.Cells[i, 5].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT", worksheet.Cells[i, 6].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Pos", worksheet.Cells[i, 7].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Knwpos", worksheet.Cells[i, 8].Value.ToString()));
+            validation.Add(new XElement("PMTCT_ART", worksheet.Cells[i, 9].Value.ToString()));
+            validation.Add(new XElement("PMTCT_EID", worksheet.Cells[i, 10].Value.ToString()));
+            validation.Add(new XElement("TX_NEW", worksheet.Cells[i, 11].Value.ToString()));
+            validation.Add(new XElement("TB_STAT", worksheet.Cells[i, 12].Value.ToString()));
+            validation.Add(new XElement("TB_ART", worksheet.Cells[i, 13].Value.ToString()));
+            validation.Add(new XElement("TX_TB", worksheet.Cells[i, 14].Value.ToString()));
+            validation.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
+            validation.Add(new XElement("TX_Curr", worksheet.Cells["E13"].Value.ToString()));
+            summaries.Add(validation);
+
+            i = 8;
+            var concurrency_rate = new XElement("Concurrence_rate");
+            concurrency_rate.Add(new XElement("HTC_TST", worksheet.Cells[i, 2].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_TST_Pos", worksheet.Cells[i, 3].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Only", worksheet.Cells[i, 4].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Pos", worksheet.Cells[i, 5].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT", worksheet.Cells[i, 6].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Pos", worksheet.Cells[i, 7].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", worksheet.Cells[i, 8].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_ART", worksheet.Cells[i, 9].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_EID", worksheet.Cells[i, 10].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_NEW", worksheet.Cells[i, 11].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_STAT", worksheet.Cells[i, 12].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_ART", worksheet.Cells[i, 13].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_TB", worksheet.Cells[i, 14].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_Curr", worksheet.Cells["E14"].Value.ToString()));
+            summaries.Add(concurrency_rate);
+ 
+
+            var summary_value = new dqa_summary_value();
+            summary_value.metadata_id = medata_data_id;
+            summary_value.summary_object = summaries.ToString();
+            entity.dqa_summary_value.Add(summary_value);
+
+            entity.SaveChanges();
+        }
+
+         
+        /// <summary>
+        /// this is a method to download the DQA tool
+        /// </summary>
+        /// <param name="facilities">< list of facility pivot table reported in DATIM/param>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        public async Task<string> GenerateDQA(List<PivotTableModel> facilities, Organizations ip)
         {
             string fileName = "SHIELD_DQA_Q3_" + ip.ShortName + ".zip";
             string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q3/SHIELD_DQA_Q3_" + ip.ShortName);
-
+             
             string zippedFile = directory + "\\" + fileName;
 
             if (Directory.Exists(directory) == false)
@@ -56,13 +222,19 @@ namespace DQA.DAL.Business
                 }
             }
 
+            var artSites = GetARTSite();
+            
+
+            //site name come from pivot table and names match the data in health facility in the database
             foreach (var site in facilities)
             {
+                string radetSite = artSites[site.FacilityCode];
+
                 string template = System.Web.Hosting.HostingEnvironment.MapPath(System.Configuration.ConfigurationManager.AppSettings["DQAToolQ3"]);
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
                 {
                     string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-                    var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(radetPeriod, ip.Id, site.FacilityName);
+                    var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(radetPeriod, site.IP, radetSite);// site.FacilityName);
                     if (radet != null)
                     {
                         var sheet = package.Workbook.Worksheets["TX_CURR"];
@@ -75,10 +247,10 @@ namespace DQA.DAL.Business
                             sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
                             sheet.Cells["D" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_years == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_years.ToString();
                             sheet.Cells["E" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_months == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_months.ToString();
-                            sheet.Cells["F" + row].Value = string.Format("{0:dd-MMM-yyyy}", radet[i].ARTStartDate);
-                            sheet.Cells["G" + row].Value = string.Format("{0:dd-MMM-yyyy}", radet[i].LastPickupDate);
+                            sheet.Cells["F" + row].Value = string.Format("{0:d-MMM-yyyy}", radet[i].ARTStartDate);
+                            sheet.Cells["G" + row].Value = string.Format("{0:d-MMM-yyyy}", radet[i].LastPickupDate);
 
-                            sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill == 0 ? "" : radet[i].MonthsOfARVRefill.ToString();
+                            sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill;
 
                             sheet.Cells["M" + row].Value = radet[i].RegimenLineAtARTStart;
                             sheet.Cells["N" + row].Value = radet[i].RegimenAtStartOfART;
@@ -88,7 +260,7 @@ namespace DQA.DAL.Business
 
                             sheet.Cells["U" + row].Value = radet[i].PregnancyStatus;
                             sheet.Cells["V" + row].Value = radet[i].CurrentViralLoad;
-                            sheet.Cells["W" + row].Value = string.Format("{0:dd-MMM-yyyy}", radet[i].DateOfCurrentViralLoad);
+                            sheet.Cells["W" + row].Value = string.Format("{0:d-MMM-yyyy}", radet[i].DateOfCurrentViralLoad);
                             sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
                             sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
                         }
@@ -100,14 +272,7 @@ namespace DQA.DAL.Business
                     sheetn.Cells["T2"].Value = site.Lga;
                     sheetn.Cells["V2"].Value = site.FacilityName;
                     sheetn.Cells["AA2"].Value = site.FacilityCode;
-                    sheetn.Cells["Y2"].Value = "Q3(Apr-Jun)";
-
-                    sheetn = package.Workbook.Worksheets["OVC_DQA"];
-                    sheetn.Cells["D2"].Value = site.IP;
-                    sheetn.Cells["D3"].Value = site.State;
-                    sheetn.Cells["D4"].Value = site.Lga;
-                    sheetn.Cells["D5"].Value = "Q3(Apr-Jun)";
-
+                    sheetn.Cells["Y2"].Value = "Q3 FY17";
 
                     package.SaveAs(new FileInfo(directory + "/" + site.FacilityName + ".xlsm"));
                 }
@@ -220,6 +385,7 @@ namespace DQA.DAL.Business
         public bool ReadPivotTable(Stream datimFile, string quarter, int year, Profile profile, out string result)
         {
             var hfs = entity.HealthFacilities.ToDictionary(x => x.FacilityCode);
+            StringBuilder sb = new StringBuilder();
 
             List<dqa_pivot_table> pivotTable = new List<dqa_pivot_table>();
             try
@@ -243,23 +409,45 @@ namespace DQA.DAL.Business
                         }
                         if (hf.ImplementingPartner.Id != profile.Organization.Id)
                         {
-                            throw new ApplicationException("Facility with code [" + fCode + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                            throw new ApplicationException("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
                         }
 
-                        string fName = ExcelHelper.ReadCell(worksheet, row, 2);
-                        int tb_art, pmtct_art, tx_curr, ovc = 0;
-                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 3), out pmtct_art);
-                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 4), out tx_curr);
-                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 5), out tb_art);
-                        int.TryParse(ExcelHelper.ReadCell(worksheet, row, 6), out ovc);
-                         
+                        
+                        //update the name
+                        string fName = ExcelHelper.ReadCellText(worksheet, row, 2);
+                        if(hf.Name != fName)
+                        {
+                            sb.AppendLine(string.Format("Update dbo.HealthFacility set Name = '{0}' where id= {1}; ", fName, hf.Id));
+                        }
+
+                        int tb_art = 0, ovc = 0;
+
+                        int hts_tst = ExcelHelper.ReadCellText(worksheet, row, 3).ToInt();
+                        int htc_only = ExcelHelper.ReadCellText(worksheet, row, 4).ToInt();
+                        int htc_only_pos = ExcelHelper.ReadCellText(worksheet, row, 5).ToInt();
+                        int pmtct_stat = ExcelHelper.ReadCellText(worksheet, row, 6).ToInt();
+                        int pmtct_stat_new = ExcelHelper.ReadCellText(worksheet, row, 7).ToInt();
+                        int pmtct_stat_prev = ExcelHelper.ReadCellText(worksheet, row, 8).ToInt();
+                        int pmtct_art = ExcelHelper.ReadCellText(worksheet, row, 9).ToInt();
+                        int pmtct_eid = ExcelHelper.ReadCellText(worksheet, row, 10).ToInt();
+                        int tx_new = ExcelHelper.ReadCellText(worksheet, row, 11).ToInt();
+                        int tx_curr = ExcelHelper.ReadCellText(worksheet, row, 12).ToInt();
+
                         pivotTable.Add(new dqa_pivot_table
                         {
-                            HealthFacility = hf,
+                            HTS_TST = hts_tst,
+                            PMTCT_EID = pmtct_eid,
+                            HTC_Only = htc_only,
+                            HTC_Only_POS = htc_only_pos,
+                            PMTCT_STAT = pmtct_stat,
+                            PMTCT_STAT_NEW = pmtct_stat_new,
+                            PMTCT_STAT_PREV = pmtct_stat_prev,
+                            TX_NEW = tx_new,
                             TB_ART = tb_art,
                             PMTCT_ART = pmtct_art,
                             TX_CURR = tx_curr,
                             OVC = ovc,
+                            HealthFacility = hf,
                             Quarter = quarter,
                             ImplementingPartner = hf.ImplementingPartner,
                         });
@@ -296,13 +484,16 @@ namespace DQA.DAL.Business
                     #region top 80% and randomized 50% of remaining 
 
                     //calclaute 80% of tx_curr
-                    int total_tx_curr = pivotTable.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART));
+                    int total_tx_curr = pivotTable.Sum(x => (x.TX_CURR + x.PMTCT_ART));
                     double _80_percent_of_Total_tx_curr = total_tx_curr * 0.8;
-                    pivotTable = pivotTable.OrderByDescending(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)).ToList();
+
+                    //ensures the highest contributor are top of the list
+                    pivotTable = pivotTable.OrderByDescending(x => (x.TX_CURR + x.PMTCT_ART)).ToList();
+
                     foreach (var item in pivotTable)
                     {
                         selectedList.Add(item);
-                        if (selectedList.Sum(x => (x.TX_CURR + x.PMTCT_ART + x.TB_ART)) < _80_percent_of_Total_tx_curr)
+                        if (selectedList.Sum(x => (x.TX_CURR + x.PMTCT_ART)) <= _80_percent_of_Total_tx_curr)
                         {
                             item.SelectedForDQA = true;
                             item.SelectedReason = "Based on 80% of Tx_curr";
@@ -314,21 +505,18 @@ namespace DQA.DAL.Business
                         }
                     }
 
-                    //Randomize and select 50%
+                    //Randomize and select 50% (half) of the ones not marked above
                     var remaining = selectedList.Where(x => !x.SelectedForDQA).ToList();
                     remaining.Shuffle();
-                    for (int i = 0; i <= remaining.Count() / 2; i++)
+                    for (int i = 0; i < remaining.Count() / 2; i++)
                     {
-                        if ((remaining[i].TX_CURR + remaining[i].PMTCT_ART + remaining[i].TB_ART) > 0)
-                        {
-                            selectedList.FirstOrDefault(x => x == remaining[i]).SelectedForDQA = true;
-                            selectedList.FirstOrDefault(x => x == remaining[i]).SelectedReason = "Based on randomization";
-                        }
+                        selectedList.FirstOrDefault(x => x == remaining[i]).SelectedForDQA = true;
+                        selectedList.FirstOrDefault(x => x == remaining[i]).SelectedReason = "Based on randomization";
                     }
                     #endregion
                 }
 
-                //return previous submission
+                //delete previous submissions
                 var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == quarter.Trim());
                 if (previously != null)
                 {
@@ -344,6 +532,7 @@ namespace DQA.DAL.Business
                         Quarter = quarter,
                         UploadedBy = profile.Id
                     });
+
                 entity.dqa_pivot_table.RemoveRange(entity.dqa_pivot_table.Where(x => x.Quarter == quarter.Trim()).ToList());
                 entity.dqa_pivot_table.AddRange(selectedList);
                 entity.SaveChanges();
@@ -357,10 +546,21 @@ namespace DQA.DAL.Business
                         item.PMTCT_ART,
                         item.TB_ART,
                         item.TX_CURR,
+                        item.PMTCT_STAT,
+                        item.PMTCT_EID,
+                        item.PMTCT_STAT_NEW,
+                        item.PMTCT_STAT_PREV,
+                        item.HTC_Only,
+                        item.HTC_Only_POS,
+                        item.HTS_TST,
+                        item.TX_NEW,
                         item.SelectedForDQA,
                         item.SelectedReason
                     }
                  );
+
+                new CommonUtil.DAO.HealthFacilityDAO().RunSQL(sb.ToString());
+
             }
             catch (Exception ex)
             {
@@ -368,6 +568,37 @@ namespace DQA.DAL.Business
                 return false;
             }
             return true;
+        }
+
+
+        /// <summary>
+        /// returns a dictionary of datim code and radet facility name
+        /// </summary>
+        /// <returns></returns>
+        static Dictionary<string, string> GetARTSite()
+        {
+            string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
+            //code and radet name
+            Dictionary<string, string> artSites = new Dictionary<string, string>();
+            using (var package = new ExcelPackage(new FileInfo(art_file)))
+            {
+                var aSheet = package.Workbook.Worksheets.FirstOrDefault();
+                int row = 2;
+                while (true)
+                {
+                    string r_name = ExcelHelper.ReadCellText(aSheet, row, 2);
+                    if (string.IsNullOrEmpty(r_name))
+                        break;
+                    string d_code = ExcelHelper.ReadCellText(aSheet, row, 4);
+                    if (string.IsNullOrEmpty(d_code))
+                        throw new ApplicationException("no code found");
+
+                    if (d_code.Trim().Contains("#N/A") == false)
+                        artSites.Add(d_code, r_name);
+                    row++;
+                }
+            } 
+            return artSites;
         }
     }
 }

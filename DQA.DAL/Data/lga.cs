@@ -25,6 +25,7 @@ namespace DQA.DAL.Data
         public string state_code { get; set; }
         public string lga_name { get; set; }
         public string lga_hm_longcode { get; set; }
+        public string alternative_name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HealthFacility> HealthFacilities { get; set; }

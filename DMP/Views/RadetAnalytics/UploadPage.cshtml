@@ -195,6 +195,7 @@
                     $("#validate_note").css("visibility", "hidden");
                     $("#saving_note").css("visibility", "hidden");
                     $("#completion_note").css("visibility", "visible")
+                    $("#completion_note").html("");
                     $("#completion_note").append(data);
                 }
             }
@@ -208,6 +209,8 @@
                 $("#output tbody").empty();
                 $("#progress").show();
                 $("#hidden_row").css("visibility", "visible");
+                $("#completion_note").html("");
+                $("#completion_note").css("visibility", "hidden")
 
                 var data = new FormData();
                 var file = $('form input[type=file]')[0].files[0];
@@ -234,7 +237,7 @@
                     $("#progress").hide();
                     $("#hidden_row").css("visibility", "hidden");
                     $("#downloadFullError").prop("disabled", false);
-                    
+                    $("#btnUpload").prop("disabled", false);
                 }).error(function (xhr, status, err) {
                     alert($.parseJSON(xhr.responseText).Message);
                     console.log($.parseJSON(xhr.responseText).Message);

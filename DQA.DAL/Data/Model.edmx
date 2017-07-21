@@ -144,6 +144,7 @@
           <Property Name="IndicatorName" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="ThematicArea" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Readonly" Type="nvarchar" MaxLength="1" />
+          <Property Name="DQAPeriod" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="dqa_lnk_version_indicators">
           <Key>
@@ -169,6 +170,14 @@
           <Property Name="UploadId" Type="int" Nullable="false" />
           <Property Name="FacilityId" Type="bigint" Nullable="false" />
           <Property Name="IP" Type="int" Nullable="false" />
+          <Property Name="HTS_TST" Type="int" />
+          <Property Name="HTC_Only" Type="int" />
+          <Property Name="HTC_Only_POS" Type="int" />
+          <Property Name="PMTCT_STAT" Type="int" />
+          <Property Name="PMTCT_STAT_NEW" Type="int" />
+          <Property Name="PMTCT_STAT_PREV" Type="int" />
+          <Property Name="PMTCT_EID" Type="int" />
+          <Property Name="TX_NEW" Type="int" />
         </EntityType>
         <EntityType Name="dqa_pivot_table_upload">
           <Key>
@@ -272,6 +281,7 @@
           <Property Name="state_code" Type="nvarchar" MaxLength="50" />
           <Property Name="lga_name" Type="nvarchar" MaxLength="250" />
           <Property Name="lga_hm_longcode" Type="nvarchar" MaxLength="50" />
+          <Property Name="alternative_name" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="states">
           <Key>
@@ -530,8 +540,8 @@
           <EntitySet Name="lgas" EntityType="shield_dmpModel.lga" />
           <EntitySet Name="states" EntityType="shield_dmpModel.state" />
           <AssociationSet Name="FK_dqa_report_value_dqa_indicator" Association="shield_dmpModel.FK_dqa_report_value_dqa_indicator">
-            <End Role="dqa_indicator" EntitySet="dqa_indicator" />
-            <End Role="dqa_report_value" EntitySet="dqa_report_value" />
+            <End EntitySet="dqa_indicator" Role="dqa_indicator" />
+            <End EntitySet="dqa_report_value" Role="dqa_report_value" />
           </AssociationSet>
           <AssociationSet Name="FK_LINK_VERSION" Association="shield_dmpModel.FK_LINK_VERSION">
             <End Role="dqa_versions" EntitySet="dqa_versions" />
@@ -616,12 +626,13 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IndicatorCode" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="IndicatorName" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="ThematicArea" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Readonly" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" Type="Int32" />
+          <Property Name="IndicatorCode" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IndicatorName" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="ThematicArea" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Readonly" MaxLength="1" FixedLength="false" Unicode="true" Type="String" />
           <NavigationProperty Name="dqa_report_value" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_indicator" FromRole="dqa_indicator" ToRole="dqa_report_value" />
+          <Property Name="DQAPeriod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="dqa_lnk_version_indicators">
           <Key>
@@ -654,12 +665,12 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MetadataId" Type="Int32" Nullable="false" />
-          <Property Name="IndicatorId" Type="Int32" Nullable="false" />
-          <Property Name="IndicatorValueMonth1" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="IndicatorValueMonth2" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="IndicatorValueMonth3" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" Type="Int32" />
+          <Property Name="MetadataId" Nullable="false" Type="Int32" />
+          <Property Name="IndicatorId" Nullable="false" Type="Int32" />
+          <Property Name="IndicatorValueMonth1" Precision="18" Scale="0" Type="Decimal" />
+          <Property Name="IndicatorValueMonth2" Precision="18" Scale="0" Type="Decimal" />
+          <Property Name="IndicatorValueMonth3" Precision="18" Scale="0" Type="Decimal" />
           <NavigationProperty Name="dqa_indicator" Relationship="shield_dmpModel.FK_dqa_report_value_dqa_indicator" FromRole="dqa_report_value" ToRole="dqa_indicator" />
         </EntityType>
         <EntityType Name="dqa_summary_indicators">
@@ -740,6 +751,7 @@
           <NavigationProperty Name="state1" Relationship="shield_dmpModel.FK19DCEB72794DD3B7" FromRole="lga" ToRole="state" />
           <NavigationProperty Name="state2" Relationship="shield_dmpModel.FK6ECB7A12794DD3B7" FromRole="lga" ToRole="state" />
           <NavigationProperty Name="state3" Relationship="shield_dmpModel.FKDAADEEE960D0DD2E" FromRole="lga" ToRole="state" />
+          <Property Name="alternative_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="state">
           <Key>
@@ -754,8 +766,8 @@
           <NavigationProperty Name="lgas3" Relationship="shield_dmpModel.FKDAADEEE960D0DD2E" FromRole="state" ToRole="lga" />
         </EntityType>
         <Association Name="FK_dqa_report_value_dqa_indicator">
-          <End Type="shield_dmpModel.dqa_indicator" Role="dqa_indicator" Multiplicity="1" />
-          <End Type="shield_dmpModel.dqa_report_value" Role="dqa_report_value" Multiplicity="*" />
+          <End Type="shield_dmpModel.dqa_indicator" Multiplicity="1" Role="dqa_indicator" />
+          <End Type="shield_dmpModel.dqa_report_value" Multiplicity="*" Role="dqa_report_value" />
           <ReferentialConstraint>
             <Principal Role="dqa_indicator">
               <PropertyRef Name="Id" />
@@ -999,6 +1011,14 @@
           <NavigationProperty Name="HealthFacility" Relationship="shield_dmpModel.FK__dqa_pivot__Facil__6324A15E" FromRole="dqa_pivot_table" ToRole="HealthFacility" />
           <NavigationProperty Name="dqa_pivot_table_upload" Relationship="shield_dmpModel.FK__dqa_pivot__Uploa__45A94D10" FromRole="dqa_pivot_table" ToRole="dqa_pivot_table_upload" />
           <NavigationProperty Name="ImplementingPartner" Relationship="shield_dmpModel.FK__dqa_pivot_ta__IP__6BB9E75F" FromRole="dqa_pivot_table" ToRole="ImplementingPartner" />
+          <Property Name="HTS_TST" Type="Int32" />
+          <Property Name="HTC_Only" Type="Int32" />
+          <Property Name="HTC_Only_POS" Type="Int32" />
+          <Property Name="PMTCT_STAT" Type="Int32" />
+          <Property Name="PMTCT_STAT_NEW" Type="Int32" />
+          <Property Name="PMTCT_STAT_PREV" Type="Int32" />
+          <Property Name="PMTCT_EID" Type="Int32" />
+          <Property Name="TX_NEW" Type="Int32" />
         </EntityType>
         <Association Name="FK__dqa_pivot__Facil__6324A15E">
           <End Type="shield_dmpModel.HealthFacility" Role="HealthFacility" Multiplicity="1" />
@@ -1096,6 +1116,7 @@
           <EntitySetMapping Name="dqa_indicator">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_indicator">
               <MappingFragment StoreEntitySet="dqa_indicator">
+                <ScalarProperty Name="DQAPeriod" ColumnName="DQAPeriod" />
                 <ScalarProperty Name="Readonly" ColumnName="Readonly" />
                 <ScalarProperty Name="ThematicArea" ColumnName="ThematicArea" />
                 <ScalarProperty Name="IndicatorName" ColumnName="IndicatorName" />
@@ -1206,6 +1227,7 @@
           <EntitySetMapping Name="lgas">
             <EntityTypeMapping TypeName="shield_dmpModel.lga">
               <MappingFragment StoreEntitySet="lga">
+                <ScalarProperty Name="alternative_name" ColumnName="alternative_name" />
                 <ScalarProperty Name="lga_hm_longcode" ColumnName="lga_hm_longcode" />
                 <ScalarProperty Name="lga_name" ColumnName="lga_name" />
                 <ScalarProperty Name="state_code" ColumnName="state_code" />
@@ -1321,6 +1343,14 @@
           <EntitySetMapping Name="dqa_pivot_table">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_pivot_table">
               <MappingFragment StoreEntitySet="dqa_pivot_table">
+                <ScalarProperty Name="TX_NEW" ColumnName="TX_NEW" />
+                <ScalarProperty Name="PMTCT_EID" ColumnName="PMTCT_EID" />
+                <ScalarProperty Name="PMTCT_STAT_PREV" ColumnName="PMTCT_STAT_PREV" />
+                <ScalarProperty Name="PMTCT_STAT_NEW" ColumnName="PMTCT_STAT_NEW" />
+                <ScalarProperty Name="PMTCT_STAT" ColumnName="PMTCT_STAT" />
+                <ScalarProperty Name="HTC_Only_POS" ColumnName="HTC_Only_POS" />
+                <ScalarProperty Name="HTC_Only" ColumnName="HTC_Only" />
+                <ScalarProperty Name="HTS_TST" ColumnName="HTS_TST" />
                 <ScalarProperty Name="IP" ColumnName="IP" />
                 <ScalarProperty Name="FacilityId" ColumnName="FacilityId" />
                 <ScalarProperty Name="UploadId" ColumnName="UploadId" />

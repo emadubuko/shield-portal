@@ -13,25 +13,49 @@ namespace BWReport.DAL.Services
 {
     public class ReportLoader
     {
-        public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, string ImplementingPartner, Stream ReportStream, string loggedinUser, string fileName)
+        static LGA FindLGA(IList<LGA> lgas, string lgaName, string state = "")
+        {
+            LGA lga = null;
+            string _lga_name = lgaName.ToLower().Replace(" local government area", "");
+            lga = lgas.FirstOrDefault(x => x.lga_name.ToLower() == _lga_name);// && x.State.state_name.ToLower() == _state_name);
+            if (lga == null)
+            {
+                if (_lga_name == "amac")
+                {
+                    _lga_name = "abuja municipal";
+                }
+                else if(_lga_name == "ifako")
+                {
+                    _lga_name = "ifako-ijaye";
+                }
+                lga = lgas.FirstOrDefault(x => !string.IsNullOrEmpty(x.alternative_name)
+                && x.alternative_name.ToLower() == _lga_name);// && x.State.state_name.ToLower() == _state_name);
+            }
+            return lga;
+        }
+
+
+        public bool ExtractReport(string reportingPeriod, int Year, int startColumnIndex, Stream ReportStream, string loggedinUser, string fileName)
         {
             List<PerformanceData> ActualPerformanceMeasures = new List<PerformanceData>();
 
             PerformanceDataDao _targetDao = new PerformanceDataDao();
-            HealthFacilityDAO sdfDao = new HealthFacilityDAO();
-            var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
-            var existingFacilities = sdfDao.RetrieveAll().ToDictionary(x => x.FacilityCode);
-
-            Organizations ip = new OrganizationDAO().SearchByShortName(ImplementingPartner);
-            if (ip == null)
-            {
-                throw new ApplicationException("Unknown IP");
-            }
-
+            bwrHealthFacilityDAO sdfDao = new bwrHealthFacilityDAO();
+            var LGADictionary = new LGADao().RetrieveAll();
+            var existingFacilities = sdfDao.RetrieveAll();
+            
             try
             {
                 using (ExcelPackage package = new ExcelPackage(ReportStream))//(new FileInfo(FilePath)))
                 {
+                    var dashbardSheet = package.Workbook.Worksheets["Dashboard Navigation"];
+                    string ImplementingPartner = (string)dashbardSheet.Cells["B9"].Value;
+                    Organizations ip = new OrganizationDAO().SearchByShortName(ImplementingPartner);
+                    if (ip == null)
+                    {
+                        throw new ApplicationException("Unknown IP");
+                    }
+
                     ReportUploads upload = null;
                     //search previous report for duplicate using date
                     var previousUploads = new ReportUploadsDao().SearchPreviousUpload(reportingPeriod, Year, ImplementingPartner, fileName);
@@ -60,44 +84,49 @@ namespace BWReport.DAL.Services
                         if (name.ToLower().Contains("dashboard") || name.Contains("LGA"))
                             continue;
 
-                        string sheetTitle = ExcelHelper.ReadCell(sheet, 1, 1);
+                        string sheetTitle = ExcelHelper.ReadCellText(sheet, 1, 1);
 
-                        LGA theLGA = null;
-                        LGADictionary.TryGetValue(sheetTitle, out theLGA);
+                        LGA theLGA = FindLGA(LGADictionary, sheetTitle);
+
+                        //LGADictionary.TryGetValue(sheetTitle, out theLGA);
                         if (theLGA == null)
                         {
-                            throw new ApplicationException("invalid LGA code on the sheet - " + name);
+                            throw new ApplicationException("invalid LGA on the sheet - " + name);
                         }
                         int row = 8;
+                       
 
-                        
                         while (true)
                         {
-                            string facilityName = ExcelHelper.ReadCell(sheet, row, 2);
+                            string facilityName = ExcelHelper.ReadCellText(sheet, row, 2);
                             if (string.IsNullOrEmpty(facilityName))
                             {
                                 break;
                             }
 
-                            string facilityType = ExcelHelper.ReadCell(sheet, row, 3);
+                            string facilityType = ExcelHelper.ReadCellText(sheet, row, 3);
                             string fType = !string.IsNullOrEmpty(facilityType) ? facilityType.Substring(0, 1) : "F";
-                            string facilityCode = ExcelHelper.ReadCell(sheet, row, 1); //GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
+                            //string facilityCode = ExcelHelper.ReadCellText(sheet, row, 1); //GetFacilityCode(sheet, row, ImplementingPartner, theLGA, fType);
                             CommonUtil.Enums.OrganizationType orgType = facilityType.StartsWith("F") ? CommonUtil.Enums.OrganizationType.HealthFacilty : CommonUtil.Enums.OrganizationType.CommunityBasedOrganization;
 
-                            if (!string.IsNullOrEmpty(facilityCode))
+                           // if (!string.IsNullOrEmpty(facilityCode))
                             {
-                                HealthFacility theFacility = null;
-                                existingFacilities.TryGetValue(facilityCode, out theFacility);
+                                //int fCount = existingFacilities.Count(f => f.FacilityName == facilityName && f.LGA == theLGA && f.Organization == ip);
+                                //if (fCount > 1)
+                                //{
+                                //    throw new ApplicationException(string.Format("Conflict in Facility name, {0} in sheet {1}", facilityName, theLGA.lga_name));
+                                //}
+
+                                bwrHealthFacility theFacility = existingFacilities.FirstOrDefault(f => f.FacilityName == facilityName && f.LGA == theLGA && f.Organization == ip);
 
                                 if (theFacility == null)
                                 {
-                                    theFacility = new HealthFacility
+                                    theFacility = new bwrHealthFacility
                                     {
                                         Organization = ip,
-                                        FacilityCode = facilityCode,
                                         LGA = theLGA,
-                                        Name = facilityName,
-                                        OrganizationType = orgType,
+                                        FacilityName = facilityName,
+                                        OrganizationType = orgType
                                     };
                                     sdfDao.Save(theFacility);
                                 }
@@ -109,41 +138,45 @@ namespace BWReport.DAL.Services
                                     sdfDao.Update(theFacility);
                                 }
 
-                                if(theFacility.LGA != theLGA)
+                                if (theFacility.LGA != theLGA)
                                 {
-                                    throw new ApplicationException(string.Format("{0}({1}) Wrongly included in {2} sheet", facilityName, facilityCode, theLGA.lga_name));
+                                    throw new ApplicationException(string.Format("{0} Wrongly included in {1} sheet", facilityName, theLGA.lga_name));
                                 }
 
-                                int columnStart = startColumnIndex; //12
-                                int HTC_TST = 0;
-                                int HTC_TST_pos = 0;
-                                int Tx_NEW = 0;
-                                int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart), out HTC_TST);
-                                int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 1), out HTC_TST_pos);
-                                int.TryParse(ExcelHelper.ReadCell(sheet, row, columnStart + 2), out Tx_NEW);
-
-                                var performanceMeasure = new PerformanceData
+                                //incase of repetition
+                                if (ActualPerformanceMeasures.Any(a => a.HealthFacility == theFacility) == false)
                                 {
-                                    HTC_TST = HTC_TST,
-                                    HTC_TST_POS = HTC_TST_pos,
-                                    Tx_NEW = Tx_NEW,
-                                    HealthFacility = theFacility,
-                                    ReportPeriod = reportingPeriod,
-                                    FY = Year,
-                                    ReportUpload = upload,
-                                };
-                                ActualPerformanceMeasures.Add(performanceMeasure);
+                                    int columnStart = startColumnIndex; //12
+                                    int HTC_TST = 0;
+                                    int HTC_TST_pos = 0;
+                                    int Tx_NEW = 0;
+                                    int.TryParse(ExcelHelper.ReadCellText(sheet, row, columnStart), out HTC_TST);
+                                    int.TryParse(ExcelHelper.ReadCellText(sheet, row, columnStart + 1), out HTC_TST_pos);
+                                    int.TryParse(ExcelHelper.ReadCellText(sheet, row, columnStart + 2), out Tx_NEW);
+
+                                    var performanceMeasure = new PerformanceData
+                                    {
+                                        HTC_TST = HTC_TST,
+                                        HTC_TST_POS = HTC_TST_pos,
+                                        Tx_NEW = Tx_NEW,
+                                        HealthFacility = theFacility,
+                                        ReportPeriod = reportingPeriod,
+                                        FY = Year,
+                                        ReportUpload = upload,
+                                    };
+                                    ActualPerformanceMeasures.Add(performanceMeasure);
+                                }
                             }
-                            else
-                            {
-                                throw new ApplicationException("Facility code is empty for site -" + facilityName);
-                            }
+                            //else
+                            //{
+                            //    throw new ApplicationException("Facility code is empty for site -" + facilityName);
+                            //}
                             row++;
                         }
                     }
                 }
 
-                if(ActualPerformanceMeasures == null || ActualPerformanceMeasures.Count() == 0)
+                if (ActualPerformanceMeasures == null || ActualPerformanceMeasures.Count() == 0)
                 {
                     throw new ApplicationException("No Valid facility found. Please cross-check the template and ensure that DATIM facility codes are included");
                 }
@@ -177,35 +210,35 @@ namespace BWReport.DAL.Services
         }
 
 
-        public void GenerateExcel( string newTemplate, string existingTemplate, string IP, int year)
+        public void GenerateExcel(string newTemplate, string existingTemplate, string IP, int year)
         {
             PerformanceDataDao _targetDao = new PerformanceDataDao();
             var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
             var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
 
             var pds = _targetDao.RetrieveByOrganizationShortName(year, IP)
-                .OrderBy(x=>x.HealthFacility.Name).GroupBy(x => x.HealthFacility.LGA);            
+                .OrderBy(x => x.HealthFacility.FacilityName).GroupBy(x => x.HealthFacility.LGA);
 
             using (ExcelPackage package = new ExcelPackage(new FileInfo(existingTemplate)))
-            { 
+            {
                 foreach (var item in pds)
                 {
                     string lgaName = item.Key.lga_name;
 
-                    ExcelWorksheet sheet =  RetrieveMatchingWorkSheet(lgaName, package.Workbook.Worksheets, LGADictionary);
+                    ExcelWorksheet sheet = RetrieveMatchingWorkSheet(lgaName, package.Workbook.Worksheets, LGADictionary);
                     if (sheet == null)
                         continue;
-                     
-                    int row = 8;
-                    int columnStart = 1;
 
-                    var groupedByFacility = item.ToList().GroupBy(x => x.HealthFacility); //.Values.ToDictionary(x => x.HealthFacility);
+                    int row = 8;
+                    int columnStart = 0;
+
+                    var groupedByFacility = item.ToList().GroupBy(x => x.HealthFacility);
 
                     foreach (var f in groupedByFacility)
                     {
-                        sheet.Cells[row, columnStart].Value = f.Key.FacilityCode;
-                        
-                        sheet.Cells[row, columnStart + 2].Value = f.Key.Name;
+
+
+                        sheet.Cells[row, columnStart + 2].Value = f.Key.FacilityName;
 
                         switch (f.Key.OrganizationType)
                         {
@@ -220,7 +253,7 @@ namespace BWReport.DAL.Services
                                 break;
                         }
 
-                        var lineEntries = f.OrderBy(x=>x.HealthFacility.Name).ToList();
+                        var lineEntries = f.OrderBy(x => x.HealthFacility.FacilityName).ToList();
                         for (int i = 0; i < lineEntries.Count; i++)
                         {
                             var aLine = lineEntries[i];
@@ -229,7 +262,7 @@ namespace BWReport.DAL.Services
                             sheet.Cells[row, valueStartingPoint].Value = aLine.HTC_TST;
                             sheet.Cells[row, valueStartingPoint + 1].Value = aLine.HTC_TST_POS;
                             sheet.Cells[row, valueStartingPoint + 2].Value = aLine.Tx_NEW;
-                            
+
                         }
 
                         row += 1;
