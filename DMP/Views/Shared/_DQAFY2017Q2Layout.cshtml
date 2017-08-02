@@ -2,10 +2,10 @@
     Layout = "~/Views/Shared/_genLayout.cshtml";
 }
 @section AddToHead{
-@if (IsSectionDefined("AddToHead"))
-{
-    @RenderSection("AddToHead", required: false)
-}
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
 }
 <div class="main-content" style="padding-top: 0px;">
     <div class="row" id="breadcrumb">
@@ -22,7 +22,7 @@
         @*side bar*@
         <div class="col-md-3">
             <div class="page-sidebar">
-                <div class="sidebar"> 
+                <div class="sidebar">
                     <ul id="side-nav" class="main-menu navbar-collapse collapse">
                         <li>
                             <a href=@Url.Action("index", "DQAFY2017Q2") style="color:#029b17;">
@@ -45,15 +45,15 @@
                             </a>
                         </li>
                         <li>
+                            <a href=@Url.Action("RadetValidation", "DQAFY2017Q2") style="color:#029b17;">
+                                <i class="fa fa-check-square-o"></i><span class="title">&nbsp; RADET Validation</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href=@Url.Action("UploadDQA", "DQAFY2017Q2") style="color:#029b17;">
                                 <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload DQA</span>
                             </a>
                         </li>
-                        @*<li>
-                            <a href=@Url.Action("UploadRadet", "DQAFY2017Q2") style="color:#029b17;">
-                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload RADET</span>
-                            </a>
-                        </li>*@
                         <li>
                             <a href=@Url.Action("UploadPivotTable", "DQAFY2017Q2") style="color:#029b17;">
                                 <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Site selection <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Pivot Table)</span>
@@ -87,9 +87,9 @@
 
         @RenderBody()
     </div>
-     
+
 </div>
- 
+
 @section Scripts
 {
     <script src="~/Scripts/jquery.min.js"></script>
@@ -130,5 +130,5 @@
     <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
     <script src="~/Scripts/fns/fn_dashboard.js" type="text/javascript"></script>
     <script src="~/Scripts/profile-display.js"></script>
-@RenderSection("scripts", required: false)
-   }
+    @RenderSection("scripts", required: false)
+}

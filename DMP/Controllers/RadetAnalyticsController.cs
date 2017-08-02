@@ -40,10 +40,10 @@ namespace ShieldPortal.Controllers
 
         [HttpPost]
         public string RADETScoreCardData()
-        { 
+        {
             var data = new RadetMetaDataDAO().GetScoreCard();
             List<dynamic> mydata = new List<dynamic>();
-             
+
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
             {
                 foreach (DataRow dr in data.Rows)
@@ -64,7 +64,7 @@ namespace ShieldPortal.Controllers
                 var profile = new Services.Utils().GetloggedInProfile();
                 foreach (DataRow dr in data.Rows)
                 {
-                    if(dr[0].ToString() == profile.Organization.ShortName)
+                    if (dr[0].ToString() == profile.Organization.ShortName)
                     {
                         var dtt = new
                         {
@@ -75,10 +75,10 @@ namespace ShieldPortal.Controllers
 
                         };
                         mydata.Add(dtt);
-                    }                   
+                    }
                 }
             }
-             
+
             return JsonConvert.SerializeObject(mydata);
         }
 
@@ -95,7 +95,7 @@ namespace ShieldPortal.Controllers
             {
                 ViewBag.Orgs = new List<Organizations> { profile.Organization };
                 ViewBag.showdelete = false;
-            }  
+            }
             return View();
         }
 
@@ -135,14 +135,19 @@ namespace ShieldPortal.Controllers
             var recordsFiltered = 0;
             start = start.HasValue ? start / 10 : 0;
             RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RadetMetaDataSearchModel>(search);
-
+            if (User.IsInRole("ip"))
+            {
+                searchModel.IPs = new List<string> { new Services.Utils().GetloggedInProfile().Organization.ShortName };
+            }
+         
             RadetMetaDataDAO _dao = new RadetMetaDataDAO();
             var list = new RadetMetaDataDAO().RetrieveUsingPaging(searchModel, start.Value, length ?? 20, false, out totalRecords);
+             
             recordsFiltered = list.Count();
 
             list.ForEach(x =>
             {
-                
+
                 x.FirstColumn = string.Format("<input type='checkbox' id='{0}' class='chcktbl' />", x.Id);
                 x.LastColumn = string.Format("<td><a style='text-transform: capitalize;' class='btn btn-sm btn-info viewPatientListing' id='{0}'>View Entries</a>&nbsp;&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a> <i style='display:none' id='loadImg2'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i></td>", x.Id);
             });
@@ -156,7 +161,7 @@ namespace ShieldPortal.Controllers
                             aaData = list
                         });
         }
-        
+
         public ActionResult Randomizer()
         {
             IList<RadetMetaData> RadetMetadata = null;
@@ -167,9 +172,9 @@ namespace ShieldPortal.Controllers
                 var profile = new Services.Utils().GetloggedInProfile();
                 ips = new List<string> { profile.Organization.ShortName };
             }
-            
+
             RadetMetadata = new RadetMetaDataDAO().SearchRadetData(ips, null, null, "");
-             
+
             RandomizerDropDownModel model = new RandomizerDropDownModel();
             model.IPLocation = new List<IPLGAFacility>();
             model.AllowCriteria = (User.IsInRole("shield_team") || User.IsInRole("sys_admin"));
@@ -214,10 +219,10 @@ namespace ShieldPortal.Controllers
         {
             IList<RandomizationUpdateModel> list = null;
             RadetMetaDataDAO _dao = new RadetMetaDataDAO();
-            if (model !=null && model.MetaDataId == 0)
+            if (model != null && model.MetaDataId == 0)
             {
-                
-                list = new RadetMetaDataDAO().SearchPatientLineListing(model.IPs, model.lga_codes, model.facilities,model.state_codes, model.RadetPeriod);
+
+                list = new RadetMetaDataDAO().SearchPatientLineListing(model.IPs, model.lga_codes, model.facilities, model.state_codes, model.RadetPeriod);
             }
             else
             {
@@ -295,13 +300,13 @@ namespace ShieldPortal.Controllers
             return list;
         }
 
-        
-        
+
+
         /// <param name="useSession"></param>
         /// <param name="radetIds"></param>
         /// <returns></returns>
         [Compress]
-        public JsonResult ExportData(bool useSession, string radetIds="")//List<int>
+        public JsonResult ExportData(bool useSession, string radetIds = "")//List<int>
         {
             int[] radetIds_int;
             bool RandomlySelectOnly = false;
@@ -314,7 +319,7 @@ namespace ShieldPortal.Controllers
                 radetIds_int = HttpContext.Session["downloadableIds"] as int[];
                 RandomlySelectOnly = true;
             }
-            
+
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("IP, State, LGA, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status");
@@ -322,7 +327,7 @@ namespace ShieldPortal.Controllers
             Action<ExportData> _action = (ExportData pt) =>
             {
                 sb.AppendLine(string.Format("\'{0}\',\'{1}\',\'{2}\',\'{3}\',\'{4}\',\'{5}\',\'{6}\',\'{7},\'{8},\'{9:dd-MM-yyyy}\',\'{10:dd-MM-yyyy}\',\'{11}\',\'{12}\',\'{13}\',\'{14}\',\'{15}\',\'{16}\',\'{17}\',\'{18}\', \'{19}\', \'{20}\'",
-                                  pt.IPShortName, pt.State, pt.LGA, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo :"", !string.IsNullOrEmpty(pt.Sex) ?  pt.Sex : "",
+                                  pt.IPShortName, pt.State, pt.LGA, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo : "", !string.IsNullOrEmpty(pt.Sex) ? pt.Sex : "",
                                   pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus, !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "", pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus));
             };
 
@@ -331,11 +336,11 @@ namespace ShieldPortal.Controllers
             int numberOfPages = (radetIds_int.Count() / pageSize) + (radetIds_int.Count() % pageSize == 0 ? 0 : 1);
             //int currentPage = 0;
 
-            for(int currentPage = 0; currentPage < numberOfPages; currentPage++)
+            for (int currentPage = 0; currentPage < numberOfPages; currentPage++)
             {
                 var _d = radetIds_int.Skip(currentPage * pageSize).Take(pageSize).ToList();
                 result.AddRange(new RadetMetaDataDAO().RetrieveRadetList<ExportData>(_d, RandomlySelectOnly));
-            }            
+            }
 
             result.ForEach(_action);
 

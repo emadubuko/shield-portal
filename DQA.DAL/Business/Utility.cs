@@ -302,34 +302,48 @@ namespace DQA.DAL.Business
 
         public static List<PivotTableModel> RetrievePivotTablesForDQATool(int ip_id, string quarter)
         {
-            dqa_pivot_table_upload pivotTableUpload = null;
+            List<dqa_pivot_table_upload> pivotTableUpload = null;
             if (ip_id != 0)
             {
-                pivotTableUpload = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.IP == ip_id && x.Quarter == quarter);
+                pivotTableUpload = entity.dqa_pivot_table_upload.Where(x => x.IP == ip_id && x.Quarter == quarter).ToList();
             }
             else
             {
-                pivotTableUpload = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == quarter);
+                pivotTableUpload = entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter).ToList();
             }
-            
-            if(pivotTableUpload != null)
+
+            if (pivotTableUpload != null)
             {
-                var result = (from table in pivotTableUpload.dqa_pivot_table.OrderByDescending(x=>x.SelectedForDQA)
-                             select new PivotTableModel
-                             {
-                                 Id = table.Id,                                  
-                                 State = table.HealthFacility.lga.state.state_name,
-                                 Lga = table.HealthFacility.lga.lga_name,
-                                 IP = table.HealthFacility.ImplementingPartner.ShortName,
-                                 FacilityName = table.HealthFacility.Name, //table.FacilityName,
-                                 FacilityCode = table.HealthFacility.FacilityCode,
-                                 OVC = table.OVC,
-                                 PMTCT_ART = table.PMTCT_ART,
-                                 TB_ART = table.TB_ART,
-                                 TX_CURR = table.TX_CURR,
-                                 SelectedForDQA = table.SelectedForDQA,
-                                 SelectedReason = table.SelectedReason
-                             }).ToList();
+                List<PivotTableModel> result = new List<PivotTableModel>();
+                foreach (var item in pivotTableUpload)
+                {
+                    result.AddRange((from table in item.dqa_pivot_table.OrderByDescending(x => x.SelectedForDQA)
+                                     select new PivotTableModel
+                                     {
+                                         Id = table.Id,
+                                         State = table.HealthFacility.lga.state.state_name,
+                                         Lga = table.HealthFacility.lga.lga_name,
+                                         IP = table.HealthFacility.ImplementingPartner.ShortName,
+                                         FacilityName = table.HealthFacility.Name, //table.FacilityName,
+                                         FacilityCode = table.HealthFacility.FacilityCode,
+                                         OVC = table.OVC,
+
+                                         PMTCT_ART = table.PMTCT_ART,
+                                         TB_ART = table.TB_ART,
+                                         TX_CURR = table.TX_CURR,
+                                         HTC_Only = table.HTC_Only,
+                                         HTC_Only_POS = table.HTC_Only_POS,
+                                         HTS_TST = table.HTS_TST,
+                                         PMTCT_EID = table.PMTCT_EID,
+                                         PMTCT_STAT = table.PMTCT_STAT,
+                                         PMTCT_STAT_NEW = table.PMTCT_STAT_NEW,
+                                         PMTCT_STAT_PREV = table.PMTCT_STAT_PREV,
+                                         TX_NEW = table.TX_NEW,
+
+                                         SelectedForDQA = table.SelectedForDQA,
+                                         SelectedReason = table.SelectedReason
+                                     }).ToList());
+                }
                 return result;
             }
             //return null if nothing is found
@@ -358,6 +372,7 @@ namespace DQA.DAL.Business
                                                 Tables = from table in item.dqa_pivot_table
                                                          select new PivotTableModel
                                                          {
+                                                             IP = table.IP.ToString(),
                                                              FacilityName = table.HealthFacility.Name,
                                                              OVC = table.OVC,
                                                              PMTCT_ART = table.PMTCT_ART,
@@ -377,6 +392,48 @@ namespace DQA.DAL.Business
                                             });
 
             return list.ToList();
+        }
+
+        public static List<PivotTableModel> RetrievePivotTablesForComparison(int ip_id, string quarter)
+        {
+            List<dqa_pivot_table_upload> result = new List<dqa_pivot_table_upload>();
+            if (ip_id == 0)
+            {
+                result = entity.dqa_pivot_table_upload.Where(x=>x.Quarter == quarter).ToList();
+            }
+            else
+            {
+                result = entity.dqa_pivot_table_upload.Where(x => x.IP == ip_id && x.Quarter == quarter).ToList();
+            }
+            IEnumerable<PivotTableModel> list = (from item in result
+                                                 from table in item.dqa_pivot_table
+                                                 select new PivotTableModel
+                                                 {
+                                                     IP = item.ImplementingPartner.ShortName,
+                                                     FacilityName = table.HealthFacility.Name, 
+                                                     FacilityCode = table.HealthFacility.FacilityCode,                                                   
+                                                     TX_CURR = table.TX_CURR,
+                                                     TX_NEW = table.TX_NEW,
+                                                 });
+
+            return list.ToList();
+        }
+
+        public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate)
+        {
+            string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_aggregate_radet";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@radetperiod", radetPeriod);
+            cmd.Parameters.AddWithValue("@startdate", startQuarterDate);
+            cmd.Parameters.AddWithValue("@enddate", endQuarterDate);
+            cmd.Parameters.AddWithValue("@ip", partnerShortName);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
+
         }
     }
 }

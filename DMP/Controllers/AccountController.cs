@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-
 using ShieldPortal.Models;
 using ShieldPortal.ViewModel;
-using DAL.DAO;
-using DAL.Entities;
 using System.Net;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Collections.Generic;
 using CommonUtil.Entities;
 using CommonUtil.DAO;
 

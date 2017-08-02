@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EP.DAL", "EP.DAL\EP.DAL.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RADET.DAL", "RADET.DAL\RADET.DAL.csproj", "{5CB4C593-CE51-434A-B7C2-951FDD4468F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHMIS.DAL", "NHMIS.DAL\NHMIS.DAL.csproj", "{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{5CB4C593-CE51-434A-B7C2-951FDD4468F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CB4C593-CE51-434A-B7C2-951FDD4468F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CB4C593-CE51-434A-B7C2-951FDD4468F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

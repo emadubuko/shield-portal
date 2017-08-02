@@ -9,7 +9,7 @@
         {
             var profileId = '@ShieldPortal.Services.Utils.LoggedinProfileID';
         }
-    </script>   
+    </script>
 
     @if (IsSectionDefined("AddToHead"))
     {
@@ -23,8 +23,7 @@
         <div class="col-sm-5 col-sm-push-3">
             <ol class="breadcrumb breadcrumb-2">
                 <li><a href="/"><i class="icon-folder"></i>Home</a></li>
-                <li><a href="/Home/submenu?id=routine_reporting">Routine Reporting</a></li>
-                <li class="active">RADET</li>
+                <li class="active">NHMIS Report Analytics</li>
             </ol>
         </div>
     </div>
@@ -35,30 +34,15 @@
         <div class="col-md-3">
             <div class="page-sidebar">
                 <div class="sidebar">
-                    <ul id="side-nav" class="main-menu navbar-collapse collapse"  style="color:deepskyblue;font-weight:bolder;">
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse" style="color:forestgreen;font-weight:bolder;">
                         <li>
-                            <a href=@Url.Action("index", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
-                                <i class="fa fa-area-chart"></i><span class="title">&nbsp;Dashboard</span>
-                            </a>
-                        </li> 
-                        <li>
-                            <a href=@Url.Action("RADETScoreCard", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
-                                <i class="icon-pencil"></i><span class="title">Submission Score card</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("Randomizer", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
-                                <i class="fa fa-filter"></i><span class="title">&nbsp;Select (Randomizer)</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("ViewPreviousUploads", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
+                            <a href=@Url.Action("index", "NHMIS") style="color:forestgreen;font-weight:bolder;">
                                 <i class="fa fa-file-excel-o"></i><span class="title">&nbsp;View Uploads</span>
                             </a>
                         </li>
-                        <li>@*href=@Url.Action("UploadPage", "RadetAnalytics")*@
-                            <a data-toggle="popover" title="" data-placement="bottom" data-content="Upload of RADET file is closed"  style="color:deepskyblue;font-weight:bolder;">
-                                <i class="fa fa-upload"></i><span class="title">&nbsp;Upload RADET</span>
+                        <li>
+                            <a href=@Url.Action("Upload", "NHMIS") style="color:forestgreen;font-weight:bolder;">
+                                <i class="fa fa-upload"></i><span class="title">&nbsp;Upload report</span>
                             </a>
                         </li>
                     </ul>

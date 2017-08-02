@@ -112,7 +112,7 @@ namespace RADET.DAL.Services
                 var mainWorksheet = package.Workbook.Worksheets["MainPage"];
                 var worksheets = package.Workbook.Worksheets;
 
-                if (worksheets.Count < 6) //some file just had the main page, summary and co but not tabs for the years
+                if (worksheets.Count < 5) //some file just had the main page, summary and co but not tabs for the years
                 {
                     return true;//empty file
                 }
@@ -358,12 +358,16 @@ namespace RADET.DAL.Services
                 return null;
 
             DateTime output;
-            if (DateTime.TryParse(input, out output) == false)
+            bool outcome = DateTime.TryParse(input, out output);
+            if (outcome == false)
             {
                 string[] formats = { "dd/MM/yyyy" };
-                if (DateTime.TryParseExact(input, formats, new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
+
+                outcome = DateTime.TryParseExact(input, formats, new CultureInfo("en-US"), DateTimeStyles.None, out output);
+                if (outcome == false)
                 {
-                    if (DateTime.TryParseExact(input, "dd-MM-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out output) == false)
+                    outcome = DateTime.TryParseExact(input, "dd-MM-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out output);
+                    if (outcome == false)
                     {
                         error.Add(new ErrorDetails
                         {
@@ -376,6 +380,17 @@ namespace RADET.DAL.Services
                     }
                 }
                 return null;
+            }
+            if (outcome && (output.Year < 1753 || output.Year > 9999))
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
             }
             return output;
         }

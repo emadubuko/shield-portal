@@ -48,7 +48,7 @@
                                                 }
                                         </select>
                                         }
-                                        else if ((string)field.Value == "Organization")
+                                        else if ((string)field.Value == "Organizations")
                                         {
                                         <select id="OrganizationId" class="form-control" required>
                                             <option value="" disabled selected>Select Organization</option>
@@ -102,6 +102,11 @@
                     $.each(formdata, function (name, formElements) {
                         viewModel[formElements.id] = formElements.value;
                     });
+
+                    var orgs =  @Html.Raw(Json.Encode(Model.Organizations));
+                    var org  = $.grep(orgs, function(e){ return e.Id == $("#OrganizationId").val(); });
+
+                    viewModel.Organization = org[0];
 
 
                     var someUrl = '@Url.Action("CreateNewHealthFacility", "HealthFacility")';

@@ -1,38 +1,33 @@
-﻿@model List<DQA.DAL.Model.UploadList>
-@{
-    Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
+﻿
+@{ 
+    Layout = "~/Views/Shared/_NHMISLayout.cshtml";
 }
+ 
 @section AddToHead{
-<script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
-<script type="text/javascript">
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
         {
             var previousUpload = @Html.Raw(Json.Encode(Model));
         }
-</script>
+    </script>
     <style>
         .form-control {
-            color: #029b17;
+            color: forestgreen;
         }
 
         form {
-            color: #029b17;
+            color: forestgreen;
         }
+
         .table > thead > tr > th {
             text-transform: uppercase;
             font-weight: 400;
             text-align: center;
         }
-        .gotoTool{
-            text-transform:capitalize;
-            text-decoration:underline;
-            color:blue;
-            cursor:pointer;
-            pointer-events:all;
-        }
     </style>
 }
 
-<div class="col-md-9">
+<div class="col-md-8">
     <p style="color: red;font-weight: bold;">Download pivot table template. Using the pivot table template downloaded, complete it with information reported on DATIM for Q3. After populating the template, upload back on the portal and this information will give you a list of all the sites for which DQAs should be done for Q3. </p>
     <div class="panel panel-success">
         <div class="panel-heading clearfix" style="padding:8px 20%">
@@ -44,39 +39,28 @@
                     <span class="sr-only">Loading...Please wait</span>
                 </div>
             </div>
-            <form class="form-horizontal" id="form" enctype="multipart/form-data">
+            <form>
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">File</label>
-                    <div class="col-sm-5">
-                        <input type="file" id="field-file" name="upFile" class="form-control" required>
-                    </div>
-                    <div class="col-sm-3">
-                        <select class="form-control" id="selected_quarter"  required disabled> 
-                            <option value="Q1 FY17">Q1 FY17</option>
-                            <option value="Q2 FY17" >Q2 FY17</option>
-                            <option value="Q3 FY17" selected>Q3 FY17</option>
-                            <option value="Q4 FY17">Q4 FY17</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2" style="visibility:hidden">
-                        <select class="form-control" id="selected_year" required disabled> 
-                            <option value="2017" selected>2017</option>
-                            <option value="2018">2018</option>
-                        </select>
-                    </div>
+                    <label for="up_pivot">DATIM pivot table</label>
+                    <input type="file" id="up_pivot" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="NHSR">Nation Health Sector report</label>
+                    <input type="file" id="NHSR" class="form-control" required>
                 </div>
                 <div class="col-sm-push-1 col-sm-1">
-                    <a class="btn btn-success" id="btnSubmit">Upload</a>
+                    <a class="btn btn-success" id="btnUpload">Upload</a>
                 </div>
             </form>
+
+             
             <br /><br />
             <div class="line-dashed"></div>
             <div class="table-responsive" style="overflow-x:initial" id="pivotTable">
                 <div class="col-lg-12">
-                    <a class="gotoTool">Go to DQA Tool download page</a>
-                    <a id="save_download" style="float:right;text-transform:capitalize;text-decoration:underline;color:blue;cursor:pointer">Download Selected Sites</a>
+                    <a class="btn btn-success" id="save_download" style="float:right">Download Selected Sites</a>
                 </div>
-                <table class="table table-bordered table-hover" id="output" style="width:100%;font-size:10px;">
+                <table class="table table-bordered table-hover" id="output" style="width:100%">
                     <thead>
                         <tr>
                             <th>Site</th>
@@ -89,7 +73,7 @@
                             <th>PMTCT_ART</th>
                             <th>PMTCT_EID</th>
                             <th>TX_NEW</th>
-                            <th>TX_CURR</th>  
+                            <th>TX_CURR</th>
                             <th>Total on treatment</th>
                             <th>Selected for DQA</th>
                         </tr>
@@ -117,16 +101,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @*@foreach (var item in Model)
                         {
                             <tr>
                                 <td> @item.IP </td>
                                 <td>@item.Period</td>
                                 <td>@item.DateUploaded</td>
                                 <td>@item.UploadedBy</td>
-                                <td><a class="btn btn-sm btn-success downloadsite" id="@item.id" style="float:right;text-transform: capitalize">View Entries</a></td>
+                                <td><a class="btn btn-sm btn-success downloadsite" id="@item.id" style="float:right">View Selected Sites</a></td>
                             </tr>
-                        }
+                        }*@
                     </tbody>
                 </table>
             </div>
@@ -134,7 +118,7 @@
     </div>
 
 </div>
- 
+
 
 @section Scripts{
     <script>
@@ -142,36 +126,35 @@
             $("#progress").hide();
             $("#pivotTable").hide();
 
-            $("#btnSubmit").click(function () {
+            $("#btnUpload").click(function () {
                 $("#output tbody").empty();
                 $("#progress").show();
-                
-                var data = new FormData();
-                var file = $('form input[type=file]')[0].files[0];
-                data.append('file', file);
 
-                var selectedQuarter = $("#selected_quarter").val();
-                var selectedYear = $("#selected_year").val();
-                $("#btnSubmit").prop("disabled", true);
+                var fdata = new FormData();
+                var pivot_file = document.getElementById("up_pivot").files[0];
+                var nhs_file = document.getElementById("NHSR").files[0];
+                fdata.append('up_pivot', pivot_file);
+                fdata.append('NHSR', nhs_file);
+
+                $("#btnUpload").prop("disabled", true);
 
                 $.ajax({
-                    url: '/api/dqaapi/ProcesssPivotTable?selectedQuater=' + selectedQuarter + '&&selectedYear=' + selectedYear,
+                    url: '/NHMIS/ProcessFileUpload',
                     type: 'POST',
-                    data: data,
-                    async: true,
+                    data: fdata,
                     cache: false,
                     contentType: false,
                     processData: false
-                }).done(function (data) {
-                    buildPivotTable($.parseJSON(data));
+                }).done(function (rdata) {
+                   // buildPivotTable($.parseJSON(data));
                     $("#pivotTable").show();
-                    $("#btnSubmit").prop("disabled", false);
+                    $("#btnUpload").prop("disabled", false);
                     $("#progress").hide();
                 }).error(function (xhr, status, err) {
                     alert($.parseJSON(xhr.responseText).Message);
                     console.log($.parseJSON(xhr.responseText).Message);
                     $("#progress").hide();
-                    $("#btnSubmit").prop("disabled", false);
+                    $("#btnUpload").prop("disabled", false);
                 });
                 return false;
             });
@@ -183,7 +166,7 @@
                     html += "<td>" + d.FacilityName + "</td>";
                     html += "<td>" + (d.HTS_TST == 0 ? '' : d.HTS_TST) + "</td>";
                     html += "<td>" + (d.HTC_Only == 0 ? '' : d.HTC_Only) + "</td>";
-                    html += "<td>" + (d.HTC_Only_POS == 0 ? '' : d.HTC_Only_POS) + "</td>";  
+                    html += "<td>" + (d.HTC_Only_POS == 0 ? '' : d.HTC_Only_POS) + "</td>";
                     html += "<td>" + (d.PMTCT_STAT == 0 ? '' : d.PMTCT_STAT) + "</td>";
                     html += "<td>" + (d.PMTCT_STAT_NEW == 0 ? '' : d.PMTCT_STAT_NEW) + "</td>";
                     html += "<td>" + (d.PMTCT_STAT_PREV == 0 ? '' : d.PMTCT_STAT_PREV) + "</td>";
@@ -209,23 +192,17 @@
                 exportTableToCSV.apply(this, [$('#output'), 'selectedsites.csv', '-', 6, 6]);
             });
 
-            var selected_ip;
+
             $(".downloadsite").click(function (e) {
                 var id = e.currentTarget.id;
                 for (var z = 0; z < previousUpload.length; z++) {
                     if(previousUpload[z].id == id){
-                        var sites = previousUpload[z].Tables; 
+                        var sites = previousUpload[z].Tables;
                         buildPivotTable(sites);
                         $("#pivotTable").show();
-                        selected_ip =parseInt(sites[0].IP);
                         break;
                     }
                 }
-            });
-
-            $(".gotoTool").click(function(e){
-
-                location.href ="/DQAFY2017Q2/DownloadDQATool?ip="+selected_ip;
             });
 
         });

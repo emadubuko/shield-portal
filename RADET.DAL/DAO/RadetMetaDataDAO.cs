@@ -142,7 +142,7 @@ namespace RADET.DAL.DAO
         public IList<RadetPatientLineListing> RetrieveRadetLineListingForDQA(string RadetPeriod, string IP, string facility)
         {
             ISession session = BuildSession();
-            var result = session.Query<RadetPatientLineListing>().Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod && x.MetaData.IP.ShortName == IP && x.MetaData.Facility == facility);
+            var result = session.Query<RadetPatientLineListing>().Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod && x.MetaData.IP.ShortName == IP && x.MetaData.Facility.Trim() == facility);
             return result.ToList();
         }
 

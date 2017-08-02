@@ -130,14 +130,23 @@ function exportTableToCSV($table, filename, ignoredvalue, ignoredValueColumn, ig
             var $row = $(row), $cols = $row.find('td,th');
 
             //skip ignored values
-            if ($cols[ignoredValueColumn].innerHTML != ignoredvalue.trim()) {
+            if (ignoredvalue) {
+                if ($cols[ignoredValueColumn].innerHTML != ignoredvalue.trim()) {
+                    return $cols.map(function (j, col) {
+                        if (j != ignoredColumnIndex) {
+                            var $col = $(col), text = $col.text();
+                            return text.replace(/"/g, '""'); // escape double quotes 
+                        }
+                    }).get().join(tmpColDelim);
+                }
+            }
+            else {
                 return $cols.map(function (j, col) {
-                    if (j != ignoredColumnIndex) {
-                        var $col = $(col), text = $col.text();
-                        return text.replace(/"/g, '""'); // escape double quotes 
-                    }                                      
+                    var $col = $(col), text = $col.text();
+                    return text.replace(/"/g, '""'); // escape double quotes 
                 }).get().join(tmpColDelim);
-            } 
+            }
+             
 
         }).get().join(tmpRowDelim)
             .split(tmpRowDelim).join(rowDelim)

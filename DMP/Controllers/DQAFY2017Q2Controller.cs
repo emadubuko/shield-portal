@@ -6,9 +6,11 @@ using DQA.DAL.Business;
 using DQA.DAL.Model;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -47,7 +49,7 @@ namespace ShieldPortal.Controllers
                 Logger.LogInfo(" DQAAPi,post", "processing dqa upload");
 
                 HttpResponseMessage result = null;
-           
+
                 if (Request.Files.Count > 0)
                 {
                     var docfiles = new List<string>();
@@ -241,23 +243,29 @@ namespace ShieldPortal.Controllers
         }
 
         //this is the page
-        public ActionResult DownloadDQATool()
+        public ActionResult DownloadDQATool(int? ip)
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
             string currentPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
 
+            int getIP = 0;
             if (User.IsInRole("ip"))
-                sites = Utility.RetrievePivotTablesForDQATool(profile.Organization.Id, currentPeriod);
-            else
-                sites = Utility.RetrievePivotTablesForDQATool(0, currentPeriod);
+            {
+                getIP = profile.Organization.Id;
+            }
+            else if (ip.HasValue)
+            {
+                getIP = ip.Value;
+            }
+            sites = Utility.RetrievePivotTablesForDQATool(getIP, currentPeriod);
             return View(sites);
         }
 
         //this is for actual downloading of the file
         [HttpPost]
         public async Task<ActionResult> DownloadDQATool(List<PivotTableModel> data)
-        {            
+        {
             var profile = new Services.Utils().GetloggedInProfile();
             //the radet period is on the config file
             string file = await new BDQAQ2().GenerateDQA(data, profile.Organization);
@@ -270,7 +278,7 @@ namespace ShieldPortal.Controllers
         {
             string filename = "";
             switch (fileType)
-            { 
+            {
                 case "DQAUserGuide":
                     filename = "THE DATA QUALITY ASSESSMENT USER GUIDE FOR FY17 Q3.pdf";
                     break;
@@ -291,6 +299,92 @@ namespace ShieldPortal.Controllers
             }
         }
 
+        public ActionResult RadetValidation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public string RadetValidationData()
+        {
+            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            string startDate = "";
+            string endDate = "";
+            if (period.StartsWith("Q2"))
+            {
+                startDate = "2017-01-01 00:00:00.000";
+                endDate = "2017-03-31 23:59:59.000";
+            }
+            else if (period.StartsWith("Q3"))
+            {
+                startDate = "2017-04-01 00:00:00.000";
+                endDate = "2017-06-30 23:59:59.000";
+            }
+
+            string ip = "";
+            var profile = new Services.Utils().GetloggedInProfile();
+            if (User.IsInRole("ip"))
+                ip = profile.Organization.ShortName;
+
+            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate);
+            var pivot_data = Utility.RetrievePivotTablesForComparison(User.IsInRole("ip") ? profile.Organization.Id : 0, period);
+            var artSites = BDQAQ2.GetARTSite();
+
+            List<dynamic> mydata = new List<dynamic>();
+            List<dynamic> mydata2 = new List<dynamic>();
+
+            foreach (DataRow dr in radet_data.Rows)
+            {
+                var dtt = new
+                {
+                    ShortName = dr[0],
+                    Facility = dr[1],
+                    Tx_New = dr[2],
+                    Tx_Curr = dr[3],
+                };
+                mydata.Add(dtt);
+            }
+            foreach (var item in pivot_data)
+            {
+                string radetSite;
+                artSites.TryGetValue(item.FacilityCode, out radetSite);
+                if (string.IsNullOrEmpty(radetSite))
+                {
+                    radetSite = item.FacilityName;
+                }
+                var r_data = mydata.FirstOrDefault(x => x.ShortName == item.IP && x.Facility == radetSite);
+                if (r_data != null)
+                {
+                    int tx_new = item.TX_NEW.HasValue ? item.TX_NEW.Value : 0;
+                    mydata2.Add(new
+                    {
+                        ShortName = item.IP,
+                        Facility = item.FacilityName,
+                        Tx_New = r_data.Tx_New,
+                        p_Tx_New = item.TX_NEW,
+                        Tx_New_difference = Math.Abs((int)r_data.Tx_New - tx_new),
+                        Tx_New_concurrency = 100 * ((int)r_data.Tx_New - tx_new) / (int)r_data.Tx_New,
+
+                        Tx_Curr = r_data.Tx_Curr,
+                        p_Tx_Curr = item.TX_CURR,
+                        Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
+                        Tx_Curr_concurrency = 100 * ((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
+                    });
+                }
+                //else
+                //{
+                //    mydata2.Add(new
+                //    {
+                //        ShortName = item.IP,
+                //        Facility = item.FacilityName,
+                //        p_Tx_New = item.TX_NEW,
+                //        p_Tx_Curr = item.TX_CURR,
+                //    });
+                //}
+            }
+
+            return JsonConvert.SerializeObject(mydata2);
+        }
 
         /*
         public ActionResult UploadRadet()

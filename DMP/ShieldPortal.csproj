@@ -64,6 +64,7 @@
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EPPlus, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL" />
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
@@ -230,6 +231,7 @@
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NHMISController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RadetAnalyticsController.cs" />
@@ -1121,6 +1123,8 @@
     <Content Include="Views\RadetAnalytics\ViewPreviousUploads.cshtml" />
     <Content Include="Views\RadetAnalytics\Randomizer.cshtml" />
     <Content Include="Views\RadetAnalytics\RADETScoreCard.cshtml" />
+    <Content Include="Views\NHMIS\Upload.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\RadetValidation.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1159,6 +1163,7 @@
     <Content Include="Views\Shared\_genLayout.cshtml" />
     <Content Include="Views\Shared\_dmpLayoutPage.cshtml" />
     <Content Include="Views\Shared\_radetLayoutPage.cshtml" />
+    <Content Include="Views\Shared\_NHMISLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1199,6 +1204,10 @@
     <ProjectReference Include="..\EP.DAL\EP.DAL.csproj">
       <Project>{afc8203e-c2dc-4896-af36-85b6ccb86349}</Project>
       <Name>EP.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NHMIS.DAL\NHMIS.DAL.csproj">
+      <Project>{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}</Project>
+      <Name>NHMIS.DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\RADET.DAL\RADET.DAL.csproj">
       <Project>{5CB4C593-CE51-434A-B7C2-951FDD4468F5}</Project>

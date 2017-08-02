@@ -20,10 +20,11 @@
     <p style="color: red;font-weight: bold;">Tick the facilities below and click on the download button to download the DQA tool </p>
      
     <div class="panel panel-success">
-        <div class="panel-heading clearfix" style="padding:8px 20%">
+        <div class="panel-heading clearfix" style="padding:8px 5%">
             <h5 class="panel-title">DQA download page</h5>
             <div style="float:right">
-                <a class="btn btn-sm btn-white downloadDQA">Download Tool</a>
+                <a class="btn btn-sm btn-white downloadDQAAll"><i class="fa fa-download"></i>&nbsp;Download DQA Tool for all selected sites</a>
+                <a class="btn btn-sm btn-white downloadDQA"><i class="fa fa-download"></i>&nbsp;Download Tool per site</a>
                 <i style="display:none" id="loadImg"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>
             </div>            
         </div>
@@ -77,14 +78,14 @@
     <script>
         $(document).ready(function () {
             $('.table').DataTable({
-                "iDisplayLength": 50,
+                "iDisplayLength": 100,
                 "bAutoWidth": false,
                 "language": {
                     "lengthMenu": " ",
                     "zeroRecords": "No pivot table has been uploaded for FY2017 Q3.",
                     "infoEmpty": " "
                 }
-            })
+            });
              
 
             var allSites = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
@@ -109,13 +110,40 @@
                 }
             });
 
-            $(".downloadDQA").click(function(e){
+            $(".downloadDQAAll").click(function(e){ 
+                selectedSites = [];
+                $.each(allSites, function(i,d){
+                    if (d.SelectedForDQA == true) {
+                        selectedSites.push(d);
+                    }
+                }); 
+                
                 $("#loadImg").show()
+                $.ajax({
+                    url: '/DQAFY2017Q2/DownloadDQATool',
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(selectedSites),
+                    cache: false,
+                }).done(function (file) {
+                    window.location = '/Report/Template/DQA FY2017 Q3/'+ file;
+                    $("#loadImg").hide()
+                    selectedSites = [];
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+            
+
+            $(".downloadDQA").click(function(e){
+                
                 if(selectedSites.length == 0){
                     alert("No site selected yet.");
                     return;
                 }
-                 
+                $("#loadImg").show()
                 $.ajax({
                     url: '/DQAFY2017Q2/DownloadDQATool',
                     type: 'POST',
