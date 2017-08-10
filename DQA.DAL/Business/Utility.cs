@@ -394,27 +394,43 @@ namespace DQA.DAL.Business
             return list.ToList();
         }
 
-        public static List<PivotTableModel> RetrievePivotTablesForComparison(int ip_id, string quarter)
+        public static List<PivotTableModel> RetrievePivotTablesForComparison(string ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
         {
-            List<dqa_pivot_table_upload> result = new List<dqa_pivot_table_upload>();
-            if (ip_id == 0)
+            IQueryable<dqa_pivot_table_upload> result = null;
+
+            if (string.IsNullOrEmpty(ip))
             {
-                result = entity.dqa_pivot_table_upload.Where(x=>x.Quarter == quarter).ToList();
+                result = entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter);
             }
             else
             {
-                result = entity.dqa_pivot_table_upload.Where(x => x.IP == ip_id && x.Quarter == quarter).ToList();
+                result = entity.dqa_pivot_table_upload.Where(x => x.ImplementingPartner.ShortName == ip && x.Quarter == quarter);
             }
+
             IEnumerable<PivotTableModel> list = (from item in result
                                                  from table in item.dqa_pivot_table
+                                                 where table.TX_CURR > 0
                                                  select new PivotTableModel
                                                  {
                                                      IP = item.ImplementingPartner.ShortName,
-                                                     FacilityName = table.HealthFacility.Name, 
-                                                     FacilityCode = table.HealthFacility.FacilityCode,                                                   
+                                                     FacilityName = table.HealthFacility.Name,
+                                                     FacilityCode = table.HealthFacility.FacilityCode,
                                                      TX_CURR = table.TX_CURR,
                                                      TX_NEW = table.TX_NEW,
+                                                     TheLGA = table.HealthFacility.lga,
                                                  });
+            if (state_code != null && state_code.Count >0)
+            {
+                list = list.Where(x => state_code.Contains(x.TheLGA.state_code));
+            }
+            if (lga_code != null && lga_code.Count>0)
+            {
+                list = list.Where(x => lga_code.Contains(x.TheLGA.lga_code));
+            }
+            if (facilityName != null && facilityName.Count > 0)
+            {
+                list = list.Where(x => facilityName.Contains(x.FacilityName));
+            }
 
             return list.ToList();
         }

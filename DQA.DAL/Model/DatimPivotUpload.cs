@@ -24,6 +24,7 @@ namespace DQA.DAL.Model
         public string SelectedReason { get; set; }
         public string State { get; set; }
         public string Lga { get; set; } 
+        public Data.lga TheLGA { get; set; }
         public string IP { get; set; }
         public string FacilityCode { get; set; }
     }

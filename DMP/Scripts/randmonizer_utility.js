@@ -26,6 +26,54 @@ $('#chckHead').click(function () {
     }
 });
 
+function populate_all_controls() {
+    var _buildLGA = [];
+    var _buildFacility = [];
+    var _buildState= [];
+    var _buildIP = [];
+
+    $.each(model_data, function (i, a) {
+        if (checkforuniqueness(_buildIP, a.IP).length == 0) {
+            _buildIP.push(a.IP);
+            if (parseInt(ipscount) == 1) {
+                $("#sltIP").append($('<option>', {
+                    value: a.IP,
+                    text: a.IP,
+                    selected: true,
+                }));
+                $("#sltIP option[value=" + a.IP + "]");
+            }
+            else {
+                $("#sltIP").append($('<option>', {
+                    value: a.IP,
+                    text: a.IP
+                }));
+            }
+        }
+        if (checkforuniqueness(_buildState, a.LGA.State.state_code).length == 0) {
+            _buildState.push(a.LGA.State.state_code);
+            $("#sltstate").append($('<option>', {
+                value: a.LGA.State.state_code,
+                text: a.LGA.State.state_name
+            }));
+        }
+        if (checkforuniqueness(_buildLGA, a.LGA.lga_code).length == 0) {
+            _buildLGA.push(a.LGA.lga_code);
+            $("#sltLGA").append($('<option>', {
+                value: a.LGA.lga_code,
+                text: a.LGA.DisplayName
+            }));
+        }
+        if (checkforuniqueness(_buildFacility, a.FacilityName).length == 0) {
+            _buildFacility.push(a.FacilityName);
+            $("#sltFacility").append($('<option>', {
+                value: a.FacilityName,
+                text: a.FacilityName
+            }));
+        }
+    });
+}
+
 //IP
 $("#sltIP").change(function (e) {
     var _buildLGA_ = [];
@@ -128,6 +176,7 @@ $("#sltstate").change(function (e) {
         });
         return;
     }
+
     $("#sltstate option:selected").each(function (c) {
         var val = $(this).val();
 

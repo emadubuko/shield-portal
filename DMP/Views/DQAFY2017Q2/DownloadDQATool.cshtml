@@ -91,7 +91,7 @@
             var allSites = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
             var selectedSites = [];
 
-            $(".checkbox").click(function(e){
+            $(document).on("click", ".checkbox", function (e) {           
                 var id  = e.currentTarget.id;
                 
                 var item = {};

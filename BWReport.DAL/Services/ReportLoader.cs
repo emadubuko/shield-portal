@@ -16,7 +16,7 @@ namespace BWReport.DAL.Services
         static LGA FindLGA(IList<LGA> lgas, string lgaName, string state = "")
         {
             LGA lga = null;
-            string _lga_name = lgaName.ToLower().Replace(" local government area", "");
+            string _lga_name = lgaName.ToLower().Replace(" local government area", "").Trim();
             lga = lgas.FirstOrDefault(x => x.lga_name.ToLower() == _lga_name);// && x.State.state_name.ToLower() == _state_name);
             if (lga == null)
             {

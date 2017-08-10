@@ -301,12 +301,44 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
+            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            string ip = "";
+            var profile = new Services.Utils().GetloggedInProfile();
+            if (User.IsInRole("ip"))
+                ip = profile.Organization.ShortName;
+
+            var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period);
+            var iplocation = (from pvt in pivot_data
+                              select new
+                              {
+                                  FacilityName = pvt.FacilityName,
+                                  IP = pvt.IP,
+                                  LGA = new
+                                  {                                       
+                                      pvt.TheLGA.lga_code,
+                                      pvt.TheLGA.lga_name,
+                                      pvt.TheLGA.state_code,
+                                      DisplayName =  string.Format("{0} ({1})", pvt.TheLGA.lga_name, pvt.TheLGA.state.state_name),
+                                      State = new { pvt.TheLGA.state.state_name, pvt.TheLGA.state.state_code }
+                                  }
+                              });
+            var model = new { IPLocation = iplocation };
+            ViewBag.selectModel = JsonConvert.SerializeObject((iplocation), Formatting.None,
+                       new JsonSerializerSettings()
+                       {
+                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                           ContractResolver = new NHibernateContractResolver()
+                       });
+            ViewBag.IPCount = pivot_data.Select(x => x.IP).Distinct().Count();
             return View();
         }
 
         [HttpPost]
-        public string RadetValidationData()
+        public string RadetValidationData(int? draw, int? start, int? length)
         {
+            var search = Request["search[value]"];
+            RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
+            
             string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
             string startDate = "";
             string endDate = "";
@@ -325,9 +357,12 @@ namespace ShieldPortal.Controllers
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
                 ip = profile.Organization.ShortName;
-
+            else
+            {
+                ip = searchModel.IPs.FirstOrDefault();                
+            }
             var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate);
-            var pivot_data = Utility.RetrievePivotTablesForComparison(User.IsInRole("ip") ? profile.Organization.Id : 0, period);
+            var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
             var artSites = BDQAQ2.GetARTSite();
 
             List<dynamic> mydata = new List<dynamic>();
@@ -363,12 +398,12 @@ namespace ShieldPortal.Controllers
                         Tx_New = r_data.Tx_New,
                         p_Tx_New = item.TX_NEW,
                         Tx_New_difference = Math.Abs((int)r_data.Tx_New - tx_new),
-                        Tx_New_concurrency = 100 * ((int)r_data.Tx_New - tx_new) / (int)r_data.Tx_New,
+                        Tx_New_concurrency = 100 * Math.Abs((int)r_data.Tx_New - tx_new) / (int)r_data.Tx_New,
 
                         Tx_Curr = r_data.Tx_Curr,
                         p_Tx_Curr = item.TX_CURR,
                         Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
-                        Tx_Curr_concurrency = 100 * ((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
+                        Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
                     });
                 }
                 //else
@@ -383,7 +418,16 @@ namespace ShieldPortal.Controllers
                 //}
             }
 
-            return JsonConvert.SerializeObject(mydata2);
+
+            return JsonConvert.SerializeObject(
+                       new
+                       {
+                           sEcho = draw,
+                           iTotalRecords = mydata2.Count(),
+                           iTotalDisplayRecords = mydata2.Count(),
+                           aaData = mydata2
+                       });
+            //return JsonConvert.SerializeObject(mydata2);
         }
 
         /*
