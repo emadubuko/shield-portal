@@ -24,24 +24,23 @@ namespace DQA.DAL.Business
             entity = new shield_dmpEntities();
         }
 
-        public string ReadWorkbook(string filename, string username, string[] datimNumbersRaw)
+        public string ReadWorkbook(string filename, string username)
         {
             using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
-            { 
+            {
                 //get the metadata of the report
-                    var metadata = new dqa_report_metadata();
+                var metadata = new dqa_report_metadata();
                 try
                 {
                     var worksheet = package.Workbook.Worksheets["Worksheet"];
-                   
-                   var facility_code = worksheet.Cells["AA2"].Value.ToString(); //facility code
+
+                    var facility_code = worksheet.Cells["AA2"].Value.ToString(); //facility code
                     var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == facility_code);
                     if (facility == null)
                     {
                         return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
                     }
-
-                   
+                    
                     metadata.AssessmentWeek = 1;
                     metadata.CreateDate = DateTime.Now;
                     metadata.CreatedBy = username;
@@ -53,7 +52,7 @@ namespace DQA.DAL.Business
                     metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
                     metadata.SiteId = Convert.ToInt32(facility.Id);
                     metadata.StateId = facility.lga.state.state_code; // state.state_code;
-                     
+
                     //check if the report exists
                     var meta_count = entity.dqa_report_metadata.Count(e => e.FiscalYear == metadata.FiscalYear && e.FundingAgency == metadata.FundingAgency && e.ReportPeriod == metadata.ReportPeriod && e.ImplementingPartner == metadata.ImplementingPartner && e.SiteId == metadata.SiteId);
                     if (meta_count > 0)
@@ -62,7 +61,7 @@ namespace DQA.DAL.Business
                     }
                     entity.dqa_report_metadata.Add(metadata);
                     entity.SaveChanges();
-                     
+
                     worksheet = package.Workbook.Worksheets["All Questions"];
 
                     //get all the indicators in the system
@@ -70,7 +69,7 @@ namespace DQA.DAL.Business
 
                     for (var i = 7; i < 59; i++)
                     {
-                         
+
 
                         var istValueMonth = worksheet.Cells[i, 4];
                         var sndValueMonth = worksheet.Cells[i, 5];
@@ -97,10 +96,6 @@ namespace DQA.DAL.Business
                     entity.SaveChanges();
 
                     ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
-
-                  //  SaveDQADimensions(package.Workbook, metadata.Id);
-
-                  //  SaveDQAComparison(package.Workbook, metadata.Id, datimNumbersRaw);
 
                     return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
                 }
@@ -178,7 +173,7 @@ namespace DQA.DAL.Business
             concurrency_rate.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
             concurrency_rate.Add(new XElement("TX_Curr", worksheet.Cells["E14"].Value.ToString()));
             summaries.Add(concurrency_rate);
- 
+
 
             var summary_value = new dqa_summary_value();
             summary_value.metadata_id = medata_data_id;
@@ -188,7 +183,7 @@ namespace DQA.DAL.Business
             entity.SaveChanges();
         }
 
-         
+
         /// <summary>
         /// this is a method to download the DQA tool
         /// </summary>
@@ -199,7 +194,7 @@ namespace DQA.DAL.Business
         {
             string fileName = "SHIELD_DQA_Q3_" + ip.ShortName + ".zip";
             string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q3/SHIELD_DQA_Q3_" + ip.ShortName);
-             
+
             string zippedFile = directory + "\\" + fileName;
 
             if (Directory.Exists(directory) == false)
@@ -223,7 +218,7 @@ namespace DQA.DAL.Business
             }
 
             var artSites = GetARTSite();
-            
+
 
             //site name come from pivot table and names match the data in health facility in the database
             foreach (var site in facilities)
@@ -244,7 +239,7 @@ namespace DQA.DAL.Business
                     if (radet != null)
                     {
                         var sheet = package.Workbook.Worksheets["TX_CURR"];
-                        
+
                         int row = 1;
                         for (int i = 0; i < radet.Count(); i++)
                         {
@@ -274,7 +269,7 @@ namespace DQA.DAL.Business
                             sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
                             sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
                         }
-                        
+
                     }
 
                     var sheetn = package.Workbook.Worksheets["Worksheet"];
@@ -377,6 +372,7 @@ namespace DQA.DAL.Business
             }
         }
 
+        //Q1 FY17
         public List<dqaQ1Fy17Analysis> GetAnalysisReport()
         {
             var _analysis = entity.dqa_FY17Q1_Analysyis.ToList();
@@ -489,7 +485,7 @@ namespace DQA.DAL.Business
                                 Quarter = quarter,
                                 ImplementingPartner = hf.ImplementingPartner,
                             });
-                            
+
                         }
                         row += 1;
                     }
@@ -605,7 +601,7 @@ namespace DQA.DAL.Business
                     }
                  );
 
-               // new CommonUtil.DAO.HealthFacilityDAO().RunSQL(sb.ToString());
+                // new CommonUtil.DAO.HealthFacilityDAO().RunSQL(sb.ToString());
 
             }
             catch (Exception ex)
@@ -622,7 +618,7 @@ namespace DQA.DAL.Business
         /// returns a dictionary of datim code and radet facility name
         /// </summary>
         /// <returns></returns>
-       public static Dictionary<string, string> GetARTSite()
+        public static Dictionary<string, string> GetARTSite()
         {
             string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
             //code and radet name
@@ -644,7 +640,7 @@ namespace DQA.DAL.Business
                         artSites.Add(d_code, r_name.Trim());
                     row++;
                 }
-            } 
+            }
             return artSites;
         }
     }

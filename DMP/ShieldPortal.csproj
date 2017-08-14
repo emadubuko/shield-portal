@@ -1125,6 +1125,7 @@
     <Content Include="Views\RadetAnalytics\RADETScoreCard.cshtml" />
     <Content Include="Views\NHMIS\Upload.cshtml" />
     <Content Include="Views\DQAFY2017Q2\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\DQAAnalysisReport.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

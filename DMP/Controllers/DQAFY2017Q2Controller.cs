@@ -40,15 +40,17 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
+        //this is for Q2 upload
         [HttpPost]
         public string PostDQAFile()
         {
             var messages = "";
             try
             {
-                Logger.LogInfo(" DQAAPi,post", "processing dqa upload");
+                Logger.LogInfo(" DQAFY2017,PostDQAFile", "processing dqa upload");
 
                 HttpResponseMessage result = null;
+                var userUploading = new Services.Utils().GetloggedInProfile().ContactEmailAddress;
 
                 if (Request.Files.Count > 0)
                 {
@@ -63,11 +65,7 @@ namespace ShieldPortal.Controllers
 
                             var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q3 FY16/" + postedFile.FileName);
                             postedFile.SaveAs(filePath);
-
-                            //get the datim file containing the DQA numbers for all the facilities
-                            string DatimFileSource = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DatimSource.csv");
-                            string[] datimNumbersRaw = System.IO.File.ReadAllText(DatimFileSource).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-
+                            
                             if (ext.ToUpper() == "ZIP")
                             {
                                 messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
@@ -77,15 +75,12 @@ namespace ShieldPortal.Controllers
                                     using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                                     using (ZipFile zipFile = new ZipFile(fs))
                                     {
-
                                         var countProcessed = 0;
-
                                         var countSuccess = 0;
                                         var step = 0;
                                         var total = (int)zipFile.Count;
                                         var currentFile = "";
-
-
+                                        
                                         foreach (ZipEntry zipEntry in zipFile)
                                         {
                                             step++;
@@ -99,8 +94,7 @@ namespace ShieldPortal.Controllers
                                             var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
                                             var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
                                             var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
-
-
+                                            
                                             if (extractedDirectory.Length > 0)
                                             {
                                                 Directory.CreateDirectory(extractedDirectory);
@@ -114,10 +108,9 @@ namespace ShieldPortal.Controllers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                messages += new BDQAQ2().ReadWorkbook(extractedFilePath, User.Identity.Name, datimNumbersRaw);
+                                                messages += new BDQAQ2().ReadWorkbook(extractedFilePath, userUploading);
                                                 countSuccess++;
                                             }
-
                                         }
                                         zipFile.IsStreamOwner = true;
                                         zipFile.Close();
@@ -132,7 +125,7 @@ namespace ShieldPortal.Controllers
                             }
                             else
                             {
-                                messages += new BDQAQ2().ReadWorkbook(filePath, User.Identity.Name, datimNumbersRaw);
+                                messages += new BDQAQ2().ReadWorkbook(filePath, userUploading);
                             }
                         }
                         else
@@ -153,6 +146,13 @@ namespace ShieldPortal.Controllers
             }
             return messages;
         }
+
+        //Q3 Fy17
+        public ActionResult DQAAnalysisReport()
+        {
+            return View();
+        }
+
 
 
         public ActionResult IpDQA()
