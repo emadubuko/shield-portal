@@ -37,8 +37,7 @@
                 $("#submitted").text(values[1]);
                 $("#lgas").text(values[2]);
                 $("#states").text(values[3]);
-            }
-           
+            } 
         }
     });
 }

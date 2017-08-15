@@ -1,4 +1,4 @@
-﻿
+﻿@model System.Data.DataTable
 @{    
     Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
 }
@@ -88,82 +88,121 @@
                 </tr>
             </thead>
             <tbody>
-                @*@foreach (var item in Model)
+                @foreach (System.Data.DataRow dr in Model.Rows)
                 {
+                    int failCount = 0;
                     <tr>
-                        <td>@item.IP</td>
-                        <td>@item.Facility</td>
+                        <td>@dr[0]</td>
+                        <td>@dr[1]</td>
 
-                        <td style="border-left-width:medium;border-left-color:black">@item.DQA_FY17Q1_HTC_TST</td>
-                        <td>@item.Validated_HTC_TST</td>
-                        @if (string.IsNullOrEmpty(item.CR_HTC_TST) || string.IsNullOrEmpty(item.CR_HTC_TST.Trim()))
+                        <td style="border-left-width:medium;border-left-color:black">@dr[2]</td>
+                        <td>@dr[3]</td>
+                        @if (dr[4] == null || dr[4].ToString() == "#DIV/0!")
                         {
-                            <td>@item.CR_HTC_TST</td>
+                            <td>@dr[4]</td>
                         }
                         else
                         {
-                            <td style=@(Convert.ToDouble(item.CR_HTC_TST) > 89 && Convert.ToDouble(item.CR_HTC_TST) < 110 ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@item.CR_HTC_TST %</td>
+                            double conc = 100 * Convert.ToDouble(dr[4]);
+                            bool green = true;
+                            if (conc != 0 && (conc < 89 || conc > 110))
+                            {
+                                failCount += 1;
+                                green = false;
+                            }
+                            <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                         }
 
-
-                        <td style="border-left-width:medium;border-left-color:black">@item.DQA_FY17Q1_PMTCT_STAT</td>
-                        <td>@item.Validated_PMTCT_STAT</td>
-                        @if (string.IsNullOrEmpty(item.CR_PMTCT_STAT) || string.IsNullOrEmpty(item.CR_PMTCT_STAT.Trim()))
+                        <td style="border-left-width:medium;border-left-color:black">@dr[5]</td>
+                        <td>@dr[6]</td>
+                        @if (dr[7] == null || dr[7].ToString() == "#DIV/0!")
                         {
-                            <td></td>
+                            <td>@dr[7]</td>
                         }
                         else
                         {
-                            <td style=@(Convert.ToDouble(item.CR_PMTCT_STAT) > 89 && Convert.ToDouble(item.CR_PMTCT_STAT) < 110 ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@item.CR_PMTCT_STAT %</td>
+                            double conc = 100 * Convert.ToDouble(dr[7]);
+                            bool green = true;
+                            if (conc != 0 && (conc < 89 || conc > 110))
+                            {
+                                failCount += 1;
+                                green = false;
+                            }
+                            <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                         }
 
-                        <td style="border-left-width:medium;border-left-color:black">@item.DQA_FY17Q1_PMTCT_EID</td>
-                        <td>@item.Validated_PMTCT_EID</td>
-                        @if (string.IsNullOrEmpty(item.CR_PMTCT_EID) || string.IsNullOrEmpty(item.CR_PMTCT_EID.Trim()))
+                        <td style="border-left-width:medium;border-left-color:black">@dr[8]</td>
+                        <td>@dr[9]</td>
+                        @if (dr[10] == null || dr[10].ToString() == "#DIV/0!")
                         {
-                            <td></td>
+                            <td>@dr[10]</td>
                         }
                         else
                         {
-                            <td style=@(Convert.ToDouble(item.CR_PMTCT_EID) > 89 && Convert.ToDouble(item.CR_PMTCT_EID) < 110 ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@item.CR_PMTCT_EID %</td>
+                            double conc = 100 * Convert.ToDouble(dr[10]);
+                            bool green = true;
+                            if (conc != 0 && (conc < 89 || conc > 110))
+                            {
+                                failCount += 1;
+                                green = false;
+                            }
+                            <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                         }
 
-                        <td style="border-left-width:medium;border-left-color:black">@item.DQA_FY17Q1_PMTCT_ARV</td>
-                        <td>@item.Validated_PMTCT_ARV</td>
-                        @if (string.IsNullOrEmpty(item.CR_PMTCT_ARV) || string.IsNullOrEmpty(item.CR_PMTCT_ARV.Trim()))
+                        <td style="border-left-width:medium;border-left-color:black">@dr[11]</td>
+                        <td>@dr[12]</td>
+                        @if (dr[13] == null || dr[13].ToString() == "#DIV/0!")
                         {
-                            <td></td>
+                            <td>@dr[13]</td>
                         }
                         else
                         {
-                            <td style=@(Convert.ToDouble(item.CR_PMTCT_ARV) > 89 && Convert.ToDouble(item.CR_PMTCT_ARV) < 110 ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@item.CR_PMTCT_ARV %</td>
+                            double conc = 100 * Convert.ToDouble(dr[13]);
+                            bool green = true;
+                            if (conc != 0 && (conc < 89 || conc > 110))
+                            {
+                                failCount += 1;
+                                green = false;
+                            }
+                            <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                         }
-
-                        <td style="border-left-width:medium;border-left-color:black">@item.DQA_FY17Q1_TX_NEW</td>
-                        <td>@item.Validated_TX_NEW</td>
-                        @if (string.IsNullOrEmpty(item.CR_TX_NEW) || string.IsNullOrEmpty(item.CR_TX_NEW.Trim()))
+                        <td style="border-left-width:medium;border-left-color:black">@dr[14]</td>
+                        <td>@dr[15]</td>
+                        @if (dr[16] == null || dr[16].ToString() == "#DIV/0!")
                         {
-                            <td></td>
+                            <td>@dr[16]</td>
                         }
                         else
                         {
-                            <td style=@(Convert.ToDouble(item.CR_TX_NEW) > 89 && Convert.ToDouble(item.CR_TX_NEW) < 110 ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@item.CR_TX_NEW %</td>
+                            double conc = 100 * Convert.ToDouble(dr[16]);
+                            bool green = true;
+                            if (conc != 0 && (conc < 89 || conc > 110))
+                            {
+                                failCount += 1;
+                                green = false;
+                            }
+                            <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                         }
-
-                        <td style="border-left-width:medium;border-left-color:black">@item.DQA_FY17Q1_TX_CURR</td>
-                        <td>@item.Validated_TX_CURR</td>
-                        @if (string.IsNullOrEmpty(item.CR_TX_CURR) || string.IsNullOrEmpty(item.CR_TX_CURR.Trim()))
+                        <td style="border-left-width:medium;border-left-color:black">@dr[17]</td>
+                        <td>@dr[18]</td>
+                        @if (dr[19] == null || dr[19].ToString() == "#DIV/0!")
                         {
-                            <td></td>
+                            <td>@dr[19]</td>
                         }
                         else
                         {
-                            <td style=@(Convert.ToDouble(item.CR_TX_CURR) > 89 && Convert.ToDouble(item.CR_TX_CURR) < 110 ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@item.CR_TX_CURR %</td>
+                            double conc = 100 * Convert.ToDouble(dr[19]);
+                            bool green = true;
+                            if (conc != 0 && (conc < 89 || conc > 110))
+                            {
+                                failCount += 1;
+                                green = false;
+                            }
+                            <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                         }
-
-                        <td>@item.Count_Fails</td>
+                        <td>@failCount</td>
                     </tr>
-                }*@
+                }
             </tbody>
         </table>
     </div>

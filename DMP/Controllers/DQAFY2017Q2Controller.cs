@@ -50,7 +50,7 @@ namespace ShieldPortal.Controllers
                 Logger.LogInfo(" DQAFY2017,PostDQAFile", "processing dqa upload");
 
                 HttpResponseMessage result = null;
-                var userUploading = new Services.Utils().GetloggedInProfile().ContactEmailAddress;
+                var userUploading = new Services.Utils().GetloggedInProfile();
 
                 if (Request.Files.Count > 0)
                 {
@@ -147,14 +147,48 @@ namespace ShieldPortal.Controllers
             return messages;
         }
 
+        [HttpGet]
+        public string GetDashboardStatistic()
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var ds = Utility.GetDashboardStatistic(ip);
+            List<dynamic> IPSummary = new List<dynamic>();
+            foreach(DataRow dr in ds.Tables[0].Rows)
+            {
+                IPSummary.Add(new
+                {
+                    Name = dr[0],
+                    Submitted = dr[1],
+                    Pending = dr[2],
+                    Total = dr[3],
+                });
+            }
+              
+            return JsonConvert.SerializeObject(new
+            {
+                IPSummary,
+                cardData = ds.Tables[1].Rows[0].ItemArray
+            });
+        }
+
         //Q3 Fy17
         public ActionResult DQAAnalysisReport()
         {
-            return View();
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var data = Utility.GetQ3Analysis(ip);
+            return View(data);
         }
-
-
-
+         
         public ActionResult IpDQA()
         {
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
@@ -175,8 +209,7 @@ namespace ShieldPortal.Controllers
             }
             return View("~/Views/Shared/Denied.cshtml");
         }
-
-
+         
         public ActionResult GetDQA(int id)
         {
             ViewBag.metadataId = id;
@@ -211,15 +244,102 @@ namespace ShieldPortal.Controllers
 
         public ActionResult DQAResult()
         {
-            int ip_id = 0;
+            string ip = "";
             if (User.IsInRole("ip"))
             {
-                ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
             }
-            ViewBag.ip_id = ip_id;
+
+            var reports = Utility.GetUploadReport("Q3 FY17", ip);
+            List<dynamic> iplocation = new List<dynamic>();
+            foreach (DataRow dr in reports.Rows)
+            {
+                iplocation.Add(new
+                {
+                    IP = dr[0],
+                    FacilityName = dr[5],                   
+                    LGA = new
+                    {
+                        lga_name = dr[3],
+                        lga_code = dr[4],
+                        state_code = dr[2],
+                        DisplayName = string.Format("{0} ({1})", dr[3], dr[1]),
+                        State = new { state_name = dr[1], state_code = dr[2] }
+                    }
+                });
+            }
+            ViewBag.selectModel = JsonConvert.SerializeObject((iplocation), Formatting.None,
+                       new JsonSerializerSettings()
+                       {
+                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                           ContractResolver = new NHibernateContractResolver()
+                       });
+            ViewBag.IPCount = iplocation.Select(x => x.IP).Distinct().Count();
             return View();
         }
 
+        public string GetDQAUploadReport(int? draw, int? start, int? length)
+        {
+            //string ReportPeriod, int IP
+            var search = Request["search[value]"];
+            RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
+
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            else if (searchModel.IPs !=null)
+            {
+                ip = searchModel.IPs.FirstOrDefault();
+            }
+            var reports = Utility.GetUploadReport(searchModel.RadetPeriod, ip, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
+            List<dynamic> mydata = new List<dynamic>();
+            foreach (DataRow dr in reports.Rows)
+            {
+                var dtt = new
+                {
+                    DT_RowId = dr[9].ToString(),
+                    DT_RowClass = "click-row",
+                    IP = dr[0],
+                    State = dr[1],
+                    LGA = dr[3],
+                    Facility = dr[5],
+                    ReportPeriod = dr[6],
+                    Uploaded_Date = dr[7],
+                    UploadedBy = dr[8],
+                    DoneBy = dr[10].ToString() == "ip" ? dr[0] : "UMB",
+                    lga_code = dr[4],
+                    state_code = dr[2],
+                };
+                mydata.Add(dtt);
+            }
+            if (searchModel.state_codes != null && searchModel.state_codes.Count > 0)
+                mydata = mydata.Where(x => searchModel.state_codes.Contains(x.state_code)).ToList();
+
+            if (searchModel.lga_codes != null && searchModel.lga_codes.Count > 0)
+                mydata = mydata.Where(x => searchModel.lga_codes.Contains(x.lga_code)).ToList();
+
+            if (searchModel.facilities != null && searchModel.facilities.Count > 0)
+                mydata = mydata.Where(x => searchModel.facilities.Contains(x.Facility)).ToList();
+
+            return JsonConvert.SerializeObject(
+                       new
+                       {
+                           sEcho = draw,
+                           iTotalRecords = mydata.Count(),
+                           iTotalDisplayRecords = mydata.Count(),
+                           aaData = mydata
+                       });
+        }
+
+        [HttpGet]
+        public string GetReportDetails(int metadataid)
+        {
+            return new BDQAQ2().GetReportDetails(metadataid);
+        }
 
         public void PopulateStates(object selectStatus = null)
         {

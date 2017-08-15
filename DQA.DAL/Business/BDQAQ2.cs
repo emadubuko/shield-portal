@@ -13,6 +13,8 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using RADET.DAL.DAO;
 using System.Text;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace DQA.DAL.Business
 {
@@ -24,7 +26,7 @@ namespace DQA.DAL.Business
             entity = new shield_dmpEntities();
         }
 
-        public string ReadWorkbook(string filename, string username)
+        public string ReadWorkbook(string filename, Profile Theuser)
         {
             using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
             {
@@ -40,10 +42,15 @@ namespace DQA.DAL.Business
                     {
                         return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
                     }
-                    
+                    if(Theuser.Organization.Id != facility.ImplementingPartnerId 
+                        && Theuser.RoleName == "ip")
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> This facility <b>" + facility.Name + "</b> is not mapped to your Organization. </td></tr>";
+                    }
+
                     metadata.AssessmentWeek = 1;
                     metadata.CreateDate = DateTime.Now;
-                    metadata.CreatedBy = username;
+                    metadata.CreatedBy = Theuser.ContactEmailAddress;
                     metadata.FiscalYear = DateTime.Now.Year.ToString();
                     metadata.FundingAgency = 1;
                     metadata.ImplementingPartner = facility.ImplementingPartnerId.Value;
@@ -53,8 +60,14 @@ namespace DQA.DAL.Business
                     metadata.SiteId = Convert.ToInt32(facility.Id);
                     metadata.StateId = facility.lga.state.state_code; // state.state_code;
 
+                    var domain = Theuser.ContactEmailAddress.Split('@')[1];
+
                     //check if the report exists
-                    var meta_count = entity.dqa_report_metadata.Count(e => e.FiscalYear == metadata.FiscalYear && e.FundingAgency == metadata.FundingAgency && e.ReportPeriod == metadata.ReportPeriod && e.ImplementingPartner == metadata.ImplementingPartner && e.SiteId == metadata.SiteId);
+                    var meta_count = entity.dqa_report_metadata
+                        .Count(e => e.ReportPeriod == metadata.ReportPeriod
+                        && e.ImplementingPartner == metadata.ImplementingPartner
+                        && e.SiteId == metadata.SiteId && e.CreatedBy.Contains(domain));
+
                     if (meta_count > 0)
                     {
                         return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
@@ -183,6 +196,22 @@ namespace DQA.DAL.Business
             entity.SaveChanges();
         }
 
+
+        public string GetReportDetails(int metadataid)
+        {
+            var report_value = new dqa_report_value();
+            var result = from item in entity.dqa_report_value.Where(x => x.MetadataId == metadataid)
+                         select new
+                         {
+                             item.dqa_indicator.ThematicArea,
+                             item.dqa_indicator.IndicatorName,
+                             item.IndicatorValueMonth1,
+                             item.IndicatorValueMonth2,
+                             item.IndicatorValueMonth3
+                         };
+            string Processed_result = Newtonsoft.Json.JsonConvert.SerializeObject(result);
+            return Processed_result;
+        }
 
         /// <summary>
         /// this is a method to download the DQA tool
@@ -371,6 +400,7 @@ namespace DQA.DAL.Business
                 await outputMemStream.CopyToAsync(fileStream);
             }
         }
+
 
         //Q1 FY17
         public List<dqaQ1Fy17Analysis> GetAnalysisReport()

@@ -172,20 +172,13 @@ namespace DQA.DAL.Business
         {
             var connection = (SqlConnection)entity.Database.Connection;
             command.Connection = connection;
-            //command.CommandType = CommandType.StoredProcedure;
             var dataTable = new DataTable();
             try
             {
-                connection.Open();
-
-                // dataTable.Load(command.ExecuteReader());
+                connection.Open(); 
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 // this will query your database and return the result to your datatable
                 da.Fill(dataTable);
-            }
-            catch (Exception)
-            {
-
             }
             finally
             {
@@ -449,7 +442,41 @@ namespace DQA.DAL.Business
             var dataTable = GetDatable(cmd);
 
             return dataTable;
+        }
 
+
+        //gets dqa_upload report
+        public static DataTable GetUploadReport(string reportPeriod, string IP_id, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_q3_fy17_upload_report";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@period", reportPeriod);
+            cmd.Parameters.AddWithValue("@ip", IP_id);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
+        }
+
+        public static DataTable GetQ3Analysis(string IP_id)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "get_q3_FY17_analysis_report";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ip", IP_id);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
+        }
+
+        public static DataSet GetDashboardStatistic(string IP)
+        {
+            //TODO: seperate period into year and quarter
+            var cmd = new SqlCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "sp_get_q3_FY17_dashboard";
+            cmd.Parameters.AddWithValue("@ip", IP);
+            return GetDataSet(cmd);
         }
     }
 }
