@@ -108,7 +108,7 @@ namespace DQA.DAL.Business
                     }
                     entity.SaveChanges();
 
-                    ReadSummary(package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
+                    ReadSummary(worksheet, package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
 
                     return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
                 }
@@ -125,66 +125,95 @@ namespace DQA.DAL.Business
         /// <summary>
         /// Read the result from the summary sheet
         /// </summary>
-        /// <param name="worksheet"></param>
+        /// <param name="summaryworksheet"></param>
         /// <param name="medata_data_id"></param>
-        private void ReadSummary(ExcelWorksheet worksheet, int medata_data_id)
+        private void ReadSummary(ExcelWorksheet allQuestionworksheet, ExcelWorksheet summaryworksheet, int medata_data_id)
         {
             int i = 6;
             var summaries = new XElement("summaries");
             var reported_data = new XElement("reported_data");
-            reported_data.Add(new XElement("HTC_TST", worksheet.Cells[i, 2].Value.ToString()));
-            reported_data.Add(new XElement("HTC_TST_Pos", worksheet.Cells[i, 3].Value.ToString()));
-            reported_data.Add(new XElement("HTC_Only", worksheet.Cells[i, 4].Value.ToString()));
-            reported_data.Add(new XElement("HTC_Pos", worksheet.Cells[i, 5].Value.ToString()));
-            reported_data.Add(new XElement("PMTCT_STAT", worksheet.Cells[i, 6].Value.ToString()));
-            reported_data.Add(new XElement("PMTCT_STAT_Pos", worksheet.Cells[i, 7].Value.ToString()));
-            reported_data.Add(new XElement("PMTCT_STAT_Knwpos", worksheet.Cells[i, 8].Value.ToString()));
-            reported_data.Add(new XElement("PMTCT_ART", worksheet.Cells[i, 9].Value.ToString()));
-            reported_data.Add(new XElement("PMTCT_EID", worksheet.Cells[i, 10].Value.ToString()));
-            reported_data.Add(new XElement("TX_NEW", worksheet.Cells[i, 11].Value.ToString()));
-            reported_data.Add(new XElement("TB_STAT", worksheet.Cells[i, 12].Value.ToString()));
-            reported_data.Add(new XElement("TB_ART", worksheet.Cells[i, 13].Value.ToString()));
-            reported_data.Add(new XElement("TX_TB", worksheet.Cells[i, 14].Value.ToString()));
-            reported_data.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
-            reported_data.Add(new XElement("TX_Curr", worksheet.Cells["E12"].Value.ToString()));
+            reported_data.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+            reported_data.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            reported_data.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            reported_data.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            reported_data.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            reported_data.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            reported_data.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            reported_data.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            reported_data.Add(new XElement("TB_PREV", summaryworksheet.Cells[i, 15].Value.ToString()));
+            reported_data.Add(new XElement("TX_Curr", summaryworksheet.Cells["E12"].Value.ToString()));
             summaries.Add(reported_data);
 
+            
+            int pmtct_stat = allQuestionworksheet.Cells["D16"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E16"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F16"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["D17"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E17"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F17"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["D18"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E18"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F18"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["D20"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E20"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F20"].Value.ToString().ToInt();
+            double pmtct_stat_value = Math.Round((pmtct_stat * 1.0) / 2, MidpointRounding.AwayFromZero);
+
+            int htc_stat = allQuestionworksheet.Cells["D7"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["E7"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["F7"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["D8"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["E8"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["F8"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["D9"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["E9"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["F9"].Value.ToString().ToInt();
+
+            double htc_stat_value = Math.Round((htc_stat * 1.0) / 2, MidpointRounding.AwayFromZero);
+            htc_stat_value = htc_stat_value + pmtct_stat_value;
+             
             i = 7;
             var validation = new XElement("validation");
-            validation.Add(new XElement("HTC_TST", worksheet.Cells[i, 2].Value.ToString()));
-            validation.Add(new XElement("HTC_TST_Pos", worksheet.Cells[i, 3].Value.ToString()));
-            validation.Add(new XElement("HTC_Only", worksheet.Cells[i, 4].Value.ToString()));
-            validation.Add(new XElement("HTC_Pos", worksheet.Cells[i, 5].Value.ToString()));
-            validation.Add(new XElement("PMTCT_STAT", worksheet.Cells[i, 6].Value.ToString()));
-            validation.Add(new XElement("PMTCT_STAT_Pos", worksheet.Cells[i, 7].Value.ToString()));
-            validation.Add(new XElement("PMTCT_STAT_Knwpos", worksheet.Cells[i, 8].Value.ToString()));
-            validation.Add(new XElement("PMTCT_ART", worksheet.Cells[i, 9].Value.ToString()));
-            validation.Add(new XElement("PMTCT_EID", worksheet.Cells[i, 10].Value.ToString()));
-            validation.Add(new XElement("TX_NEW", worksheet.Cells[i, 11].Value.ToString()));
-            validation.Add(new XElement("TB_STAT", worksheet.Cells[i, 12].Value.ToString()));
-            validation.Add(new XElement("TB_ART", worksheet.Cells[i, 13].Value.ToString()));
-            validation.Add(new XElement("TX_TB", worksheet.Cells[i, 14].Value.ToString()));
-            validation.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
-            validation.Add(new XElement("TX_Curr", worksheet.Cells["E13"].Value.ToString()));
+            validation.Add(new XElement("HTC_TST", htc_stat_value)); //summaryworksheet.Cells[i, 2].Value.ToString()));
+            validation.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            validation.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            validation.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+             
+            validation.Add(new XElement("PMTCT_STAT", pmtct_stat_value)); //summaryworksheet.Cells[i, 6].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            validation.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            validation.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            validation.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            validation.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            validation.Add(new XElement("TB_PREV", summaryworksheet.Cells[i, 15].Value.ToString()));
+            validation.Add(new XElement("TX_Curr", summaryworksheet.Cells["E13"].Value.ToString()));
             summaries.Add(validation);
 
             i = 8;
             var concurrency_rate = new XElement("Concurrence_rate");
-            concurrency_rate.Add(new XElement("HTC_TST", worksheet.Cells[i, 2].Value.ToString()));
-            concurrency_rate.Add(new XElement("HTC_TST_Pos", worksheet.Cells[i, 3].Value.ToString()));
-            concurrency_rate.Add(new XElement("HTC_Only", worksheet.Cells[i, 4].Value.ToString()));
-            concurrency_rate.Add(new XElement("HTC_Pos", worksheet.Cells[i, 5].Value.ToString()));
-            concurrency_rate.Add(new XElement("PMTCT_STAT", worksheet.Cells[i, 6].Value.ToString()));
-            concurrency_rate.Add(new XElement("PMTCT_STAT_Pos", worksheet.Cells[i, 7].Value.ToString()));
-            concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", worksheet.Cells[i, 8].Value.ToString()));
-            concurrency_rate.Add(new XElement("PMTCT_ART", worksheet.Cells[i, 9].Value.ToString()));
-            concurrency_rate.Add(new XElement("PMTCT_EID", worksheet.Cells[i, 10].Value.ToString()));
-            concurrency_rate.Add(new XElement("TX_NEW", worksheet.Cells[i, 11].Value.ToString()));
-            concurrency_rate.Add(new XElement("TB_STAT", worksheet.Cells[i, 12].Value.ToString()));
-            concurrency_rate.Add(new XElement("TB_ART", worksheet.Cells[i, 13].Value.ToString()));
-            concurrency_rate.Add(new XElement("TX_TB", worksheet.Cells[i, 14].Value.ToString()));
-            concurrency_rate.Add(new XElement("TB_PREV", worksheet.Cells[i, 15].Value.ToString()));
-            concurrency_rate.Add(new XElement("TX_Curr", worksheet.Cells["E14"].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_PREV", summaryworksheet.Cells[i, 15].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_Curr", summaryworksheet.Cells["E14"].Value.ToString()));
             summaries.Add(concurrency_rate);
 
 
@@ -672,6 +701,26 @@ namespace DQA.DAL.Business
                 }
             }
             return artSites;
+        }
+
+        //delete reports of a particular metadataId
+        public void Delete(int metadataId)
+        {
+            var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId);
+            entity.dqa_report_value.RemoveRange(report_values);
+
+            entity.dqa_report_metadata.Remove(entity.dqa_report_metadata.Find(metadataId));
+
+            var dqa_summary = entity.dqa_summary_value.Where(s => s.metadata_id == metadataId);
+            entity.dqa_summary_value.RemoveRange(dqa_summary);
+
+            var dqadimension = entity.dqa_dimensions.Where(x => x.MetadataId == metadataId);
+            entity.dqa_dimensions.RemoveRange(dqadimension);
+
+            var dqacomparison = entity.dqa_comparison.Where(x => x.metadataId == metadataId);
+            entity.dqa_comparison.RemoveRange(dqacomparison);
+
+            entity.SaveChanges();
         }
     }
 }

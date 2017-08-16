@@ -315,7 +315,7 @@ namespace ShieldPortal.Controllers
         }
 
         // DELETE: api/DQA/5
-        [HttpDelete]
+        [HttpPost]
         public void Delete(int id)
         {
             new BDQA().Delete(id);

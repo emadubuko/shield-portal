@@ -258,7 +258,7 @@ namespace ShieldPortal.Controllers
                 iplocation.Add(new
                 {
                     IP = dr[0],
-                    FacilityName = dr[5],                   
+                    FacilityName = dr[5],
                     LGA = new
                     {
                         lga_name = dr[3],
@@ -302,7 +302,7 @@ namespace ShieldPortal.Controllers
                 var dtt = new
                 {
                     DT_RowId = dr[9].ToString(),
-                    DT_RowClass = "click-row",
+                    //DT_RowClass = "click-row",
                     IP = dr[0],
                     State = dr[1],
                     LGA = dr[3],
@@ -313,6 +313,7 @@ namespace ShieldPortal.Controllers
                     DoneBy = dr[10].ToString() == "ip" ? dr[0] : "UMB",
                     lga_code = dr[4],
                     state_code = dr[2],
+                    LastColumn = string.Format("<td>&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a> <i style='display:none' id='loadImg{0}'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i></td>", dr[9])
                 };
                 mydata.Add(dtt);
             }

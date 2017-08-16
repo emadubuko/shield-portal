@@ -10,21 +10,23 @@
         .abbrev-full {
             background-color: lightblue;
         }
-        .click-row{
-            pointer-events:all;
-            cursor:pointer;
-        }
-        .click-row tr:hover{
-            background-color:cornflowerblue;    
-        }
-    </style>
-        <script type="text/javascript">
-                {
-                    var ipscount= @Html.Raw(ViewBag.IPCount);
-                    var model_data = @Html.Raw(ViewBag.selectModel);
 
-                }
-        </script>
+        .click-row {
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+            .click-row tr:hover {
+                background-color: cornflowerblue;
+            }
+    </style>
+    <script type="text/javascript">
+        {
+            var ipscount= @Html.Raw(ViewBag.IPCount);
+            var model_data = @Html.Raw(ViewBag.selectModel);
+
+        }
+    </script>
 }
 
 <div class="col-sm-9">
@@ -94,6 +96,7 @@
                                     <th>Upload Date</th>
                                     <th>Uploaded By</th>
                                     <th>Done by</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -138,8 +141,8 @@
 
 @section Scripts
 {
-<script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
-<script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script>
         $(document).ready(function () {
             populate_all_controls();
@@ -164,6 +167,9 @@
                                 type: "POST",
                             },
                         "oSearch": { "sSearch": JSON.stringify(model) },
+                        "columnDefs": [
+                            { className: "click-row", "targets": [ 0,1,2,3,4,5,6 ] }
+                        ],
                         "aoColumns": [
                             { "mData": "IP" },
                              { "mData": "State" },
@@ -171,15 +177,15 @@
                              { "mData": "Facility" },
                              {
                                  "mData": "Uploaded_Date",
-                                  "render": function (data) {
+                                 "render": function (data) {
                                      var date = new Date(data);
                                      var month = date.getMonth() + 1;
-                                     return date.toLocaleString('en-GB', { day:'numeric', month:'numeric', year: 'numeric',  hour: 'numeric',minute:'numeric', hour12: true }); 
+                                     return date.toLocaleString('en-GB', { day:'numeric', month:'numeric', year: 'numeric',  hour: 'numeric',minute:'numeric', hour12: true });
                                  }
                              },
                              { "mData": "UploadedBy" },
-                             {"mData" : "DoneBy"}
-
+                             {"mData" : "DoneBy"},
+                        { "mData": "LastColumn" }
                         ],
                         "pagingType": "full_numbers"
                     });
@@ -237,12 +243,31 @@
                 dataTable.table.search(JSON.stringify(model)).draw(false);
             });
 
+            $(document).on('click','.deletebtn', function(e){
+                $("#loadImg"+e.currentTarget.id).show();
+                $.ajax({
+                    url: '/api/dqaapi/Delete?ID=' +e.currentTarget.id,
+                    type: 'POST',
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $('#'+e.currentTarget.id).remove();
+                    $("#loadImg"+e.currentTarget.id).hide();
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
+            });
+
             $(document).on('click','.click-row', function(e){
-                var id = e.currentTarget.id;
-                
+                var id = e.currentTarget.parentElement.id;//e.currentTarget.id;
+
                 $.ajax({
                     url: '/DQAFY2017Q2/GetReportDetails?metadataid=' +id,
-                    type: 'GET', 
+                    type: 'GET',
                     async: true,
                     cache: false,
                     contentType: false,
@@ -253,24 +278,24 @@
                     $("#loadImg").hide();
                 }).error(function (xhr, status, err) {
                     alert(err);
-                    console.log(err); 
+                    console.log(err);
                 });
                 return false;
-            })
+            });
 
             function buildTable(dataList) {
                 $("#output_details tbody").empty();
                 $.each(dataList, function (i, d) {
                     if(d.ThematicArea.indexOf("TB") == -1){
-                        var html = "<tr> ";                    
+                        var html = "<tr> ";
                         html += "<td>" + d.ThematicArea + "</td>";
                         html += "<td>" + d.IndicatorName + "</td>";
                         html += "<td>" + d.IndicatorValueMonth1 + "</td>";
                         html += "<td>" + d.IndicatorValueMonth2 + "</td>";
-                        html += "<td>" + d.IndicatorValueMonth3 + "</td>";                     
+                        html += "<td>" + d.IndicatorValueMonth3 + "</td>";
                         html += "</tr>";
                         $("#output_details tbody").append(html);
-                    }                    
+                    }
                 });
             }
 

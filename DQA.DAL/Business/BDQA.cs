@@ -723,19 +723,23 @@ namespace DQA.DAL.Business
             var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId);
             entity.dqa_report_value.RemoveRange(report_values);
 
-            entity.dqa_report_metadata.Remove(entity.dqa_report_metadata.Find(metadataId));
+            var mt = entity.dqa_report_metadata.FirstOrDefault(e => e.Id == metadataId);
+            if (mt != null)
+                entity.dqa_report_metadata.Remove(mt);
 
             var dqa_summary = entity.dqa_summary_value.Where(s => s.metadata_id == metadataId);
-            entity.dqa_summary_value.RemoveRange(dqa_summary);
+            if (dqa_summary != null)
+                entity.dqa_summary_value.RemoveRange(dqa_summary);
 
             var dqadimension = entity.dqa_dimensions.Where(x => x.MetadataId == metadataId);
-            entity.dqa_dimensions.RemoveRange(dqadimension);
+            if (dqadimension != null)
+                entity.dqa_dimensions.RemoveRange(dqadimension);
 
             var dqacomparison = entity.dqa_comparison.Where(x => x.metadataId == metadataId);
-            entity.dqa_comparison.RemoveRange(dqacomparison);
+            if (dqacomparison != null)
+                entity.dqa_comparison.RemoveRange(dqacomparison);
 
             entity.SaveChanges();
-
         }
          
     }
