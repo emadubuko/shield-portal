@@ -177,7 +177,7 @@ namespace ShieldPortal.Controllers
         }
 
         //Q3 Fy17
-        public ActionResult DQAAnalysisReport()
+        public ActionResult DQAAnalysisReport(string type)
         {
             string ip = "";
             if (User.IsInRole("ip"))
@@ -185,7 +185,8 @@ namespace ShieldPortal.Controllers
                 var profile = new Services.Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var data = Utility.GetQ3Analysis(ip);
+            var data = Utility.GetQ3Analysis(ip, type.ToLower().Contains("partners"));
+
             return View(data);
         }
          

@@ -34,16 +34,19 @@
                                 <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
                             </a>
                         </li>
-                        <li>
-                            <a href=@Url.Action("DQAAnalysisReport", "DQAFY2017Q2") style="color:#029b17;">
-                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
-                            </a>
-                        </li>
+                        @if (new ShieldPortal.Services.Utils().GetloggedInProfile().ContactEmailAddress.Contains("mgic"))
+                        {
+                            <li>
+                                <a href=@Url.Action("DQAAnalysisReport", "DQAFY2017Q2", new { type="Partners"}) style="color:#029b17;">
+                                    <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
+                                </a>
+                            </li>
+                        }
                         @*<li>
-                            <a href=@Url.Action("IpDQA", "DQAFY2017Q2") style="color:#029b17;">
-                                <i class="fa fa-file-text-o"></i><span class="title">&nbsp; DQA Report</span>
-                            </a>
-                        </li>*@
+                                <a href=@Url.Action("IpDQA", "DQAFY2017Q2") style="color:#029b17;">
+                                    <i class="fa fa-file-text-o"></i><span class="title">&nbsp; DQA Report</span>
+                                </a>
+                            </li>*@
                         <li>
                             <a href=@Url.Action("DQAResult", "DQAFY2017Q2") style="color:#029b17;">
                                 <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Result</span>

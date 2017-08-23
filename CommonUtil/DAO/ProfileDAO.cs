@@ -2,8 +2,10 @@
 using CommonUtil.Entities;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CommonUtil.DAO
 {
@@ -51,6 +53,15 @@ namespace CommonUtil.DAO
             var profile = criteria.List<Profile>();
 
             return profile;
+        }
+
+        public string GetRoleByEmail(string ContactEmailAddress)
+        {
+            var session = BuildSession();
+            var rolename = session.Query<Profile>()
+                .Where(x=> x.ContactEmailAddress == ContactEmailAddress)
+                .Select(x => x.RoleName).FirstOrDefault();
+            return rolename;
         }
     }
 }

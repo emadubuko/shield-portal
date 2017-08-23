@@ -458,12 +458,13 @@ namespace DQA.DAL.Business
             return dataTable;
         }
 
-        public static DataTable GetQ3Analysis(string IP_id)
+        public static DataTable GetQ3Analysis(string IP_id, bool get_partner_report)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "get_q3_FY17_analysis_report";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ip", IP_id);
+            cmd.Parameters.AddWithValue("@get_partner_report", get_partner_report);
             var dataTable = GetDatable(cmd);
 
             return dataTable;

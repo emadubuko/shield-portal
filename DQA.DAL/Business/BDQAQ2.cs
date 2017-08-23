@@ -15,6 +15,7 @@ using RADET.DAL.DAO;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
+using System.Data.Entity.Validation;
 
 namespace DQA.DAL.Business
 {
@@ -63,15 +64,31 @@ namespace DQA.DAL.Business
                     var domain = Theuser.ContactEmailAddress.Split('@')[1];
 
                     //check if the report exists
-                    var meta_count = entity.dqa_report_metadata
-                        .Count(e => e.ReportPeriod == metadata.ReportPeriod
-                        && e.ImplementingPartner == metadata.ImplementingPartner
-                        && e.SiteId == metadata.SiteId && e.CreatedBy.Contains(domain));
+                    //var meta_count = entity.dqa_report_metadata
+                    //    .Count(e => e.ReportPeriod == metadata.ReportPeriod
+                    //    && e.ImplementingPartner == metadata.ImplementingPartner
+                    //    && e.SiteId == metadata.SiteId && e.CreatedBy.Contains(domain));
 
-                    if (meta_count > 0)
+                    //if (meta_count > 0)
+                    //{
+                    //    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
+                    //}
+
+                    var meta_counts = entity.dqa_report_metadata
+                        .Where(e => e.ReportPeriod == metadata.ReportPeriod
+                        && e.ImplementingPartner == metadata.ImplementingPartner
+                        && e.SiteId == metadata.SiteId);// && e.CreatedBy.Contains(domain));
+
+                    foreach(var p_item in meta_counts)
                     {
-                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
+                        var thatUserRole = new CommonUtil.DAO.ProfileDAO().GetRoleByEmail(p_item.CreatedBy);
+                        if (thatUserRole == Theuser.RoleName)
+                        {
+                            return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
+                        }
                     }
+                    
+
                     entity.dqa_report_metadata.Add(metadata);
                     entity.SaveChanges();
 
@@ -111,6 +128,24 @@ namespace DQA.DAL.Business
                     ReadSummary(worksheet, package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
 
                     return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
+                }
+                catch (DbEntityValidationException e)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        sb.AppendLine(string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State));
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            sb.AppendLine(string.Format("- Property: \"{0}\", Value: \"{1}\", Error: \"{2}\"",
+                                ve.PropertyName,
+                                eve.Entry.CurrentValues.GetValue<object>(ve.PropertyName),
+                                ve.ErrorMessage));
+                        }
+                    }
+                    Logger.LogInfo("BDQAQ2.ReadWorkbook", sb.ToString());
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred while processing the file " + filename + "</td></tr>";
                 }
                 catch (Exception ex)
                 {
@@ -176,7 +211,13 @@ namespace DQA.DAL.Business
 
             double htc_stat_value = Math.Round((htc_stat * 1.0) / 2, MidpointRounding.AwayFromZero);
             htc_stat_value = htc_stat_value + pmtct_stat_value;
-             
+
+            double PMTCT_STAT_Knwpos = 0;
+            double.TryParse(summaryworksheet.Cells[i, 8].Value.ToString(), out PMTCT_STAT_Knwpos);
+
+            htc_stat_value = htc_stat_value - PMTCT_STAT_Knwpos;
+
+
             i = 7;
             var validation = new XElement("validation");
             validation.Add(new XElement("HTC_TST", htc_stat_value)); //summaryworksheet.Cells[i, 2].Value.ToString()));
@@ -186,7 +227,7 @@ namespace DQA.DAL.Business
              
             validation.Add(new XElement("PMTCT_STAT", pmtct_stat_value)); //summaryworksheet.Cells[i, 6].Value.ToString()));
             validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
-            validation.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Knwpos", PMTCT_STAT_Knwpos)); //summaryworksheet.Cells[i, 8].Value.ToString()));
             validation.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
             validation.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
             validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
