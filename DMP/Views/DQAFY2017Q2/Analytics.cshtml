@@ -1,278 +1,438 @@
-﻿
-@{ 
+﻿@model ShieldPortal.ViewModel.AnalyticPageData
+@{
     Layout = "~/Views/Shared/_DQAFY2017Q2Layout.cshtml";
 }
 
-@section AddToHead{ 
-<script src="~/Scripts/Highcharts/code/highcharts.js"></script>
-<script src="~/Scripts/Highcharts/code/modules/data.js"></script>
-<script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
-<script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+@section AddToHead{
+
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function reloadPage(e) {
+            window.location.replace('/DQAFY2017Q2/Analytics?reportType=' + e.value);
+        }
+    </script>
+    <style>
+        .nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus {
+            border-color: #ddd;
+            border-right-color: #fff;
+            color: #79B91C;
+            font-weight: bold;
+        }
+
+        .nav-tabs > li > a {
+            border-left-color: #ddd;
+            border-right-color: #FFF;
+            border-radius: 0;
+            z-index: 5;
+            color: #000;
+            text-decoration: underline;
+        }
+
+        hr {
+            border-color: #79B91C;
+            border-bottom: solid 1px #79B91C;
+            margin-top: 10em;
+        }
+
+        #resizer {
+            border: 1px solid silver;
+        }
+
+        #resizer_intv {
+            border: 1px solid silver;
+        }
+
+        .tab-pane { /* make room for the resize handle */
+            padding: 10px;
+        }
+    </style>
 }
 
-<div class="col-md-9">
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div class="col-md-11">
+    <div class="row">
+        <div class="col-sm-2" style="margin-bottom: 10px;">
+            <select id="rpt_type" onchange="reloadPage(this)" class="form-control">
+                <option value="Partners">Partner's Report</option>
+                <option value="UMB">UMB's Report</option>
+            </select>
+        </div>
+    </div>
+    <br />
 
-  </div>
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix">
+            <h2 style="margin-left:10em">All partners <span style="color: #fff;">concurrence rate</span> by <span style="color: #fff;">Indicator</span></h2>
+        </div>
+        <div class="panel-body">
+            <div class="tabs-container" id="resizer" style="min-width: 350px; min-height: 200px">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a aria-expanded="true" href="#htc" data-toggle="tab">HTC Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_stat" data-toggle="tab">PMTCT_STAT Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_art" data-toggle="tab">PMTCT_ART Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_eid" data-toggle="tab">PMTCT_EID Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#tx_new" data-toggle="tab">TX_NEW Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#tx_curr" data-toggle="tab">TX_CURR Concurrence</a></li>
+                </ul>
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="htc">
+                        <div id="htc_container" style="height: 300px">
+                        </div>
+                    </div>
+                    @*<div id="htc_container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>*@
+                    <div class="tab-pane" id="pmtct_stat">
+                        <div id="pmtct_stat_container" style="height: 300px">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_art">
+                        <div id="pmtct_art_container" style="height: 300px"></div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_eid">
+                        <div id="pmtct_eid_container" style="height: 300px">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tx_new">
+                        <div id="tx_new_container" style="height: 300px"></div>
+                    </div>
+                    <div class="tab-pane" id="tx_curr">
+                        <div id="tx_curr_container" style="height: 300px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading clearfix">
+            <h2 style="margin-left:10em">Sites that require DQI</h2>
+        </div>
+        <div class="panel-body">
+            <div class="tabs-container" id="resizer_intv" style="min-width: 350px; min-height: 200px">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a aria-expanded="true" href="#htc_intv" data-toggle="tab">HTC Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_stat_intv" data-toggle="tab">PMTCT_STAT Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_art_intv" data-toggle="tab">PMTCT_ART Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_eid_intv" data-toggle="tab">PMTCT_EID Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#tx_new_intv" data-toggle="tab">TX_NEW Concurrence</a></li>
+                    <li class=""><a aria-expanded="false" href="#tx_curr_intv" data-toggle="tab">TX_CURR Concurrence</a></li>
+                </ul>
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="htc_intv">
+                        <div id="htc_container_intv" style="height: 300px">
+                        </div>
+                    </div>
+                    @*<div id="htc_container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>*@
+                    <div class="tab-pane" id="pmtct_stat_intv">
+                        <div id="pmtct_stat_container_intv" style="height: 300px">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_art_intv">
+                        <div id="pmtct_art_container_intv" style="height: 300px"></div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_eid_intv">
+                        <div id="pmtct_eid_container_intv" style="height: 300px">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tx_new_intv">
+                        <div id="tx_new_container_intv" style="height: 300px"></div>
+                    </div>
+                    <div class="tab-pane" id="tx_curr_intv">
+                        <div id="tx_curr_container_intv" style="height: 300px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix">
+            <h2 style="margin-left:10em"><span style="color: #fff;">Concurrence rate</span> for all indicators <span style="color: #fff;">by partner</span></h2>
+        </div>
+        <div class="panel-body">
+            <div id="all_indicators">
+            </div>
+        </div>
+    </div>
+
+
+</div>
 
 @section Scripts
 {
-<script type="text/javascript"> 
-    $(document).ready(function () {
-        var myJsonData = {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'HTC_TST concurrence rate'
-            },
-            subtitle: {
-                text: 'Click the columns to drill down to facilities'
-            },
-            xAxis: {
-                type: 'category'
-            },
-            yAxis: {
+    @*<script src="~/Scripts/jquery.min.js"></script>
+        <script src="~/plugins/blockui-master/js/jquery-ui.js"></script>*@
+    <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
+<script src="~/Scripts/Highcharts/code/modules/no-data-to-display.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/data.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
+    <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+
+            var report_type = window.location.href.split('?reportType=')[1];
+            $("#rpt_type").val(report_type);
+
+
+
+            var myJsonData = {
+                chart: {
+                    type: 'bar',
+                    spacingTop: 3,
+                    spacingRight: 0,
+                    spacingBottom: 3,
+                    spacingLeft: 0,
+                    events: {
+                        drilldown: function (a) {
+                            //this.setSize(this.chartWidth, a.seriesOptions.data.length * 60);
+                        },
+                        render: function (b) {
+                            setTimeout(function adjust() {
+                                $(".highcharts-button-box").attr("x", -40);
+                                $(".highcharts-button-box").attr("y", -70);
+                                $(".highcharts-button-box").next().attr("x", -35);
+                                $(".highcharts-button-box").next().attr("y", -50);
+                            }, 2000);
+                        }
+                    }
+                },
                 title: {
-                    text: 'Percentage concurrence'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.y:.1f}%'
+                    text: ''
+                },
+                subtitle: {
+                    text: 'Click the columns to drill down to facilities'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Percentage concurrence'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}%'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+                },
+                series: [],
+                drilldown: {
+                    series: []
+                },
+                lang: {
+                    noData: "No site with DQI issue found "
+                },
+                noData: {
+                    style: {
+                        color: '#00a000'
                     }
                 }
-            },
+            };
 
-            tooltip: {
-                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
-            },
-
-            series: [{
-                name: 'Implementing Partner',
-                colorByPoint: true,
-                data: [{
-                    name: 'Microsoft Internet Explorer',
-                    y: 56.33,
-                    drilldown: 'Microsoft Internet Explorer'
-                }, {
-                    name: 'Chrome',
-                    y: 24.03,
-                    drilldown: 'Chrome'
-                }, {
-                    name: 'Firefox',
-                    y: 10.38,
-                    drilldown: 'Firefox'
-                }, {
-                    name: 'Safari',
-                    y: 4.77,
-                    drilldown: 'Safari'
-                }, {
-                    name: 'Opera',
-                    y: 0.91,
-                    drilldown: 'Opera'
-                }, {
-                    name: 'Proprietary or Undetectable',
-                    y: 0.2,
-                    drilldown: null
-                }]
-            }],
-            drilldown: {
-                series: [{
-                    name: 'Microsoft Internet Explorer',
-                    id: 'Microsoft Internet Explorer',
-                    data: [
-                        [
-                            'v11.0',
-                            24.13
-                        ],
-                        [
-                            'v8.0',
-                            17.2
-                        ],
-                        [
-                            'v9.0',
-                            8.11
-                        ],
-                        [
-                            'v10.0',
-                            5.33
-                        ],
-                        [
-                            'v6.0',
-                            1.06
-                        ],
-                        [
-                            'v7.0',
-                            0.5
-                        ]
-                    ]
-                }, {
-                    name: 'Chrome',
-                    id: 'Chrome',
-                    data: [
-                        [
-                            'v40.0',
-                            5
-                        ],
-                        [
-                            'v41.0',
-                            4.32
-                        ],
-                        [
-                            'v42.0',
-                            3.68
-                        ],
-                        [
-                            'v39.0',
-                            2.96
-                        ],
-                        [
-                            'v36.0',
-                            2.53
-                        ],
-                        [
-                            'v43.0',
-                            1.45
-                        ],
-                        [
-                            'v31.0',
-                            1.24
-                        ],
-                        [
-                            'v35.0',
-                            0.85
-                        ],
-                        [
-                            'v38.0',
-                            0.6
-                        ],
-                        [
-                            'v32.0',
-                            0.55
-                        ],
-                        [
-                            'v37.0',
-                            0.38
-                        ],
-                        [
-                            'v33.0',
-                            0.19
-                        ],
-                        [
-                            'v34.0',
-                            0.14
-                        ],
-                        [
-                            'v30.0',
-                            0.14
-                        ]
-                    ]
-                }, {
-                    name: 'Firefox',
-                    id: 'Firefox',
-                    data: [
-                        [
-                            'v35',
-                            2.76
-                        ],
-                        [
-                            'v36',
-                            2.32
-                        ],
-                        [
-                            'v37',
-                            2.31
-                        ],
-                        [
-                            'v34',
-                            1.27
-                        ],
-                        [
-                            'v38',
-                            1.02
-                        ],
-                        [
-                            'v31',
-                            0.33
-                        ],
-                        [
-                            'v33',
-                            0.22
-                        ],
-                        [
-                            'v32',
-                            0.15
-                        ]
-                    ]
-                }, {
-                    name: 'Safari',
-                    id: 'Safari',
-                    data: [
-                        [
-                            'v8.0',
-                            2.56
-                        ],
-                        [
-                            'v7.1',
-                            0.77
-                        ],
-                        [
-                            'v5.1',
-                            0.42
-                        ],
-                        [
-                            'v5.0',
-                            0.3
-                        ],
-                        [
-                            'v6.1',
-                            0.29
-                        ],
-                        [
-                            'v7.0',
-                            0.26
-                        ],
-                        [
-                            'v6.2',
-                            0.17
-                        ]
-                    ]
-                }, {
-                    name: 'Opera',
-                    id: 'Opera',
-                    data: [
-                        [
-                            'v12.x',
-                            0.34
-                        ],
-                        [
-                            'v28',
-                            0.24
-                        ],
-                        [
-                            'v27',
-                            0.17
-                        ],
-                        [
-                            'v29',
-                            0.16
-                        ]
-                    ]
-                }]
+            function CreateDrillDownChart(configData, parentdata, drilldownData, Title, ContainerId) {
+                var chart_data = configData;
+                chart_data.title.text = Title,
+                chart_data.series = parentdata;
+                chart_data.drilldown.series = drilldownData;
+                var chart = Highcharts.chart(ContainerId, chart_data);
+                return chart;
             }
-        };
 
-        Highcharts.chart('container', myJsonData);
-         
-        $(".highcharts-credits").hide();
-    });
-</script>
-    }
+            var htc_chart = CreateDrillDownChart(myJsonData,
+                                                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.htc_series)))),
+                                               JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.htc_drilldown)))),
+                                               'HTC_TST concurrence rate',
+                                               'htc_container');
+
+            var pmtct_stat_chart = CreateDrillDownChart(myJsonData,
+                  JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_stat_series)))),
+                  JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_stat_drilldown)))),
+                  'PMTCT_STAT concurrence rate', 'pmtct_stat_container');
+
+            var pmtct_art_chart = CreateDrillDownChart(myJsonData,
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_art_series)))),
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_art_drilldown)))),
+                'PMTCT_ART concurrence rate', 'pmtct_art_container');
+
+            var pmtct_eid_chart = CreateDrillDownChart(myJsonData,
+            JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_eid_series)))),
+            JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_eid_drilldown)))),
+            'PMTCT_EID concurrence rate', 'pmtct_eid_container');
+
+            var tx_new_chart = CreateDrillDownChart(myJsonData,
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_new_series)))),
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_new_drilldown)))),
+                'TX_NEW concurrence rate', 'tx_new_container');
+
+            var tx_curr_chart = CreateDrillDownChart(myJsonData,
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_curr_series)))),
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_curr_drilldown)))),
+                'TX_CURR concurrence rate', 'tx_curr_container');
+            /////////////QI Data//////////
+
+            var htc_chart_intv = CreateDrillDownChart(myJsonData,
+                                                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.htc_series)))),
+                                               JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.htc_drilldown_QI)))),
+                                               'HTC_TST concurrence rate', 'htc_container_intv');
+
+            var pmtct_stat_chart_intv = CreateDrillDownChart(myJsonData,
+                  JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_stat_series)))),
+                  JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_stat_drilldown_QI)))),
+                  'PMTCT_STAT concurrence rate', 'pmtct_stat_container_intv');
+
+            var pmtct_art_chart_intv = CreateDrillDownChart(myJsonData,
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_art_series)))),
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_art_drilldown_QI)))),
+                'PMTCT_ART concurrence rate', 'pmtct_art_container_intv');
+
+            var pmtct_eid_chart_intv = CreateDrillDownChart(myJsonData,
+            JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_eid_series)))),
+            JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.pmtct_eid_drilldown_QI)))),
+            'PMTCT_EID concurrence rate', 'pmtct_eid_container_intv');
+
+            var tx_new_chart_intv = CreateDrillDownChart(myJsonData,
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_new_series)))),
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_new_drilldown_QI)))),
+                'TX_NEW concurrence rate', 'tx_new_container_intv');
+
+            var tx_curr_chart_intv = CreateDrillDownChart(myJsonData,
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_curr_series)))),
+                JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_curr_drilldown_QI)))),
+                'TX_CURR concurrence rate', 'tx_curr_container_intv');
+
+            //////End/////////
+
+            //$(".highcharts-credits").hide();
+            $(".highcharts-subtitle").css("color", "red");
+            $(".highcharts-subtitle").css("fill", "red");
+
+            $('#resizer').resizable({
+                resize: function () {
+                    var $this = this;
+                    $.each([htc_chart, pmtct_stat_chart, pmtct_art_chart, pmtct_eid_chart, tx_new_chart, tx_curr_chart], function (i, a_chart) {
+                        a_chart.setSize(
+                        $this.offsetWidth - 20,
+                        $this.offsetHeight - 20,
+                        false
+                    );
+                    });
+                    $(".page-container").addClass("sidebar-collapsed");
+                }
+            });
+
+            $('#resizer_intv').resizable({
+                resize: function () {
+                    var $this = this;
+                    $.each([htc_chart_intv, pmtct_stat_chart_intv, pmtct_art_chart_intv, pmtct_eid_chart_intv, tx_new_chart_intv, tx_curr_chart_intv], function (i, a_chart) {
+                        a_chart.setSize(
+                        $this.offsetWidth - 20,
+                        $this.offsetHeight - 20,
+                        false
+                    );
+                    });
+                    $(".page-container").addClass("sidebar-collapsed");
+                }
+            });
+
+            function roundToTwo(num) {
+                return +(Math.round(num + "e+2") + "e-2");
+            }
+
+            $(".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se").css("background-color", "red")
+            //second chart
+            var allindicatorconcurrence = JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.ConcurrenceByPartner))));
+            $.each(allindicatorconcurrence, function (i, v) {
+
+                jQuery('<div/>', {
+                    id: v.IP,
+                }).appendTo('#all_indicators');
+                jQuery('<hr>').appendTo('#all_indicators');
+
+                var chart = Highcharts.chart(v.IP, {
+                    title: {
+                        text: v.IP + ' Concurrence Rate'
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ['HTC_TST', 'PMTCT_STAT', 'PMTCT_ART', 'PMTCT_EID', 'TX_NEW', 'TX_CURR']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Percentage concurrence'
+                        }
+                    },
+                    series: [{
+                        type: 'column',
+                        dataLabels: {
+                            enabled: true
+                        },
+                        colorByPoint: true,
+                        data: [roundToTwo(v.HTC_Concurrence), roundToTwo(v.PMTCT_STAT_Concurrence), roundToTwo(v.PMTCT_ART_Concurrence), roundToTwo(v.PMTCT_EID_Concurrence), roundToTwo(v.TX_NEW_Concurrence), roundToTwo(v.TX_CURR_Concurrence)],
+                        showInLegend: false
+                    }],
+                });
+
+                var plain = "<button id='plain" + v.IP + "'>Plain</button>";
+                var inverted = "<button id='inverted" + v.IP + "'>Inverted</button>";
+                var polar = "<button id='polar" + v.IP + "'>Polar</button>";
+                $("#" + v.IP).append(plain);
+                $("#" + v.IP).append(inverted);
+                $("#" + v.IP).append(polar);
+
+
+                $(document).on('click', '#plain' + v.IP, function () {
+                    chart.update({
+                        chart: {
+                            inverted: false,
+                            polar: false
+                        },
+                    });
+                });
+
+                $(document).on('click', '#inverted' + v.IP, function () {
+                    chart.update({
+                        chart: {
+                            inverted: true,
+                            polar: false
+                        },
+                    });
+                });
+
+                $(document).on('click', '#polar' + v.IP, function () {
+                    chart.update({
+                        chart: {
+                            inverted: false,
+                            polar: true
+                        },
+                    });
+                });
+            });
+
+            $(".highcharts-title").css("color", "#000");
+            $(".highcharts-title").css("fill", "#000");
+            $(".page-container").addClass("sidebar-collapsed");
+
+        });
+    </script>
+}

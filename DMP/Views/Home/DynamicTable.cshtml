@@ -1,215 +1,88 @@
-﻿@model List<ShieldPortal.Controllers.MockReportData>
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-control" content="no-store, must-revalidate">
+    <meta http-equiv="Vary" content="*">
 
-@section AddToHead{
-    @Styles.Render("~/bundles/CreateDMPCss")
-
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-
+    <title>Shield Portal</title>
+    <!-- Site favicon -->
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
+    
     <style>
-        .panel-default {
-            border-color: #929b17;
+        @@import url('../../Content/jquery-ui.css');
+
+        #resizer {
+            border: 1px solid silver;
         }
-
-            .panel-default > .panel-heading {
-                color: #FFF;
-                background-color: #929b17;
-                border-color: #929b17;
-                padding: 5px 50px;
-            }
-
-        label {
-            font-weight: bold;
-        }
-
-        .removebtn {
-            color: lightcoral;
-            border-color: lightcoral;
+        #inner-resizer { /* make room for the resize handle */
+            padding: 10px;
         }
     </style>
-    <script type="text/javascript">
+</head>
+<body>
 
-     var reportArray = [];
 
-     function myDeleteFunction(row) {
-         $("#"+row).remove();
-         reportArray.splice(row-1, 1);
-     }
-    </script>
-}
-
-<div class="form-horizontal" id="reportdatadiv">
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="NameOfReport">Name of Report</label>
-        <button type="button" class="btn btn-black btn-outline btn-sm" title="What types of reports are collated from data?"><i class="icon-help"></i></button>
-        <div class="col-sm-8">
-            <input type="text" placeholder="What types of reports are collated from data?" value="" id="NameOfReport" class="form-control">
+    <div id="resizer" style="min-width: 350px; min-height: 200px">
+        <div id="inner-resizer">
+            <div id="container" style="height: 300px">
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="ThematicArea">Thematic Area</label>
-        <div class="col-sm-8">
-            <input type="text" placeholder="What thematic areas are reported on?" value="" id="ThematicArea" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="TimelinesforReporting">Timelines for reporting</label>
-        <button type="button" class="btn btn-black btn-outline btn-sm" title="Clearly state the timelines for these reporting &#013; Click to select multiple date from the calendar"><i class="icon-help"></i></button>
-        <div class="col-sm-8">
-            @*<input id="datePick" type="text" />*@
-            <input type="text" placeholder="Clearly state the timelines for these reporting" id="TimelinesforReporting" value="" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="FrequencyOfReporting">Frequency of reporting</label>
-        <div class="col-sm-8">
-            <input type="text" placeholder="Clearly state the frequency for these reporting" id="FrequencyOfReporting" value="" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="DurationOfReporting">Duration of reporting</label>
-        <div class="col-sm-8">
-            <input type="text" placeholder="Clearly state the duration of time assigned for reporting" id="DurationOfReporting" value="" class="form-control">
-        </div>
-    </div>
-</div>
 
 
-
-<div class="table-responsive">
-    <table class="table table-striped" id="reportdataMainTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Thematic Area</th>
-                <th>Frequency</th>
-                <th>Duration</th>
-                <th>Timelines</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="reportdataTable"> </tbody>
-    </table>
-</div>
-
-<div id="tableButtons">
-    <button id='write'>Write Table</button> <button id='save'>post Data</button>
-</div>
-
-@section Scripts
-{
-    @Scripts.Render("~/bundles/MultiDatePickerCss")
+    <script src="~/Scripts/jquery.min.js"></script> 
+    <script src="~/plugins/blockui-master/js/jquery-ui.js"></script>
+    <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
+     @*<script src="https://code.highcharts.com/highcharts.js"></script>*@
 
     <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
 
-        $('#TimelinesforReporting').multiDatesPicker();
-
-        var ReportArrayFromServer = @Html.Raw(Json.Encode(Model));
-
-        if(ReportArrayFromServer.length > 0){
-            var report = {};
-            for(var i =0; i< ReportArrayFromServer.length; i++){
-                report = ReportArrayFromServer[i];
-                var tL = report.TimelinesForReporting;
-                var timeLines = [];
-                for(var i=0; i< tL.length; i++)
-                {
-                    var dt = tL[i].toString();
-                    if(dt.indexOf("Date") !== -1){
-                        dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
-                        var dtt = new Date(dt);
-                        timeLines.push(dtt);
-                    }
-                }
-                report.TimelinesForReporting = timeLines;
-                reportArray.push(report);
-                CreateReportTable(report);
-            }
-        }
+            var chart = Highcharts.chart('container', {
+                chart: {
+                    type: 'bar',
+                    spacingTop: 3,
+                    spacingRight: 0,
+                    spacingBottom: 3,
+                    spacingLeft: 0
+                },
 
 
-        $("#write").click(function(e){
-            var report={};
-            report["Id"] = reportArray.length + 1;
-            var dateStringArray = [];
 
-            $("#reportdatadiv input, select").each(function(){
-                if($(this)[0].id == "NameOfReport"){
-                    report["NameOfReport"] =  $(this)[0].value;
-                    $(this).val("");
-                }
-                else if($(this)[0].id == "ThematicArea"){
-                    report["ThematicArea"] =  $(this)[0].value;
-                    $(this).val("");
-                }
-                else if($(this)[0].id == "TimelinesforReporting"){
-                    dateStringArray = $(this)[0].value.split(',');
-                    report["TimelinesForReporting"]  = dateStringArray;
-                     $(this).val("");
-                     $('#TimelinesForReporting').multiDatesPicker('resetDates', 'picked');
-                }
-                else if($(this)[0].id == "FrequencyOfReporting"){
-                    report["FrequencyOfReporting"] =  $(this)[0].value;
-                    $(this).val("");
-                }
-                else if($(this)[0].id == "DurationOfReporting"){
-                    report["DurationOfReporting"] =  $(this)[0].value;
-                    $(this).val("");
-                }
-                else if($(this)[0].id == "justdate"){
-                    report["justdate"] =  $(this)[0].value;
-                    $(this).val("");
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+
+                series: [{
+                    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                }]
+
+            });
+
+            $('#resizer').resizable({
+                // On resize, set the chart size to that of the
+                // resizer minus padding. If your chart has a lot of data or other
+                // content, the redrawing might be slow. In that case, we recommend
+                // that you use the 'stop' event instead of 'resize'.
+                resize: function () {
+                    chart.setSize(
+                        this.offsetWidth - 20,
+                        this.offsetHeight - 20,
+                        false
+                    );
                 }
             });
 
-            reportArray.push(report);
-            CreateReportTable(report);
+
         });
-
-        function CreateReportTable(report){
-            var dateArray = report.TimelinesForReporting;
-            var removeId = "remove"+report.Id;
-            var timelines='';
-            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            for(var i=0; i< dateArray.length; i++)
-            {
-                var dt = dateArray[i].toString();
-                if(dt.indexOf("Date") !== -1){
-                    dt = parseInt(dt.replace(/\/Date\((\d+)\)\//, '$1'));
-                }
-                var dtt = new Date(dt);
-                dt = dtt.getDate() +'-'+months[dtt.getMonth()] + '-' + dtt.getFullYear();
-                timelines += dt+ " &#013;";
-            }
-
-            var html = '<tr id='+report.Id+'>';
-            html += '<td>' + report.NameOfReport + '</td>';
-            html += '<td>' + report.ThematicArea + '</td>';
-            html += '<td>' + report.FrequencyOfReporting + '</td>';
-            html += '<td>' + report.DurationOfReporting + '</td>';
-            html += '<td><a class="btn btn-info btn-sm btn-outline" title='+ JSON.stringify(timelines)+'>View</a></td>';
-            html += '<td><input type="button" value="Remove" class="btn btn-danger btn-sm btn-outline" onclick="myDeleteFunction('+report.Id+')"  id='+removeId+'/></td>';
-            html += '</tr>';
-            $('#reportdataTable').append(html);
-        }
-
-        $("#save").click(function(){
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("DynamicTableAdd", "Home")',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(reportArray),
-                dataType: 'json',
-                cache: false,
-            }).done(function (result) {
-                alert(result);
-            }).error(function (xhr, status, err) {
-                console.log(err);
-            });
-        });
-
-
-    });
     </script>
-}
+
+    </body>
+</html>

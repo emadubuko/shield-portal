@@ -15,10 +15,10 @@ namespace RADET.DAL.Services
 {
     public class RADETProcessor
     {
-         
+
         public List<RandomizationUpdateModel> Randomizetems(IList<RandomizationUpdateModel> table, int percent_of_active, int percent_inactive)
         {
-             List<RandomizationUpdateModel> newTable = new List<RandomizationUpdateModel>();
+            List<RandomizationUpdateModel> newTable = new List<RandomizationUpdateModel>();
             RadetMetaDataDAO _dao = new RadetMetaDataDAO();
 
             foreach (var item in table) //reset everything
@@ -62,7 +62,7 @@ namespace RADET.DAL.Services
                     List<int> S_0 = active.Where(x => !x.RandomlySelect).Select(x => x.Id).ToList();
                     S_0.AddRange(inactive.Where(x => !x.RandomlySelect).Select(x => x.Id).ToList());
 
-                    if(S_1.Count > 0)
+                    if (S_1.Count > 0)
                     {
                         StringBuilder sb_1 = new StringBuilder();
                         sb_1.AppendLine(string.Format("Update radet_patient_line_listing set RandomlySelect =1 where Id in ({0});", string.Join(",", S_1)));
@@ -70,25 +70,25 @@ namespace RADET.DAL.Services
                         if (i != S_1.Count())
                             throw new ApplicationException("an error occured");
                     }
-                    
-                    if(S_0.Count > 0)
+
+                    if (S_0.Count > 0)
                     {
                         StringBuilder sb_0 = new StringBuilder();
                         sb_0.AppendLine(string.Format("Update radet_patient_line_listing set RandomlySelect =0 where Id in ({0});", string.Join(",", S_0)));
-                       int i = _dao.RunSQL(sb_0.ToString());
+                        int i = _dao.RunSQL(sb_0.ToString());
                         if (i != S_0.Count())
                             throw new ApplicationException("an error occured");
-                    }                    
+                    }
                 }
             }
-             
+
             //    int i = _dao.RunSQL(sb.ToString()); //.BulkUpdate(newTable);
             //if (i != newTable.Count)
             //    throw new ApplicationException("an error occured");
 
             return newTable;
         }
-         
+
 
         public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, out RadetMetaData metadata, out List<ErrorDetails> error)
         {
@@ -140,7 +140,7 @@ namespace RADET.DAL.Services
                         LineNo = "",
                         PatientNo = ""
                     });
-                }  
+                }
                 string ipshortname = ExcelHelper.ReadCell(mainWorksheet, 24, 19);
                 if (ipshortname == "CCRN")
                 {
@@ -212,8 +212,8 @@ namespace RADET.DAL.Services
                 if (f_n[0] == lga_substr)
                 {
                     facilityName = facilityName.Substring(3);
-                } 
-                
+                }
+
                 string RadetPeriod = ExcelHelper.ReadCell(mainWorksheet, 7, 19);
                 if (string.IsNullOrEmpty(RadetPeriod))
                 {
@@ -248,14 +248,39 @@ namespace RADET.DAL.Services
                     }
 
                     int row = 2;
+
+                    int emptyRowCounter = 0;
                     while (true)
                     {
                         string patientId = ExcelHelper.ReadCell(worksheet, row, 7);
-                        if (string.IsNullOrEmpty(patientId)) //end of file
-                        {
-                            break;
-                        }
+                        string artRegimenAtStart = ExcelHelper.ReadCell(worksheet, row, 16);
 
+                        if (string.IsNullOrEmpty(patientId) && !string.IsNullOrEmpty(artRegimenAtStart)) //end of file
+                        {
+                            error.Add(new ErrorDetails
+                            {
+                                ErrorMessage = "Patient Unique ID is empty",
+                                FileName = fileName,
+                                FileTab = worksheet.Name,
+                                LineNo = Convert.ToString(row - 1),
+                                PatientNo = ""
+                            });
+                            //break;
+                        }
+                        if (string.IsNullOrEmpty(patientId) && string.IsNullOrEmpty(artRegimenAtStart) && string.IsNullOrEmpty(ExcelHelper.ReadCell(worksheet, row, 16)))//end of file
+                        {
+                            row++;
+                            emptyRowCounter++;
+                            if (emptyRowCounter > 3)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                continue;
+                            }                            
+                        }
+                        emptyRowCounter = 0;
                         try
                         {
                             var lineItem = new RadetPatientLineListing
@@ -265,11 +290,11 @@ namespace RADET.DAL.Services
                                 MonthsOfARVRefill = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 14), "Month of ARV Refil", fileName, worksheet.Name, row, patientId, 10, ref error),
 
                                 RegimenLineAtARTStart = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 15), "Regimen Line At ART Start", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
-                                RegimenAtStartOfART =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
-                                CurrentRegimenLine =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 17), "Current Regimen Line", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
-                                CurrentARTRegimen =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 18), "Current ART Regimen", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
+                                RegimenAtStartOfART = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
+                                CurrentRegimenLine = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 17), "Current Regimen Line", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
+                                CurrentARTRegimen = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 18), "Current ART Regimen", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
 
-                                PregnancyStatus =  ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 19), "Pregnancy Status", fileName, worksheet.Name, row, patientId, validPregnancyStatus, true, false, ref error),
+                                PregnancyStatus = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 19), "Pregnancy Status", fileName, worksheet.Name, row, patientId, validPregnancyStatus, true, false, ref error),
                                 CurrentViralLoad = ExcelHelper.ReadCellText(worksheet, row, 20),
                                 ViralLoadIndication = ExcelHelper.ReadCellText(worksheet, row, 22),
                                 CurrentARTStatus = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 23), "Current ART Status", fileName, worksheet.Name, row, patientId, validARTStatus, false, true, ref error),

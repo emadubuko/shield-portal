@@ -27,6 +27,12 @@ namespace ShieldPortal.Controllers
             projDAO = new ProjectDetailsDAO();
 
         }
+
+        [Authorize(Roles ="sys_admin")]
+        public ActionResult DynamicTable()
+        {
+            return View();
+        }
         
         public ActionResult index()
         {

@@ -7,6 +7,7 @@ using DQA.DAL.Model;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
+using ShieldPortal.Services;
 using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,16 @@ namespace ShieldPortal.Controllers
             return View("Dashboard");
         }
 
-        public ActionResult Analytics()
+        public ActionResult Analytics(string reportType= "Partners")
         {
-            return View();
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var data = new HighChartDataServices().GetHTCConcurrency(reportType, ip);
+            return View(data);
         }
 
         //this is for Q2 upload

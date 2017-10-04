@@ -175,7 +175,7 @@ namespace RADET.DAL.DAO
                    .Add(Projections.Property("rpt.Sex"), "Sex")
                    .Add(Projections.Property("rpt.Age_at_start_of_ART_in_years"), "AgeInYears")
                    .Add(Projections.Property("rpt.Age_at_start_of_ART_in_months"), "AgeInMonths")
-                   .Add(Projections.Property("rpt.FacilityName"), "Facility")
+                   .Add(Projections.Property("rmt.Facility"), "Facility")
                    .Add(Projections.Property("ip.ShortName"), "IPShortName")
                    .Add(Projections.Property("lga.lga_name"), "LGA")
                    .Add(Projections.Property("st.state_name"), "State")
@@ -268,55 +268,61 @@ namespace RADET.DAL.DAO
         /// </summary>
         /// <param name="RadetData"></param>
         /// <returns></returns>
-        public TimeSpan BulkSave(IList<RadetMetaData> RadetData)
+        public TimeSpan BulkSave(IList<RadetMetaData> RadetData, out bool saved)
         {
+            saved = false;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            int totalCount = 0;
-            RadetMetaDataSearchModel search = new Models.RadetMetaDataSearchModel
+
+            if(RadetData.Count > 0)
             {
-                facilities = RadetData.Select(x => x.Facility).Distinct().ToList(),
-                lga_codes = RadetData.Select(x => x.LGA.lga_code).Distinct().ToList(),
-                IPs = RadetData.Select(x => x.IP.ShortName).Distinct().ToList(),
-            };
-            List<RadetReportModel2> previously = RetrieveUsingPaging(search, 0, 0, false, out totalCount);
-
-            
-            ISessionFactory sessionFactory = BuildSession().SessionFactory;
-
-            using (IStatelessSession session = sessionFactory.OpenStatelessSession())
-            using (ITransaction transaction = session.BeginTransaction())
-            {
-                var patients = RetrievePatients(session, RadetData.Select(x => x.IP.Id).Distinct().ToList());
-
-                foreach (var entry in RadetData)
+                int totalCount = 0;
+                RadetMetaDataSearchModel search = new Models.RadetMetaDataSearchModel
                 {
-                    var previousReport = previously.FirstOrDefault(x => x.IP == entry.IP.ShortName && x.LGA_code == entry.LGA.lga_code && x.RadetPeriod == entry.RadetPeriod && x.Facility == entry.Facility); // CheckPreviousUpload(session, entry.IP, entry.LGA, entry.RadetPeriod, entry.Facility);
-                    if (previousReport == null)
+                    facilities = RadetData.Select(x => x.Facility).Distinct().ToList(),
+                    lga_codes = RadetData.Select(x => x.LGA.lga_code).Distinct().ToList(),
+                    IPs = RadetData.Select(x => x.IP.ShortName).Distinct().ToList(),
+                };
+                List<RadetReportModel2> previously = RetrieveUsingPaging(search, 0, 0, false, out totalCount);
+
+
+                ISessionFactory sessionFactory = BuildSession().SessionFactory;
+
+                using (IStatelessSession session = sessionFactory.OpenStatelessSession())
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    var patients = RetrievePatients(session, RadetData.Select(x => x.IP.Id).Distinct().ToList());
+
+                    foreach (var entry in RadetData)
                     {
-                        if (entry.PatientLineListing != null)
+                        var previousReport = previously.FirstOrDefault(x => x.IP == entry.IP.ShortName && x.LGA_code == entry.LGA.lga_code && x.RadetPeriod == entry.RadetPeriod && x.Facility == entry.Facility); // CheckPreviousUpload(session, entry.IP, entry.LGA, entry.RadetPeriod, entry.Facility);
+                        if (previousReport == null)
                         {
-                            session.Insert(entry);
-                            foreach (var item in entry.PatientLineListing)
+                            if (entry.PatientLineListing != null)
                             {
-                                var _patient_exist = patients.FirstOrDefault(f => f.PatientId == item.RadetPatient.PatientId && f.HospitalNo == item.RadetPatient.HospitalNo && f.Sex == item.RadetPatient.Sex); //CheckIfPatientExists(session, item.RadetPatient);
-                                if (_patient_exist == null)
+                                session.Insert(entry);
+                                foreach (var item in entry.PatientLineListing)
                                 {
-                                    session.Insert(item.RadetPatient);
+                                    var _patient_exist = patients.FirstOrDefault(f => f.PatientId == item.RadetPatient.PatientId && f.HospitalNo == item.RadetPatient.HospitalNo && f.Sex == item.RadetPatient.Sex); //CheckIfPatientExists(session, item.RadetPatient);
+                                    if (_patient_exist == null)
+                                    {
+                                        session.Insert(item.RadetPatient);
+                                    }
+                                    else
+                                    {
+                                        item.RadetPatient = _patient_exist;
+                                    }
+                                    item.MetaData = entry;
+                                    session.Insert(item);
+                                    saved = true;
                                 }
-                                else
-                                {
-                                    item.RadetPatient = _patient_exist;
-                                }
-                                item.MetaData = entry;
-                                session.Insert(item);
                             }
                         }
                     }
+                    transaction.Commit(); 
                 }
-                transaction.Commit();
             }
-
+             
             stopwatch.Stop();
             var time = stopwatch.Elapsed;
             return time;

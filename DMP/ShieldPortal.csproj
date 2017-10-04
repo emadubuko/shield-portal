@@ -242,10 +242,11 @@
     <Compile Include="Models\CompressedContent.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\HighChartDataServices.cs" />
     <Compile Include="Services\ITextEvents.cs" />
     <Compile Include="Services\PDFUtilities.cs" />
     <Compile Include="Services\Utils.cs" />
-    <Compile Include="Service\MetaDataService.cs" />
+    <Compile Include="Services\MetaDataService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\AutomaticViewModel.cs" />
     <Compile Include="ViewModel\BWR\GPSDataModel.cs" />
@@ -316,7 +317,6 @@
     <Content Include="images\Loading_icon.gif" />
     <Content Include="images\pepfar.jpg" />
     <Content Include="images\Profile-image.png" />
-    <Content Include="images\favicon.png" />
     <Content Include="images\macbook-40.jpg" />
     <Content Include="images\office-40.jpg" />
     <Content Include="images\shield_logo.jpg" />
@@ -324,7 +324,6 @@
     <Content Include="Content\integral-core.css" />
     <Content Include="Content\integral-forms.css" />
     <Content Include="Content\integral-rtl-core.css" />
-    <Content Include="images\favicon.ico" />
     <Content Include="images\icon-close.png" />
     <Content Include="images\loading.gif" />
     <Content Include="favicon.ico" />
@@ -1377,7 +1376,7 @@
     <Content Include="Views\DQAFY2017Q2\Analytics.cshtml" />
     <Content Include="Views\BiWeeklyReport\UploadNewReport.cshtml" />
     <Content Include="Views\DQAFY2016\Index.cshtml" />
-    <Content Include="Views\DQAFY2017Q2\UploadRadet.cshtml" />
+    <Content Include="Views\DQAFY2017Q2\UploadPage.cshtml" />
     <Content Include="Views\DQAFY2017Q2\DownloadDQATool.cshtml" />
     <Content Include="Views\DQA\DQAAnalysisReport.cshtml" />
     <Content Include="Views\DQAFY2016\Dashboard.cshtml" />
@@ -1392,6 +1391,8 @@
     <Content Include="Views\NHMIS\Upload.cshtml" />
     <Content Include="Views\DQAFY2017Q2\RadetValidation.cshtml" />
     <Content Include="Views\DQAFY2017Q2\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\Home\Index - Copy.cshtml" />
+    <Content Include="Views\Home\submenu - Copy.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1440,6 +1441,7 @@
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
+    <Folder Include="Report\Uploads\RADET\" />
     <Folder Include="Scripts\Highcharts\api\css\images\" />
     <Folder Include="tempData\" />
     <Folder Include="Uploads\" />

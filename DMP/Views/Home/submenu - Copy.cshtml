@@ -1,0 +1,477 @@
+﻿@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+}
+@section AddToHead{
+    <style>
+        .custom-heading-div {
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .accordion-group {
+            border: 0px solid #fff;
+            margin-bottom: 25px;
+        }
+
+        .btn-default.btn-outline {
+            color: darkorange;
+            background-color: transparent;
+            border-color: darkorange;
+        }
+
+            .btn-default.btn-outline:hover {
+                color: white;
+                background-color: darkorange;
+                border-color: darkorange;
+            }
+
+        .pnl-height {
+            height: 400px;
+        }
+    </style>
+}
+<div class="main-content" style="padding-top: 0px;">
+
+    <div class="row" id="breadcrumb">
+        <div class="col-sm-5 col-sm-push-1">
+            <ol class="breadcrumb breadcrumb-2">
+                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                <li class="active">@ViewBag.breadcrumb</li>
+            </ol>
+        </div>
+    </div>
+
+    <div id="dmp" style="display:none">
+        <div class="row">
+
+            <div class="col-lg-4">
+                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                    <div class="panel-body">
+                        <a href="@Url.Action("index", "DMP")">
+                            <table>
+                                <tr style="vertical-align: top;">
+                                    <td><i class="fa fa-file-text fa-3x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Management Plan</strong></td>
+                                </tr>
+                            </table>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4">
+                <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
+                    <div class="panel-body">
+                        <a href="#">
+                            <table>
+                                <tr style="vertical-align: top;">
+                                    <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
+                                    <td style="padding-left: 25px;"> <strong class="custom-heading-div">Data Quality Assessment</strong></td>
+                                </tr>
+                            </table>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="panel minimal primary-bg" style="background-color:steelblue;border-color:steelblue">
+                    <div class="panel-body">
+                        <a href="#/">
+                            <table>
+                                <tr style="vertical-align: top;">
+                                    <td><i class="fa fa-history fa-3x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Quality Improvement</strong> </td>
+                                </tr>
+                            </table>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="panel panel-info pnl-height" style="border-color:darkorange;">
+
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a href="@Url.Action("index", "DMP")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize">Go to Data Management Plan</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Program Overview</h5>
+                        <p>
+                            In line with CDC’s Overview of institutionalizing a sustainable M&E system for Nigeria and developing a robust Data Management Plan for all its implementing mechanisms, the Data Management Summary (DMS) document has been developed.
+                            This document aims to harmonize all information collated from CDC-funded partners on their Data Management Processes.
+                        </p>
+                        <p> In so doing, the CDC Data Management Summary will be a standardized document where detailed information pertaining to organizational Data Management is archived, to be referenced by CDC-funded implementing partners and relevant stakeholders.</p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-success pnl-height">
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <div>
+                            <h5 style="font-weight: bold">Go to FY2017</h5>
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="/DQA/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize"> Q1 DQA</a> &nbsp;
+                                    <a href="/DQAFY2017Q2/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize; pointer-events:none"> Q2 DQA</a>
+                                    <a href="/DQAFY2017Q2/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize;"> Q3 DQA</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+                        {
+                            <div>
+                                <h5 style="font-weight: bold">Go to FY2016</h5>
+                                <ul class="list-item todo-list">
+                                    <li>
+                                        <a href="/DQAFY2016/homepage" class="btn btn-sm btn-success btn-outline" style="text-transform: none">DQA</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        <hr />
+                        <h5 style="font-weight: bold">Program Overview</h5>
+                        <p>
+                            The ability to collect and report high quality data is the cornerstone of a data-driven approach for HIV program delivery. Data quality assessment gives us the true reflection of how efficient HIV program is and how close health outcomes have been achieved. As part of PEPFAR’s Accountability frame work, routine data quality assessments are required as a means of validating reported achievements.
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-warning pnl-height">
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <div>
+                            <h5 style="font-weight: bold"></h5>
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a class="btn btn-sm btn-info btn-outline" style="text-transform: capitalize"> Go to FY2017 DQI</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <hr />
+                        <h5 style="font-weight: bold">Program Overview</h5>
+                        <p>
+                            The Data Quality improvement strategy combines best practices in quality improvement to guide the implementation and monitoring of sustainable solutions to identified data quality issues. Through these efforts, methods and strategies through which data quality and reporting can be significantly improved across CDC implementing partners and facilities will be established and routinized
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="routine_reporting" style="display:none">
+
+        <div class="row">
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+            <div class="col-sm-4">
+                <div class="panel minimal info-bg" style="background-color: #ec407a;border-color:#ec407a">
+                    <div class="panel-body">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-file-text fa-3x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly reporting</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-4">
+                <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
+                    <div class="panel-body">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">RADET Report</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
+                <div class="panel minimal teal-bg" style="background-color:deepskyblue; border-color:deepskyblue">
+                    <div class="panel-body">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">SIMS</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-4">
+                <div class="panel panel-info pnl-height" style="border-color:#ec407a">
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a href="@Url.Action("Dashboard", "BiWeeklyReport")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:#ec407a; border-color:#ec407a">Go to Semi Monthly Report</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-4">
+                <div class="panel panel-success pnl-height">
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a href="@Url.Action("RADETScoreCard","RadetAnalytics")" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize">Go to RADET Report</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>Retention and Audit Determination Tool (RADET)</p>
+                        <p>
+                            The PEPFAR Nigeria SI TWG commenced current on treatment audit using the RADET in October 2014.
+                            Aim was to determine the accurate total number of patients currently on treatment (as at September 30th 2014).
+                            The process required the implementing partners to submit a line list of all clients enrolled on ART since the beginning of the PEPFAR program
+                        </p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
+                <div class="panel panel-default pnl-height" style="border-color:deepskyblue">
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a class="btn btn-sm btn-default btn-outline disabled" style="text-transform: capitalize;color:deepskyblue;border-color:deepskyblue">Go to SIMS</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>Site Monitoring Systems (SIMS)</p>
+                        <p>
+                            SIMS is PEPFAR/CDC Site Monitoring System with a goal of standardizing clinical site quality monitoring by PEPFAR/CDC in-country staff through assessment and scoring of site performance on key program area elements.
+                            SIMS is a comprehensive yet rapid assessment that focus on issues that directly impact service quality
+                        </p>
+                        <a style="text-decoration:underline; color:blue" href="https://data.pepfar.net/reference/Global_SMS_summary_and_21_countries_Nov_2014_v5.21.pdf" target="_blank">Global SIMS summary in 21 countries (Nov 2014)</a>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="outcome" style="display:none">
+        <div class="row">
+            <div class="col-sm-1"> </div>
+
+            <div class="col-sm-5">
+                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                    <div class="panel-body">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-file-text fa-3x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Test & Start / Community ART</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-5">
+                <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
+                    <div class="panel-body">
+                        <table>
+                            <tr style="vertical-align: top;">
+                                <td><i class="fa fa-clock-o fa-3x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">Repeat Testing / Index Partner Testing</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-1"> </div>
+            <div class="col-sm-5">
+                <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                    <div class="panel-heading clearfix" style="background-color: darkorange;border-color:darkorange">
+                        <h4 class="panel-title">Info Panel</h4>
+                    </div>
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-5">
+                <div class="panel panel-success pnl-height">
+                    <div class="panel-heading clearfix">
+                        <h4 class="panel-title">Info Panel</h4>
+                    </div>
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiv_aid" style="display:none">
+        <div class="row">
+            <div class="col-lg-1"> </div>
+
+            <div class="col-md-7">
+                <div class="panel panel-info" style="border-color:darkorange">
+                    <div class="panel-heading clearfix" style="background-color: darkorange;border-color:darkorange">
+                        <h4 class="panel-title">HIV/AIDS Monitoring and Evaluation</h4>
+                    </div>
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize">Go to HIV/AIDS Monitoring and Evaluation</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Program Overview</h5>
+                        <p>The HIV/AIDS program evaluation Protocol is a strategic document which will monitor and evaluate the HIV/AIDS programs in Nigeria, as well as outline how the program evaluation results and findings will be used for the programs improvement and to inform policy decision making. It will be used to ascertain if the HIV/AIDS Nigeria Program is helping the country reach a sustainable national HIV/AIDS program model. The plan will be instrumental in identifying the key factors contributing to or impeding program results, and also allow for program adjustment recommendations. The evaluation process will aid all stakeholders in gaining insight, ensuring best practices, assessing effects and informing relevant decisions. With consideration of the 90-90-90 goal, evaluation is necessary for all HIV/AIDS programs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin" style="display:none">
+        <div class="row">
+            <div class="col-sm-1"> </div>
+
+            <div class="col-sm-5">
+                <div class="panel panel-default" style="border-color:#ec407a">
+                    <div class="panel-heading clearfix" style="background-color: #ec407a;border-color:#ec407a; color:#fff">
+                        <h4 class="panel-title">Admin page</h4>
+                    </div>
+                    <!-- panel body -->
+                    <div class="panel-body">
+                        <ul class="list-item mailbox-list">
+                            <li>
+                                <a href=@Url.Action("index", "Organization") style="text-transform: capitalize;color: #ec407a">
+                                    <i class="fa fa-bank"></i><span class="title">&nbsp; &nbsp;View List of Implementing Partners</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("index", "HealthFacility") style="text-transform: capitalize;color: #ec407a">
+                                    <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;View List of Health Facilities</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport") style="text-transform: capitalize;color: #ec407a">
+                                    <i class="fa fa-hourglass-end"></i><span class="title">&nbsp; &nbsp;View Facility Perfomance Target</span>
+                                </a>
+                            </li>
+                            @if (HttpContext.Current.User.IsInRole("sys_admin"))
+                            {
+                                <li>
+                                    <a href=@Url.Action("index", "Profile") style="text-transform: capitalize;color: #ec407a">
+                                        <i class="fa fa-users">
+                                        </i><span class="title">&nbsp; &nbsp;Manage User Profiles</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"> </div>
+            <div class="col-sm-3">
+                <div class="panel minimal secondary-bg">
+                    <div class="panel-body" style="padding-left: 15%;">
+                        <h1>
+                            <strong style="padding-left: 25%;">@MvcApplication.Sessions.Values.Count()</strong>
+                        </h1>
+                        <p>Active Users within the last 1 hour</p>
+                        <hr />
+                        @foreach (var item in MvcApplication.Sessions.Values)
+                        {
+                            @item <br />
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+
+    <script>
+        $(document).ready(function () {
+
+            var container = @ViewBag.Container;
+            $(container).css('display', 'block');
+
+            $("#userdetail").click(function (e) {
+                window.document.location = '/Profile/ProfileDetail?profileId=@ShieldPortal.Services.Utils.LoggedinProfileID'; //profile.Id;
+            });
+
+            $('#changepassword').click(function () {
+                window.document.location = '/Account/ResetPassword';
+            });
+
+            $("#logoff").click(function (e, n) {
+                var someUrl = '@Url.Action("CreateNewProfile", "Profile")';
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("LogOff", "Account")',
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (dmpId) {
+                    window.location.replace('@Url.Action("index", "Home")');
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
+            });
+        });
+    </script>
+}

@@ -1,0 +1,181 @@
+﻿@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+}
+@section AddToHead{
+    <style>
+        .custom-heading-div {
+            color: #fff;
+            font-size: 25px;
+        }
+
+        .popover-content {
+            padding: 9px 14px;
+            color: red;
+        }
+
+        .panel {
+            height: 135px;
+        }
+    </style>
+}
+
+<div class="main-content" style="padding-bottom:0px;">
+    <div class="row">
+
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5" id="data-mgt">
+            <div class="panel minimal primary-bg" style="background-color:darkorange;border-color:darkorange">
+                <a href="/home/submenu?id=dmp">
+                    <div class="panel-body">
+                        <table>
+                            <tr>
+                                <td><i class="fa fa-file-text fa-4x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Quality Assessment/Improvement </strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-5" id="r-reporting">
+            <div class="panel minimal secondary-bg">
+                <div class="panel-body">
+                    <a href="/home/submenu?id=routine_reporting">
+                        <table>
+                            <tr>
+                                <td><i class="fa fa-clock-o fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">Routine Reporting</strong></td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5" id="hiv-aids-eval">
+            <div class="panel minimal info-bg">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=hiv_aid"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr>
+                                <td><i class="fa fa-history fa-4x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HIV/AIDS Monitoring & Evaluation</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-5" id="outcome-eval">
+            <div class="panel minimal teal-bg ">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=outcome"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-calendar-check-o fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Outcome Evaluation</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5" id="data-analytics">
+            <div class="panel minimal" style="background-color:green; border-color:green">
+                <div class="panel-body">
+                    <a href="/NHMIS/upload">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-bar-chart fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Health Management Information Systems</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-5" id="admin" style="display:none">
+            <div class="panel minimal teal-bg" style="background-color: indianred;border-color:indianred">
+                <a href="/home/submenu?id=admin">
+                    <div class="panel-body">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-cog fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Admin</strong> </td>
+                            </tr>
+                        </table>
+
+                        <h2 style="padding-left: 15%; margin-top: -30px;color:gold">
+                            <strong style="padding-left: 30%;font-size:40px">@MvcApplication.Sessions.Values.Count()</strong>
+                            <br />
+                            <span style="padding-left: 15%;font-size:16px">Active Users within the last 1 hour</span>
+                        </h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+
+    <script>
+        $(document).ready(function () {
+
+            var admin = '@(HttpContext.Current.User.IsInRole("sys_admin") || HttpContext.Current.User.IsInRole("shield_team"))' == "True" ? true : false;
+
+            if (admin) {
+                $("#admin").css('display', 'block');
+            }
+
+            $("#userdetail").click(function (e) {
+                window.document.location = '/Profile/ProfileDetail?profileId=@ShieldPortal.Services.Utils.LoggedinProfileID'; //profile.Id;
+            });
+
+            $('#changepassword').click(function () {
+                window.document.location = '/Account/ResetPassword';
+            });
+
+            $("#logoff").click(function (e, n) {
+                var someUrl = '@Url.Action("CreateNewProfile", "Profile")';
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("LogOff", "Account")',
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (dmpId) {
+                    window.location.replace('@Url.Action("index", "Home")');
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
+            });
+        });
+    </script>
+
+}

@@ -375,6 +375,7 @@ namespace ShieldPortal.Controllers
             var stopwatch = new Stopwatch();
 
             RadetUploadDAO _radetUploadDAO = new RadetUploadDAO();
+            var errors = new List<ErrorDetails>();
 
             if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
             {
@@ -433,6 +434,11 @@ namespace ShieldPortal.Controllers
 
                 bool status = false;
 
+                var filePath = System.Web.Hosting.HostingEnvironment
+                    .MapPath("~/Report/Uploads/RADET/" + IP.ShortName + "_" + Request.Files[0].FileName);
+                Request.Files[0].SaveAs(filePath);
+
+                
                 if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "ZIP")
                 {
                     try
@@ -452,8 +458,7 @@ namespace ShieldPortal.Controllers
                                 MemoryStream stream = new MemoryStream();
                                 StreamUtils.Copy(zipStream, stream, new byte[4096]);
 
-                                var radetMetaData = new RadetMetaData();
-                                var errors = new List<ErrorDetails>();
+                                var radetMetaData = new RadetMetaData(); 
 
                                 status = new RADETProcessor().ReadRadetFile(stream, fileName, IP, LGAs, out radetMetaData, out errors);
 
@@ -495,8 +500,7 @@ namespace ShieldPortal.Controllers
                 else if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "XLSX")
                 {
                     Stream uploadedFileStream = Request.Files[0].InputStream;
-                    var radetMetaData = new RadetMetaData();
-                    var errors = new List<ErrorDetails>();
+                    var radetMetaData = new RadetMetaData(); 
 
                     status = new RADETProcessor().ReadRadetFile(uploadedFileStream, Request.Files[0].FileName, IP, LGAs, out radetMetaData, out errors);
                     //what ever status, log feedback to the view via signal R
@@ -544,11 +548,26 @@ namespace ShieldPortal.Controllers
             _logDao.Save(uploadError);
             _logDao.CommitChanges();
 
+            bool saved = false;
             RadetMetaDataDAO _radetMetaDataDao = new RadetMetaDataDAO();
-            var timespan = _radetMetaDataDao.BulkSave(upload.RadetMetaData.ToList());
+            var timespan = _radetMetaDataDao.BulkSave(upload.RadetMetaData.ToList(), out saved);
             stopwatch.Stop();
 
-
+            if (saved == false && upload.RadetMetaData.ToList().Count > 0)
+            {
+                //log feedback to the view via signal R
+                NotifyPage(connectionId, Request.Files[0].FileName + " _", new List<ErrorDetails>
+                {
+                    new ErrorDetails
+                    {
+                        ErrorMessage = "Unable to save data because a previous record was found. If you are re-uploading, please delete the previous upload first and try again. If this is a Supplementary file, please merge it with the main file.",
+                        FileName = Request.Files[0].FileName + " _",
+                        FileTab = "",
+                        LineNo = "",
+                        PatientNo = ""
+                    }
+                });
+            }
             //Notify page of completeness with elapsed time
             //NotifyPage(connectionId, string.Format("Total elapsed time {0}h: {1}m: {2}s", stopwatch.Elapsed.Add(timespan).Hours, stopwatch.Elapsed.Add(timespan).Minutes, stopwatch.Elapsed.Add(timespan).Seconds) + ", " + string.Format("DB operation took {0}h: {1}m: {2}s", timespan.Hours, timespan.Minutes, timespan.Seconds));
             NotifyPage(connectionId, string.Format("Completed. Total elapsed time {0}h: {1}m: {2}s", stopwatch.Elapsed.Add(timespan).Hours, stopwatch.Elapsed.Add(timespan).Minutes, stopwatch.Elapsed.Add(timespan).Seconds));

@@ -2,62 +2,39 @@
 
 namespace ShieldPortal.ViewModel
 {
+    public class AnalyticPageData
+    {
+        public HighchartDrilldownModel AllDataModel { get; set; }
+       // public HighchartDrilldownModel  QIDataModel { get; set; }
+    }
+
     public class HighchartDrilldownModel
     {
-        public Container container { get; set; }
-    }
+        public List<ParentSeries> htc_series { get; set; }
+        public List<ChildSeriesData> htc_drilldown { get; set; }
+        public List<ChildSeriesData> htc_drilldown_QI { get; set; }
 
-    public class Chart
-    {
-        public string type { get; set; }
-    }
+        public List<ParentSeries> pmtct_stat_series { get; set; }
+        public List<ChildSeriesData> pmtct_stat_drilldown { get; set; }
+        public List<ChildSeriesData> pmtct_stat_drilldown_QI { get; set; }
 
-    public class Title
-    {
-        public string text { get; set; }
-    }
+        public List<ParentSeries> pmtct_art_series { get; set; }
+        public List<ChildSeriesData> pmtct_art_drilldown { get; set; }
+        public List<ChildSeriesData> pmtct_art_drilldown_QI { get; set; }
 
-    public class Subtitle
-    {
-        public string text { get; set; }
-    }
+        public List<ParentSeries> pmtct_eid_series { get; set; }
+        public List<ChildSeriesData> pmtct_eid_drilldown { get; set; }
+        public List<ChildSeriesData> pmtct_eid_drilldown_QI { get; set; }
 
-    public class XAxis
-    {
-        public string type { get; set; }
-    }
+        public List<ParentSeries> tx_new_series { get; set; }
+        public List<ChildSeriesData> tx_new_drilldown { get; set; }
+        public List<ChildSeriesData> tx_new_drilldown_QI { get; set; }
 
-    public class YAxis
-    {
-        public Title title { get; set; }
-    }
+        public List<ParentSeries> tx_curr_series { get; set; }
+        public List<ChildSeriesData> tx_curr_drilldown { get; set; }
+        public List<ChildSeriesData> tx_curr_drilldown_QI { get; set; }
 
-    public class Legend
-    {
-        public bool enabled { get; set; }
-    }
-
-    public class DataLabels
-    {
-        public bool enabled { get; set; }
-        public string format { get; set; }
-    }
-
-    public class PlotSeries
-    {
-        public int borderWidth { get; set; }
-        public DataLabels dataLabels { get; set; }
-    }
-
-    public class PlotOptions
-    {
-        public PlotSeries series { get; set; }
-    }
-
-    public class Tooltip
-    {
-        public string headerFormat { get; set; }
-        public string pointFormat { get; set; }
+        public List<ConcurrenceRateByPartner> ConcurrenceByPartner { get; set; }    
     }
 
     public class Datum
@@ -67,38 +44,62 @@ namespace ShieldPortal.ViewModel
         public string drilldown { get; set; }
     }
 
-    public class ParentData
+    public class ParentSeries
     {
         public string name { get; set; }
         public bool colorByPoint { get; set; }
         public List<Datum> data { get; set; }
     }
 
-    public class ChildData
+    public class ChildSeriesData
     {
         public string name { get; set; }
         public string id { get; set; }
         public List<List<object>> data { get; set; }
     }
 
-    public class Drilldown
+    public class TempFacilityData
     {
-        public List<ChildData> series { get; set; }
+        public string IP { get; set; }
+        public int DATIM_HTC_TST { get; set; }
+        public int Validated_HTC_TST { get; set; }
+        public List<object> htc_Data { get; set; }
+
+        public int DATIM_PMTCT_STAT { get; set; }
+        public int Validated_PMTCT_STAT { get; set; }
+        public List<object> pmtct_stat_Data { get; set; }
+
+        public int DATIM_PMTCT_ART { get; set; }
+        public int Validated_PMTCT_ART { get; set; }
+        public List<object> pmtct_art_Data { get; set; }
+
+        public int DATIM_PMTCT_EID { get; set; }
+        public int Validated_PMTCT_EID { get; set; }
+        public List<object> pmtct_eid_Data { get; set; }
+
+        public int DATIM_TX_NEW { get; set; }
+        public int Validated_TX_NEW { get; set; }
+        public List<object> tx_new_Data { get; set; }
+
+        public int DATIM_TX_CURR { get; set; }
+        public int Validated_TX_CURR { get; set; }
+        public List<object> tx_curr_Data { get; set; } 
+    }
+    public class ConcurrenceData
+    {
+        public double concurrence { get; set; }
+        public int datim { get; set; }
+        public int validated { get; set; }
     }
 
-    public class Container
+    public class ConcurrenceRateByPartner
     {
-        public Chart chart { get; set; }
-        public Title title { get; set; }
-        public Subtitle subtitle { get; set; }
-        public XAxis xAxis { get; set; }
-        public YAxis yAxis { get; set; }
-        public Legend legend { get; set; }
-        public PlotOptions plotOptions { get; set; }
-        public Tooltip tooltip { get; set; }
-        public List<ParentData> series { get; set; }
-        public Drilldown drilldown { get; set; }
+        public string IP { get; set; }
+        public double HTC_Concurrence { get; set; }
+        public double PMTCT_STAT_Concurrence { get; set; } 
+        public double PMTCT_ART_Concurrence { get; set; }  
+        public double PMTCT_EID_Concurrence { get; set; }  
+        public double TX_NEW_Concurrence { get; set; }  
+        public double TX_CURR_Concurrence { get; set; } 
     }
-
-
 }

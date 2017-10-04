@@ -15,6 +15,7 @@
 
         .panel {
             height: 135px;
+            border-radius: 20px;
         }
     </style>
 }
@@ -23,14 +24,14 @@
     <div class="row">
 
         <div class="col-sm-1"></div>
-        <div class="col-sm-5" id="data-mgt">
+        <div class="col-sm-3" id="data-mgt">
             <div class="panel minimal primary-bg" style="background-color:darkorange;border-color:darkorange">
                 <a href="/home/submenu?id=dmp">
                     <div class="panel-body">
                         <table>
                             <tr>
                                 <td><i class="fa fa-file-text fa-4x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Quality Assessment/Improvement </strong></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Program DQA/DQI Initaitives </strong></td>
                             </tr>
                         </table>
                     </div>
@@ -38,44 +39,7 @@
             </div>
         </div>
 
-
-
-        <div class="col-sm-5" id="r-reporting">
-            <div class="panel minimal secondary-bg">
-                <div class="panel-body">
-                    <a href="/home/submenu?id=routine_reporting">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-clock-o fa-4x" style="color: #fff;"></i></td>
-                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">Routine Reporting</strong></td>
-                            </tr>
-                        </table>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-5" id="hiv-aids-eval">
-            <div class="panel minimal info-bg">
-                <div class="panel-body">
-                    @*href="/home/submenu?id=hiv_aid"*@
-                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-history fa-4x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HIV/AIDS Monitoring & Evaluation</strong> </td>
-                            </tr>
-                        </table>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-sm-5" id="outcome-eval">
+        <div class="col-sm-3" id="outcome-eval">
             <div class="panel minimal teal-bg ">
                 <div class="panel-body">
                     @*href="/home/submenu?id=outcome"*@
@@ -91,12 +55,26 @@
             </div>
         </div>
 
+        <div class="col-sm-3" id="r-reporting">
+        <div class="panel minimal secondary-bg">
+            <div class="panel-body">
+                <a href="/home/submenu?id=survey">
+                    <table>
+                        <tr>
+                            <td><i class="fa fa-clock-o fa-4x" style="color: #fff;"></i></td>
+                            <td style="padding-left: 25px;"> <strong class="custom-heading-div">Surveys</strong></td>
+                        </tr>
+                    </table>
+                </a>
+            </div>
+        </div>
+    </div>
     </div>
 
     <div class="row">
         <div class="col-sm-1"></div>
-        <div class="col-sm-5" id="data-analytics">
-            <div class="panel minimal" style="background-color:green; border-color:green">
+        <div class="col-sm-3" id="data-analytics">
+            <div class="panel minimal" style="background-color:cornflowerblue; border-color:cornflowerblue">
                 <div class="panel-body">
                     <a href="/NHMIS/upload">
                         <table>
@@ -110,9 +88,107 @@
             </div>
         </div>
 
+        <div class="col-sm-3" id="hiv-aids-eval">
+            <div class="panel minimal" style="background-color:tomato; border-color:tomato">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=hiv_aid"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr>
+                                <td><i class="fa fa-history fa-4x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">PACE - ECHO</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div> 
 
-        <div class="col-sm-5" id="admin" style="display:none">
-            <div class="panel minimal teal-bg" style="background-color: indianred;border-color:indianred">
+        <div class="col-sm-3" id="hiv-aids-eval">
+            <div class="panel minimal" style="background-color:dimgray; border-color:dimgray">
+                <div class="panel-body">
+                    @*href="/home/submenu?id=hiv_aid"*@
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
+                        <table>
+                            <tr>
+                                <td><i class="fa fa-history fa-4x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">NDR</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+         
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" id="data-analytics">
+            <div class="panel minimal" style="background-color:darkgoldenrod; border-color:darkgoldenrod">
+                <div class="panel-body">
+                    <a href="/NHMIS/upload">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-bar-chart fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Vira Load Sentinel Survey</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3" id="data-analytics">
+            <div class="panel minimal" style="background-color:mediumorchid; border-color:mediumorchid">
+                <div class="panel-body">
+                    <a href="/NHMIS/upload">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-users fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HRH</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3" id="data-analytics">
+            <div class="panel minimal info-bg">
+                <div class="panel-body">
+                    <a href="/NHMIS/upload">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-bar-chart fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">National Survey</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" id="data-analytics">
+            <div class="panel minimal" style="background-color:crimson; border-color:crimson">
+                <div class="panel-body">
+                    <a href="/NHMIS/upload">
+                        <table>
+                            <tr>
+                                <td> <i class="fa fa-line-chart fa-4x" style="color: #fff;"></i></td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Real-time PMTCT Option B+ Monitoring</strong> </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3" id="admin" style="display:none">
+            <div class="panel minimal teal-bg" style="background-color: grey;border-color:grey">
                 <a href="/home/submenu?id=admin">
                     <div class="panel-body">
                         <table>
@@ -121,9 +197,8 @@
                                 <td style="padding-left: 25px;"><strong class="custom-heading-div">Admin</strong> </td>
                             </tr>
                         </table>
-
                         <h2 style="padding-left: 15%; margin-top: -30px;color:gold">
-                            <strong style="padding-left: 30%;font-size:40px">@MvcApplication.Sessions.Values.Count()</strong>
+                            <strong style="padding-left: 50%;font-size:40px">@MvcApplication.Sessions.Values.Count()</strong>
                             <br />
                             <span style="padding-left: 15%;font-size:16px">Active Users within the last 1 hour</span>
                         </h2>

@@ -1,12 +1,11 @@
-﻿using CommonUtil.DAO;
-using CommonUtil.Entities;
+﻿using CommonUtil.Entities;
 using CommonUtil.Utilities;
 using DQA.DAL.Business;
 using DQA.DAL.Model;
 using DQA.ViewModel;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using ShieldPortal.Service;
+using ShieldPortal.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
