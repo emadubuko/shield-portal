@@ -24,63 +24,107 @@ using DAL.Entities;
 using System.Collections.Concurrent;
 using RADET.DAL.Entities;
 using OfficeOpenXml.DataValidation;
+using System.Globalization;
 
 namespace Test
 {
-     
+
     class Program
     {
+        public static DateTime? ConvertQuarterToEndDate(string RadetPeriod)
+        {
+            string quarter = RadetPeriod.Split(' ')[0];
+            string year = RadetPeriod.Substring(5, 2);
+            string endDay = "";
+            switch (quarter)
+            {
+                case "Q1": endDay = "31/12/" + year; break;
+                case "Q2": endDay = "31/3/" + year; break;
+                case "Q3": endDay = "30/6/" + year; break;
+                case "Q4": endDay = "30/9/" + year; break;
+            }
+            if (!string.IsNullOrEmpty(endDay))
+            {
+
+            }
+            DateTime date;
+            DateTime.TryParseExact(endDay, "d/m/yy", new CultureInfo("en-US"), DateTimeStyles.None, out date);
+            return date;
+        }
+
+        public static Dictionary<string, List<string>> GetARTSite()
+        {
+            Dictionary<string, List<string>> artSites = new Dictionary<string, List<string>>();
+            using (var package = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\RADET Supplementary v3.04e.xlsx"))) // (@"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Template\ART sites.xlsx")))
+            {
+                var aSheet = package.Workbook.Worksheets["JustRADETNames"];
+                 
+                for (int col = 2; col <= 776; col++)
+                {
+                    string lga = ExcelHelper.ReadCellText(aSheet, 1, col);
+                    if (string.IsNullOrEmpty(lga))
+                        break;
+
+                    List<string> facilities = new List<string>();
+                    int row = 2;
+                    while (true)
+                    {
+                        var text = aSheet.Cells[row, col];
+                        string facility = text.Text != null ? text.Text: ""; //ExcelHelper.ReadCellText(aSheet, row, 4);
+                        if (string.IsNullOrEmpty(facility))
+                            break;
+                        facilities.Add(facility);
+                         row++;
+                    }
+                    artSites.Add(lga, facilities);
+                }
+            }
+            return artSites;
+        }
+
+
         private static void ReadExcelFiles()
         {
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\DQA\Q2R_CCCRN_HolyRosaryMaternityAborNguru.xlsx")))
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\RADET v3.04e 2017 Edition old.xlsx")))
             {
                 var sheet = package.Workbook.Worksheets["StateLGA"];
                 var stateCells = sheet.Cells;
-
-                var mainsheet = package.Workbook.Worksheets["MainPage"];
-                var mainPageCells = mainsheet.Cells;
-                var validations = mainsheet.DataValidations;
-
-                foreach (var validation in validations)
-                {
-                    var list = validation as ExcelDataValidationList;
-                    if (list != null)
-                    {                        
-                        var rowStart = list.Address.Start.Row;
-                        var rowEnd = list.Address.End.Row;
-                        // allowed values probably only in one column....
-                        var colStart = list.Address.Start.Column;
-                        var colEnd = list.Address.End.Column;
-
-                        for (int row = rowStart; row <= rowEnd; ++row)
-                        {
-                            for (int col = colStart; col <= colEnd; col++)
-                            {
-                                Console.WriteLine(mainsheet.Cells[row, col].Value);
-                            }
-                        }
-                    }
-                }
-
-
-                using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\DQA\RADET Meta data.xlsx")))
+                using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\StateLGAQ4.xlsx")))
                 {
                     var aSheet = excelToExport.Workbook.Worksheets["Sheet1"];
-                    foreach(var cls in stateCells)
+                    foreach (var cls in stateCells)
                     {
                         aSheet.Cells[cls.Address].Value = cls.Value;
                     }
 
-                    //var main = excelToExport.Workbook.Worksheets["main"];
-                    //foreach (var cls in mainPageCells)
-                    //{
-                    //    main.Cells[cls.Address].DataValidation.AddListDataValidation().Address;
-                    //    main.Cells[cls.Address].Value = cls.Value;
-
-                    //}
-
                     excelToExport.Save();
                 }
+
+                //var mainsheet = package.Workbook.Worksheets["MainPage"];
+                //var mainPageCells = mainsheet.Cells;
+                //var validations = mainsheet.DataValidations;
+
+                //foreach (var validation in validations)
+                //{
+                //    var list = validation as ExcelDataValidationList;
+                //    if (list != null)
+                //    {                        
+                //        var rowStart = list.Address.Start.Row;
+                //        var rowEnd = list.Address.End.Row;
+                //        // allowed values probably only in one column....
+                //        var colStart = list.Address.Start.Column;
+                //        var colEnd = list.Address.End.Column;
+
+                //        for (int row = rowStart; row <= rowEnd; ++row)
+                //        {
+                //            for (int col = colStart; col <= colEnd; col++)
+                //            {
+                //                Console.WriteLine(mainsheet.Cells[row, col].Value);
+                //            }
+                //        }
+                //    }
+                //}
+
 
                 //package.SaveAs(new FileInfo(@"C:\MGIC\DQA\STATELGA.xlsx"));
             }
@@ -89,8 +133,10 @@ namespace Test
         static void Main(string[] args)
         {
             Console.WriteLine("started");
-            ReadExcelFiles();
 
+            ConvertQuarterToEndDate("Q4 FY17");
+            // ReadExcelFiles();
+            // GetARTSite();
             //exportRadetErrors();
 
             // RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
@@ -127,8 +173,8 @@ namespace Test
         static void exportRadetErrors()
         {
             var errors = (from item in new RADET.DAL.DAO.RadetUploadErrorLogDAO().Search()//.RetrieveAll();
-                         where item.RadetUpload.IP.ShortName == "IHVN"
-                         select item).ToList();
+                          where item.RadetUpload.IP.ShortName == "IHVN"
+                          select item).ToList();
 
             foreach (var err in errors)//.GroupBy(x => x.RadetUpload.IP))
             {
@@ -157,7 +203,7 @@ namespace Test
 
                 File.AppendAllText(@"C:\MGIC\Radet extracted\RADET 2\errors\" + fileName, sb.ToString());
             }
-            Console.WriteLine("done writting errors to file");    
+            Console.WriteLine("done writting errors to file");
         }
 
         private static void UpdateFacilities()
@@ -182,10 +228,10 @@ namespace Test
                     if (exist)
                     {
                         hf.Name = sheet.Cells["C" + row].Value.ToString();
-                        if(lga != null)
+                        if (lga != null)
                         {
                             hf.LGA = lga;
-                        } 
+                        }
                         hf.Organization = org;
                         dao.Update(hf);
                     }
@@ -206,7 +252,7 @@ namespace Test
                 dao.BulkInsert(newHfs);
                 dao.CommitChanges();
             }
-              
+
         }
 
         public static LGA RetrieveLga(string statename, string lga)
@@ -224,7 +270,7 @@ namespace Test
 
         private void RetrieveDimensionValue()
         {
-            string baseLocation = @"C:\Users\cmadubuko\Desktop\DQA 22nd march\Downloads\"; 
+            string baseLocation = @"C:\Users\cmadubuko\Desktop\DQA 22nd march\Downloads\";
             string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("FacilityName, FacilityCode, HTC_Charts, Total_Completeness_HTC_TST, PMTCT_STAT_charts, Total_Completeness_PMTCT_STAT, PMTCT_EID_charts, Total_completeness_PMTCT_EID, PMTCT_ARV_Charts, Total_completeness_PMTCT_ARV, TX_NEW_charts, Total_completeness_TX_NEW, TX_CURR_charts, Total_completeness_TX_CURR, Total_consistency_HTC_TST, Total_consistency_PMTCT_STAT, Total_consistency_PMTCT_EID, Total_consistency_PMTCT_ART, Total_consistency_TX_NEW, Total_consistency_TX_Curr, HTC_Charts_Precisions, Total_precision_HTC_TST, PMTCT_STAT_Charts_Precisions, Total_precision_PMTCT_STAT, PMTCT_EID_Charts_Precisions, Total_precision_PMTCT_EID, PMTCT_ARV_Charts_Precisions, Total_precision_PMTCT_ARV, TX_NEW_Charts_Precisions, Total_precision_TX_NEW, TX_CURR_Charts_Precisions, Total_precision_TX_CURR, Total_integrity_HTC_TST, Total_integrity_PMTCT_STAT, Total_integrity_PMTCT_EID, Total_integrity_PMTCT_ART, Total_integrity_TX_NEW, Total_integrity_TX_Curr, Total_Validity_HTC_TST, Total_Validity_PMTCT_STAT, Total_Validity_PMTCT_EID, Total_Validity_PMTCT_ART, Total_Validity_TX_NEW, Total_Validity_TX_Curr");
@@ -319,7 +365,7 @@ namespace Test
             Console.WriteLine("Press enter to end");
             return;
         }
-         
+
         private void RetrieveExcelValue()
         {
             string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Downloads\";
@@ -383,10 +429,10 @@ namespace Test
                 TX_NEW = RetrieveExcelValueUsingInterop(sht, 17, 22);
                 TX_Curr = RetrieveExcelValueUsingInterop(sht, 18, 22);
 
-               sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23}",
-                   FacilityName.Replace(",", "-"), FacilityCode, Datim_HTC_TST, HTC_TST, DATIM_HTC_TST_POS, HTC_TST_POS, DATIM_HTC_ONLY, HTC_ONLY, DATIM_HTC_POS, HTC_POS, DATIM_PMTCT_STAT, PMTCT_STAT, DATIM_PMTCT_STAT_POS, PMTCT_STAT_POS, DATIM_PMTCT_STAT_Previously, PMTCT_STAT_Previoulsy_Known, DATIM_PMTCT_EID, PMTCT_EID, DATIM_PMTCT_ART, PMTCT_ART, Datim_TX_NEW, TX_NEW, DATIM_TX_CURR, TX_Curr));
-                
-                    wkb.Close(false, Missing.Value, Missing.Value);
+                sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23}",
+                    FacilityName.Replace(",", "-"), FacilityCode, Datim_HTC_TST, HTC_TST, DATIM_HTC_TST_POS, HTC_TST_POS, DATIM_HTC_ONLY, HTC_ONLY, DATIM_HTC_POS, HTC_POS, DATIM_PMTCT_STAT, PMTCT_STAT, DATIM_PMTCT_STAT_POS, PMTCT_STAT_POS, DATIM_PMTCT_STAT_Previously, PMTCT_STAT_Previoulsy_Known, DATIM_PMTCT_EID, PMTCT_EID, DATIM_PMTCT_ART, PMTCT_ART, Datim_TX_NEW, TX_NEW, DATIM_TX_CURR, TX_Curr));
+
+                wkb.Close(false, Missing.Value, Missing.Value);
             }
 
             xApp.Quit();
@@ -433,13 +479,13 @@ namespace Test
             catch (Exception ex)
             {
                 var exp = ex.InnerException as ReflectionTypeLoadException;
-                if(exp != null)
+                if (exp != null)
                 {
                     var le = exp.LoaderExceptions;
                 }
             }
             StringBuilder siteno = new StringBuilder();
-            siteno.AppendLine("IP, ART, PMTCT, HTC, OVC, Community");            
+            siteno.AppendLine("IP, ART, PMTCT, HTC, OVC, Community");
             StringBuilder sb_dr = new StringBuilder();
             sb_dr.AppendLine("IP, Version Date, Version Number, Title of Author, Name of Author, Job Designation of Author, Phone No of Author, Email of Author, Title of Approver, Name of Approver, Job Designation of Approver, Phone no. of Approver, Email of Approver");
 
@@ -452,7 +498,7 @@ namespace Test
                 var version = dmp.Document.DocumentRevisions.LastOrDefault().Version;
                 anEntry = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}",
                     dmp.TheDMP.Organization.ShortName, version.VersionMetadata.VersionDate, version.VersionMetadata.VersionNumber, version.VersionAuthor.TitleOfAuthor, version.VersionAuthor.DisplayName, version.VersionAuthor.JobDesignation, version.VersionAuthor.PhoneNumberOfAuthor, version.VersionAuthor.EmailAddressOfAuthor, version.Approval.TitleofApprover, version.Approval.DisplayName, version.Approval.JobdesignationApprover, version.Approval.PhonenumberofApprover, version.Approval.EmailaddressofApprover);
-                sb_dr.AppendLine(anEntry);                    
+                sb_dr.AppendLine(anEntry);
             }
             StringBuilder sb_tr = new StringBuilder();
             foreach (var dmp in dmps)
@@ -461,7 +507,7 @@ namespace Test
                 sb_tr.AppendLine("Name of Training, Workstation (Site), Workstation (Region/State), Workstation (HQ)");
                 foreach (var tr in dmp.Document.MonitoringAndEvaluationSystems.People.Trainings)
                 {
-                   string anEntry = string.Format("{0}, {1}, {2}, {3}", tr.NameOfTraining, tr.SiteDisplayDate, tr.RegionDisplayDate, tr.HQDisplayDate);
+                    string anEntry = string.Format("{0}, {1}, {2}, {3}", tr.NameOfTraining, tr.SiteDisplayDate, tr.RegionDisplayDate, tr.HQDisplayDate);
                     sb_tr.AppendLine(anEntry);
                 }
             }
@@ -519,7 +565,7 @@ namespace Test
                 ////data sharing
                 foreach (var dv in doc.DataStorageAccessAndSharing.DataAccessAndSharing)
                 {
-                     anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
+                    anEntry = makeCSVEntry(dmp.TheDMP.Organization.ShortName);
                     anEntry += makeCSVEntry(dv.ReportingLevel);
                     anEntry += makeCSVEntry(dv.ThematicArea);
                     anEntry += makeCSVEntry(dv.DataAccess);
@@ -538,7 +584,7 @@ namespace Test
                     anEntry += makeCSVEntry(dv.NonDigitalDataTypes);
                     anEntry += makeCSVEntry(dv.StorageLocation);
                     anEntry += makeCSVEntry(dv.SafeguardsAndRequirements);
-                   sb_non_digital_data.AppendLine(anEntry);
+                    sb_non_digital_data.AppendLine(anEntry);
                 }
 
                 //digital data
@@ -657,7 +703,7 @@ namespace Test
             File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_report.csv", sb_report.ToString());
             File.WriteAllText(@"C:\Users\cmadubuko\Google Drive\MGIC\Documents\DMP\DMP summary\_dmpsummary_sharing.csv", sb_sharing.ToString());
         }
-         
+
         public void GenerateNonDatimCode()
         {
             string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
@@ -688,12 +734,12 @@ namespace Test
                                     count += 1;
                                     sheet.Cells[row, 1].Value = string.Format("M{0}{1}", ip[ip.Count() - 1], count.ToString().PadLeft(3, '0'));
                                 }
-                                
+
                             }
                             else
                                 break;
                         }
-                    }                   
+                    }
                     package.SaveAs(new FileInfo(newTemplate));
                 }
             }
@@ -703,19 +749,19 @@ namespace Test
         {
             YearlyPerformanceTargetDAO yptDAO = new YearlyPerformanceTargetDAO();
 
-           // HealthFacilityDAO _sdfDao = new HealthFacilityDAO();
-           // var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
+            // HealthFacilityDAO _sdfDao = new HealthFacilityDAO();
+            // var IndexPeriods = ExcelHelper.GenerateIndexedPeriods();
             //var LGADictionary = new LGADao().RetrieveAll().ToDictionary(x => x.lga_code);
 
             //var ypts = yptDAO.GenerateYearlyTargetGroupedByLGA(2017);
-           // var facilitiesGroupedByLGA = _sdfDao.RetrieveAll().GroupBy(x => x.LGA.lga_name).ToList();
-             
+            // var facilitiesGroupedByLGA = _sdfDao.RetrieveAll().GroupBy(x => x.LGA.lga_name).ToList();
+
 
             string baseLocation = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\December 31 2016\December 31 2016\";// @"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\Test\sample biweekly files\";
             string[] files = Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.TopDirectoryOnly);
 
             var masterList = @"C:\Users\cmadubuko\Google Drive\MGIC\Documents\BWR\Reconciliation\FacilityWithCodes.csv";
-            string[] linesInmasterList = File.ReadAllText(masterList).Split(new string[] { System.Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            string[] linesInmasterList = File.ReadAllText(masterList).Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
             StringBuilder sb = new StringBuilder();
             foreach (var file in files)
@@ -759,29 +805,29 @@ namespace Test
                     //        continue;
                     //    var facilitiesInLGA = item.ToList();
 
-                        //for (int row = 8; ; row++)  
-                        //{
-                        //    string fName = (string)sheet.Cells[row, 3].Value;
-                        //    if (!string.IsNullOrEmpty(fName))
-                        //    {
-                        //        var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name.ToLower().Trim() == fName);
-                                
+                    //for (int row = 8; ; row++)  
+                    //{
+                    //    string fName = (string)sheet.Cells[row, 3].Value;
+                    //    if (!string.IsNullOrEmpty(fName))
+                    //    {
+                    //        var sdf = facilitiesInLGA.FirstOrDefault(x => x.Name.ToLower().Trim() == fName);
 
-                        //        if (sdf != null)
-                        //        {
-                        //            sheet.Cells[row, 1].Value = sdf.FacilityCode;
-                        //        }
-                        //    }
-                        //    else
-                        //        break;
-                        //}
+
+                    //        if (sdf != null)
+                    //        {
+                    //            sheet.Cells[row, 1].Value = sdf.FacilityCode;
+                    //        }
+                    //    }
+                    //    else
+                    //        break;
+                    //}
                     //}
                     package.SaveAs(new FileInfo(newTemplate));
                 }
             }
             File.WriteAllText(baseLocation + "_notFound.csv", sb.ToString());
         }
-        
+
         private string SearchMasterList(string[] lines, string fname, string lgaName)
         {
             if (lgaName.ToLower().Contains("ifako"))
@@ -795,10 +841,10 @@ namespace Test
                 string[] items = line.Split(',');
                 if (string.IsNullOrEmpty(items[0]))
                     break;
-                
-                string Sname = items[0].Trim().ToLower().Replace("-","").Replace(",","");
+
+                string Sname = items[0].Trim().ToLower().Replace("-", "").Replace(",", "");
                 string Slganame = items[6].Trim().ToLower();
-                if (Sname == fname.Trim().ToLower().Replace("-", "").Replace(",", "") && lgaName.Trim().ToLower() ==Slganame )
+                if (Sname == fname.Trim().ToLower().Replace("-", "").Replace(",", "") && lgaName.Trim().ToLower() == Slganame)
                     return items[2];
             }
             return "";
@@ -843,8 +889,8 @@ namespace Test
 
             foreach (var file in files)
             {
-               string ip = file.Split(new string[] { @"\" }, StringSplitOptions.None)[8].Split('_')[0];
-               
+                string ip = file.Split(new string[] { @"\" }, StringSplitOptions.None)[8].Split('_')[0];
+
                 invalid.AppendLine(file);
 
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
@@ -865,7 +911,7 @@ namespace Test
                             if (string.IsNullOrEmpty(facilityName))
                             {
                                 break;
-                            } 
+                            }
 
                             HealthFacility theFacility = null;
                             theFacility = existingFacilities.FirstOrDefault(x => x.FacilityCode.Trim() == facilitycode);
@@ -883,7 +929,7 @@ namespace Test
                             }
                             else
                             {
-                                valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName.Replace(',','-'), theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
+                                valid.AppendLine(string.Format("{0},{1},{2},{3},{4}, {5}", facilityName.Replace(',', '-'), theFacility.FacilityCode, HTC_TST, HTC_TST_pos, Tx_NEW, theFacility.LGA.DisplayName));
 
                                 ypts.Add(new YearlyPerformanceTarget
                                 {
@@ -899,11 +945,11 @@ namespace Test
                     }
                 }
             }
-           // yptDAO.BulkInsert(ypts);
+            // yptDAO.BulkInsert(ypts);
             File.WriteAllText(baseLocation + "_notFound.csv", invalid.ToString());
             File.WriteAllText(baseLocation + "_Found.csv", valid.ToString());
             Console.WriteLine("press enter to continue");
-            Console.ReadLine();            
+            Console.ReadLine();
         }
 
 
@@ -956,7 +1002,7 @@ namespace Test
             }
             return script;
         }
-         
+
         void DirectUpdateDB(string script)
         {
             ISessionFactory sessionFactory = NhibernateSessionManager.Instance.GetSession().SessionFactory;
@@ -1002,7 +1048,7 @@ namespace Test
             }
             hfdao.CommitChanges();
         }
-        
+
         void CopyAndPaste()
         {
             string destinationDir = @"C:\Users\cmadubuko\Desktop\DQAs\";
@@ -1014,7 +1060,7 @@ namespace Test
             {
                 string newTemplate = destinationDir + file.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[5];
                 string existingTemplate = doneLocation + file.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[5];
-                
+
 
                 bool exist = File.Exists(existingTemplate);
                 if (exist)
@@ -1024,8 +1070,8 @@ namespace Test
                 {
                     FileInfo info = new FileInfo(existingTemplate);
                     info.CopyTo(newTemplate);
-                }                                
-            } 
+                }
+            }
         }
 
         void UnprotectExcelFile()
@@ -1056,7 +1102,7 @@ namespace Test
             }
             xApp.Quit();
         }
-        
+
         public void QuerySystem()
         {
             var dmpDao = new DMPDocumentDAO();
@@ -1065,7 +1111,7 @@ namespace Test
 
             Console.ReadLine();
         }
-        
+
     }
 
     public class DatimResponse
@@ -1083,5 +1129,5 @@ namespace Test
         public string PMTCT_Art { get; set; }
 
     }
- 
+
 }

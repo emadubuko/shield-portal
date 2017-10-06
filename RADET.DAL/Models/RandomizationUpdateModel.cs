@@ -40,5 +40,7 @@ namespace RADET.DAL.Models
         public string LGA_code { get; set; }
         public string FirstColumn { get; set; }
         public string LastColumn { get; set; }
+
+        public bool Supplementary { get; set; }
     }
 }

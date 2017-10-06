@@ -61,6 +61,7 @@ namespace RADET.DAL.DAO
                    .Add(Projections.Property("rup.DateUploaded"), "DateUploaded")
                     .Add(Projections.Property("pt.Id"), "Id")
                    .Add(Projections.Property("pt.Id"), "DT_RowId")
+                   .Add(Projections.Property("pt.Supplementary"), "Supplementary")
                    .Add(Projections.Property("lga.lga_code"), "LGA_code")
                    )
                 .SetResultTransformer(Transformers.AliasToBean<RadetReportModel2>());
@@ -89,22 +90,19 @@ namespace RADET.DAL.DAO
                     criteria.Add(Restrictions.Eq("pt.RadetPeriod", search.RadetPeriod));
                 }
             }
+            
+
+            var countCriteria = CriteriaTransformer.Clone(criteria).SetProjection(Projections.RowCount());
+            totalCount = Convert.ToInt32(countCriteria.UniqueResult());
+
             criteria.AddOrder(Order.Desc("pt.RadetPeriod"));
             criteria.SetFirstResult(startIndex);
             if (maxRows > 0)
             {
                 criteria.SetMaxResults(maxRows);
             }
-            
             var result = criteria.List<RadetReportModel2>() as List<RadetReportModel2>;
-            totalCount = result.Count;
-            return result;
-
-            //ICriteria countCriteria = CriteriaTransformer.Clone(criteria).SetProjection(Projections.RowCount());
-            //ICriteria listCriteria = CriteriaTransformer.Clone(criteria).SetFirstResult(startIndex).SetMaxResults(maxRows);
-            //IList allResults = session.CreateMultiCriteria().Add<T>(listCriteria).Add(countCriteria).List();
-            //totalCount = Convert.ToInt32(((IList)allResults[1])[0]);
-            //return allResults[0] as List<T>;
+            return result; 
         }
 
 
@@ -282,6 +280,7 @@ namespace RADET.DAL.DAO
                     facilities = RadetData.Select(x => x.Facility).Distinct().ToList(),
                     lga_codes = RadetData.Select(x => x.LGA.lga_code).Distinct().ToList(),
                     IPs = RadetData.Select(x => x.IP.ShortName).Distinct().ToList(),
+                    RadetPeriod = RadetData.FirstOrDefault().RadetPeriod
                 };
                 List<RadetReportModel2> previously = RetrieveUsingPaging(search, 0, 0, false, out totalCount);
 
@@ -295,7 +294,7 @@ namespace RADET.DAL.DAO
 
                     foreach (var entry in RadetData)
                     {
-                        var previousReport = previously.FirstOrDefault(x => x.IP == entry.IP.ShortName && x.LGA_code == entry.LGA.lga_code && x.RadetPeriod == entry.RadetPeriod && x.Facility == entry.Facility); // CheckPreviousUpload(session, entry.IP, entry.LGA, entry.RadetPeriod, entry.Facility);
+                        var previousReport = previously.FirstOrDefault(x => x.IP == entry.IP.ShortName && x.LGA_code == entry.LGA.lga_code && x.RadetPeriod == entry.RadetPeriod && x.Facility == entry.Facility && x.Supplementary == entry.Supplementary); // CheckPreviousUpload(session, entry.IP, entry.LGA, entry.RadetPeriod, entry.Facility);
                         if (previousReport == null)
                         {
                             if (entry.PatientLineListing != null)
@@ -317,6 +316,9 @@ namespace RADET.DAL.DAO
                                     saved = true;
                                 }
                             }
+                        }
+                        else{
+
                         }
                     }
                     transaction.Commit(); 

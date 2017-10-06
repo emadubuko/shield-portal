@@ -15,7 +15,7 @@ namespace RADET.DAL.Mapping
             Map(x => x.RadetPeriod);
             Map(x => x.Facility);
             References(x => x.LGA).Column("LGA");
-
+            Map(x => x.Supplementary);
             HasMany(x => x.PatientLineListing)
                 .Cascade.None()
                .Inverse()

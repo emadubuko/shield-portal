@@ -12,5 +12,6 @@ namespace RADET.DAL.Entities
         public virtual Organizations IP { get; set; }
         public virtual IList<RadetPatientLineListing> PatientLineListing { get; set; }
         public virtual RadetUpload RadetUpload { get; set; }
+        public virtual bool Supplementary { get; set; }
     }
 }

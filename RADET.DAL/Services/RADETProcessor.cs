@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using CommonUtil.Entities;
 
 namespace RADET.DAL.Services
 {
@@ -90,7 +91,7 @@ namespace RADET.DAL.Services
         }
 
 
-        public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, out RadetMetaData metadata, out List<ErrorDetails> error)
+        public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, Dictionary<string, List<string>> validFacilities, out RadetMetaData metadata, out List<ErrorDetails> error)
         {
             metadata = new RadetMetaData();
             List<RadetPatientLineListing> lineItems = new List<RadetPatientLineListing>();
@@ -104,6 +105,9 @@ namespace RADET.DAL.Services
             List<string> validSex = System.Configuration.ConfigurationManager.AppSettings["validSex"].Split(',').ToList();
             List<string> validARTStatus = System.Configuration.ConfigurationManager.AppSettings["validARTStatus"].Split(',').ToList();
 
+            string RadetPeriod;
+            DateTime radetPeriodDate;
+            //var validFacilities = GetARTSite();
 
             CommonUtil.Entities.LGA _lga = null;
 
@@ -114,6 +118,14 @@ namespace RADET.DAL.Services
 
                 if (worksheets.Count < 5) //some file just had the main page, summary and co but not tabs for the years
                 {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "Invalid",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
                     return true;//empty file
                 }
                 if (mainWorksheet == null)
@@ -127,20 +139,8 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 }
+                 
 
-                facilityName = ExcelHelper.ReadCell(mainWorksheet, 20, 19);
-
-                if (string.IsNullOrEmpty(facilityName))
-                {
-                    error.Add(new ErrorDetails
-                    {
-                        ErrorMessage = "Could not read Facility Name in file ",
-                        FileName = fileName,
-                        FileTab = "Main page",
-                        LineNo = "",
-                        PatientNo = ""
-                    });
-                }
                 string ipshortname = ExcelHelper.ReadCell(mainWorksheet, 24, 19);
                 if (ipshortname == "CCRN")
                 {
@@ -158,18 +158,6 @@ namespace RADET.DAL.Services
                     });
                 }
                 string state = ExcelHelper.ReadCell(mainWorksheet, 14, 19);
-                string lga = ExcelHelper.ReadCell(mainWorksheet, 17, 19);
-                if (string.IsNullOrEmpty(lga))
-                {
-                    error.Add(new ErrorDetails
-                    {
-                        ErrorMessage = "No Lga selected",
-                        FileName = fileName,
-                        FileTab = "Main page",
-                        LineNo = "",
-                        PatientNo = ""
-                    });
-                }
                 if (string.IsNullOrEmpty(state))
                 {
                     error.Add(new ErrorDetails
@@ -182,6 +170,18 @@ namespace RADET.DAL.Services
                     });
                 }
 
+                string lga = ExcelHelper.ReadCell(mainWorksheet, 17, 19);
+                if (string.IsNullOrEmpty(lga))
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "No Lga selected",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
+                } 
                 if (lga.Length < 3)
                 {
                     error.Add(new ErrorDetails
@@ -193,7 +193,6 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 }
-
                 // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
                 _lga = FindLGA(LGAs, lga, state);
                 if (_lga == null)
@@ -207,6 +206,32 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 }
+
+                facilityName = ExcelHelper.ReadCell(mainWorksheet, 20, 19);
+                if (string.IsNullOrEmpty(facilityName))
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "Could not read Facility Name in file ",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
+                }
+
+                if (ValidateFacilityName(facilityName, validFacilities[lga]) == false)
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "Facility Name does not correspond to the facility listing in RADET Tool ",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
+                }
+
                 string[] f_n = facilityName.Split(' ');
                 string lga_substr = lga.Split(' ')[0];
                 if (f_n[0] == lga_substr)
@@ -214,7 +239,7 @@ namespace RADET.DAL.Services
                     facilityName = facilityName.Substring(3);
                 }
 
-                string RadetPeriod = ExcelHelper.ReadCell(mainWorksheet, 7, 19);
+                RadetPeriod = ExcelHelper.ReadCell(mainWorksheet, 7, 19);
                 if (string.IsNullOrEmpty(RadetPeriod))
                 {
                     error.Add(new ErrorDetails
@@ -226,6 +251,9 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 }
+
+                var dd = ConvertQuarterToEndDate(RadetPeriod, fileName, ref error);
+                radetPeriodDate = dd.HasValue ? dd.Value : DateTime.Now;
 
                 List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic", "Sheet1" }; //confirm the names
                 foreach (var worksheet in worksheets)
@@ -278,16 +306,16 @@ namespace RADET.DAL.Services
                             else
                             {
                                 continue;
-                            }                            
+                            }
                         }
                         emptyRowCounter = 0;
                         try
                         {
                             var lineItem = new RadetPatientLineListing
                             {
-                                ARTStartDate = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 12), "ART Start Date", fileName, worksheet.Name, row, patientId, ref error),
-                                LastPickupDate = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 13), "Last Pick up Date", fileName, worksheet.Name, row, patientId, ref error),
-                                MonthsOfARVRefill = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 14), "Month of ARV Refil", fileName, worksheet.Name, row, patientId, 10, ref error),
+                                ARTStartDate = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 12), "ART Start Date", fileName, worksheet.Name, row, patientId, radetPeriodDate, ref error),
+                                LastPickupDate = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 13), "Last Pick up Date", fileName, worksheet.Name, row, patientId, radetPeriodDate, ref error),
+                                MonthsOfARVRefill = ValidateMonthOfARVRefil(ExcelHelper.ReadCellText(worksheet, row, 14), "Month of ARV Refil", fileName, worksheet.Name, row, patientId, ref error),
 
                                 RegimenLineAtARTStart = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 15), "Regimen Line At ART Start", fileName, worksheet.Name, row, patientId, validRegimenLine, false, true, ref error),
                                 RegimenAtStartOfART = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 16), "Regimen At Start of ART", fileName, worksheet.Name, row, patientId, validRegimen, false, true, ref error),
@@ -303,8 +331,8 @@ namespace RADET.DAL.Services
                                     PatientId = patientId,
                                     HospitalNo = ExcelHelper.ReadCellText(worksheet, row, 8),
                                     Sex = ValidateGenerics(ExcelHelper.ReadCellText(worksheet, row, 9), "Sex", fileName, worksheet.Name, row, patientId, validSex, false, false, ref error),
-                                    Age_at_start_of_ART_in_years = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 10), "Age at start of ART in years", fileName, worksheet.Name, row, patientId, 120, ref error),
-                                    Age_at_start_of_ART_in_months = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 11), "Age at start of ART in months", fileName, worksheet.Name, row, patientId, 60, ref error),
+                                    Age_at_start_of_ART_in_years = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 10), "Age at start of ART in years", fileName, worksheet.Name, row, patientId, 5, 120, ref error),
+                                    Age_at_start_of_ART_in_months = ValidateNumber(ExcelHelper.ReadCellText(worksheet, row, 11), "Age at start of ART in months", fileName, worksheet.Name, row, patientId, 0, 60, ref error),
                                     FacilityName = facilityName,
                                     IP = IP
                                 },
@@ -314,7 +342,7 @@ namespace RADET.DAL.Services
                             string _dateOfCurrentViralLoad = ExcelHelper.ReadCellText(worksheet, row, 21);
                             if (!string.IsNullOrEmpty(lineItem.CurrentViralLoad) && !string.IsNullOrEmpty(lineItem.ViralLoadIndication))
                             {
-                                lineItem.DateOfCurrentViralLoad = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 21), "Date Of Current Viral Load", fileName, worksheet.Name, row, patientId, ref error);
+                                lineItem.DateOfCurrentViralLoad = ValidateDateTime(ExcelHelper.ReadCellText(worksheet, row, 21), "Date Of Current Viral Load", fileName, worksheet.Name, row, patientId, radetPeriodDate, ref error);
                             }
 
                             lineItems.Add(lineItem);
@@ -343,11 +371,18 @@ namespace RADET.DAL.Services
                     IP = IP,
                     LGA = _lga,
                     PatientLineListing = lineItems,
-                    RadetPeriod = RadetPeriod
+                    RadetPeriod = RadetPeriod,
+                    Supplementary = lineItems.Select(x => x.RadetYear).Distinct().Count() == 1 && fileName.ToLower().Contains("supplementary") ? true : false
                 };
             }
             return error.Count == 0;
         }
+
+        private bool ValidateFacilityName(string facilityName, List<string> list)
+        {
+            return list.Any(x => x == facilityName);
+        }
+         
 
         void MarkSelectedItems(ref List<RadetPatientLineListing> table)
         {
@@ -376,7 +411,236 @@ namespace RADET.DAL.Services
             return lga;
         }
 
+        private DateTime? ValidateDateTime(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, DateTime? RadetPeriod, ref List<ErrorDetails> error)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
+                return null;
+            }
 
+            DateTime output;
+            bool outcome = DateTime.TryParse(input, out output);
+            if (outcome == false)
+            {
+                string[] formats = { "d/M/yyyy" };
+
+                outcome = DateTime.TryParseExact(input, formats, new CultureInfo("en-US"), DateTimeStyles.None, out output);
+                if (outcome == false)
+                {
+                    outcome = DateTime.TryParseExact(input, "d-M-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out output);
+                    if (outcome == false)
+                    {
+                        error.Add(new ErrorDetails
+                        {
+                            ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
+                            FileName = fileName,
+                            FileTab = fileTab,
+                            LineNo = Convert.ToString(LineNo - 1),
+                            PatientNo = PatientId
+                        });
+                        return null;
+                    }                    
+                }                
+            }
+
+            if (outcome && (output.Year < 1753 || output > RadetPeriod))
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "Invalid Date supplied for '" + fieldName + "' ( <span style='color:red'>" + input + "</span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
+            }
+            return output;
+        }
+         
+
+        private int ValidateNumber(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, int min, int max, ref List<ErrorDetails> error)
+        {
+            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim()))
+                return 0;
+
+            int output;
+            if (int.TryParse(input, out output) == false || output < 0)
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "Invalid number supplied for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
+            }
+            if (output > max || output < min)
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "incorrect number range for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
+                return output;
+            }
+            return output;
+        }
+
+        private int ValidateMonthOfARVRefil(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, ref List<ErrorDetails> error)
+        {
+            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim()))
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "no value supplied for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
+                return 0;
+            }
+            else
+            {
+                int output;
+                if (int.TryParse(input, out output) == false)
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "Invalid number supplied for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+                        FileName = fileName,
+                        FileTab = fileTab,
+                        LineNo = Convert.ToString(LineNo - 1),
+                        PatientNo = PatientId
+                    });
+                }
+                if (output > 4 || output < 1)
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+                        FileName = fileName,
+                        FileTab = fileTab,
+                        LineNo = Convert.ToString(LineNo - 1),
+                        PatientNo = PatientId
+                    });                   
+                }
+                return output;
+            }
+            
+        }
+
+        private string ValidateGenerics(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, List<string> valids, bool allowEmpty, bool caseSensitive, ref List<ErrorDetails> error)
+        {
+            if (allowEmpty && (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim())))
+            {
+                return input;
+            }
+
+            if (!caseSensitive)
+            {
+                TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+                input = textInfo.ToTitleCase(input.ToLower());
+            }
+
+            string output = "";
+            if (!string.IsNullOrEmpty(input) && !string.IsNullOrEmpty(input.Trim()) && valids.Any(x => x == input.Trim()))
+            {
+                output = input;
+            }
+            else
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "Invalid value supplied for '" + fieldName + "' (<span style='color:red'>" + input + "</span>)",
+                    FileName = fileName,
+                    FileTab = fileTab,
+                    LineNo = Convert.ToString(LineNo - 1),
+                    PatientNo = PatientId
+                });
+            }
+            return output;
+        }
+
+
+        public DateTime? ConvertQuarterToEndDate(string RadetPeriod, string fileName, ref List<ErrorDetails> error)
+        {
+            if (string.IsNullOrEmpty(RadetPeriod) || RadetPeriod.Length < 7)
+            {
+                error.Add(new ErrorDetails
+                {
+                    ErrorMessage = "RADET period is not Valid",
+                    FileName = fileName,
+                    FileTab = "Main page",
+                    LineNo = "",
+                    PatientNo = ""
+                });
+                return null;
+            }
+            string quarter = RadetPeriod.Split(' ')[0];
+            string year = RadetPeriod.Substring(5, 2);
+            string endDay = "";
+            switch (quarter)
+            {
+                case "Q1": endDay = "31/12/"+year; break;
+                case "Q2": endDay = "31/3/" + year; break;
+                case "Q3": endDay = "30/6/" + year; break;
+                case "Q4": endDay = "30/9/"+year; break;
+            }
+            if (!string.IsNullOrEmpty(endDay))
+            {
+
+            }
+            DateTime date;
+            DateTime.TryParseExact(endDay, "d/M/yy", new CultureInfo("en-US"), DateTimeStyles.None, out date);
+            return date;
+        }
+
+        public static Dictionary<string, List<string>> GetARTSite()
+        {
+            string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
+            Dictionary<string, List<string>> artSites = new Dictionary<string, List<string>>();
+            using (var package = new ExcelPackage(new FileInfo(art_file)))
+            {
+                var aSheet = package.Workbook.Worksheets["JustRADETNames"];
+
+                for (int col = 2; col <= 776; col++)
+                {
+                    string lga = ExcelHelper.ReadCellText(aSheet, 1, col);
+                    if (string.IsNullOrEmpty(lga))
+                        break;
+
+                    List<string> facilities = new List<string>();
+                    int row = 2;
+                    while (true)
+                    {
+                        var text = aSheet.Cells[row, col];
+                        string facility = text.Text != null ? text.Text : ""; //ExcelHelper.ReadCellText(aSheet, row, 4);
+                        if (string.IsNullOrEmpty(facility))
+                            break;
+                        facilities.Add(facility);
+                        row++;
+                    }
+                    artSites.Add(lga, facilities);
+                }
+            }
+            return artSites;
+        }
+
+
+        /*
         private DateTime? ValidateDateTime(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, ref List<ErrorDetails> error)
         {
             if (string.IsNullOrEmpty(input))
@@ -420,13 +684,13 @@ namespace RADET.DAL.Services
             return output;
         }
 
-        private int ValidateNumber(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, int maxNo, ref List<ErrorDetails> error)
+        private int ValidateNumber(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, int min, int maxNo, ref List<ErrorDetails> error)
         {
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim()))
                 return 0;
 
             int output;
-            if (int.TryParse(input, out output) == false)
+            if (int.TryParse(input, out output) == false || output < 1)
             {
                 error.Add(new ErrorDetails
                 {
@@ -437,51 +701,21 @@ namespace RADET.DAL.Services
                     PatientNo = PatientId
                 });
             }
-            //if (output > maxNo)
-            //{
-            //    error.Add(new ErrorDetails
-            //    {
-            //        ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
-            //        FileName = fileName,
-            //        FileTab = fileTab,
-            //        LineNo = Convert.ToString(LineNo - 1),
-            //        PatientNo = PatientId
-            //    });
-            //}
-            return output;
-        }
-
-        private string ValidateGenerics(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, List<string> valids, bool allowEmpty, bool caseSensitive, ref List<ErrorDetails> error)
-        {
-            if (allowEmpty && (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(input.Trim())))
-            {
-                return input;
-            }
-
-            if (!caseSensitive)
-            {
-                TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-                input = textInfo.ToTitleCase(input.ToLower());
-            }
-
-            string output = "";
-            if (!string.IsNullOrEmpty(input) && !string.IsNullOrEmpty(input.Trim()) && valids.Any(x => x == input.Trim()))
-            {
-                output = input;
-            }
-            else
+            if (output > 4 || output < 1)
             {
                 error.Add(new ErrorDetails
                 {
-                    ErrorMessage = "Invalid value supplied for '" + fieldName + "' (<span style='color:red'>" + input + "</span>)",
+                    ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
                     FileName = fileName,
                     FileTab = fileTab,
                     LineNo = Convert.ToString(LineNo - 1),
                     PatientNo = PatientId
                 });
+                return output;
             }
             return output;
         }
+        */
 
     }
 }

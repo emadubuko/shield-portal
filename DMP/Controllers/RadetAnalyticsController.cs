@@ -156,9 +156,9 @@ namespace ShieldPortal.Controllers
                         new
                         {
                             sEcho = draw,
-                            iTotalRecords = totalRecords,
-                            iTotalDisplayRecords = recordsFiltered,
-                            aaData = list
+                            recordsTotal = totalRecords,
+                            recordsFiltered = totalRecords,
+                            data = list
                         });
         }
 
@@ -438,7 +438,8 @@ namespace ShieldPortal.Controllers
                     .MapPath("~/Report/Uploads/RADET/" + IP.ShortName + "_" + Request.Files[0].FileName);
                 Request.Files[0].SaveAs(filePath);
 
-                
+                var validFacilities = RADETProcessor.GetARTSite();
+
                 if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "ZIP")
                 {
                     try
@@ -460,7 +461,7 @@ namespace ShieldPortal.Controllers
 
                                 var radetMetaData = new RadetMetaData(); 
 
-                                status = new RADETProcessor().ReadRadetFile(stream, fileName, IP, LGAs, out radetMetaData, out errors);
+                                status = new RADETProcessor().ReadRadetFile(stream, fileName, IP, LGAs, validFacilities, out radetMetaData, out errors);
 
                                 if (radetMetaData.PatientLineListing == null || radetMetaData.PatientLineListing.Count == 0)
                                 {
@@ -502,7 +503,7 @@ namespace ShieldPortal.Controllers
                     Stream uploadedFileStream = Request.Files[0].InputStream;
                     var radetMetaData = new RadetMetaData(); 
 
-                    status = new RADETProcessor().ReadRadetFile(uploadedFileStream, Request.Files[0].FileName, IP, LGAs, out radetMetaData, out errors);
+                    status = new RADETProcessor().ReadRadetFile(uploadedFileStream, Request.Files[0].FileName, IP, LGAs, validFacilities, out radetMetaData, out errors);
                     //what ever status, log feedback to the view via signal R
                     NotifyPage(connectionId, Request.Files[0].FileName, errors);
 
@@ -560,7 +561,7 @@ namespace ShieldPortal.Controllers
                 {
                     new ErrorDetails
                     {
-                        ErrorMessage = "Unable to save data because a previous record was found. If you are re-uploading, please delete the previous upload first and try again. If this is a Supplementary file, please merge it with the main file.",
+                        ErrorMessage = "Unable to save data because a previous record was found. If you are re-uploading, please delete the previous upload first and try again.",
                         FileName = Request.Files[0].FileName + " _",
                         FileTab = "",
                         LineNo = "",
