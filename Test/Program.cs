@@ -81,8 +81,7 @@ namespace Test
             }
             return artSites;
         }
-
-
+         
         private static void ReadExcelFiles()
         {
             using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\RADET v3.04e 2017 Edition old.xlsx")))
@@ -130,11 +129,47 @@ namespace Test
             }
         }
 
+
+        private static void CopyExcelFile()
+        {
+
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.Final.xlsx")))
+            {
+                var sheets = package.Workbook.Worksheets;
+                foreach(var sheet in sheets)
+                {
+                    int row = 4;
+                    List<string> faclities = new List<string>();
+                    while (true)
+                    {
+                        var text = sheet.Cells["B" + row];
+                        if (text == null || string.IsNullOrEmpty(text.Text))
+                            break;
+                        faclities.Add(text.Text);
+                        row++;
+                    }
+                    faclities.Shuffle();
+                    using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.Randomized.xlsx")))
+                    {
+                        var aSheet = excelToExport.Workbook.Worksheets[sheet.Name];
+                        int i = 4;
+                        foreach (var cls in faclities.Take(10))
+                        {
+                            aSheet.Cells["B" + i].Value = cls;
+                            i++;
+                        }
+                        excelToExport.Save();
+                    }
+                }                
+            }
+        }
+
+
         static void Main(string[] args)
         {
             Console.WriteLine("started");
 
-            ConvertQuarterToEndDate("Q4 FY17");
+            CopyExcelFile();
             // ReadExcelFiles();
             // GetARTSite();
             //exportRadetErrors();
