@@ -84,6 +84,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult UploadPage()
         {
+            
             var profile = new Services.Utils().GetloggedInProfile();
 
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))

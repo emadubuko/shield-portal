@@ -42,7 +42,7 @@ namespace ShieldPortal
             if (HttpContext.Current.Session != null)
             {
                 AddUserToSession();
-            }
+            } 
         }
         
 

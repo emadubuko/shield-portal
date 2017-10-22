@@ -36,6 +36,10 @@ namespace ShieldPortal.Controllers
         
         public ActionResult index()
         {
+            if (Request.Url.AbsoluteUri.ToLower().Contains("https://portal.shieldnigeriaproject.com"))
+            {
+                Response.Redirect("https://mer.shieldnigeriaproject.com/", true);
+            }
             return View();
         }
 

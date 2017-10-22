@@ -62,6 +62,10 @@ namespace ShieldPortal.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (Request.Url.AbsoluteUri.ToLower().Contains("https://portal.shieldnigeriaproject.com"))
+            {
+                Response.Redirect("https://mer.shieldnigeriaproject.com/", true);
+            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
