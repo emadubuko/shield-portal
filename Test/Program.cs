@@ -133,7 +133,7 @@ namespace Test
         private static void CopyExcelFile()
         {
 
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.Final.xlsx")))
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.16Oct17.xlsx")))
             {
                 var sheets = package.Workbook.Worksheets;
                 foreach(var sheet in sheets)
@@ -149,7 +149,7 @@ namespace Test
                         row++;
                     }
                     faclities.Shuffle();
-                    using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.Randomized.xlsx")))
+                    using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.16Oct17.Randomized.xlsx")))
                     {
                         var aSheet = excelToExport.Workbook.Worksheets[sheet.Name];
                         int i = 4;

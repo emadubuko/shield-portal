@@ -34,6 +34,10 @@
             padding: 4px 6px;
             font-size: 10px;
         }
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid transparent !important;
+        }
     </style>
 }
 
@@ -64,7 +68,7 @@
             <div class="col-sm-push-1 col-sm-1">
                 <button class="btn btn-sm btn-info" id="btnUpload" type="submit">Upload</button>
             </div>
-        </form>         
+        </form>
         <br /><br />
         <h3 id="completion_note" style="visibility:hidden"></h3>
         <div class="row" style="visibility: hidden;padding-left: 90px; padding-right: 40px;" id="hidden_row">
@@ -99,7 +103,7 @@
         </div>
     </div>
 </div>
-  
+
 
 <div class="modal fade" id="errorListModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" style="width: 97%;border-color: darkorange;" role="document">
@@ -110,15 +114,15 @@
                 </button>
             </div>
             <div class="table-responsive" style="font-size: 12px;padding-left: 25px;padding-right: 25px;">
-                <div class="col-sm-push-10 col-sm-1">
-                    <a class="btn btn-success save-download">Download</a>
+                <div class="col-sm-1">
+                    <a class="btn btn-success btn-sm save-download">Download</a>
                 </div>
                 <table class="table table-bordered table-hover" style="width:100%" id="error_details_tbl">
                     <thead>
                         <tr>
                             <th></th>
                             <th>File name</th>
-                            <th>Tab name</th> 
+                            <th>Tab name</th>
                             <th>S/No</th>
                             <th>Patient Id</th>
                             <th>Error Message</th>
@@ -135,7 +139,7 @@
         </div>
     </div>
 </div>
-  
+
 @section Scripts{
     <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
     <script src="~/signalr/hubs"></script>
@@ -144,7 +148,7 @@
         $(document).ready(function () {
             $("#progress").hide();
             $("#error_report").hide();
-              
+
             $('.modal-dialog').draggable({
                 handle: ".modal-header"
             });
@@ -154,9 +158,9 @@
                 if (filesize > 1000) {
                     alert('File size exceeded, selected file size is = ' + filesize + "MB; Uploaded file should be less than 1000 MB");
                     this.value = "";
-                } 
+                }
             });
-            
+
             var errorBag = [];
             //signal R things
             var myhub = $.connection.radetHub;
@@ -231,20 +235,30 @@
                     contentType: false,
                     processData: false
                 }).done(function (data, statusText, xhr) {
-                    if (data.indexOf("StatusCode: 500") !== -1) {
+                    $("#progress").hide();
+                    $("#hidden_row").hide();
+                    $("#downloadFullError").prop("disabled", false);
+                    $("#btnUpload").prop("disabled", false);
+
+                    try {
+                        if (data.indexOf("StatusCode: 500") !== -1) {
+                            alert("an error occured");
+                        }
+                    } catch (ex) {
                         alert("an error occured");
                     }
-
-                    $("#progress").hide();
-                    $("#hidden_row").css("visibility", "hidden");
-                    $("#downloadFullError").prop("disabled", false);
-                    $("#btnUpload").prop("disabled", false);
                 }).error(function (xhr, status, err) {
-                    alert($.parseJSON(xhr.responseText).Message);
-                    console.log($.parseJSON(xhr.responseText).Message);
                     $("#progress").hide();
+                    $("#hidden_row").hide();
                     $("#btnUpload").prop("disabled", false);
                     $("#downloadFullError").prop("disabled", false);
+
+                    alert("an error has occured");
+                    try{
+                        console.log($.parseJSON(xhr.responseText).Message); 
+                    } catch (ex) {
+                        console.log(xhr.responseText);
+                    }
                 });
                 return false;
             });
@@ -261,7 +275,7 @@
                 buildErrorDetailsTable(id, error_details);
                 $('#errorListModal').modal('show');
             });
-             
+
             $("#downloadFullError").click(function (e) {
                 $(e.currentTarget.id).prop("disabled", true);
                 var theurl = '/RadetAnalytics/downloaderrorsummary?id=' + myconnectionId;
@@ -287,7 +301,7 @@
             $(".save-download").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#error_details_tbl"), 'report.csv', '-', 0, 0]);
             });
-            
+
             function buildErrorSummaryTable(fileName, errorMessagedata) {
                 $("#error_report").show();
                 if (errorMessagedata == null || errorMessagedata.length == 0) {
@@ -315,7 +329,7 @@
                         var html = "<tr> ";
                         html += "<td><i class='icon-cancel' style='color: red;font-weight: bolder;margin-left: 30%;'></i></td>";
                         html += "<td>" + v.FileName + "</td>";
-                        html += "<td>" + v.FileTab + "</td>"; 
+                        html += "<td>" + v.FileTab + "</td>";
                         html += "<td>" + v.LineNo + "</td>";
                         html += "<td>" + v.PatientNo + "</td>";
                         html += "<td>" + v.ErrorMessage + "</td>";
@@ -324,7 +338,7 @@
                     });
                 }
             }
-  
+
             function uuidv4() {
                 return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
                     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)

@@ -530,7 +530,7 @@ namespace RADET.DAL.Services
                 {
                     error.Add(new ErrorDetails
                     {
-                        ErrorMessage = "Maximum value exceed for '" + fieldName + "' (<span style='color:red'>" + input + " </span>)",
+                        ErrorMessage = "Supplied value for '" + fieldName + "' is outside of valid range. (<span style='color:red'>" + input + " </span>)",
                         FileName = fileName,
                         FileTab = fileTab,
                         LineNo = Convert.ToString(LineNo - 1),
