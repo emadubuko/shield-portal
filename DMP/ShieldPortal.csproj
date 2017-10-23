@@ -228,6 +228,7 @@
     <Compile Include="Controllers\DQAController.cs" />
     <Compile Include="Controllers\DQAFY2016Controller.cs" />
     <Compile Include="Controllers\DQAFY2017Q2Controller.cs" />
+    <Compile Include="Controllers\DQAFY2017Q4Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1446,6 +1447,7 @@
     <Folder Include="Scripts\Highcharts\api\css\images\" />
     <Folder Include="tempData\" />
     <Folder Include="Uploads\" />
+    <Folder Include="Views\DQAFY2017Q4\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
