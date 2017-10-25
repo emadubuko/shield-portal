@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Business\BDQA.cs" />
     <Compile Include="Business\BDQAQ2.cs" />
+    <Compile Include="Business\BDQAQ4FY17.cs" />
     <Compile Include="Business\Utility.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Data\dqa_comparison.cs">

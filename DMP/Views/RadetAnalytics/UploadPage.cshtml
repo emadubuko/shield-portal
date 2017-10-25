@@ -206,6 +206,12 @@
             }
             // Start the connection.
             $.connection.hub.start().done();
+
+            $.connection.hub.disconnected(function () {
+                setTimeout(function () {
+                    $.connection.hub.start();
+                }, 10000); // Restart connection after 10 seconds.
+            });
             // end of signal r config
 
 
@@ -213,6 +219,7 @@
             $("#btnUpload").click(function () {
                 $("#output tbody").empty();
                 $("#progress").show();
+                $("#uploading_note").css("visibility", "visible");
                 $("#hidden_row").css("visibility", "visible");
                 $("#completion_note").html("");
                 $("#completion_note").css("visibility", "hidden")

@@ -182,7 +182,7 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 } 
-                if (lga.Length < 3)
+                else if (lga.Length < 3)
                 {
                     error.Add(new ErrorDetails
                     {
@@ -192,20 +192,26 @@ namespace RADET.DAL.Services
                         LineNo = "",
                         PatientNo = ""
                     });
+                    return false;
+                }
+                else
+                {
+                    _lga = FindLGA(LGAs, lga, state);
+                    if (_lga == null)
+                    {
+                        error.Add(new ErrorDetails
+                        {
+                            ErrorMessage = "invalid Lga selected",
+                            FileName = fileName,
+                            FileTab = "Main page",
+                            LineNo = "",
+                            PatientNo = ""
+                        });
+                    }
+                    return false;
                 }
                 // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
-                _lga = FindLGA(LGAs, lga, state);
-                if (_lga == null)
-                {
-                    error.Add(new ErrorDetails
-                    {
-                        ErrorMessage = "invalid Lga selected",
-                        FileName = fileName,
-                        FileTab = "Main page",
-                        LineNo = "",
-                        PatientNo = ""
-                    });
-                }
+               
 
                 facilityName = ExcelHelper.ReadCell(mainWorksheet, 20, 19);
                 if (string.IsNullOrEmpty(facilityName))
@@ -220,7 +226,10 @@ namespace RADET.DAL.Services
                     });
                 }
 
-                if (ValidateFacilityName(facilityName, validFacilities[lga]) == false)
+                List<string> facilities = new List<string>();
+                validFacilities.TryGetValue(lga, out facilities);
+
+                if (ValidateFacilityName(facilityName, facilities) == false)
                 {
                     error.Add(new ErrorDetails
                     {
@@ -230,6 +239,7 @@ namespace RADET.DAL.Services
                         LineNo = "",
                         PatientNo = ""
                     });
+                    return false;
                 }
 
                 string[] f_n = facilityName.Split(' ');
@@ -380,6 +390,9 @@ namespace RADET.DAL.Services
 
         private bool ValidateFacilityName(string facilityName, List<string> list)
         {
+            if (list == null || string.IsNullOrEmpty(facilityName))
+                return false;
+
             return list.Any(x => x == facilityName);
         }
          

@@ -1,9 +1,14 @@
-﻿using DQA.DAL.Data;
+﻿using CommonUtil.Entities;
+using CommonUtil.Utilities;
+using DQA.DAL.Data;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DQA.DAL.Model;
 
 namespace DQA.DAL.Business
 { 
@@ -17,8 +22,16 @@ namespace DQA.DAL.Business
         }
 
 
-        public bool ReadPivotTable(Stream datimFile, string quarter, int year, Profile profile, out string result)
+        public bool ReadPivotTable(Stream datimFile, string reportPeriod, Profile profile, out string result)
         {
+            var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == reportPeriod.Trim() && x.ImplementingPartner.Id == profile.Organization.Id);
+            if (previously != null)
+            {
+                result = "Pivot table already uploaded"; 
+                return false;
+                //throw new ApplicationException();
+            }
+
             var hfs = entity.HealthFacilities.ToDictionary(x => x.FacilityCode);
             StringBuilder sb = new StringBuilder();
 
@@ -27,7 +40,12 @@ namespace DQA.DAL.Business
             {
                 using (ExcelPackage package = new ExcelPackage(datimFile))
                 {
-                    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    var worksheet = package.Workbook.Worksheets["Facility Pivot Table"];
+                    if (worksheet == null)
+                    {
+                        throw new ApplicationException("Invalid pivot table uploaded");
+                    }
+
                     int row = 2;
 
                     while (true)
@@ -42,25 +60,18 @@ namespace DQA.DAL.Business
                         if (hfs.TryGetValue(fCode, out hf) == false)
                         {
                             sb.AppendLine("unknown facility with code [" + fCode + "," + fName + "] uploaded ");
-                            //Logger.LogInfo("pivot table upload", "unknown facility with code [" + fCode + "," + fName + "] uploaded ");
-                            //throw new ApplicationException("unknown facility with code [" + fCode + "] uploaded ");
                         }
-
-
                         if (hf != null)
                         {
                             if (hf.ImplementingPartner.Id != profile.Organization.Id)
                             {
                                 sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
-                                //throw new ApplicationException("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
                             }
 
                             //if(hf.Name != fName)
                             //{
                             //    //sb.AppendLine(string.Format("Update dbo.HealthFacility set Name = '{0}' where id= {1}; ", fName, hf.Id));
                             //}
-
-                            int tb_art = 0, ovc = 0;
 
                             int hts_tst = ExcelHelper.ReadCellText(worksheet, row, 3).ToInt();
                             int htc_only = ExcelHelper.ReadCellText(worksheet, row, 4).ToInt();
@@ -70,26 +81,76 @@ namespace DQA.DAL.Business
                             int pmtct_stat_prev = ExcelHelper.ReadCellText(worksheet, row, 8).ToInt();
                             int pmtct_art = ExcelHelper.ReadCellText(worksheet, row, 9).ToInt();
                             int pmtct_eid = ExcelHelper.ReadCellText(worksheet, row, 10).ToInt();
-                            int tx_new = ExcelHelper.ReadCellText(worksheet, row, 11).ToInt();
-                            int tx_curr = ExcelHelper.ReadCellText(worksheet, row, 12).ToInt();
+                            int pmtct_fo = ExcelHelper.ReadCellText(worksheet, row, 11).ToInt();
+                            int tx_new = ExcelHelper.ReadCellText(worksheet, row, 12).ToInt();
+                            int tx_curr = ExcelHelper.ReadCellText(worksheet, row, 13).ToInt();
+                            int tx_ret = ExcelHelper.ReadCellText(worksheet, row, 14).ToInt();
+                            int tx_pvls = ExcelHelper.ReadCellText(worksheet, row, 15).ToInt();
+                            int tb_stat = ExcelHelper.ReadCellText(worksheet, row, 16).ToInt();
+                            int tb_art = ExcelHelper.ReadCellText(worksheet, row, 17).ToInt();
+                            int tx_tb = ExcelHelper.ReadCellText(worksheet, row, 18).ToInt();
 
                             pivotTable.Add(new dqa_pivot_table
                             {
                                 HTS_TST = hts_tst,
-                                PMTCT_EID = pmtct_eid,
                                 HTC_Only = htc_only,
                                 HTC_Only_POS = htc_only_pos,
                                 PMTCT_STAT = pmtct_stat,
                                 PMTCT_STAT_NEW = pmtct_stat_new,
                                 PMTCT_STAT_PREV = pmtct_stat_prev,
-                                TX_NEW = tx_new,
-                                TB_ART = tb_art,
                                 PMTCT_ART = pmtct_art,
+                                PMTCT_EID = pmtct_eid,
+                                PMTCT_FO = pmtct_fo,
+                                TX_NEW = tx_new,
                                 TX_CURR = tx_curr,
-                                OVC = ovc,
+                                TX_RET = tx_ret,
+                                TX_PVLS = tx_pvls,
+                                TB_STAT = tb_stat,
+                                TB_ART = tb_art,
+                                TX_TB = tx_tb, 
                                 HealthFacility = hf,
-                                Quarter = quarter,
+                                Quarter = reportPeriod, 
                                 ImplementingPartner = hf.ImplementingPartner,
+                            });
+                        }
+                        row += 1;
+                    }
+
+                    worksheet = package.Workbook.Worksheets["OVC_PIVOT TABLE"];
+                    if (worksheet == null)
+                    {
+                        throw new ApplicationException("Invalid pivot table uploaded");
+                    }
+                    row = 2;
+
+                    while (true)
+                    {
+                        Data.HealthFacility hf = null;
+                        string fCode = ExcelHelper.ReadCell(worksheet, row, 1);
+                        string fName = ExcelHelper.ReadCellText(worksheet, row, 2);
+                        if (string.IsNullOrEmpty(fCode))
+                        {
+                            break;
+                        }
+                        if (hfs.TryGetValue(fCode, out hf) == false)
+                        {
+                            sb.AppendLine("unknown facility with code [" + fCode + "," + fName + "] uploaded ");
+                        }
+                        if (hf != null)
+                        {
+                            if (hf.ImplementingPartner.Id != profile.Organization.Id)
+                            {
+                                sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                            }
+                            pivotTable.Add(new Data.dqa_pivot_table
+                            {
+                                 IP = hf.ImplementingPartner.Id,
+                                  FacilityId = hf.Id,                                     
+                                HealthFacility = hf, 
+                                Quarter = reportPeriod,
+                                ImplementingPartner = hf.ImplementingPartner,
+                                OVC = ExcelHelper.ReadCellText(worksheet, row, 3).ToInt(),
+                                OVC_NotReported = ExcelHelper.ReadCellText(worksheet, row, 4).ToInt(),
                             });
 
                         }
@@ -164,24 +225,24 @@ namespace DQA.DAL.Business
                     #endregion
                 }
 
-                //delete previous submissions
-                var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == quarter.Trim() && x.ImplementingPartner.Id == profile.Organization.Id);
-                if (previously != null)
-                {
-                    entity.dqa_pivot_table_upload.Remove(previously);
-                }
+                ////delete previous submissions
+                //var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == reportPeriod.Trim() && x.ImplementingPartner.Id == profile.Organization.Id);
+                //if (previously != null)
+                //{
+                //    entity.dqa_pivot_table_upload.Remove(previously);
+                //}
 
                 entity.dqa_pivot_table_upload.Add(
                     new dqa_pivot_table_upload
-                    {
+                    {  
                         DateUploaded = DateTime.Now,
                         dqa_pivot_table = selectedList,
                         IP = profile.Organization.Id,
-                        Quarter = quarter,
+                        Quarter = reportPeriod,
                         UploadedBy = profile.Id
                     });
 
-                entity.dqa_pivot_table.RemoveRange(entity.dqa_pivot_table.Where(x => x.Quarter == quarter.Trim() && x.ImplementingPartner.Id == profile.Organization.Id).ToList());
+                entity.dqa_pivot_table.RemoveRange(entity.dqa_pivot_table.Where(x => x.Quarter == reportPeriod.Trim() && x.ImplementingPartner.Id == profile.Organization.Id).ToList());
                 entity.dqa_pivot_table.AddRange(selectedList);
                 entity.SaveChanges();
 
@@ -190,18 +251,23 @@ namespace DQA.DAL.Business
                     select new
                     {
                         FacilityName = item.HealthFacility.Name,
-                        item.OVC,
-                        item.PMTCT_ART,
-                        item.TB_ART,
-                        item.TX_CURR,
-                        item.PMTCT_STAT,
-                        item.PMTCT_EID,
-                        item.PMTCT_STAT_NEW,
-                        item.PMTCT_STAT_PREV,
+                        item.HTS_TST,
                         item.HTC_Only,
                         item.HTC_Only_POS,
-                        item.HTS_TST,
-                        item.TX_NEW,
+                        item.PMTCT_STAT,
+                        item.PMTCT_STAT_NEW,
+                        item.PMTCT_STAT_PREV,
+                        OVC = item.OVC + item.OVC_NotReported,
+                        item.PMTCT_ART,
+                        item.PMTCT_EID,
+                        item.PMTCT_FO,
+                        item.TX_NEW,                        
+                        item.TX_CURR,
+                        item.TX_RET,
+                        item.TX_PVLS,
+                        item.TB_STAT,
+                        item.TB_ART,
+                         item.TX_TB,
                         item.SelectedForDQA,
                         item.SelectedReason
                     }
@@ -217,6 +283,29 @@ namespace DQA.DAL.Business
                 return false;
             }
             return true;
+        }
+
+        public void DeletePivotTable(int id)
+        {
+            var data = entity.dqa_pivot_table_upload.First(x => x.Id == id);
+            entity.dqa_pivot_table.RemoveRange(data.dqa_pivot_table).ToList();
+            entity.dqa_pivot_table_upload.Remove(data);
+            entity.SaveChanges();
+        }
+
+        public string ReadWorkbook(string extractedFilePath, Profile userUploading)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetReportDetails(int metadataid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GenerateDQA(List<PivotTableModel> data, Organizations organization)
+        {
+            throw new NotImplementedException();
         }
     }
 }

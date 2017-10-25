@@ -164,7 +164,7 @@ namespace ShieldPortal.Controllers
                 var profile = new Services.Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var ds = Utility.GetDashboardStatistic(ip);
+            var ds = Utility.GetDashboardStatistic(ip, "Q3 FY17");
             List<dynamic> IPSummary = new List<dynamic>();
             foreach(DataRow dr in ds.Tables[0].Rows)
             {
@@ -363,11 +363,11 @@ namespace ShieldPortal.Controllers
             List<UploadList> previousUploads = null;
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
             {
-                previousUploads = Utility.RetrievePivotTables(0);
+                previousUploads = Utility.RetrievePivotTables(0, "Q3 FY17");
             }
             else
             {
-                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id);
+                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id, "Q3 FY17");
             }
             return View(previousUploads);
         }
@@ -377,7 +377,7 @@ namespace ShieldPortal.Controllers
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
-            string currentPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            string currentPeriod = "Q3 FY17";
 
             int getIP = 0;
             if (User.IsInRole("ip"))
@@ -431,7 +431,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
-            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            string period = "Q3 FY17";
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -468,21 +468,11 @@ namespace ShieldPortal.Controllers
         {
             var search = Request["search[value]"];
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
-            
-            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-            string startDate = "";
-            string endDate = "";
-            if (period.StartsWith("Q2"))
-            {
-                startDate = "2017-01-01 00:00:00.000";
-                endDate = "2017-03-31 23:59:59.000";
-            }
-            else if (period.StartsWith("Q3"))
-            {
-                startDate = "2017-04-01 00:00:00.000";
-                endDate = "2017-06-30 23:59:59.000";
-            }
 
+            string period = "Q3 FY17";
+            string startDate = "2017-04-01 00:00:00.000";
+            string endDate = "2017-06-30 23:59:59.000";
+              
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -491,7 +481,7 @@ namespace ShieldPortal.Controllers
             {
                 ip = searchModel.IPs.FirstOrDefault();                
             }
-            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate);
+            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
             var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
             var artSites = BDQAQ2.GetARTSite();
 

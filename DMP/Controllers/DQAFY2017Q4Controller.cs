@@ -1,18 +1,25 @@
-﻿using CommonUtil.Utilities;
+﻿using CommonUtil.DBSessionManager;
+using CommonUtil.Entities;
+using CommonUtil.Utilities;
+using DQA.DAL.Business;
+using DQA.DAL.Model;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
     public class DQAFY2017Q4Controller : Controller
-    {        
+    {
         public ActionResult Index()
         {
             int ip_id = 0;
@@ -24,6 +31,117 @@ namespace ShieldPortal.Controllers
 
             return View("Dashboard");
         }
+
+        public ActionResult UploadPivotTable()
+        {
+            var profile = new Services.Utils().GetloggedInProfile();
+            List<UploadList> previousUploads = null;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                previousUploads = Utility.RetrievePivotTables(0, "Q4 FY17");
+            }
+            else
+            {
+                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id, "Q4 FY17");
+            }
+            return View(previousUploads);
+        }
+
+        public ActionResult DeletePivotTable(int id)
+        {
+            new BDQAQ4FY17().DeletePivotTable(id);
+            return RedirectToAction("UploadPivotTable");
+        }
+
+        [HttpPost]
+        public string ProcesssPivotTable(string reportPeriod)
+        {
+            HttpResponseMessage msg = null;
+            string result = "";
+            if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
+            {
+                msg = new HttpResponseMessage(HttpStatusCode.BadRequest); //, );
+                result = "No file was uploaded";
+            }
+            else
+            {
+                
+                Request.Files[0].SaveAs(Server.MapPath("~/Report/Uploads/Pivot table Q4/" + Request.Files[0].FileName));
+                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
+                Stream uploadedFile = Request.Files[0].InputStream;
+                bool status = new BDQAQ4FY17().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
+                //    if (status)
+                //    {
+                //        msg = new HttpResponseMessage(HttpStatusCode.OK); //, result);
+                //        msg.Content = new StringContent(result);
+                //    }
+                //    else{
+                //        msg = new HttpResponseMessage(HttpStatusCode.BadRequest); //, result);
+                //        msg.Content = new StringContent(result); 
+                //}
+            }
+            return result; //msg;
+        }
+
+
+        [HttpPost]
+        public string GetDQAUploadReport(int? draw, int? start, int? length)
+        {
+            //string ReportPeriod, int IP
+            var search = Request["search[value]"];
+            RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
+
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            else if (searchModel.IPs != null)
+            {
+                ip = searchModel.IPs.FirstOrDefault();
+            }
+            var reports = Utility.GetUploadReport(searchModel.RadetPeriod, ip, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
+            List<dynamic> mydata = new List<dynamic>();
+            foreach (DataRow dr in reports.Rows)
+            {
+                var dtt = new
+                {
+                    DT_RowId = dr[9].ToString(),
+                    //DT_RowClass = "click-row",
+                    IP = dr[0],
+                    State = dr[1],
+                    LGA = dr[3],
+                    Facility = dr[5],
+                    ReportPeriod = dr[6],
+                    Uploaded_Date = dr[7],
+                    UploadedBy = dr[8],
+                    DoneBy = dr[10].ToString() == "ip" ? dr[0] : "UMB",
+                    lga_code = dr[4],
+                    state_code = dr[2],
+                    LastColumn = string.Format("<td>&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a> <i style='display:none' id='loadImg{0}'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i></td>", dr[9])
+                };
+                mydata.Add(dtt);
+            }
+            if (searchModel.state_codes != null && searchModel.state_codes.Count > 0)
+                mydata = mydata.Where(x => searchModel.state_codes.Contains(x.state_code)).ToList();
+
+            if (searchModel.lga_codes != null && searchModel.lga_codes.Count > 0)
+                mydata = mydata.Where(x => searchModel.lga_codes.Contains(x.lga_code)).ToList();
+
+            if (searchModel.facilities != null && searchModel.facilities.Count > 0)
+                mydata = mydata.Where(x => searchModel.facilities.Contains(x.Facility)).ToList();
+
+            return JsonConvert.SerializeObject(
+                       new
+                       {
+                           sEcho = draw,
+                           iTotalRecords = mydata.Count(),
+                           iTotalDisplayRecords = mydata.Count(),
+                           aaData = mydata
+                       });
+        }
+
 
         public ActionResult Analytics(string reportType = "Partners")
         {
@@ -61,7 +179,7 @@ namespace ShieldPortal.Controllers
                         if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                         {
 
-                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q3 FY16/" + postedFile.FileName);
+                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q4 FY17/" + postedFile.FileName);
                             postedFile.SaveAs(filePath);
 
                             if (ext.ToUpper() == "ZIP")
@@ -106,7 +224,7 @@ namespace ShieldPortal.Controllers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                messages += new BDQAQ2().ReadWorkbook(extractedFilePath, userUploading);
+                                                messages += new BDQAQ4FY17().ReadWorkbook(extractedFilePath, userUploading);
                                                 countSuccess++;
                                             }
                                         }
@@ -123,7 +241,7 @@ namespace ShieldPortal.Controllers
                             }
                             else
                             {
-                                messages += new BDQAQ2().ReadWorkbook(filePath, userUploading);
+                                messages += new BDQAQ4FY17().ReadWorkbook(filePath, userUploading);
                             }
                         }
                         else
@@ -145,6 +263,8 @@ namespace ShieldPortal.Controllers
             return messages;
         }
 
+
+
         [HttpGet]
         public string GetDashboardStatistic()
         {
@@ -154,7 +274,7 @@ namespace ShieldPortal.Controllers
                 var profile = new Services.Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var ds = Utility.GetDashboardStatistic(ip);
+            var ds = Utility.GetDashboardStatistic(ip, "Q4 FY17");
             List<dynamic> IPSummary = new List<dynamic>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -171,21 +291,22 @@ namespace ShieldPortal.Controllers
             {
                 IPSummary,
                 cardData = ds.Tables[1].Rows[0].ItemArray
-            });
+            }); 
         }
 
         //Q3 Fy17
         public ActionResult DQAAnalysisReport(string type)
         {
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
-            var data = Utility.GetQ3Analysis(ip, type.ToLower().Contains("partners"));
+            //string ip = "";
+            //if (User.IsInRole("ip"))
+            //{
+            //    var profile = new Services.Utils().GetloggedInProfile();
+            //    ip = profile.Organization.ShortName;
+            //}
+            //var data = Utility.GetQ3Analysis(ip, type.ToLower().Contains("partners"));
 
-            return View(data);
+            //return View(data);
+            return View("");
         }
 
         public ActionResult IpDQA()
@@ -250,7 +371,7 @@ namespace ShieldPortal.Controllers
                 ip = profile.Organization.ShortName;
             }
 
-            var reports = Utility.GetUploadReport("Q3 FY17", ip);
+            var reports = Utility.GetUploadReport("Q4 FY17", ip);
             List<dynamic> iplocation = new List<dynamic>();
             foreach (DataRow dr in reports.Rows)
             {
@@ -278,67 +399,12 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
-        public string GetDQAUploadReport(int? draw, int? start, int? length)
-        {
-            //string ReportPeriod, int IP
-            var search = Request["search[value]"];
-            RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
-
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
-            else if (searchModel.IPs != null)
-            {
-                ip = searchModel.IPs.FirstOrDefault();
-            }
-            var reports = Utility.GetUploadReport(searchModel.RadetPeriod, ip, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
-            List<dynamic> mydata = new List<dynamic>();
-            foreach (DataRow dr in reports.Rows)
-            {
-                var dtt = new
-                {
-                    DT_RowId = dr[9].ToString(),
-                    //DT_RowClass = "click-row",
-                    IP = dr[0],
-                    State = dr[1],
-                    LGA = dr[3],
-                    Facility = dr[5],
-                    ReportPeriod = dr[6],
-                    Uploaded_Date = dr[7],
-                    UploadedBy = dr[8],
-                    DoneBy = dr[10].ToString() == "ip" ? dr[0] : "UMB",
-                    lga_code = dr[4],
-                    state_code = dr[2],
-                    LastColumn = string.Format("<td>&nbsp;&nbsp;<a style ='text-transform: capitalize;' class='btn btn-sm btn-danger deletebtn' id='{0}'><i class='fa fa-trash'></i>&nbsp;&nbsp;Delete</a> <i style='display:none' id='loadImg{0}'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i></td>", dr[9])
-                };
-                mydata.Add(dtt);
-            }
-            if (searchModel.state_codes != null && searchModel.state_codes.Count > 0)
-                mydata = mydata.Where(x => searchModel.state_codes.Contains(x.state_code)).ToList();
-
-            if (searchModel.lga_codes != null && searchModel.lga_codes.Count > 0)
-                mydata = mydata.Where(x => searchModel.lga_codes.Contains(x.lga_code)).ToList();
-
-            if (searchModel.facilities != null && searchModel.facilities.Count > 0)
-                mydata = mydata.Where(x => searchModel.facilities.Contains(x.Facility)).ToList();
-
-            return JsonConvert.SerializeObject(
-                       new
-                       {
-                           sEcho = draw,
-                           iTotalRecords = mydata.Count(),
-                           iTotalDisplayRecords = mydata.Count(),
-                           aaData = mydata
-                       });
-        }
+        
 
         [HttpGet]
         public string GetReportDetails(int metadataid)
         {
-            return new BDQAQ2().GetReportDetails(metadataid);
+            return new BDQAQ4FY17().GetReportDetails(metadataid);
         }
 
         public void PopulateStates(object selectStatus = null)
@@ -347,27 +413,14 @@ namespace ShieldPortal.Controllers
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
         }
 
-        public ActionResult UploadPivotTable()
-        {
-            var profile = new Services.Utils().GetloggedInProfile();
-            List<UploadList> previousUploads = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                previousUploads = Utility.RetrievePivotTables(0);
-            }
-            else
-            {
-                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id);
-            }
-            return View(previousUploads);
-        }
+        
 
         //this is the page
         public ActionResult DownloadDQATool(int? ip)
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
-            string currentPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            string currentPeriod = "Q4 FY17";
 
             int getIP = 0;
             if (User.IsInRole("ip"))
@@ -388,7 +441,7 @@ namespace ShieldPortal.Controllers
         {
             var profile = new Services.Utils().GetloggedInProfile();
             //the radet period is on the config file
-            string file = await new BDQAQ2().GenerateDQA(data, profile.Organization);
+            string file = await new BDQAQ4FY17().GenerateDQA(data, profile.Organization);
 
             return Json(file, JsonRequestBehavior.AllowGet);
         }
@@ -403,13 +456,13 @@ namespace ShieldPortal.Controllers
                     filename = "THE DATA QUALITY ASSESSMENT USER GUIDE FOR FY17 Q3.pdf";
                     break;
                 case "PivotTable":
-                    filename = "DATIM PIVOT TABLE SAMPLE.xlsx";
+                    filename = "DATIM PIVOT TABLE Q4.xlsx";
                     break;
                 case "SummarySheet":
                     filename = "Printable Summary sheet DQA_Q3R.pdf";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q3/" + filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
@@ -421,7 +474,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
-            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            string period = "Q4 FY17"; 
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -459,20 +512,10 @@ namespace ShieldPortal.Controllers
             var search = Request["search[value]"];
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
 
-            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-            string startDate = "";
-            string endDate = "";
-            if (period.StartsWith("Q2"))
-            {
-                startDate = "2017-01-01 00:00:00.000";
-                endDate = "2017-03-31 23:59:59.000";
-            }
-            else if (period.StartsWith("Q3"))
-            {
-                startDate = "2017-04-01 00:00:00.000";
-                endDate = "2017-06-30 23:59:59.000";
-            }
-
+            string period = "Q4 FY17";
+            string startDate = "2017-04-01 00:00:00.000";
+            string endDate = "2017-06-30 23:59:59.000";
+            
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -481,7 +524,7 @@ namespace ShieldPortal.Controllers
             {
                 ip = searchModel.IPs.FirstOrDefault();
             }
-            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate);
+            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
             var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
             var artSites = BDQAQ2.GetARTSite();
 
@@ -525,20 +568,8 @@ namespace ShieldPortal.Controllers
                         Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
                         Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
                     });
-                }
-                //else
-                //{
-                //    mydata2.Add(new
-                //    {
-                //        ShortName = item.IP,
-                //        Facility = item.FacilityName,
-                //        p_Tx_New = item.TX_NEW,
-                //        p_Tx_Curr = item.TX_CURR,
-                //    });
-                //}
-            }
-
-
+                } 
+            } 
             return JsonConvert.SerializeObject(
                        new
                        {
@@ -547,43 +578,6 @@ namespace ShieldPortal.Controllers
                            iTotalDisplayRecords = mydata2.Count(),
                            aaData = mydata2
                        });
-            //return JsonConvert.SerializeObject(mydata2);
         }
-
-        /*
-        public ActionResult UploadRadet()
-        {
-            var profile = new Services.Utils().GetloggedInProfile();
-            List<RadetUploadReport> previousUploads = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(0, 2017, "Q2(Jan-Mar)");
-                ViewBag.showdelete = true;
-            }
-            else
-            {
-                ViewBag.showdelete = false;
-                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(profile.Organization.Id, 2017, "Q2(Jan-Mar)");
-            }
-            List<RadetReportModel> list = new List<ViewModel.RadetReportModel>();
-            if (previousUploads != null)
-            {
-                list = (from entry in previousUploads
-                        select new RadetReportModel
-                        {
-                            Facility = entry.Facility,
-                            IP = entry.IP.ShortName,
-                            dqa_quarter = entry.dqa_quarter,
-                            dqa_year = entry.dqa_year,
-                            UploadedBy = entry.UploadedBy.FullName,
-                            DateUploaded = entry.DateUploaded,
-                            Id = entry.Id, 
-                        }).ToList();
-            }
-
-            return View(list);
-        }
-        */
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CommonUtil.DAO;
 using CommonUtil.Mapping;
+using CommonUtil.Utilities;
 using DQA.DAL.Data;
 using DQA.DAL.Model;
 using System;
@@ -175,7 +176,7 @@ namespace DQA.DAL.Business
             var dataTable = new DataTable();
             try
             {
-                connection.Open(); 
+                connection.Open();
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 // this will query your database and return the result to your datatable
                 da.Fill(dataTable);
@@ -319,7 +320,7 @@ namespace DQA.DAL.Business
                                          IP = table.HealthFacility.ImplementingPartner.ShortName,
                                          FacilityName = table.HealthFacility.Name, //table.FacilityName,
                                          FacilityCode = table.HealthFacility.FacilityCode,
-                                         OVC = table.OVC,
+                                         OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
 
                                          PMTCT_ART = table.PMTCT_ART,
                                          TB_ART = table.TB_ART,
@@ -343,18 +344,15 @@ namespace DQA.DAL.Business
             return null;
         }
 
-        public static List<UploadList> RetrievePivotTables(int ip_id)
+        public static List<UploadList> RetrievePivotTables(int ip_id, string reportPeriod)
         {
-            List<dqa_pivot_table_upload> result = new List<dqa_pivot_table_upload>();
-            if (ip_id == 0)
+            var result = entity.dqa_pivot_table_upload.Where(x => x.Quarter == reportPeriod);
+            if (ip_id != 0)
             {
-                result = entity.dqa_pivot_table_upload.ToList();
+                result = result.Where(x => x.IP == ip_id);
             }
-            else
-            {
-                result = entity.dqa_pivot_table_upload.Where(x => x.IP == ip_id).ToList();
-            }
-            IEnumerable<UploadList> list = (from item in result
+
+            IEnumerable<UploadList> list = (from item in result.ToList()
                                             select new UploadList
                                             {
                                                 IP = item.ImplementingPartner.ShortName,
@@ -367,18 +365,23 @@ namespace DQA.DAL.Business
                                                          {
                                                              IP = table.IP.ToString(),
                                                              FacilityName = table.HealthFacility.Name,
-                                                             OVC = table.OVC,
+                                                             OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
                                                              PMTCT_ART = table.PMTCT_ART,
                                                              TB_ART = table.TB_ART,
                                                              TX_CURR = table.TX_CURR,
                                                              PMTCT_STAT = table.PMTCT_STAT,
                                                              PMTCT_EID = table.PMTCT_EID,
+                                                             PMTCT_FO = table.PMTCT_FO,
                                                              PMTCT_STAT_NEW = table.PMTCT_STAT_NEW,
                                                              PMTCT_STAT_PREV = table.PMTCT_STAT_PREV,
                                                              HTC_Only = table.HTC_Only,
                                                              HTC_Only_POS = table.HTC_Only_POS,
                                                              HTS_TST = table.HTS_TST,
                                                              TX_NEW = table.TX_NEW,
+                                                             TX_RET = table.TX_RET,
+                                                             TX_PVLS = table.TX_PVLS,
+                                                             TB_STAT = table.TB_STAT,
+                                                             TX_TB = table.TX_TB,
                                                              SelectedForDQA = table.SelectedForDQA,
                                                              SelectedReason = table.SelectedReason
                                                          }
@@ -412,11 +415,11 @@ namespace DQA.DAL.Business
                                                      TX_NEW = table.TX_NEW,
                                                      TheLGA = table.HealthFacility.lga,
                                                  });
-            if (state_code != null && state_code.Count >0)
+            if (state_code != null && state_code.Count > 0)
             {
                 list = list.Where(x => state_code.Contains(x.TheLGA.state_code));
             }
-            if (lga_code != null && lga_code.Count>0)
+            if (lga_code != null && lga_code.Count > 0)
             {
                 list = list.Where(x => lga_code.Contains(x.TheLGA.lga_code));
             }
@@ -428,9 +431,9 @@ namespace DQA.DAL.Business
             return list.ToList();
         }
 
-        public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate)
+        public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate, string radetPeriod)
         {
-            string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+           // string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
 
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_aggregate_radet";
@@ -470,14 +473,24 @@ namespace DQA.DAL.Business
             return dataTable;
         }
 
-        public static DataSet GetDashboardStatistic(string IP)
+        public static DataSet GetDashboardStatistic(string IP, string reportPeriod)
         {
             //TODO: seperate period into year and quarter
             var cmd = new SqlCommand();
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "sp_get_q3_FY17_dashboard";
+            cmd.CommandText = "sp_get_dqa_dashboard_by_period_and_ip"; //"sp_get_q3_FY17_dashboard";
             cmd.Parameters.AddWithValue("@ip", IP);
-            return GetDataSet(cmd);
+            cmd.Parameters.AddWithValue("@reportperiod", reportPeriod);
+            try
+            {
+                return GetDataSet(cmd);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+
         }
     }
 }

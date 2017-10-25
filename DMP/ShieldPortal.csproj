@@ -1322,6 +1322,10 @@
     <Content Include="Scripts\Highcharts\api\fonts\fontawesome-webfont.woff" />
     <Content Include="Scripts\Highcharts\api\fonts\fontawesome-webfont.woff2" />
     <Content Include="Scripts\Highcharts\api\js\highcharts.json" />
+    <Content Include="Report\Template\DQA FY2017 Q4\DATIM PIVOT TABLE Q4.xlsx" />
+    <Content Include="Report\Template\DQA FY2017 Q4\Q4_Data Quality Assessment tool_v4.xlsm" />
+    <Content Include="Report\Template\DQA FY2017 Q4\Data Quality Assessment Userguide Q4.pdf" />
+    <Content Include="Report\Template\DQA FY2017 Q3\realData Quality Assessment tool_v3.xlsm" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1395,6 +1399,19 @@
     <Content Include="Views\Home\Index - Copy.cshtml" />
     <Content Include="Views\Home\submenu - Copy.cshtml" />
     <Content Include="Views\NHMIS\Index.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\AllIPDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\Analytics.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\Dashboard.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\GetDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\IpDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\IpDQAAdmin.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\PendingFacilities.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2017Q4\UploadPivotTable.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1434,6 +1451,7 @@
     <Content Include="Views\Shared\_dmpLayoutPage.cshtml" />
     <Content Include="Views\Shared\_radetLayoutPage.cshtml" />
     <Content Include="Views\Shared\_NHMISLayout.cshtml" />
+    <Content Include="Views\Shared\_dqaFY17Q4layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1443,11 +1461,11 @@
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
+    <Folder Include="Report\Uploads\Pivot table Q4\" />
     <Folder Include="Report\Uploads\RADET\" />
     <Folder Include="Scripts\Highcharts\api\css\images\" />
     <Folder Include="tempData\" />
     <Folder Include="Uploads\" />
-    <Folder Include="Views\DQAFY2017Q4\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

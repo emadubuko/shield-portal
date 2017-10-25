@@ -5,6 +5,7 @@ using DQA.DAL.Model;
 using DQA.ViewModel;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using ShieldPortal.Services;
 using System;
 using System.Collections.Generic;
@@ -26,8 +27,7 @@ namespace ShieldPortal.Controllers
     public class DQAApiController : ApiController
     {
         readonly MetaDataService metadataService = new MetaDataService();
-        // GET: api/DQA
-
+         
         // POST: api/DQA
         public string Post()
         {

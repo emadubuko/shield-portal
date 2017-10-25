@@ -19,7 +19,7 @@ namespace DQA.DAL.Model
         public int? PMTCT_EID { get; set; }
         public int? TX_NEW { get; set; }
 
-        public int OVC { get; set; }
+        public int OVC_Total { get; set; }
         public bool SelectedForDQA { get; set; }
         public string SelectedReason { get; set; }
         public string State { get; set; }
@@ -27,6 +27,11 @@ namespace DQA.DAL.Model
         public Data.lga TheLGA { get; set; }
         public string IP { get; set; }
         public string FacilityCode { get; set; }
+        public int? PMTCT_FO { get; set; }
+        public int? TX_RET { get; set; }
+        public int? TX_PVLS { get; set; }
+        public int? TB_STAT { get; set; }
+        public int? TX_TB { get; set; }
     }
 
     public class UploadList

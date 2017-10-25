@@ -18,7 +18,7 @@ namespace DQA.DAL.Data
         public int TB_ART { get; set; }
         public int TX_CURR { get; set; }
         public int PMTCT_ART { get; set; }
-        public int OVC { get; set; }
+        public Nullable<int> OVC { get; set; }
         public bool SelectedForDQA { get; set; }
         public string SelectedReason { get; set; }
         public string Quarter { get; set; }
@@ -34,6 +34,12 @@ namespace DQA.DAL.Data
         public Nullable<int> PMTCT_STAT_PREV { get; set; }
         public Nullable<int> PMTCT_EID { get; set; }
         public Nullable<int> TX_NEW { get; set; }
+        public Nullable<int> PMTCT_FO { get; set; }
+        public Nullable<int> TX_RET { get; set; }
+        public Nullable<int> TX_PVLS { get; set; }
+        public Nullable<int> TB_STAT { get; set; }
+        public Nullable<int> TX_TB { get; set; }
+        public Nullable<int> OVC_NotReported { get; set; }
     
         public virtual HealthFacility HealthFacility { get; set; }
         public virtual dqa_pivot_table_upload dqa_pivot_table_upload { get; set; }

@@ -162,7 +162,6 @@
           <Property Name="TB_ART" Type="int" Nullable="false" />
           <Property Name="TX_CURR" Type="int" Nullable="false" />
           <Property Name="PMTCT_ART" Type="int" Nullable="false" />
-          <Property Name="OVC" Type="int" Nullable="false" />
           <Property Name="SelectedForDQA" Type="bit" Nullable="false" />
           <Property Name="SelectedReason" Type="varchar" MaxLength="255" />
           <Property Name="Quarter" Type="varchar" MaxLength="255" Nullable="false" />
@@ -178,6 +177,13 @@
           <Property Name="PMTCT_STAT_PREV" Type="int" />
           <Property Name="PMTCT_EID" Type="int" />
           <Property Name="TX_NEW" Type="int" />
+          <Property Name="PMTCT_FO" Type="int" />
+          <Property Name="TX_RET" Type="int" />
+          <Property Name="TX_PVLS" Type="int" />
+          <Property Name="TB_STAT" Type="int" />
+          <Property Name="TX_TB" Type="int" />
+          <Property Name="OVC" Type="int" />
+          <Property Name="OVC_NotReported" Type="int" />
         </EntityType>
         <EntityType Name="dqa_pivot_table_upload">
           <Key>
@@ -1000,7 +1006,7 @@
           <Property Name="TB_ART" Type="Int32" Nullable="false" />
           <Property Name="TX_CURR" Type="Int32" Nullable="false" />
           <Property Name="PMTCT_ART" Type="Int32" Nullable="false" />
-          <Property Name="OVC" Type="Int32" Nullable="false" />
+          <Property Name="OVC" Type="Int32" />
           <Property Name="SelectedForDQA" Type="Boolean" Nullable="false" />
           <Property Name="SelectedReason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Quarter" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
@@ -1019,6 +1025,12 @@
           <Property Name="PMTCT_STAT_PREV" Type="Int32" />
           <Property Name="PMTCT_EID" Type="Int32" />
           <Property Name="TX_NEW" Type="Int32" />
+          <Property Name="PMTCT_FO" Type="Int32" />
+          <Property Name="TX_RET" Type="Int32" />
+          <Property Name="TX_PVLS" Type="Int32" />
+          <Property Name="TB_STAT" Type="Int32" />
+          <Property Name="TX_TB" Type="Int32" />
+          <Property Name="OVC_NotReported" Type="Int32" />
         </EntityType>
         <Association Name="FK__dqa_pivot__Facil__6324A15E">
           <End Type="shield_dmpModel.HealthFacility" Role="HealthFacility" Multiplicity="1" />
@@ -1343,6 +1355,12 @@
           <EntitySetMapping Name="dqa_pivot_table">
             <EntityTypeMapping TypeName="shield_dmpModel.dqa_pivot_table">
               <MappingFragment StoreEntitySet="dqa_pivot_table">
+                <ScalarProperty Name="OVC_NotReported" ColumnName="OVC_NotReported" />
+                <ScalarProperty Name="TX_TB" ColumnName="TX_TB" />
+                <ScalarProperty Name="TB_STAT" ColumnName="TB_STAT" />
+                <ScalarProperty Name="TX_PVLS" ColumnName="TX_PVLS" />
+                <ScalarProperty Name="TX_RET" ColumnName="TX_RET" />
+                <ScalarProperty Name="PMTCT_FO" ColumnName="PMTCT_FO" />
                 <ScalarProperty Name="TX_NEW" ColumnName="TX_NEW" />
                 <ScalarProperty Name="PMTCT_EID" ColumnName="PMTCT_EID" />
                 <ScalarProperty Name="PMTCT_STAT_PREV" ColumnName="PMTCT_STAT_PREV" />
