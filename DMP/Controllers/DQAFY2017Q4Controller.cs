@@ -504,8 +504,8 @@ namespace ShieldPortal.Controllers
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
 
             string period = "Q4 FY17";
-            string startDate = "2017-04-01 00:00:00.000";
-            string endDate = "2017-06-30 23:59:59.000";
+            string startDate = "2017-07-01 00:00:00.000";
+            string endDate = "2017-09-30 23:59:59.000";
             
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();

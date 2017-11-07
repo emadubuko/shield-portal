@@ -68,7 +68,8 @@ namespace ShieldPortal.Services
             }
             if (profile == null)
             {
-                throw new ApplicationException("Profile info not found");
+                new Controllers.AccountController().LogOff();
+                //throw new ApplicationException("Profile info not found");
             } 
             return profile;
         }

@@ -141,8 +141,21 @@ namespace DQA.DAL.Business
                         {
                             if (hf.ImplementingPartner.Id != profile.Organization.Id)
                             {
-                                sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                                hfs.TryGetValue(fCode + "_" + profile.Organization.ShortName, out hf);
+                                if (hf == null)
+                                {
+                                    sb.AppendLine("unknown facility with code [" + fCode + "," + fName + "] uploaded ");
+                                    row += 1;
+                                    continue;
+                                }
+                                else if (hf.ImplementingPartner.Id != profile.Organization.Id)
+                                {
+                                    sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                                    row += 1;
+                                    continue;
+                                }
                             }
+
                             pivotTable.Add(new Data.dqa_pivot_table
                             {
                                 IP = hf.ImplementingPartner.Id,
@@ -158,6 +171,12 @@ namespace DQA.DAL.Business
                         row += 1;
                     }
                 }
+
+                if (pivotTable.Count() == 0)
+                {
+                    sb.AppendLine("No valid record found in the pivot table. " + Environment.NewLine + "Ensure that the 'organisationunitid and organisationunitname' columns are populated");
+                }
+
 
                 if (!string.IsNullOrEmpty(sb.ToString()))
                 {
@@ -409,7 +428,7 @@ namespace DQA.DAL.Business
                                 {
                                     viral_load_count_suppression += 1;
                                 }
-                            }                            
+                            }
                         }
 
                         radet = new RadetMetaDataDAO().RetrieveRadetLineListingForRetebtion("Q4 FY17", new DateTime(2015, 10, 1), new DateTime(2016, 9, 30), site.IP, radetSite);
@@ -451,11 +470,11 @@ namespace DQA.DAL.Business
                     sheetn.Cells["X10"].Value = viral_load_count;
                     sheetn.Cells["X11"].Value = viral_load_count_suppression;
 
-                    if(viral_load_count > 0)
+                    if (viral_load_count > 0)
                     {
                         sheetn.Cells["X12"].Value = 1.0 * viral_load_count_suppression / viral_load_count;
                     }
-                    
+
 
 
                     var sheet__all_Q = package.Workbook.Worksheets["All Questions"];
