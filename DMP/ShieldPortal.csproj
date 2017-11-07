@@ -1326,6 +1326,8 @@
     <Content Include="Report\Template\DQA FY2017 Q4\Q4_Data Quality Assessment tool_v4.xlsm" />
     <Content Include="Report\Template\DQA FY2017 Q4\Data Quality Assessment Userguide Q4.pdf" />
     <Content Include="Report\Template\DQA FY2017 Q3\realData Quality Assessment tool_v3.xlsm" />
+    <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.xlsx" />
+    <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />

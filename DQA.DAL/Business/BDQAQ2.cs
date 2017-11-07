@@ -316,7 +316,7 @@ namespace DQA.DAL.Business
                 }
             }
 
-            var artSites = GetARTSite();
+            var artSites = Utilities.GetARTSiteWithDATIMCode();
 
 
             //site name come from pivot table and names match the data in health facility in the database
@@ -333,7 +333,7 @@ namespace DQA.DAL.Business
                 string template = System.Web.Hosting.HostingEnvironment.MapPath(System.Configuration.ConfigurationManager.AppSettings["DQAToolQ3"]);
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
                 {
-                    string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+                    string radetPeriod = "Q3 FY17";
                     var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(radetPeriod, site.IP, radetSite);// site.FacilityName);
                     if (radet != null)
                     {
@@ -405,47 +405,10 @@ namespace DQA.DAL.Business
                 }
             }
 
-            await ZipFolder(directory);
+            await new Utilities().ZipFolder(directory);
             return fileName;
         }
-
-        private async Task ZipFolder(string filepath)
-        {
-            string[] filenames = Directory.GetFiles(filepath);
-
-            using (ZipOutputStream s = new
-            ZipOutputStream(File.Create(filepath + ".zip")))
-            {
-                s.SetLevel(9); // 0-9, 9 being the highest compression
-
-                byte[] buffer = new byte[4096];
-
-                foreach (string file in filenames)
-                {
-
-                    ZipEntry entry = new
-                    ZipEntry(Path.GetFileName(file));
-
-                    entry.DateTime = DateTime.Now;
-                    s.PutNextEntry(entry);
-
-                    using (FileStream fs = File.OpenRead(file))
-                    {
-                        int sourceBytes;
-                        do
-                        {
-                            sourceBytes = await fs.ReadAsync(buffer, 0,
-                            buffer.Length);
-
-                            s.Write(buffer, 0, sourceBytes);
-
-                        } while (sourceBytes > 0);
-                    }
-                }
-                s.Finish();
-                s.Close();
-            }
-        }
+ 
 
         private async Task ZipFiles(Dictionary<string, MemoryStream> tools, string filepath)
         {
@@ -712,38 +675,7 @@ namespace DQA.DAL.Business
             }
             return true;
         }
-
-
-        /// <summary>
-        /// returns a dictionary of datim code and radet facility name
-        /// </summary>
-        /// <returns></returns>
-        public static Dictionary<string, string> GetARTSite()
-        {
-            string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
-            //code and radet name
-            Dictionary<string, string> artSites = new Dictionary<string, string>();
-            using (var package = new ExcelPackage(new FileInfo(art_file)))
-            {
-                var aSheet = package.Workbook.Worksheets.FirstOrDefault();
-                int row = 2;
-                while (true)
-                {
-                    string r_name = ExcelHelper.ReadCellText(aSheet, row, 2);
-                    if (string.IsNullOrEmpty(r_name))
-                        break;
-                    string d_code = ExcelHelper.ReadCellText(aSheet, row, 4);
-                    if (string.IsNullOrEmpty(d_code.Trim()))
-                        throw new ApplicationException("no code found");
-
-                    if (d_code.Trim().Contains("#N/A") == false)
-                        artSites.Add(d_code, r_name.Trim());
-                    row++;
-                }
-            }
-            return artSites;
-        }
-
+         
         //delete reports of a particular metadataId
         public void Delete(int metadataId)
         {

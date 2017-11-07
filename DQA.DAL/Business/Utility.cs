@@ -323,7 +323,7 @@ namespace DQA.DAL.Business
                                          OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
 
                                          PMTCT_ART = table.PMTCT_ART,
-                                         TB_ART = table.TB_ART,
+                                         
                                          TX_CURR = table.TX_CURR,
                                          HTC_Only = table.HTC_Only,
                                          HTC_Only_POS = table.HTC_Only_POS,
@@ -333,6 +333,15 @@ namespace DQA.DAL.Business
                                          PMTCT_STAT_NEW = table.PMTCT_STAT_NEW,
                                          PMTCT_STAT_PREV = table.PMTCT_STAT_PREV,
                                          TX_NEW = table.TX_NEW,
+
+                                         PMTCT_FO = table.PMTCT_FO,
+                                         TB_STAT = table.TB_STAT,
+                                         TX_PVLS = table.TX_PVLS,
+                                         TX_RET = table.TX_RET,
+                                         TX_TB = table.TX_TB,
+
+                                         TB_ART = table.TB_ART,
+
 
                                          SelectedForDQA = table.SelectedForDQA,
                                          SelectedReason = table.SelectedReason
@@ -365,6 +374,7 @@ namespace DQA.DAL.Business
                                                          {
                                                              IP = table.IP.ToString(),
                                                              FacilityName = table.HealthFacility.Name,
+                                                             FacilityCode = table.HealthFacility.FacilityCode,
                                                              OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
                                                              PMTCT_ART = table.PMTCT_ART,
                                                              TB_ART = table.TB_ART,
@@ -433,7 +443,7 @@ namespace DQA.DAL.Business
 
         public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate, string radetPeriod)
         {
-           // string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            // string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
 
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_aggregate_radet";

@@ -207,8 +207,9 @@ namespace RADET.DAL.Services
                             LineNo = "",
                             PatientNo = ""
                         });
+                         return false;
                     }
-                    return false;
+                   
                 }
                 // _lga = LGAs.FirstOrDefault(x => x.lga_name.ToLower() == lga.ToLower().Substring(3).Replace(" local government area", "") && x.State.state_name.ToLower() == state.ToLower().Substring(3).Replace(" state", ""));
                
@@ -539,7 +540,7 @@ namespace RADET.DAL.Services
                         PatientNo = PatientId
                     });
                 }
-                if (output > 4 || output < 1)
+                if (output > 6 || output < 1)
                 {
                     error.Add(new ErrorDetails
                     {
@@ -620,38 +621,7 @@ namespace RADET.DAL.Services
             DateTime.TryParseExact(endDay, "d/M/yy", new CultureInfo("en-US"), DateTimeStyles.None, out date);
             return date;
         }
-
-        public static Dictionary<string, List<string>> GetARTSite()
-        {
-            string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
-            Dictionary<string, List<string>> artSites = new Dictionary<string, List<string>>();
-            using (var package = new ExcelPackage(new FileInfo(art_file)))
-            {
-                var aSheet = package.Workbook.Worksheets["JustRADETNames"];
-
-                for (int col = 2; col <= 776; col++)
-                {
-                    string lga = ExcelHelper.ReadCellText(aSheet, 1, col);
-                    if (string.IsNullOrEmpty(lga))
-                        break;
-
-                    List<string> facilities = new List<string>();
-                    int row = 2;
-                    while (true)
-                    {
-                        var text = aSheet.Cells[row, col];
-                        string facility = text.Text != null ? text.Text : ""; //ExcelHelper.ReadCellText(aSheet, row, 4);
-                        if (string.IsNullOrEmpty(facility))
-                            break;
-                        facilities.Add(facility);
-                        row++;
-                    }
-                    artSites.Add(lga, facilities);
-                }
-            }
-            return artSites;
-        }
-
+         
 
         /*
         private DateTime? ValidateDateTime(string input, string fieldName, string fileName, string fileTab, int LineNo, string PatientId, ref List<ErrorDetails> error)

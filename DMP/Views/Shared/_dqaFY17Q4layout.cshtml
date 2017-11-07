@@ -30,10 +30,10 @@
                             </a>
                         </li>
                         @*<li>
-                            <a href="~/DQAFY2017Q4/Analytics?reportType=Partners" style="color:#029b17;">
-                                <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
-                            </a>
-                        </li>*@
+                                <a href="~/DQAFY2017Q4/Analytics?reportType=Partners" style="color:#029b17;">
+                                    <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
+                                </a>
+                            </li>*@
                         @if (new ShieldPortal.Services.Utils().GetloggedInProfile().ContactEmailAddress.Contains("mgic"))
                         {
                             <li>
@@ -42,7 +42,7 @@
                                 </a>
                             </li>
                         }
-                        
+
                         <li>
                             <a href=@Url.Action("DQAResult", "DQAFY2017Q4") style="color:#029b17;">
                                 <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Result</span>
@@ -64,26 +64,26 @@
                             </a>
                         </li>
                         <li class="navigation-header">Downloads</li>
-                        @*<li>
-        <a href="~/DQAFY2017Q4/DownloadDQATool" style="color:deeppink;">
-            <i class="fa fa-download"></i><span class="title">&nbsp; DQA tool</span>
-        </a>
-    </li>
-    <li>
-        <a download="Printable DQA tool" href="~/Report/Template/DQA FY2017 Q3/Printable Summary sheet DQA_Q3R.pdf" style="color:deeppink;">
-            <i class="fa fa-download"></i><span class="title">&nbsp;Printable DQA tool</span>
-        </a>
-    </li>*@
+                        <li>
+                            <a href="~/DQAFY2017Q4/DownloadDQATool" style="color:deeppink;">
+                                <i class="fa fa-download"></i><span class="title">&nbsp; DQA tool</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a download="Printable DQA tool" href="~/DQAFY2017Q4/downloadDQAResource?fileType=SummarySheet" style="color:deeppink;">
+                                <i class="fa fa-download"></i><span class="title">&nbsp;Printable DQA tool</span>
+                            </a>
+                        </li>
                         <li>
                             <a href="~/DQAFY2017Q4/downloadDQAResource?fileType=PivotTable" style="color:deeppink;">
                                 <i class="fa fa-download"></i><span class="title">&nbsp; Pivot Table Template</span>
                             </a>
                         </li>
-                        @*<li>
+                        <li>
                             <a href="~/DQAFY2017Q4/downloadDQAResource?fileType=DQAUserGuide" style="color:deeppink;">
                                 <i class="fa fa-download"></i> <span class="title">&nbsp; DQA user guide</span>
                             </a>
-                        </li>*@
+                        </li>
                     </ul>
                 </div>
             </div>

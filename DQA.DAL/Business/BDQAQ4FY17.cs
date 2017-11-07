@@ -9,9 +9,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DQA.DAL.Model;
+using RADET.DAL.DAO;
 
 namespace DQA.DAL.Business
-{ 
+{
     public class BDQAQ4FY17
     {
         shield_dmpEntities entity;
@@ -27,7 +28,7 @@ namespace DQA.DAL.Business
             var previously = entity.dqa_pivot_table_upload.FirstOrDefault(x => x.Quarter == reportPeriod.Trim() && x.ImplementingPartner.Id == profile.Organization.Id);
             if (previously != null)
             {
-                result = "Pivot table already uploaded"; 
+                result = "Pivot table already uploaded";
                 return false;
                 //throw new ApplicationException();
             }
@@ -107,9 +108,9 @@ namespace DQA.DAL.Business
                                 TX_PVLS = tx_pvls,
                                 TB_STAT = tb_stat,
                                 TB_ART = tb_art,
-                                TX_TB = tx_tb, 
+                                TX_TB = tx_tb,
                                 HealthFacility = hf,
-                                Quarter = reportPeriod, 
+                                Quarter = reportPeriod,
                                 ImplementingPartner = hf.ImplementingPartner,
                             });
                         }
@@ -144,9 +145,9 @@ namespace DQA.DAL.Business
                             }
                             pivotTable.Add(new Data.dqa_pivot_table
                             {
-                                 IP = hf.ImplementingPartner.Id,
-                                  FacilityId = hf.Id,                                     
-                                HealthFacility = hf, 
+                                IP = hf.ImplementingPartner.Id,
+                                FacilityId = hf.Id,
+                                HealthFacility = hf,
                                 Quarter = reportPeriod,
                                 ImplementingPartner = hf.ImplementingPartner,
                                 OVC = ExcelHelper.ReadCellText(worksheet, row, 3).ToInt(),
@@ -234,7 +235,7 @@ namespace DQA.DAL.Business
 
                 entity.dqa_pivot_table_upload.Add(
                     new dqa_pivot_table_upload
-                    {  
+                    {
                         DateUploaded = DateTime.Now,
                         dqa_pivot_table = selectedList,
                         IP = profile.Organization.Id,
@@ -261,13 +262,13 @@ namespace DQA.DAL.Business
                         item.PMTCT_ART,
                         item.PMTCT_EID,
                         item.PMTCT_FO,
-                        item.TX_NEW,                        
+                        item.TX_NEW,
                         item.TX_CURR,
                         item.TX_RET,
                         item.TX_PVLS,
                         item.TB_STAT,
                         item.TB_ART,
-                         item.TX_TB,
+                        item.TX_TB,
                         item.SelectedForDQA,
                         item.SelectedReason
                     }
@@ -303,9 +304,193 @@ namespace DQA.DAL.Business
             throw new NotImplementedException();
         }
 
-        public Task<string> GenerateDQA(List<PivotTableModel> data, Organizations organization)
+
+        /// <summary>
+        /// this is a method to download the DQA tool
+        /// </summary>
+        /// <param name="facilities">< list of facility pivot table reported in DATIM/param>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        public async Task<string> GenerateDQA(List<PivotTableModel> facilities, Organizations ip)
         {
-            throw new NotImplementedException();
+            string fileName = "DQA_Q4_" + ip.ShortName + ".zip";
+            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/DQA_Q4_" + ip.ShortName);
+
+            string zippedFile = directory + "\\" + fileName;
+
+            if (Directory.Exists(directory) == false)
+            {
+                Directory.CreateDirectory(directory);
+            }
+            else
+            {
+                try
+                {
+                    string[] filenames = Directory.GetFiles(directory);
+                    foreach (var file in filenames)//incase the folder is not empty
+                    {
+                        File.Delete(file);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
+            }
+
+            var artSites = Utilities.GetARTSiteWithDATIMCode();
+
+            //site name come from pivot table and names match the data in health facility in the database
+            foreach (var site in facilities)
+            {
+                string radetSite;
+                artSites.TryGetValue(site.FacilityCode, out radetSite);
+
+                if (string.IsNullOrEmpty(radetSite))
+                {
+                    radetSite = site.FacilityName;
+                }
+
+                string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/Q4_Data Quality Assessment tool_v4.xlsm");
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
+                {
+                    var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA("Q4 FY17", site.IP, radetSite);// site.FacilityName);
+                    radet = radet.Where(x => !x.MetaData.Supplementary).ToList();
+                    if (radet.Count > 107)
+                    {
+                        radet.Shuffle();
+                        radet = radet.Take(107).ToList();
+                    }
+                    int tx_current_count = radet.Count;
+
+                    int viral_load_count = radet.Count(x => !string.IsNullOrEmpty(x.CurrentViralLoad));
+                    int viral_load_count_suppression = 0;
+
+
+                    if (radet != null)
+                    {
+                        var sheet = package.Workbook.Worksheets["TX_CURR"];
+
+                        int row = 1;
+                        for (int i = 0; i < radet.Count(); i++)
+                        {
+                            row++;
+                            sheet.Cells["A" + row].Value = radet[i].RadetPatient.PatientId;
+                            sheet.Cells["B" + row].Value = radet[i].RadetPatient.HospitalNo;
+                            sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
+                            sheet.Cells["D" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_years == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_years.ToString();
+                            sheet.Cells["E" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_months == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_months.ToString();
+                            sheet.Cells["F" + row].Value = radet[i].ARTStartDate;// string.Format("{0:d-MMM-yyyy}", radet[i].ARTStartDate);
+                            sheet.Cells["F" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                            sheet.Cells["G" + row].Value = radet[i].LastPickupDate; // string.Format("{0:d-MMM-yyyy}", radet[i].LastPickupDate);
+                            sheet.Cells["G" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+
+                            sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill;
+
+                            sheet.Cells["M" + row].Value = radet[i].RegimenLineAtARTStart;
+                            sheet.Cells["N" + row].Value = radet[i].RegimenAtStartOfART;
+
+                            sheet.Cells["Q" + row].Value = radet[i].CurrentRegimenLine;
+                            sheet.Cells["R" + row].Value = radet[i].CurrentARTRegimen;
+                            sheet.Cells["U" + row].Value = radet[i].PregnancyStatus;
+
+                            string currentViralLoad = radet[i].CurrentViralLoad;
+                            sheet.Cells["V" + row].Value = currentViralLoad;
+                            sheet.Cells["W" + row].Value = radet[i].DateOfCurrentViralLoad; // string.Format("{0:d-MMM-yyyy}", radet[i].DateOfCurrentViralLoad);
+                            sheet.Cells["W" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                            sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
+                            sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
+
+                            if (!string.IsNullOrEmpty(currentViralLoad) && !string.IsNullOrEmpty(currentViralLoad.Trim()))
+                            {
+                                int cvl = 0;
+                                int.TryParse(currentViralLoad, out cvl);
+                                if (cvl <= 1000)
+                                {
+                                    viral_load_count_suppression += 1;
+                                }
+                            }                            
+                        }
+
+                        radet = new RadetMetaDataDAO().RetrieveRadetLineListingForRetebtion("Q4 FY17", new DateTime(2015, 10, 1), new DateTime(2016, 9, 30), site.IP, radetSite);
+                        if (radet != null)
+                        {
+                            List<RADET.DAL.Entities.RadetPatientLineListing> radet_ret = new List<RADET.DAL.Entities.RadetPatientLineListing>();
+
+                            string no_to_select = ExcelHelper.GetRandomizeChartNUmber(radet.Count.ToString());
+                            radet.Shuffle();
+
+                            foreach (var item in radet.Take(Convert.ToInt32(no_to_select)))
+                            {
+                                radet_ret.Add(item);
+                            }
+
+                            sheet = package.Workbook.Worksheets["TX_RET"];
+
+                            row = 1;
+                            for (int i = 0; i < radet_ret.Count(); i++)
+                            {
+                                row++;
+                                sheet.Cells["A" + row].Value = radet_ret[i].RadetPatient.PatientId;
+                                sheet.Cells["B" + row].Value = radet_ret[i].RadetPatient.HospitalNo;
+                                sheet.Cells["C" + row].Value = radet_ret[i].ARTStartDate;
+                                sheet.Cells["C" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                            }
+                        }
+                    }
+
+                    var sheetn = package.Workbook.Worksheets["Worksheet"];
+                    sheetn.Cells["P2"].Value = site.IP;
+                    sheetn.Cells["R2"].Value = site.State;
+                    sheetn.Cells["T2"].Value = site.Lga;
+                    sheetn.Cells["V2"].Value = site.FacilityName;
+                    sheetn.Cells["AA2"].Value = site.FacilityCode;
+                    sheetn.Cells["Y2"].Value = "Q4 FY17";
+
+                    sheetn.Cells["N10"].Value = tx_current_count;
+                    sheetn.Cells["X10"].Value = viral_load_count;
+                    sheetn.Cells["X11"].Value = viral_load_count_suppression;
+
+                    if(viral_load_count > 0)
+                    {
+                        sheetn.Cells["X12"].Value = 1.0 * viral_load_count_suppression / viral_load_count;
+                    }
+                    
+
+
+                    var sheet__all_Q = package.Workbook.Worksheets["All Questions"];
+                    //hts_tst
+                    sheet__all_Q.Cells["F2"].Value = site.HTS_TST;
+                    sheet__all_Q.Cells["F3"].Value = site.HTC_Only_POS + site.PMTCT_STAT_NEW;
+                    sheet__all_Q.Cells["F4"].Value = site.HTC_Only;
+                    sheet__all_Q.Cells["F5"].Value = site.HTC_Only_POS;
+                    //pmtct_stat
+                    sheet__all_Q.Cells["F12"].Value = site.PMTCT_STAT;
+                    sheet__all_Q.Cells["F13"].Value = site.PMTCT_STAT_NEW;
+                    sheet__all_Q.Cells["F14"].Value = site.PMTCT_STAT_PREV;
+                    //pmtct_art
+                    sheet__all_Q.Cells["F23"].Value = site.PMTCT_ART;
+                    //pmtct_eid
+                    sheet__all_Q.Cells["F28"].Value = site.PMTCT_EID;
+                    //tx_new
+                    sheet__all_Q.Cells["F33"].Value = site.TX_NEW;
+                    //pmtct_fo
+                    sheet__all_Q.Cells["F60"].Value = site.PMTCT_FO;
+                    //tb_art
+                    sheet__all_Q.Cells["F45"].Value = site.TB_ART;
+                    //tb_stat
+                    sheet__all_Q.Cells["F39"].Value = site.TB_STAT;
+                    //tx_tb
+                    sheet__all_Q.Cells["F50"].Value = site.TX_TB;
+
+                    var sheet__all_Summary = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
+                    sheet__all_Summary.Cells["E12"].Value = tx_current_count;
+
+                    package.SaveAs(new FileInfo(directory + "/" + site.FacilityName + ".xlsm"));
+                }
+            }
+            await new Utilities().ZipFolder(directory);
+            return fileName;
         }
     }
 }

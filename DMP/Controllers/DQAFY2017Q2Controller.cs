@@ -483,7 +483,7 @@ namespace ShieldPortal.Controllers
             }
             var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
             var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
-            var artSites = BDQAQ2.GetARTSite();
+            var artSites = Utilities.GetARTSiteWithDATIMCode();
 
             List<dynamic> mydata = new List<dynamic>();
             List<dynamic> mydata2 = new List<dynamic>();

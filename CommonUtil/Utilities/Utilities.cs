@@ -1,25 +1,155 @@
 ﻿using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
+using ICSharpCode.SharpZipLib.Zip;
 using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Persister.Entity;
+using OfficeOpenXml;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.SessionState;
+using System.Threading.Tasks;
 
 namespace CommonUtil.Utilities
 {
     public class Utilities
     {
+        public static Dictionary<string, List<string>> GetQ4ARTSites(string IP)
+        {
+            string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
+            Dictionary<string, List<string>> artSites = new Dictionary<string, List<string>>();
+            using (var package = new ExcelPackage(new FileInfo(art_file)))
+            {
+                var aSheet = package.Workbook.Worksheets["OriginalRADETFacilities"];
+
+                for (int col = 2; col <= 776; col++)
+                {
+                    string lga = ExcelHelper.ReadCellText(aSheet, 1, col);
+                    if (string.IsNullOrEmpty(lga))
+                        break;
+
+                    List<string> facilities = new List<string>();
+                    int row = 2;
+                    while (true)
+                    {
+                        var text = aSheet.Cells[row, col];
+                        string facility = text.Text != null ? text.Text : ""; //ExcelHelper.ReadCellText(aSheet, row, 4);
+                        if (string.IsNullOrEmpty(facility))
+                            break;
+                        facilities.Add(facility);
+                        row++;
+                    }
+                    artSites.Add(lga, facilities);
+                }
+                //specific sheet for extrac facility not listed
+                var specificSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name == IP + "_Extra");
+                if (specificSheet != null)
+                {
+                    List<FACLGA> faclag = new List<FACLGA>();
+                    int row = 2;
+                    while (true)
+                    {
+                        var LGAtext = specificSheet.Cells[row, 2];
+                        var factext = specificSheet.Cells[row, 3];
+                        if (string.IsNullOrEmpty(factext.Text) || string.IsNullOrEmpty(LGAtext.Text))
+                            break;
+
+                        faclag.Add(new FACLGA
+                        {
+                            LGA = LGAtext.Text.Contains("Local Government Area") ? LGAtext.Text : LGAtext.Text.Trim() + " Local Government Area",
+                            Facility = factext.Text,
+                        });
+                        row++;
+                    }
+                    foreach (var item in faclag.GroupBy(x => x.LGA))
+                    {
+                        if (artSites.ContainsKey(item.Key))
+                        {
+                            artSites[item.Key].AddRange(item.Select(x => x.Facility).ToList());
+                        }
+                        else
+                        {
+                            throw new ApplicationException("LGA is not valid");
+                            //artSites.Add(item.Key, item.Select(x => x.Facility).ToList());
+                        }
+                    }
+                }
+            }
+            return artSites;
+        }
+
+        public static Dictionary<string, string> GetARTSiteWithDATIMCode()
+        {
+            string art_file = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/ART sites.xlsx");
+            //code and radet name
+            Dictionary<string, string> artSites = new Dictionary<string, string>();
+            using (var package = new ExcelPackage(new FileInfo(art_file)))
+            {
+                var aSheet = package.Workbook.Worksheets.FirstOrDefault();
+                int row = 2;
+                while (true)
+                {
+                    string r_name = ExcelHelper.ReadCellText(aSheet, row, 2);
+                    if (string.IsNullOrEmpty(r_name))
+                        break;
+                    string d_code = ExcelHelper.ReadCellText(aSheet, row, 4);
+                    if (string.IsNullOrEmpty(d_code.Trim()))
+                        throw new ApplicationException("no code found");
+
+                    if (d_code.Trim().Contains("#N/A") == false)
+                        artSites.Add(d_code, r_name.Trim());
+                    row++;
+                }
+            }
+            return artSites;
+        }
+
+        public async Task ZipFolder(string filepath)
+        {
+            string[] filenames = Directory.GetFiles(filepath);
+
+            using (ZipOutputStream s = new
+            ZipOutputStream(File.Create(filepath + ".zip")))
+            {
+                s.SetLevel(9); // 0-9, 9 being the highest compression
+
+                byte[] buffer = new byte[4096];
+
+                foreach (string file in filenames)
+                {
+
+                    ZipEntry entry = new
+                    ZipEntry(Path.GetFileName(file));
+
+                    entry.DateTime = DateTime.Now;
+                    s.PutNextEntry(entry);
+
+                    using (FileStream fs = File.OpenRead(file))
+                    {
+                        int sourceBytes;
+                        do
+                        {
+                            sourceBytes = await fs.ReadAsync(buffer, 0,
+                            buffer.Length);
+
+                            s.Write(buffer, 0, sourceBytes);
+
+                        } while (sourceBytes > 0);
+                    }
+                }
+                s.Finish();
+                s.Close();
+            }
+        }
+
+
         public static string PasCaseConversion(string PascalWord)
         {
             return Regex.Replace(PascalWord, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
@@ -213,6 +343,11 @@ namespace CommonUtil.Utilities
             return iframe;
         }
 
-
+        private class FACLGA
+        {
+            public string Facility { get; set; }
+            public string LGA { get; set; }
+        }
     }
+
 }

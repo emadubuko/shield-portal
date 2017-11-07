@@ -439,7 +439,7 @@ namespace ShieldPortal.Controllers
                     .MapPath("~/Report/Uploads/RADET/" + IP.ShortName + "_" + Request.Files[0].FileName);
                 Request.Files[0].SaveAs(filePath);
 
-                var validFacilities = RADETProcessor.GetARTSite();
+                var validFacilities = Utilities.GetQ4ARTSites(IP.ShortName);
 
                 if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "ZIP")
                 {

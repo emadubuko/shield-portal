@@ -65,20 +65,11 @@ namespace ShieldPortal.Controllers
             }
             else
             {
-                
-                Request.Files[0].SaveAs(Server.MapPath("~/Report/Uploads/Pivot table Q4/" + Request.Files[0].FileName));
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
+                Request.Files[0].SaveAs(Server.MapPath("~/Report/Uploads/Pivot table Q4/" + loggedinProfile.Organization.ShortName + "_" + Request.Files[0].FileName));
+                
                 Stream uploadedFile = Request.Files[0].InputStream;
                 bool status = new BDQAQ4FY17().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
-                //    if (status)
-                //    {
-                //        msg = new HttpResponseMessage(HttpStatusCode.OK); //, result);
-                //        msg.Content = new StringContent(result);
-                //    }
-                //    else{
-                //        msg = new HttpResponseMessage(HttpStatusCode.BadRequest); //, result);
-                //        msg.Content = new StringContent(result); 
-                //}
             }
             return result; //msg;
         }
@@ -453,13 +444,13 @@ namespace ShieldPortal.Controllers
             switch (fileType)
             {
                 case "DQAUserGuide":
-                    filename = "THE DATA QUALITY ASSESSMENT USER GUIDE FOR FY17 Q3.pdf";
+                    filename = "Data Quality Assessment Userguide Q4.pdf";
                     break;
                 case "PivotTable":
                     filename = "DATIM PIVOT TABLE Q4.xlsx";
                     break;
                 case "SummarySheet":
-                    filename = "Printable Summary sheet DQA_Q3R.pdf";
+                    filename = "Summary Sheet Q4 DQA.pdf";
                     break;
             }
             string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/" + filename);
@@ -526,7 +517,7 @@ namespace ShieldPortal.Controllers
             }
             var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
             var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
-            var artSites = BDQAQ2.GetARTSite();
+            var artSites = Utilities.GetARTSiteWithDATIMCode();
 
             List<dynamic> mydata = new List<dynamic>();
             List<dynamic> mydata2 = new List<dynamic>();
