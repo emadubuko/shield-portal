@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -285,19 +286,25 @@ namespace ShieldPortal.Controllers
             }); 
         }
 
-        //Q3 Fy17
+        //Q4 Fy17
         public ActionResult DQAAnalysisReport(string type)
         {
-            //string ip = "";
-            //if (User.IsInRole("ip"))
-            //{
-            //    var profile = new Services.Utils().GetloggedInProfile();
-            //    ip = profile.Organization.ShortName;
-            //}
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var cmd = new SqlCommand();
+            cmd.CommandText = "get_q4_FY17_analysis_report";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ip", ip);
+            cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
+            var data = Utility.GetDatable(cmd);
+
             //var data = Utility.GetQ3Analysis(ip, type.ToLower().Contains("partners"));
 
-            //return View(data);
-            return View("");
+            return View(data);
         }
 
         public ActionResult IpDQA()

@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using DQA.DAL.Model;
 using RADET.DAL.DAO;
+using System.Data.Entity.Validation;
+using System.Xml.Linq;
 
 namespace DQA.DAL.Business
 {
@@ -20,6 +22,289 @@ namespace DQA.DAL.Business
         public BDQAQ4FY17()
         {
             entity = new shield_dmpEntities();
+        }
+
+        public string ReadWorkbook(string filename, Profile Theuser)
+        {
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
+            {
+                //get the metadata of the report
+                var metadata = new dqa_report_metadata();
+                try
+                {
+                    var worksheet = package.Workbook.Worksheets["Worksheet"];
+
+                    var facility_code = worksheet.Cells["AA2"].Value.ToString(); //facility code
+                    var facility = entity.HealthFacilities.FirstOrDefault(e => e.FacilityCode == facility_code);
+                    if (facility == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. The facility is incorrect</td></tr>";
+                    }
+                    if (Theuser.Organization.Id != facility.ImplementingPartnerId
+                        && Theuser.RoleName == "ip")
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> This facility <b>" + facility.Name + "</b> is not mapped to your Organization. </td></tr>";
+                    }
+
+                    metadata.AssessmentWeek = 1;
+                    metadata.CreateDate = DateTime.Now;
+                    metadata.CreatedBy = Theuser.ContactEmailAddress;
+                    metadata.FiscalYear = DateTime.Now.Year.ToString();
+                    metadata.FundingAgency = 1;
+                    metadata.ImplementingPartner = facility.ImplementingPartnerId.Value;
+                    metadata.LgaId = facility.LGAId;
+                    metadata.LgaLevel = 2;
+                    metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
+                    metadata.SiteId = Convert.ToInt32(facility.Id);
+                    metadata.StateId = facility.lga.state.state_code; // state.state_code;
+
+                    var domain = Theuser.ContactEmailAddress.Split('@')[1];
+
+                    var meta_counts = entity.dqa_report_metadata
+                        .Where(e => e.ReportPeriod == metadata.ReportPeriod
+                        && e.ImplementingPartner == metadata.ImplementingPartner
+                        && e.SiteId == metadata.SiteId);// && e.CreatedBy.Contains(domain));
+
+                    foreach (var p_item in meta_counts)
+                    {
+                        var thatUserRole = new CommonUtil.DAO.ProfileDAO().GetRoleByEmail(p_item.CreatedBy);
+                        if (thatUserRole == Theuser.RoleName)
+                        {
+                            return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
+                        }
+                    }
+
+
+                    entity.dqa_report_metadata.Add(metadata);
+                    entity.SaveChanges();
+
+                    worksheet = package.Workbook.Worksheets["All Questions"];
+
+                    //get all the indicators in the system
+                    var indicators = entity.dqa_indicator.Where(x => x.DQAPeriod == metadata.ReportPeriod);
+
+                    for (var i = 7; i < 59; i++)
+                    {
+                        var istValueMonth = worksheet.Cells[i, 4];
+                        var sndValueMonth = worksheet.Cells[i, 5];
+                        var trdValueMonth = worksheet.Cells[i, 6];
+                        var question = worksheet.Cells[i, 2];
+
+                        //check if there is a value for the indicator
+                        if (istValueMonth == null || istValueMonth.Value == null || sndValueMonth == null || sndValueMonth.Value == null || trdValueMonth == null || trdValueMonth.Value == null || question == null || question.Value == null)
+                            continue;
+
+                        var indicator_code = worksheet.Cells[i, 2].Value.ToString();
+                        var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
+                        if (indicator == null)
+                            continue;
+                        var report_value = new dqa_report_value();
+                        report_value.MetadataId = metadata.Id;
+                        report_value.IndicatorId = indicator.Id;
+                        report_value.IndicatorValueMonth1 = Utility.GetDecimal(istValueMonth.Value);
+                        report_value.IndicatorValueMonth2 = Utility.GetDecimal(sndValueMonth.Value);
+                        report_value.IndicatorValueMonth3 = Utility.GetDecimal(trdValueMonth.Value);
+
+                        entity.dqa_report_value.Add(report_value);
+                    }
+                    entity.SaveChanges();
+
+                    ReadSummary(worksheet, package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
+
+                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
+                }
+                catch (DbEntityValidationException e)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        sb.AppendLine(string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State));
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            sb.AppendLine(string.Format("- Property: \"{0}\", Value: \"{1}\", Error: \"{2}\"",
+                                ve.PropertyName,
+                                eve.Entry.CurrentValues.GetValue<object>(ve.PropertyName),
+                                ve.ErrorMessage));
+                        }
+                    }
+                    Logger.LogInfo("BDQAQ2.ReadWorkbook", sb.ToString());
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred while processing the file " + filename + "</td></tr>";
+                }
+                catch (Exception ex)
+                {
+                    entity.dqa_report_metadata.Remove(metadata);
+                    entity.SaveChanges();
+                    Logger.LogError(ex);
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>There are errors " + filename + "</td></tr>";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Read the result from the summary sheet
+        /// </summary>
+        /// <param name="summaryworksheet"></param>
+        /// <param name="medata_data_id"></param>
+        private void ReadSummary(ExcelWorksheet allQuestionworksheet, ExcelWorksheet summaryworksheet, int medata_data_id)
+        {
+            int i = 6;
+            var summaries = new XElement("summaries");
+            var reported_data = new XElement("reported_data");
+            reported_data.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+            reported_data.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            reported_data.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            reported_data.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            reported_data.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            reported_data.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            reported_data.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            reported_data.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
+            reported_data.Add(new XElement("TX_Curr", summaryworksheet.Cells["E12"].Value.ToString()));
+            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J12"].Value.ToString()));
+            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P12"].Value.ToString()));
+            summaries.Add(reported_data);
+
+            i = 7;
+            var validation = new XElement("validation");
+            validation.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+            validation.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            validation.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            validation.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+
+            validation.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            validation.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            validation.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            validation.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            validation.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            validation.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
+            validation.Add(new XElement("TX_Curr", summaryworksheet.Cells["E13"].Value.ToString()));
+            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J13"].Value.ToString()));
+            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P13"].Value.ToString()));
+            summaries.Add(validation);
+
+            i = 8;
+            var concurrency_rate = new XElement("Concurrence_rate");
+            concurrency_rate.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_Curr", summaryworksheet.Cells["E14"].Value.ToString()));
+            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J14"].Value.ToString()));
+            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P14"].Value.ToString()));
+
+            summaries.Add(concurrency_rate);
+
+
+            var summary_value = new dqa_summary_value();
+            summary_value.metadata_id = medata_data_id;
+            summary_value.summary_object = summaries.ToString();
+            entity.dqa_summary_value.Add(summary_value);
+
+            entity.SaveChanges();
+
+            #region -oldcode
+            /*
+            int pmtct_stat = allQuestionworksheet.Cells["D16"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E16"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F16"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["D17"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E17"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F17"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["D18"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E18"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F18"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["D20"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["E20"].Value.ToString().ToInt();
+            pmtct_stat += allQuestionworksheet.Cells["F20"].Value.ToString().ToInt();
+            double pmtct_stat_value = Math.Round((pmtct_stat * 1.0) / 2, MidpointRounding.AwayFromZero);
+
+            int htc_stat = allQuestionworksheet.Cells["D7"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["E7"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["F7"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["D8"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["E8"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["F8"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["D9"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["E9"].Value.ToString().ToInt();
+            htc_stat += allQuestionworksheet.Cells["F9"].Value.ToString().ToInt();
+
+            double htc_stat_value = Math.Round((htc_stat * 1.0) / 2, MidpointRounding.AwayFromZero);
+            htc_stat_value = htc_stat_value + pmtct_stat_value;
+
+            double PMTCT_STAT_Knwpos = 0;
+            double.TryParse(summaryworksheet.Cells[i, 8].Value.ToString(), out PMTCT_STAT_Knwpos);
+
+            htc_stat_value = htc_stat_value - PMTCT_STAT_Knwpos;
+
+
+            i = 7;
+            var validation = new XElement("validation");
+            validation.Add(new XElement("HTC_TST", htc_stat_value)); //summaryworksheet.Cells[i, 2].Value.ToString()));
+            validation.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            validation.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            validation.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+
+            validation.Add(new XElement("PMTCT_STAT", pmtct_stat_value)); //summaryworksheet.Cells[i, 6].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            validation.Add(new XElement("PMTCT_STAT_Knwpos", PMTCT_STAT_Knwpos)); //summaryworksheet.Cells[i, 8].Value.ToString()));
+            validation.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            validation.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            validation.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            validation.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            validation.Add(new XElement("TB_PREV", summaryworksheet.Cells[i, 15].Value.ToString()));
+            validation.Add(new XElement("TX_Curr", summaryworksheet.Cells["E13"].Value.ToString()));
+            summaries.Add(validation);
+
+            i = 8;
+            var concurrency_rate = new XElement("Concurrence_rate");
+            concurrency_rate.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+            concurrency_rate.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+            concurrency_rate.Add(new XElement("TB_PREV", summaryworksheet.Cells[i, 15].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_Curr", summaryworksheet.Cells["E14"].Value.ToString()));
+            summaries.Add(concurrency_rate);
+
+
+            var summary_value = new dqa_summary_value();
+            summary_value.metadata_id = medata_data_id;
+            summary_value.summary_object = summaries.ToString();
+            entity.dqa_summary_value.Add(summary_value);
+
+            entity.SaveChanges();
+            */
+            #endregion
         }
 
 
@@ -313,14 +598,21 @@ namespace DQA.DAL.Business
             entity.SaveChanges();
         }
 
-        public string ReadWorkbook(string extractedFilePath, Profile userUploading)
-        {
-            throw new NotImplementedException();
-        }
 
         public string GetReportDetails(int metadataid)
         {
-            throw new NotImplementedException();
+            var report_value = new dqa_report_value();
+            var result = from item in entity.dqa_report_value.Where(x => x.MetadataId == metadataid)
+                         select new
+                         {
+                             item.dqa_indicator.ThematicArea,
+                             item.dqa_indicator.IndicatorName,
+                             item.IndicatorValueMonth1,
+                             item.IndicatorValueMonth2,
+                             item.IndicatorValueMonth3
+                         };
+            string Processed_result = Newtonsoft.Json.JsonConvert.SerializeObject(result);
+            return Processed_result;
         }
 
 

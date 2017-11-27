@@ -161,6 +161,12 @@ namespace DQA.DAL.Business
         {
             try
             {
+                if (value == null)
+                    return null;
+                if (!string.IsNullOrEmpty(Convert.ToString(value)) && Convert.ToString(value).StartsWith("?"))
+                {
+                    throw new ApplicationException("invalid value in upload");
+                }
                 return Convert.ToDecimal(value);
             }
             catch

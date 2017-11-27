@@ -1463,6 +1463,7 @@
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
+    <Folder Include="Report\Uploads\DQA Q4 FY17\" />
     <Folder Include="Report\Uploads\Pivot table Q4\" />
     <Folder Include="Report\Uploads\RADET\" />
     <Folder Include="Scripts\Highcharts\api\css\images\" />
