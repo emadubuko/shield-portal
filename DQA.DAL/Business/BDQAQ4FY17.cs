@@ -670,7 +670,7 @@ namespace DQA.DAL.Business
                     if (radet.Count > 107)
                     {
                         radet.Shuffle();
-                        radet = radet.Take(107).ToList();
+                        radet = radet.Take(107).ToList(); 
                     }
                     int tx_current_count = radet.Count;
 
