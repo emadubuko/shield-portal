@@ -301,8 +301,7 @@ namespace ShieldPortal.Controllers
             cmd.Parameters.AddWithValue("@ip", ip);
             cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
             var data = Utility.GetDatable(cmd);
-
-            //var data = Utility.GetQ3Analysis(ip, type.ToLower().Contains("partners"));
+             
 
             return View(data);
         }
