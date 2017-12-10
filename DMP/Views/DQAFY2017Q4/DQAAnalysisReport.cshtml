@@ -99,6 +99,22 @@
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TX_CURR)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TX_CURR)</div></th>
 
+                    <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>DQA FY17 Q4<br /> (TB_STAT)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TB_STAT)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TB_STAT)</div></th>
+
+                    <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>DQA FY17 Q4<br /> (TB_ART)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TB_ART)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TB_ART)</div></th>
+
+                    <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>DQA FY17 Q4<br /> (TX_TB)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TX_TB)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TX_TB)</div></th>
+
+                    <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>DQA FY17 Q4<br /> (PMTCT_FO)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (PMTCT_FO)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (PMTCT_FO)</div></th>
+
                     <th class="rotate" style="background-color:darkcyan; color:#fff; font-weight:bold"><div>Count Fails</div></th>
                 </tr>
             </thead>
@@ -275,6 +291,7 @@
                                 }
                                 <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                             }
+
                             <td style="border-left-width:medium;border-left-color:black">@dr[17]</td>
                             <td>@dr[18]</td>
                             @if (dr[17].ToString() == "#DIV/0!")
@@ -307,6 +324,141 @@
                                 }
                                 <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                             }
+
+                            @*hlhlk*@
+
+
+                            <td style="border-left-width:medium;border-left-color:black">@dr[20]</td>
+                            <td>@dr[21]</td>
+                            @if (dr[20].ToString() == "#DIV/0!")
+                            {
+                                <td>@dr[22]</td>
+                            }
+                            else
+                            {
+                                bool green = true;
+                                double conc = 0;
+                                double dtm = 0, validatn = 0;
+                                double.TryParse(dr[20].ToString(), out dtm);
+                                double.TryParse(dr[21].ToString(), out validatn);
+                                if (dtm == 0 && validatn == 0)
+                                {
+                                    conc = 100;
+                                }
+                                else if (validatn == 0)
+                                {
+                                    conc = 0;
+                                }
+                                else
+                                {
+                                    conc = 100 * (validatn / dtm); //Convert.ToDouble(dr[4] );
+                                }
+                                if (conc < 95 || conc > 105)
+                                {
+                                    failCount += 1;
+                                    green = false;
+                                }
+                                <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
+                            }
+
+                            <td style="border-left-width:medium;border-left-color:black">@dr[23]</td>
+                            <td>@dr[24]</td>
+                            @if (dr[23].ToString() == "#DIV/0!")
+                            {
+                                <td>@dr[25]</td>
+                            }
+                            else
+                            {
+                                bool green = true;
+                                double conc = 0;
+                                double dtm = 0, validatn = 0;
+                                double.TryParse(dr[23].ToString(), out dtm);
+                                double.TryParse(dr[24].ToString(), out validatn);
+                                if (dtm == 0 && validatn == 0)
+                                {
+                                    conc = 100;
+                                }
+                                else if (validatn == 0)
+                                {
+                                    conc = 0;
+                                }
+                                else
+                                {
+                                    conc = 100 * (validatn / dtm); //Convert.ToDouble(dr[4] );
+                                }
+                                if (conc < 95 || conc > 105)
+                                {
+                                    failCount += 1;
+                                    green = false;
+                                }
+                                <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
+                            }
+
+                            <td style="border-left-width:medium;border-left-color:black">@dr[26]</td>
+                            <td>@dr[27]</td>
+                            @if (dr[26].ToString() == "#DIV/0!")
+                            {
+                                <td>@dr[28]</td>
+                            }
+                            else
+                            {
+                                bool green = true;
+                                double conc = 0;
+                                double dtm = 0, validatn = 0;
+                                double.TryParse(dr[26].ToString(), out dtm);
+                                double.TryParse(dr[27].ToString(), out validatn);
+                                if (dtm == 0 && validatn == 0)
+                                {
+                                    conc = 100;
+                                }
+                                else if (validatn == 0)
+                                {
+                                    conc = 0;
+                                }
+                                else
+                                {
+                                    conc = 100 * (validatn / dtm); //Convert.ToDouble(dr[4] );
+                                }
+                                if (conc < 95 || conc > 105)
+                                {
+                                    failCount += 1;
+                                    green = false;
+                                }
+                                <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
+                            }
+                            <td style="border-left-width:medium;border-left-color:black">@dr[29]</td>
+                            <td>@dr[30]</td>
+                            @if (dr[29].ToString() == "#DIV/0!")
+                            {
+                                <td>@dr[31]</td>
+                            }
+                            else
+                            {
+                                bool green = true;
+                                double conc = 0;
+                                double dtm = 0, validatn = 0;
+                                double.TryParse(dr[29].ToString(), out dtm);
+                                double.TryParse(dr[30].ToString(), out validatn);
+                                if (dtm == 0 && validatn == 0)
+                                {
+                                    conc = 100;
+                                }
+                                else if (validatn == 0)
+                                {
+                                    conc = 0;
+                                }
+                                else
+                                {
+                                    conc = 100 * (validatn / dtm); //Convert.ToDouble(dr[4] );
+                                }
+                                if (conc < 95 || conc > 105)
+                                {
+                                    failCount += 1;
+                                    green = false;
+                                }
+                                <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
+                            }
+
                             <td>@failCount</td>
                         </tr>
                     }
@@ -332,7 +484,7 @@
                     extend: 'print',
                     text: 'Zoom Table',
                     autoPrint: false,
-                    title: "FY 2017 Q3 DQA Report"
+                    title: "FY 2017 Q4 DQA Report"
                 }
                 ]
             });
