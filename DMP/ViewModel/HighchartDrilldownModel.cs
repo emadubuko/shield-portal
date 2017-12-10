@@ -34,6 +34,30 @@ namespace ShieldPortal.ViewModel
         public List<ChildSeriesData> tx_curr_drilldown { get; set; }
         public List<ChildSeriesData> tx_curr_drilldown_QI { get; set; }
 
+        public List<ParentSeries> tb_stat_series { get; set; }
+        public List<ChildSeriesData> tb_stat_drilldown { get; set; }
+        public List<ChildSeriesData> tb_stat_drilldown_QI { get; set; }
+
+        public List<ParentSeries> tb_art_series { get; set; }
+        public List<ChildSeriesData> tb_art_drilldown { get; set; }
+        public List<ChildSeriesData> tb_art_drilldown_QI { get; set; }
+
+        public List<ParentSeries> tx_tb_series { get; set; }
+        public List<ChildSeriesData> tx_tb_drilldown { get; set; }
+        public List<ChildSeriesData> tx_tb_drilldown_QI { get; set; }
+
+        public List<ParentSeries> pmtct_fo_series { get; set; }
+        public List<ChildSeriesData> pmtct_fo_drilldown { get; set; }
+        public List<ChildSeriesData> pmtct_fo_drilldown_QI { get; set; }
+
+        public List<ParentSeries> tx_ret_series { get; set; }
+        public List<ChildSeriesData> tx_ret_drilldown { get; set; }
+        public List<ChildSeriesData> tx_ret_drilldown_QI { get; set; }
+
+        public List<ParentSeries> tx_pvls_series { get; set; }
+        public List<ChildSeriesData> tx_pvls_drilldown { get; set; }
+        public List<ChildSeriesData> tx_pvls_drilldown_QI { get; set; }
+
         public List<ConcurrenceRateByPartner> ConcurrenceByPartner { get; set; }    
     }
 
@@ -83,7 +107,31 @@ namespace ShieldPortal.ViewModel
 
         public int DATIM_TX_CURR { get; set; }
         public int Validated_TX_CURR { get; set; }
-        public List<object> tx_curr_Data { get; set; } 
+        public List<object> tx_curr_Data { get; set; }
+
+        public int DATIM_TB_STAT { get; set; }
+        public int Validated_TB_STAT { get; set; }
+        public List<object> tb_stat_Data { get; set; }
+
+        public int DATIM_TB_ART { get; set; }
+        public int Validated_TB_ART { get; set; }
+        public List<object> tb_art_Data { get; set; }
+
+        public int DATIM_TX_TB { get; set; }
+        public int Validated_TX_TB { get; set; }
+        public List<object> tx_tb_Data { get; set; }
+
+        public int DATIM_PMTCT_FO { get; set; }
+        public int Validated_PMTCT_FO { get; set; }
+        public List<object> pmtct_fo_Data { get; set; }
+
+        public int DATIM_TX_RET { get; set; }
+        public int Validated_TX_RET { get; set; }
+        public List<object> tx_ret_Data { get; set; }
+
+        public int DATIM_TX_PVLS { get; set; }
+        public int Validated_TX_PVLS { get; set; }
+        public List<object> tx_pvls_Data { get; set; }
     }
     public class ConcurrenceData
     {
@@ -100,6 +148,12 @@ namespace ShieldPortal.ViewModel
         public double PMTCT_ART_Concurrence { get; set; }  
         public double PMTCT_EID_Concurrence { get; set; }  
         public double TX_NEW_Concurrence { get; set; }  
-        public double TX_CURR_Concurrence { get; set; } 
+        public double TX_CURR_Concurrence { get; set; }
+        public double TB_STAT_Concurrence { get; set; }
+        public double PMTCT_FO_Concurrence { get; set; }
+        public double TB_ART_Concurrence { get; set; }
+        public double TX_RET_Concurrence { get; set; }
+        public double TX_TB_Concurrence { get; set; }
+        public double TX_PVLS_Concurrence { get; set; }
     }
 }

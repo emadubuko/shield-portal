@@ -1213,6 +1213,7 @@
     <Content Include="plugins\summernote\font\summernote.ttf" />
     <Content Include="plugins\summernote\font\summernote.woff" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\dmpPub.pubxml" />
     <Content Include="Resources\IHVN_sample.xlsx" />
     <Content Include="Resources\APIN_sample.xlsx" />
