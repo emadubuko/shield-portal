@@ -184,7 +184,10 @@
                         <div id="pmtct_fo_container_intv" style="height: 300px"></div>
                     </div>
                     <div class="tab-pane" id="tx_ret_intv">
-                        <div id="tx_pvls_container_intv" style="height: 300px"></div>
+                        <div id="tx_ret_container_intv" style="height: 300px"></div>
+                    </div>
+                    <div class="tab-pane" id="tx_pvls_intv">
+                        <div id="tx_plvs_container_intv" style="height: 300px"></div>
                     </div>
                 </div>
             </div>
@@ -421,7 +424,7 @@
             var tx_pvls_chart_intv = CreateDrillDownChart(myJsonData,
                 JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_pvls_series)))),
                 JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllDataModel.tx_pvls_drilldown_QI)))),
-                'TX_PVLS concurrence rate', 'tx_pvls_container_intv');
+                'TX_PVLS concurrence rate', 'tx_plvs_container_intv');
 
             //////End/////////
 

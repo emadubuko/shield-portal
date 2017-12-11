@@ -25,12 +25,150 @@ using System.Collections.Concurrent;
 using RADET.DAL.Entities;
 using OfficeOpenXml.DataValidation;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace Test
 {
 
     class Program
     {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("started");
+
+            CopyExcelFile();
+            // ReadExcelFiles();
+            // GetARTSite();
+            //exportRadetErrors();
+
+            // RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
+
+            //  MosisFiles.ProcessHTS_TST_File();
+
+            //UpdateFacilities();
+
+            // AfenetUtil.ReadFile();
+            //
+
+            //DMPSiteType();
+            //new ShufflingTest().TestShuffle();
+
+            // new Program().RetrieveDimensionValue();
+
+            // new Program().RetrieveExcelValue();
+
+
+            //  DMPSummary();
+
+            //new Program().UpdateFacilities();
+            //    new Program().GenerateFacilityTargetCSV();
+
+            // new Program().GenerateNonDatimCode();
+
+            //new Program().GenerateFacilityCode();
+            //new Program().UnprotectExcelFile();
+            //  new Program().CopyAndPaste();
+
+            Console.ReadLine();
+        }
+
+        static void ReadIndicatorValues()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            string baseLocation = @"C:\Users\cmadubuko\Desktop\DQA 22nd march\Downloads\";
+            string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
+
+            foreach (string filename in files)
+            {
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
+                {
+                    try
+                    {
+                        var summaryworksheet = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
+                        var worksheet = package.Workbook.Worksheets["Worksheet"];
+
+                        int i = 6;
+                        var summaries = new XElement("summaries");
+                        var reported_data = new XElement("reported_data");
+                        reported_data.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+                        reported_data.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+                        reported_data.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+                        reported_data.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+                        reported_data.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+                        reported_data.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+                        reported_data.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+                        reported_data.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+                        reported_data.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+                        reported_data.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+                        reported_data.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+                        reported_data.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+                        reported_data.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+                        reported_data.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
+                        reported_data.Add(new XElement("TX_Curr", summaryworksheet.Cells["E12"].Value.ToString()));
+                        reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J12"].Value.ToString()));
+                        reported_data.Add(new XElement("TX_PLVS", worksheet.Cells["X10"].Value.ToString()));
+                        summaries.Add(reported_data);
+
+                        i = 7;
+                        var validation = new XElement("validation");
+                        validation.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+                        validation.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+                        validation.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+                        validation.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+
+                        validation.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+                        validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+                        validation.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+                        validation.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+                        validation.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+                        validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+                        validation.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+                        validation.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+                        validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+                        validation.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
+                        validation.Add(new XElement("TX_Curr", summaryworksheet.Cells["E13"].Value.ToString()));
+                        reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J13"].Value.ToString()));
+                        reported_data.Add(new XElement("TX_PLVS", worksheet.Cells["X11"].Value.ToString()));
+                        summaries.Add(validation);
+
+                        i = 8;
+                        var concurrency_rate = new XElement("Concurrence_rate");
+                        concurrency_rate.Add(new XElement("HTC_TST", summaryworksheet.Cells[i, 2].Value.ToString()));
+                        concurrency_rate.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
+                        concurrency_rate.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
+                        concurrency_rate.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
+                        concurrency_rate.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
+                        concurrency_rate.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
+                        concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
+                        concurrency_rate.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
+                        concurrency_rate.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
+                        concurrency_rate.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TX_Curr", summaryworksheet.Cells["E14"].Value.ToString()));
+                        reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J14"].Value.ToString()));
+                        reported_data.Add(new XElement("TX_PLVS", worksheet.Cells["X12"].Value.ToString()));
+                        summaries.Add(concurrency_rate);
+
+                        var facilityname = worksheet.Cells["V2"].Text;
+                        var facilitycode = worksheet.Cells["AA2"].Text;
+
+                        sb.AppendLine(string.Format("{0},{1},{2}", facilityname, facilitycode, summaries.ToString()));
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
+
+            File.WriteAllText("C:/whateverpath/csv.csv", sb.ToString());
+        }
+
         public static DateTime? ConvertQuarterToEndDate(string RadetPeriod)
         {
             string quarter = RadetPeriod.Split(' ')[0];
@@ -58,7 +196,7 @@ namespace Test
             using (var package = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\RADET Supplementary v3.04e.xlsx"))) // (@"C:\Users\cmadubuko\Google Drive\MGIC\Project\ShieldPortal\DMP\Report\Template\ART sites.xlsx")))
             {
                 var aSheet = package.Workbook.Worksheets["JustRADETNames"];
-                 
+
                 for (int col = 2; col <= 776; col++)
                 {
                     string lga = ExcelHelper.ReadCellText(aSheet, 1, col);
@@ -70,18 +208,18 @@ namespace Test
                     while (true)
                     {
                         var text = aSheet.Cells[row, col];
-                        string facility = text.Text != null ? text.Text: ""; //ExcelHelper.ReadCellText(aSheet, row, 4);
+                        string facility = text.Text != null ? text.Text : ""; //ExcelHelper.ReadCellText(aSheet, row, 4);
                         if (string.IsNullOrEmpty(facility))
                             break;
                         facilities.Add(facility);
-                         row++;
+                        row++;
                     }
                     artSites.Add(lga, facilities);
                 }
             }
             return artSites;
         }
-         
+
         private static void ReadExcelFiles()
         {
             using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\RADET v3.04e 2017 Edition old.xlsx")))
@@ -136,7 +274,7 @@ namespace Test
             using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.16Oct17.xlsx")))
             {
                 var sheets = package.Workbook.Worksheets;
-                foreach(var sheet in sheets)
+                foreach (var sheet in sheets)
                 {
                     int row = 4;
                     List<string> faclities = new List<string>();
@@ -160,50 +298,12 @@ namespace Test
                         }
                         excelToExport.Save();
                     }
-                }                
+                }
             }
         }
 
 
-        static void Main(string[] args)
-        {
-            Console.WriteLine("started");
 
-            CopyExcelFile();
-            // ReadExcelFiles();
-            // GetARTSite();
-            //exportRadetErrors();
-
-            // RadetExcelDocs.ReturnLGA_n_State(@"C:\MGIC\Radet extracted\Live Radet\All IPs Unzipped\Q2_RADET_ECEWS\Q2_RADET_ECEWS_ GH Okigwe.xlsx"); //ReadAndMerge();
-
-            //  MosisFiles.ProcessHTS_TST_File();
-
-            //UpdateFacilities();
-
-            // AfenetUtil.ReadFile();
-            //
-
-            //DMPSiteType();
-            //new ShufflingTest().TestShuffle();
-
-            // new Program().RetrieveDimensionValue();
-
-            // new Program().RetrieveExcelValue();
-
-
-            //  DMPSummary();
-
-            //new Program().UpdateFacilities();
-            //    new Program().GenerateFacilityTargetCSV();
-
-            // new Program().GenerateNonDatimCode();
-
-            //new Program().GenerateFacilityCode();
-            //new Program().UnprotectExcelFile();
-            //  new Program().CopyAndPaste();
-
-            Console.ReadLine();
-        }
 
         static void exportRadetErrors()
         {

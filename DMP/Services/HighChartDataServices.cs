@@ -446,7 +446,7 @@ namespace ShieldPortal.Services
                     {
                         id = item.Key,
                         name = item.Key,
-                        data = item.ToList().Where(x => x.tx_curr_Data != null).Select(x => x.tb_stat_Data).OrderByDescending(x => x[1]).ToList()
+                        data = item.ToList().Where(x => x.tb_stat_Data != null).Select(x => x.tb_stat_Data).OrderByDescending(x => x[1]).ToList()
                     });
                 }
 

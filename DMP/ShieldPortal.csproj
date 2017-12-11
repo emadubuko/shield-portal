@@ -1213,8 +1213,6 @@
     <Content Include="plugins\summernote\font\summernote.ttf" />
     <Content Include="plugins\summernote\font\summernote.woff" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\dmpPub.pubxml" />
     <Content Include="Resources\IHVN_sample.xlsx" />
     <Content Include="Resources\APIN_sample.xlsx" />
     <Content Include="Resources\CCFN_sample.xlsx" />
@@ -1329,6 +1327,7 @@
     <Content Include="Report\Template\DQA FY2017 Q3\realData Quality Assessment tool_v3.xlsm" />
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.xlsx" />
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.pdf" />
+    <None Include="Properties\PublishProfiles\portal.pubxml" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
