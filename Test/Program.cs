@@ -36,7 +36,9 @@ namespace Test
         {
             Console.WriteLine("started");
 
-            CopyExcelFile();
+            ReadIndicatorValues();
+
+            //CopyExcelFile();
             // ReadExcelFiles();
             // GetARTSite();
             //exportRadetErrors();
