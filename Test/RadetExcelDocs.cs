@@ -14,6 +14,13 @@ namespace Test
 {
     public class RadetExcelDocs
     {
+
+        public static void GenerateRADET(string ip)
+        {
+
+        }
+
+
        public static string ReturnLGA_n_State(string fileName)
         {
             StringBuilder sb = new StringBuilder();
