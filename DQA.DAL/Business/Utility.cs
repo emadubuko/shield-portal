@@ -271,7 +271,7 @@ namespace DQA.DAL.Business
 
                 result = (int)command.ExecuteScalar();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
 
             }

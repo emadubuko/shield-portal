@@ -15,6 +15,7 @@ namespace CommonUtil.Mapping
             Map(x => x.Latitude);
             Map(x => x.OrganizationType);
             References(x => x.Organization).Column("ImplementingPartnerId").Not.Nullable();
+            References(x => x.Previous_IP).Column("Previous_IP");
             Map(x => x.LinkCode);
         }
     }

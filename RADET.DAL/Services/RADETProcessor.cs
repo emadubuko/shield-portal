@@ -139,6 +139,19 @@ namespace RADET.DAL.Services
                         PatientNo = ""
                     });
                 }
+
+                if(Convert.ToString(mainWorksheet.Cells["S3"].Value) != "FY18" || Convert.ToString(mainWorksheet.Cells["S7"].Value)  != "Q1 FY18")
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "Wrong reporting period selected",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
+                    return false;
+                }
                  
 
                 string ipshortname = ExcelHelper.ReadCell(mainWorksheet, 24, 19);

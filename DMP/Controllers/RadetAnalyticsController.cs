@@ -41,7 +41,10 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public string RADETScoreCardData()
         {
-            var data = new RadetMetaDataDAO().GetScoreCard();
+            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];  
+
+            var data = new RadetMetaDataDAO().GetScoreCard(period);
+
             List<dynamic> mydata = new List<dynamic>();
 
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
@@ -102,7 +105,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult ViewPreviousUploads()
         {
-            List<RadetReportModel2> list = GetPreviousUpload("Q2 FY17");
+            List<RadetReportModel2> list = GetPreviousUpload();
 
             RandomizerDropDownModel model = new RandomizerDropDownModel();
             model.IPLocation = new List<IPLGAFacility>();
@@ -267,7 +270,7 @@ namespace ShieldPortal.Controllers
             return msg;
         }
 
-        public List<RadetReportModel2> GetPreviousUpload(string RadetPeriod, int IP = 0)
+        public List<RadetReportModel2> GetPreviousUpload(int IP = 0)
         {
             var profile = new Services.Utils().GetloggedInProfile();
             RadetMetaDataDAO metaDao = new RadetMetaDataDAO();
@@ -276,11 +279,11 @@ namespace ShieldPortal.Controllers
 
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
             {
-                previousUploads = metaDao.RetrieveRadetUpload(RadetPeriod, 0);
+                previousUploads = metaDao.RetrieveRadetUpload(0);
             }
             else
             {
-                previousUploads = metaDao.RetrieveRadetUpload(RadetPeriod, profile.Organization.Id);
+                previousUploads = metaDao.RetrieveRadetUpload(profile.Organization.Id);
             }
 
             List<RadetReportModel2> list = new List<RadetReportModel2>();
@@ -370,6 +373,8 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public HttpResponseMessage RadetFileUpload(string connectionId, int ip)
         {
+            HttpContext.Session[connectionId] = null;
+
             HttpResponseMessage msg = null;
             UploadLogError uploadError = null;
             RadetUpload upload = null;
@@ -435,8 +440,15 @@ namespace ShieldPortal.Controllers
 
                 bool status = false;
 
-                var filePath = System.Web.Hosting.HostingEnvironment
-                    .MapPath("~/Report/Uploads/RADET/" + IP.ShortName + "_" + Request.Files[0].FileName);
+                string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/RADET/" + IP.ShortName) + "\\";
+                if (Directory.Exists(directory) == false)
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+
+                var filePath = directory + DateTime.Now.ToString("dd MMM yyyy") + "_" + Request.Files[0].FileName;
+                //System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/RADET/" + IP.ShortName + "_" + Request.Files[0].FileName);
                 Request.Files[0].SaveAs(filePath);
 
                 var validFacilities = Utilities.GetQ4ARTSites(IP.ShortName);

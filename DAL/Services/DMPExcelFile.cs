@@ -155,7 +155,7 @@ namespace DAL.Services
                         }
                         catch (Exception ex)
                         {
-                            throw;
+                            throw ex;
                         }
                     }
                 }

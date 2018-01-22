@@ -55,7 +55,7 @@ namespace ShieldPortal.Controllers
             }
         }
 
-         
+
 
         //
         // GET: /Account/Login
@@ -89,9 +89,16 @@ namespace ShieldPortal.Controllers
             {
                 case SignInStatus.Success:
                     var profile = new ProfileDAO().GetProfileByUsername(model.Username);
-                    HttpContext.Session[".:LoggedInProfile:."] = profile; 
-
-                    return RedirectToLocal(returnUrl);
+                    if (profile.Status == ProfileStatus.Disabled)
+                    {
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return View(model);
+                    }
+                    else
+                    {
+                        HttpContext.Session[".:LoggedInProfile:."] = profile;
+                        return RedirectToLocal(returnUrl);
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -151,7 +158,7 @@ namespace ShieldPortal.Controllers
         {
             var context = new ApplicationDbContext();
             var allUsers = context.Users.ToList();
-             
+
 
             OrganizationDAO orgDAO = new OrganizationDAO();
             ProfileViewModel vM = new ProfileViewModel
@@ -194,12 +201,12 @@ namespace ShieldPortal.Controllers
                         profileDAO.CommitChanges();
                         return new HttpStatusCodeResult(HttpStatusCode.OK); //  RedirectToAction("Index", "Home");
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         profileDAO.RollbackChanges();
                         return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.Message);
                     }
-                  
+
 
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
@@ -210,11 +217,11 @@ namespace ShieldPortal.Controllers
                 }
                 else
                 {
-                    
+
                     AddErrors(result);
                     return new HttpStatusCodeResult(400, result.Errors.ToList()[0]);
                 }
-               
+
             }
             // If we got this far, something failed, redisplay form
             return new HttpStatusCodeResult(400, "An error occurred");
@@ -465,8 +472,8 @@ namespace ShieldPortal.Controllers
 
             return View();
         }
-         
-         
+
+
 
         //
         // GET: /Account/ExternalLoginFailure
