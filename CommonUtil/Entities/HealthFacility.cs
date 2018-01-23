@@ -18,6 +18,8 @@ namespace CommonUtil.Entities
         public virtual string Latitude { get; set; }
         public virtual string Longitude { get; set; }
         public virtual Organizations Organization { get; set; }
+
+        public virtual Organizations Previous_IP { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }
          
     }

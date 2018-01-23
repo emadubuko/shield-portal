@@ -29,14 +29,38 @@ using System.Xml.Linq;
 
 namespace Test
 {
+    public class St
+    {
+        public string State { get; set; }
+        public List<string> LGAList { get; set; }
+    }
 
     class Program
     {
         static void Main(string[] args)
         {
+            LGADao dao = new LGADao();
+            var lga = dao.RetrieveAll().GroupBy(x=>x.State.state_name);
+            var states = new List<St>();
+            foreach(var g in lga)
+            {
+                states.Add(new St
+                {
+                    State = g.Key,
+                    LGAList = g.ToList().Select(x=>x.lga_name).ToList()
+                });
+            }
+            
+            string j = Newtonsoft.Json.JsonConvert.SerializeObject(states);
+            Console.WriteLine(j);
+
             Console.WriteLine("started");
 
-            ReadIndicatorValues();
+            TransfromColumns();
+
+            //ReadExcelFiles();
+
+            //ReadIndicatorValues();
 
             //CopyExcelFile();
             // ReadExcelFiles();
@@ -223,11 +247,11 @@ namespace Test
 
         private static void ReadExcelFiles()
         {
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\RADET v3.04e 2017 Edition old.xlsx")))
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Document\RADET\RADET v3.06b FY18 Edition.xlsx")))
             {
                 var sheet = package.Workbook.Worksheets["StateLGA"];
                 var stateCells = sheet.Cells;
-                using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\radet docs\StateLGAQ4.xlsx")))
+                using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Document\RADET\StateLGAQ4.xlsx")))
                 {
                     var aSheet = excelToExport.Workbook.Worksheets["Sheet1"];
                     foreach (var cls in stateCells)
@@ -268,6 +292,37 @@ namespace Test
             }
         }
 
+        private static void TransfromColumns()
+        {
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Document\RADET\StateLGAQ4.xlsx")))
+            {
+                var sheet = package.Workbook.Worksheets["Sheet2"];
+                var facSheet = package.Workbook.Worksheets["facility transform"];
+
+                var stateCells = sheet.Cells;
+                int oRow = 1;
+
+                for (int col = 1; col <= 774; col++)
+                {
+                    var lga = sheet.Cells[1, col].Value;
+
+                    for (int row = 3; ; ++row)
+                    {
+                        var cell = sheet.Cells[row, col];
+
+                        if (cell == null || cell.Value == null)
+                            break;
+
+                        facSheet.Cells[oRow, 1].Value = cell.Value;
+                        facSheet.Cells[oRow, 2].Value = lga;
+
+                        oRow += 1; 
+                    } 
+                }
+                package.Save();
+            }            
+        }
+ 
 
         private static void CopyExcelFile()
         {
@@ -1116,6 +1171,7 @@ namespace Test
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes("UMB_SHIELD:UMB@sh1eld")));
                 httpClient.Timeout = TimeSpan.FromMinutes(2);
+                await httpClient.GetAsync(uri);
 
                 //await httpClient.GetAsync(uri)
                 //  .ContinueWith(x =>

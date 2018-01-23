@@ -80,7 +80,6 @@ namespace Test
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
                 {
                     LGA aLga = null;
-                    State st = null;
                     var sheet = package.Workbook.Worksheets["MainPage"];
                     if (sheet == null)
                     {

@@ -209,7 +209,7 @@ namespace CommonUtil.DBSessionManager
                     value = val.Trim();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             if (value == null)
             {
@@ -232,8 +232,6 @@ namespace CommonUtil.DBSessionManager
                 cmd.Connection = (SqlConnection)cn;
                 if (cn.State != ConnectionState.Open)
                     cn.Open();
-
-                IDbTransaction trans = null;
                 try
                 {
                     cmd.CommandTimeout = 60 * 60;
@@ -242,7 +240,7 @@ namespace CommonUtil.DBSessionManager
                     i = cmd.ExecuteNonQuery();
                     //trans.Commit(); 
                 }
-                catch(Exception ex)
+                catch (Exception)
                 {
                     //if (trans != null) trans.Rollback();
                     throw;

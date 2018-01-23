@@ -18,13 +18,14 @@ namespace RADET.DAL.DAO
 {
     public class RadetMetaDataDAO : BaseDAO<RadetMetaData, int>
     {
-        public DataTable GetScoreCard()
+        public DataTable GetScoreCard(string period)
         {
             DataTable ds = new  DataTable();
 
             var cmd = new SqlCommand();
-            cmd.CommandText = "[dbo].sp_getRadetScorecard ";
+            cmd.CommandText = "[dbo].sp_getRadetScorecard";
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@period", period);
 
             using (var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection())
             {
@@ -106,7 +107,7 @@ namespace RADET.DAL.DAO
         }
 
 
-        public IQueryable<RadetMetaData> RetrieveRadetUpload(string RadetPeriod, int IP = 0, string facility = null)
+        public IQueryable<RadetMetaData> RetrieveRadetUpload(int IP = 0, string facility = null)
         {
             IQueryable<RadetMetaData> result = null;
             ISession session = BuildSession();
