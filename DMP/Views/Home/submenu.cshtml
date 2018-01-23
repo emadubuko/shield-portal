@@ -114,28 +114,43 @@
                 <div class="panel panel-success pnl-height">
                     <!-- panel body -->
                     <div class="panel-body">
-                        <div>
-                            <h5 style="font-weight: bold">Go to FY2017</h5>
-                            <ul class="list-item todo-list">
-                                <li>
-                                    <a href="/DQA/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize"> Q1 DQA</a> &nbsp;
-                                    <a href="/DQAFY2017Q2/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize; pointer-events:none"> Q2 DQA</a>
-                                    <a href="/DQAFY2017Q2/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize;"> Q3 DQA</a>
-                                    <a href="/DQAFY2017Q4/index" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize;"> Q4 DQA</a>
-                                </li>
-                            </ul>
-                        </div>
-
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-success btn-outline dropdown-toggle col-lg-12" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                FY2018
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/DQA/index">Q1 DQA</a>
+                            </div>
+                        </div><br /><br />
+                        <div class="dropdown">
+                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle col-lg-12" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                    FY2017
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/DQA/index">Q1 DQA</a><br />
+                                    <a class="dropdown-item" href="/DQAFY2017Q2/index">Q2 DQA</a><br />
+                                    <a class="dropdown-item" href="/DQAFY2017Q2/index">Q3 DQA</a><br />
+                                    <a class="dropdown-item" href="/DQAFY2017Q4/index">Q4 DQA</a>
+                                </div>
+                                </div> <br /><br />                  
                         @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
                         {
-                            <div>
+                            @*<div>
                                 <h5 style="font-weight: bold">Go to FY2016</h5>
                                 <ul class="list-item todo-list">
                                     <li>
                                         <a href="/DQAFY2016/homepage" class="btn btn-sm btn-success btn-outline" style="text-transform: none">DQA</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div>*@
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle col-lg-12" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                    FY2016
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/DQAFY2016/homepage">DQA</a><br />
+                                </div>
+                            </div><br /><br />
                         }
                         <hr />
                         <h5 style="font-weight: bold">Program Overview</h5>
@@ -439,7 +454,7 @@
 
     <script>
         $(document).ready(function () {
-
+            
             var container = @ViewBag.Container;
             $(container).css('display', 'block');
 
