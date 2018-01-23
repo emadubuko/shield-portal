@@ -355,7 +355,7 @@ namespace ShieldPortal.Services
                         data = item.ToList().Where(x => x.pmtct_stat_Data != null).Select(x => x.pmtct_stat_Data).OrderByDescending(x => x[1]).ToList()
                     });
                 }
-
+                
 
                 //pmtct_art
                 var pmtct_art = ComputeConcurrence(item.ToList().Sum(x => x.DATIM_PMTCT_ART), item.ToList().Sum(x => x.Validated_PMTCT_ART));
@@ -375,7 +375,7 @@ namespace ShieldPortal.Services
                     });
                 }
 
-
+                
                 //pmtct_eid
                 var pmtct_eid = ComputeConcurrence(item.ToList().Sum(x => x.DATIM_PMTCT_EID), item.ToList().Sum(x => x.Validated_PMTCT_EID));
                 pmtct_eid_data.Add(new Datum

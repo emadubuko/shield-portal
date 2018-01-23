@@ -78,7 +78,7 @@ namespace Test
         {
             StringBuilder sb = new StringBuilder();
 
-            string baseLocation = @"C:\Users\cmadubuko\Desktop\DQA 22nd march\Downloads\";
+            string baseLocation = @"C:\Users\DevUser2\Desktop\DQA Q4 FY17 before pvls correction\DQA Q4 FY17\";
             string[] files = Directory.GetFiles(baseLocation, "*.xlsm", SearchOption.TopDirectoryOnly);
 
             foreach (string filename in files)
@@ -118,7 +118,6 @@ namespace Test
                         validation.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
                         validation.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
                         validation.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
-
                         validation.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
                         validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
                         validation.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
@@ -130,8 +129,8 @@ namespace Test
                         validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
                         validation.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
                         validation.Add(new XElement("TX_Curr", summaryworksheet.Cells["E13"].Value.ToString()));
-                        reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J13"].Value.ToString()));
-                        reported_data.Add(new XElement("TX_PLVS", worksheet.Cells["X11"].Value.ToString()));
+                        validation.Add(new XElement("TX_RET", summaryworksheet.Cells["J13"].Value.ToString()));
+                        validation.Add(new XElement("TX_PLVS", worksheet.Cells["X11"].Value.ToString()));
                         summaries.Add(validation);
 
                         i = 8;
@@ -151,24 +150,24 @@ namespace Test
                         concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
                         concurrency_rate.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
                         concurrency_rate.Add(new XElement("TX_Curr", summaryworksheet.Cells["E14"].Value.ToString()));
-                        reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J14"].Value.ToString()));
-                        reported_data.Add(new XElement("TX_PLVS", worksheet.Cells["X12"].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TX_RET", summaryworksheet.Cells["J14"].Value.ToString()));
+                        concurrency_rate.Add(new XElement("TX_PLVS", worksheet.Cells["X12"].Value.ToString()));
                         summaries.Add(concurrency_rate);
 
                         var facilityname = worksheet.Cells["V2"].Text;
                         var facilitycode = worksheet.Cells["AA2"].Text;
 
-                        sb.AppendLine(string.Format("{0},{1},{2}", facilityname, facilitycode, summaries.ToString()));
+                        sb.AppendLine(string.Format("{0},{1},{2}", summaries.ToString(), facilitycode, facilityname));
 
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
+                        continue;
                     }
                 }
             }
-
-            File.WriteAllText("C:/whateverpath/csv.csv", sb.ToString());
+            File.WriteAllText("C:/Users/DevUser2/Desktop/csv.csv", sb.ToString());
         }
 
         public static DateTime? ConvertQuarterToEndDate(string RadetPeriod)
