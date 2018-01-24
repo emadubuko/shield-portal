@@ -28,6 +28,11 @@
         .pnl-height {
             height: 400px;
         }
+
+        .dropdown-item {
+            padding-left: 20%;
+            text-decoration: underline;
+        }
     </style>
 }
 <div class="main-content" style="padding-top: 0px;">
@@ -57,7 +62,7 @@
                         </a>
                     </div>
                 </div>
-            </div> 
+            </div>
             <div class="col-lg-4">
                 <div class="panel minimal" style="background-color:darkcyan; border-color:darkcyan">
                     <div class="panel-body" style="margin-top: -15px;">
@@ -94,18 +99,24 @@
             <div class="col-md-4">
                 <div class="panel panel-info pnl-height" style="border-color:#ec407a;">
                     <div class="panel-body">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a href="@Url.Action("index", "DMP")" class="btn btn-sm btn-default btn-outline" style="color:#ec407a;text-transform: capitalize">Go to Data Management Plan</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Program Overview</h5>
-                        <p>
-                            In line with CDC’s Overview of institutionalizing a sustainable M&E system for Nigeria and developing a robust Data Management Plan for all its implementing mechanisms, the Data Management Summary (DMS) document has been developed.
-                            This document aims to harmonize all information collated from CDC-funded partners on their Data Management Processes.
-                        </p>
-                        <p> In so doing, the CDC Data Management Summary will be a standardized document where detailed information pertaining to organizational Data Management is archived, to be referenced by CDC-funded implementing partners and relevant stakeholders.</p>
+                        <div class="col-sm-12">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="@Url.Action("index", "DMP")" class="btn btn-sm btn-default btn-outline" style="color:#ec407a;text-transform: capitalize">Go to Data Management Plan</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <hr />
+                            <h5 style="font-weight: bold">Program Overview</h5>
+                            <p>
+                                In line with CDC’s Overview of institutionalizing a sustainable M&E system for Nigeria and developing a robust Data Management Plan for all its implementing mechanisms, the Data Management Summary (DMS) document has been developed.
+                                This document aims to harmonize all information collated from CDC-funded partners on their Data Management Processes.
+                            </p>
+                            <p> In so doing, the CDC Data Management Summary will be a standardized document where detailed information pertaining to organizational Data Management is archived, to be referenced by CDC-funded implementing partners and relevant stakeholders.</p>
+                        </div>
+                       
                     </div>
                 </div>
             </div>
@@ -114,16 +125,18 @@
                 <div class="panel panel-success pnl-height">
                     <!-- panel body -->
                     <div class="panel-body">
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-success btn-outline dropdown-toggle col-lg-12" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                FY2018
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/DQA/index">Q1 DQA</a>
-                            </div>
-                        </div><br /><br />
-                        <div class="dropdown">
-                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle col-lg-12" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+
+                        <div class="col-sm-12">
+                            <div class="dropdown col-sm-2">
+                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                    FY2018
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/DQA/index">Q1 DQA</a>
+                                </div>
+                            </div> &nbsp;&nbsp;
+                            <div class="dropdown col-sm-2">
+                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                                     FY2017
                                 </button>
                                 <div class="dropdown-menu">
@@ -132,31 +145,28 @@
                                     <a class="dropdown-item" href="/DQAFY2017Q2/index">Q3 DQA</a><br />
                                     <a class="dropdown-item" href="/DQAFY2017Q4/index">Q4 DQA</a>
                                 </div>
-                                </div> <br /><br />                  
-                        @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-                        {
-                            @*<div>
-                                <h5 style="font-weight: bold">Go to FY2016</h5>
-                                <ul class="list-item todo-list">
-                                    <li>
-                                        <a href="/DQAFY2016/homepage" class="btn btn-sm btn-success btn-outline" style="text-transform: none">DQA</a>
-                                    </li>
-                                </ul>
-                            </div>*@
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle col-lg-12" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                    FY2016
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/DQAFY2016/homepage">DQA</a><br />
-                                </div>
-                            </div><br /><br />
-                        }
-                        <hr />
-                        <h5 style="font-weight: bold">Program Overview</h5>
-                        <p>
-                            The ability to collect and report high quality data is the cornerstone of a data-driven approach for HIV program delivery. Data quality assessment gives us the true reflection of how efficient HIV program is and how close health outcomes have been achieved. As part of PEPFAR’s Accountability frame work, routine data quality assessments are required as a means of validating reported achievements.
-                        </p>
+                            </div> &nbsp;&nbsp;
+                            @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+                            { 
+                                <div class="dropdown col-sm-2">
+                                    <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                        FY2016
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/DQAFY2016/homepage">DQA</a><br />
+                                    </div>
+                                </div><br /><br />
+                            }
+                        </div>
+
+                        <div class="col-sm-12" style="margin-top: 20px;">
+                            <hr />
+                            <h5 style="font-weight: bold">Program Overview</h5>
+                            <p>
+                                The ability to collect and report high quality data is the cornerstone of a data-driven approach for HIV program delivery. Data quality assessment gives us the true reflection of how efficient HIV program is and how close health outcomes have been achieved. As part of PEPFAR’s Accountability frame work, routine data quality assessments are required as a means of validating reported achievements.
+                            </p>
+                        </div>
+                       
 
                     </div>
                 </div>
@@ -166,19 +176,19 @@
                 <div class="panel panel-warning pnl-height">
                     <!-- panel body -->
                     <div class="panel-body">
-                        <div>
-                            <h5 style="font-weight: bold"></h5>
-                            <ul class="list-item todo-list">
-                                <li>
-                                    <a class="btn btn-sm btn-info btn-outline" style="text-transform: capitalize"> Go to FY2017 DQI</a>
-                                </li>
-                            </ul>
-                        </div>
+                        <h5 style="font-weight: bold"></h5>
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a class="btn btn-sm btn-info btn-outline" style="text-transform: capitalize"> Go to FY2017 DQI</a>
+                            </li>
+                        </ul>
+
                         <hr />
                         <h5 style="font-weight: bold">Program Overview</h5>
                         <p>
                             The Data Quality improvement strategy combines best practices in quality improvement to guide the implementation and monitoring of sustainable solutions to identified data quality issues. Through these efforts, methods and strategies through which data quality and reporting can be significantly improved across CDC implementing partners and facilities will be established and routinized
                         </p>
+
                     </div>
                 </div>
             </div>
@@ -225,7 +235,7 @@
                         </table>
                     </div>
                 </div>
-            </div> 
+            </div>
         </div>
 
         <div class="row">
@@ -243,6 +253,7 @@
                         <hr />
                         <h5 style="font-weight: bold">Overview</h5>
                         <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
+
                     </div>
                 </div>
             </div>
@@ -293,7 +304,7 @@
         </div>
     </div>
 
-    
+
 
     <div id="outcome" style="display:none">
         <div class="row">
@@ -454,7 +465,7 @@
 
     <script>
         $(document).ready(function () {
-            
+
             var container = @ViewBag.Container;
             $(container).css('display', 'block');
 
