@@ -407,7 +407,7 @@ namespace RADET.DAL.Services
             if (list == null || string.IsNullOrEmpty(facilityName))
                 return false;
 
-            return list.Any(x => x == facilityName);
+            return list.Any(x => x.ToLower() == facilityName.ToLower());
         }
          
 
