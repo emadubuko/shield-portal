@@ -68,7 +68,13 @@ namespace ShieldPortal.Controllers
             else
             {
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-                Request.Files[0].SaveAs(Server.MapPath("~/Report/Uploads/Pivot table Q1/" + loggedinProfile.Organization.ShortName + "_" + Request.Files[0].FileName));
+                string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/Pivot table Q1 FY18/" + loggedinProfile.Organization.ShortName) + "\\";
+                if (Directory.Exists(directory) == false)
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                 
+                Request.Files[0].SaveAs(directory + Request.Files[0].FileName);
                 
                 Stream uploadedFile = Request.Files[0].InputStream;
                 bool status = new BDQAQ1FY18().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
@@ -448,13 +454,13 @@ namespace ShieldPortal.Controllers
             switch (fileType)
             {
                 case "DQAUserGuide":
-                    filename = "Data Quality Assessment Userguide Q4.pdf";
+                    filename = "Data Quality Assessment Userguide Q1 FY18.pdf";
                     break;
                 case "PivotTable":
-                    filename = "DATIM PIVOT TABLE Q4.xlsx";
+                    filename = "DATIM PIVOT TABLE Q1 FY18.xlsx";
                     break;
                 case "SummarySheet":
-                    filename = "Summary Sheet Q4 DQA.pdf";
+                    filename = "Summary Sheet FY18 Q1 DQA.pdf";
                     break;
             }
             string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q1/" + filename);

@@ -388,6 +388,7 @@ namespace DQA.DAL.Business
                                                              PMTCT_STAT = table.PMTCT_STAT,
                                                              PMTCT_EID = table.PMTCT_EID,
                                                              PMTCT_FO = table.PMTCT_FO,
+                                                             PMTCT_HEI_POS = table.PMTCT_HEI_POS,
                                                              PMTCT_STAT_NEW = table.PMTCT_STAT_NEW,
                                                              PMTCT_STAT_PREV = table.PMTCT_STAT_PREV,
                                                              HTC_Only = table.HTC_Only,

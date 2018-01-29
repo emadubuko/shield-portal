@@ -352,6 +352,7 @@ namespace DQA.DAL.Business
                             if (hf.ImplementingPartner.Id != profile.Organization.Id)
                             {
                                 sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
+                                continue;
                             }
 
                             //if(hf.Name != fName)
@@ -367,14 +368,11 @@ namespace DQA.DAL.Business
                             int pmtct_stat_prev = ExcelHelper.ReadCellText(worksheet, row, 8).ToInt();
                             int pmtct_art = ExcelHelper.ReadCellText(worksheet, row, 9).ToInt();
                             int pmtct_eid = ExcelHelper.ReadCellText(worksheet, row, 10).ToInt();
-                            int pmtct_fo = ExcelHelper.ReadCellText(worksheet, row, 11).ToInt();
+
+                            int pmtct_hei_pos = ExcelHelper.ReadCellText(worksheet, row, 11).ToInt();
+
                             int tx_new = ExcelHelper.ReadCellText(worksheet, row, 12).ToInt();
                             int tx_curr = ExcelHelper.ReadCellText(worksheet, row, 13).ToInt();
-                            int tx_ret = ExcelHelper.ReadCellText(worksheet, row, 14).ToInt();
-                            int tx_pvls = ExcelHelper.ReadCellText(worksheet, row, 15).ToInt();
-                            int tb_stat = ExcelHelper.ReadCellText(worksheet, row, 16).ToInt();
-                            int tb_art = ExcelHelper.ReadCellText(worksheet, row, 17).ToInt();
-                            int tx_tb = ExcelHelper.ReadCellText(worksheet, row, 18).ToInt();
 
                             pivotTable.Add(new dqa_pivot_table
                             {
@@ -386,77 +384,19 @@ namespace DQA.DAL.Business
                                 PMTCT_STAT_PREV = pmtct_stat_prev,
                                 PMTCT_ART = pmtct_art,
                                 PMTCT_EID = pmtct_eid,
-                                PMTCT_FO = pmtct_fo,
+                                PMTCT_HEI_POS = pmtct_hei_pos,
                                 TX_NEW = tx_new,
                                 TX_CURR = tx_curr,
-                                TX_RET = tx_ret,
-                                TX_PVLS = tx_pvls,
-                                TB_STAT = tb_stat,
-                                TB_ART = tb_art,
-                                TX_TB = tx_tb,
                                 HealthFacility = hf,
                                 Quarter = reportPeriod,
                                 ImplementingPartner = hf.ImplementingPartner,
                             });
-                        }
-                        row += 1;
-                    }
-
-                    worksheet = package.Workbook.Worksheets["OVC_PIVOT TABLE"];
-                    if (worksheet == null)
-                    {
-                        throw new ApplicationException("Invalid pivot table uploaded");
-                    }
-                    row = 2;
-
-                    while (true)
-                    {
-                        Data.HealthFacility hf = null;
-                        string fCode = ExcelHelper.ReadCell(worksheet, row, 1);
-                        string fName = ExcelHelper.ReadCellText(worksheet, row, 2);
-                        if (string.IsNullOrEmpty(fCode))
-                        {
-                            break;
-                        }
-                        if (hfs.TryGetValue(fCode, out hf) == false)
-                        {
-                            sb.AppendLine("unknown facility with code [" + fCode + "," + fName + "] uploaded ");
-                        }
-                        if (hf != null)
-                        {
-                            if (hf.ImplementingPartner.Id != profile.Organization.Id)
-                            {
-                                hfs.TryGetValue(fCode + "_" + profile.Organization.ShortName, out hf);
-                                if (hf == null)
-                                {
-                                    sb.AppendLine("unknown facility with code [" + fCode + "," + fName + "] uploaded ");
-                                    row += 1;
-                                    continue;
-                                }
-                                else if (hf.ImplementingPartner.Id != profile.Organization.Id)
-                                {
-                                    sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
-                                    row += 1;
-                                    continue;
-                                }
-                            }
-
-                            pivotTable.Add(new Data.dqa_pivot_table
-                            {
-                                IP = hf.ImplementingPartner.Id,
-                                FacilityId = hf.Id,
-                                HealthFacility = hf,
-                                Quarter = reportPeriod,
-                                ImplementingPartner = hf.ImplementingPartner,
-                                OVC = ExcelHelper.ReadCellText(worksheet, row, 3).ToInt(),
-                                OVC_NotReported = ExcelHelper.ReadCellText(worksheet, row, 4).ToInt(),
-                            });
-
                         }
                         row += 1;
                     }
                 }
 
+                //check for valid entry
                 if (pivotTable.Count() == 0)
                 {
                     sb.AppendLine("No valid record found in the pivot table. " + Environment.NewLine + "Ensure that the 'organisationunitid and organisationunitname' columns are populated");
@@ -561,11 +501,10 @@ namespace DQA.DAL.Business
                         item.HTC_Only_POS,
                         item.PMTCT_STAT,
                         item.PMTCT_STAT_NEW,
-                        item.PMTCT_STAT_PREV,
-                        OVC = item.OVC + item.OVC_NotReported,
+                        item.PMTCT_STAT_PREV, 
                         item.PMTCT_ART,
                         item.PMTCT_EID,
-                        item.PMTCT_FO,
+                        item.PMTCT_HEI_POS,
                         item.TX_NEW,
                         item.TX_CURR,
                         item.TX_RET,
@@ -625,7 +564,7 @@ namespace DQA.DAL.Business
         public async Task<string> GenerateDQA(List<PivotTableModel> facilities, Organizations ip)
         {
             string fileName = "DQA_Q1_" + ip.ShortName + ".zip";
-            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/DQA_Q4_" + ip.ShortName);
+            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q1/DQA_Q1_" + ip.ShortName);
 
             string zippedFile = directory + "\\" + fileName;
 
@@ -662,7 +601,7 @@ namespace DQA.DAL.Business
                     radetSite = site.FacilityName;
                 }
 
-                string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q1/Q1_Data Quality Assessment tool_v1.xlsm");
+                string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q1/FY18_Q1_Data Quality Assessment tool_v5.xlsm");
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
                 {
                     var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA("Q1 FY18", site.IP, radetSite);// site.FacilityName);
@@ -670,7 +609,7 @@ namespace DQA.DAL.Business
                     if (radet.Count > 107)
                     {
                         radet.Shuffle();
-                        radet = radet.Take(107).ToList(); 
+                        radet = radet.Take(107).ToList();
                     }
                     int tx_current_count = radet.Count;
 
@@ -721,33 +660,7 @@ namespace DQA.DAL.Business
                                     viral_load_count_suppression += 1;
                                 }
                             }
-                        }
-
-                        radet = new RadetMetaDataDAO().RetrieveRadetLineListingForRetebtion("Q1 FY18", new DateTime(2015, 10, 1), new DateTime(2016, 9, 30), site.IP, radetSite);
-                        if (radet != null)
-                        {
-                            List<RADET.DAL.Entities.RadetPatientLineListing> radet_ret = new List<RADET.DAL.Entities.RadetPatientLineListing>();
-
-                            string no_to_select = ExcelHelper.GetRandomizeChartNUmber(radet.Count.ToString());
-                            radet.Shuffle();
-
-                            foreach (var item in radet.Take(Convert.ToInt32(no_to_select)))
-                            {
-                                radet_ret.Add(item);
-                            }
-
-                            sheet = package.Workbook.Worksheets["TX_RET"];
-
-                            row = 1;
-                            for (int i = 0; i < radet_ret.Count(); i++)
-                            {
-                                row++;
-                                sheet.Cells["A" + row].Value = radet_ret[i].RadetPatient.PatientId;
-                                sheet.Cells["B" + row].Value = radet_ret[i].RadetPatient.HospitalNo;
-                                sheet.Cells["C" + row].Value = radet_ret[i].ARTStartDate;
-                                sheet.Cells["C" + row].Style.Numberformat.Format = "d-MMM-yyyy";
-                            }
-                        }
+                        } 
                     }
 
                     var sheetn = package.Workbook.Worksheets["Worksheet"];
@@ -759,13 +672,13 @@ namespace DQA.DAL.Business
                     sheetn.Cells["Y2"].Value = "Q4 FY17";
 
                     sheetn.Cells["N10"].Value = tx_current_count;
-                    sheetn.Cells["X10"].Value = viral_load_count;
-                    sheetn.Cells["X11"].Value = viral_load_count_suppression;
+                    //sheetn.Cells["X10"].Value = viral_load_count;
+                    //sheetn.Cells["X11"].Value = viral_load_count_suppression;
 
-                    if (viral_load_count > 0)
-                    {
-                        sheetn.Cells["X12"].Value = 1.0 * viral_load_count_suppression / viral_load_count;
-                    }
+                    //if (viral_load_count > 0)
+                    //{
+                    //    sheetn.Cells["X12"].Value = 1.0 * viral_load_count_suppression / viral_load_count;
+                    //}
 
 
 
@@ -784,15 +697,7 @@ namespace DQA.DAL.Business
                     //pmtct_eid
                     sheet__all_Q.Cells["F28"].Value = site.PMTCT_EID;
                     //tx_new
-                    sheet__all_Q.Cells["F33"].Value = site.TX_NEW;
-                    //pmtct_fo
-                    sheet__all_Q.Cells["F60"].Value = site.PMTCT_FO;
-                    //tb_art
-                    sheet__all_Q.Cells["F45"].Value = site.TB_ART;
-                    //tb_stat
-                    sheet__all_Q.Cells["F39"].Value = site.TB_STAT;
-                    //tx_tb
-                    sheet__all_Q.Cells["F50"].Value = site.TX_TB;
+                    sheet__all_Q.Cells["F33"].Value = site.TX_NEW; 
 
                     var sheet__all_Summary = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
                     sheet__all_Summary.Cells["E12"].Value = tx_current_count;

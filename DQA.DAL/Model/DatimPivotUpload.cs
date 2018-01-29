@@ -32,6 +32,8 @@ namespace DQA.DAL.Model
         public int? TX_PVLS { get; set; }
         public int? TB_STAT { get; set; }
         public int? TX_TB { get; set; }
+
+        public int? PMTCT_HEI_POS { get; set; }
     }
 
     public class UploadList

@@ -33,7 +33,7 @@
         <EntityTypeShape EntityType="shield_dmpModel.dqa_comparison" Width="1.5" PointX="0.75" PointY="12.75" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_pivot_table_upload" Width="1.5" PointX="5.25" PointY="20.375" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot_ta__IP__253C7D7E" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_pivot_table" Width="1.5" PointX="7.5" PointY="11" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_pivot_table" PointX="12.5" PointY="10.625" Width="1.5" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot__Facil__6324A15E" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot__Uploa__45A94D10" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot_ta__IP__6BB9E75F" />

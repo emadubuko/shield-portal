@@ -40,6 +40,7 @@ namespace DQA.DAL.Data
         public Nullable<int> TB_STAT { get; set; }
         public Nullable<int> TX_TB { get; set; }
         public Nullable<int> OVC_NotReported { get; set; }
+        public Nullable<int> PMTCT_HEI_POS { get; set; }
     
         public virtual HealthFacility HealthFacility { get; set; }
         public virtual dqa_pivot_table_upload dqa_pivot_table_upload { get; set; }
