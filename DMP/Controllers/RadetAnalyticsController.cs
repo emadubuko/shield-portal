@@ -306,7 +306,7 @@ namespace ShieldPortal.Controllers
 
 
 
-        /// <param name="useSession"></param>
+        /// <param name="useSession">retrieves the data stored in the session previously in RandomizeRadet</param>
         /// <param name="radetIds"></param>
         /// <returns></returns>
         [Compress]
