@@ -228,6 +228,7 @@
     <Compile Include="Controllers\DQAController.cs" />
     <Compile Include="Controllers\DQAFY2016Controller.cs" />
     <Compile Include="Controllers\DQAFY2017Q2Controller.cs" />
+    <Compile Include="Controllers\DQAFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQAFY2017Q4Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
@@ -1414,6 +1415,19 @@
     <Content Include="Views\DQAFY2017Q4\RadetValidation.cshtml" />
     <Content Include="Views\DQAFY2017Q4\UploadDQA.cshtml" />
     <Content Include="Views\DQAFY2017Q4\UploadPivotTable.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\AllIPDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\Analytics.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\Dashboard.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\GetDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\IpDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\IpDQAAdmin.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\PendingFacilities.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\UploadPivotTable.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1454,6 +1468,7 @@
     <Content Include="Views\Shared\_radetLayoutPage.cshtml" />
     <Content Include="Views\Shared\_NHMISLayout.cshtml" />
     <Content Include="Views\Shared\_dqaFY17Q4layout.cshtml" />
+    <Content Include="Views\Shared\_dqaFY18Q1layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1462,8 +1477,11 @@
     <Folder Include="Models\Data\" />
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
+    <Folder Include="Report\Template\DQA FY2018 Q1\" />
+    <Folder Include="Report\Uploads\DQA Q1 FY18\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
     <Folder Include="Report\Uploads\DQA Q4 FY17\" />
+    <Folder Include="Report\Uploads\Pivot table Q1\" />
     <Folder Include="Report\Uploads\Pivot table Q4\" />
     <Folder Include="Report\Uploads\RADET\" />
     <Folder Include="Scripts\Highcharts\api\css\images\" />
