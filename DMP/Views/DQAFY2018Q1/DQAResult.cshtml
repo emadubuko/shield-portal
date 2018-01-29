@@ -1,0 +1,308 @@
+﻿@{
+    Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
+}
+@section AddToHead{
+    <style>
+        .table > thead > tr > th {
+            font-weight: bold;
+        }
+
+        .abbrev-full {
+            background-color: lightblue;
+        }
+
+        .click-row {
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+            .click-row tr:hover {
+                background-color: cornflowerblue;
+            }
+    </style>
+    <script type="text/javascript">
+        {
+            var ipscount= @Html.Raw(ViewBag.IPCount);
+            var model_data = @Html.Raw(ViewBag.selectModel);
+
+        }
+    </script>
+}
+
+<div class="col-sm-9">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-success">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title"> DQA LIST</h4>
+                </div>
+                <div class="panel-body">
+
+                    <form class="form-horizontal" style="margin-left: 50px;">
+                        <div class="form-group">
+                            <div class="col-sm-push-1 col-sm-3">
+                                <h5 style="text-decoration:underline;">Search Criteria</h5>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label" for="sltIP">IP</label>
+                            <div class="col-sm-4">
+                                <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple></select>
+                            </div>
+
+                            <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
+                            <div class="col-sm-4">
+                                <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label" for="sltstate">State</label>
+                            <div class="col-sm-4">
+                                <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple></select>
+                            </div>
+
+                            <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
+                            <div class="col-sm-4">
+                                <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-push-1 col-sm-2">
+                                <a class="btn btn-sm btn-info" id="btnSearch">Search</a>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr />
+
+                    <span id="lding">Loading...Please wait</span>
+                    <div class="progress active" id="progress">
+                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="overflow-x: initial;">
+                        <table class="table table-bordered table-striped table-hover" id="output" style="font-size:12px;">
+                            <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>State</th>
+                                    <th>Lga</th>
+                                    <th>Facility</th>
+                                    <th>Upload Date</th>
+                                    <th>Uploaded By</th>
+                                    <th>Done by</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reportdetails" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 97%;border-color: lightgreen;" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: #FFF;background-color: lightgreen;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="table-responsive" style="font-size: 11px;padding-left: 5px;padding-right: 5px;">
+                <table class="table table-bordered table-hover" id="output_details" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Thematic Area</th>
+                            <th>Indicator</th>
+                            <th>April</th>
+                            <th>May</th>
+                            <th>June</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-success" data-dismiss="modal"> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script>
+        $(document).ready(function () {
+            populate_all_controls();
+
+            var dataTable = {
+                table: null,
+                initialiazeDataTable: function () {
+                    var $tabela = $("#output");
+
+                    var model = {};
+                    model.RadetPeriod = "Q1 FY18";
+
+                    dataTable.table = $tabela.DataTable({
+                        processing: true,
+                        serverSide: true,
+                        sEcho: 3,
+                        paging: false,
+                        "oLanguage": { "sProcessing": "Loading... Please wait" },
+                        ajax:
+                            {
+                                url: "/DQAFY2018Q1/GetDQAUploadReport",
+                                type: "POST",
+                            },
+                        "oSearch": { "sSearch": JSON.stringify(model) },
+                        "columnDefs": [
+                            { className: "click-row", "targets": [ 0,1,2,3,4,5,6 ] }
+                        ],
+                        "aoColumns": [
+                            { "mData": "IP" },
+                             { "mData": "State" },
+                             { "mData": "LGA" },
+                             { "mData": "Facility" },
+                             {
+                                 "mData": "Uploaded_Date",
+                                 "render": function (data) {
+                                     var date = new Date(data);
+                                     var month = date.getMonth() + 1;
+                                     return date.toLocaleString('en-GB', { day:'numeric', month:'numeric', year: 'numeric',  hour: 'numeric',minute:'numeric', hour12: true });
+                                 }
+                             },
+                             { "mData": "UploadedBy" },
+                             {"mData" : "DoneBy"},
+                        { "mData": "LastColumn" }
+                        ],
+                        "pagingType": "full_numbers"
+                    });
+                },
+                getData: function () {
+                    if (dataTable.table == null)
+                        dataTable.initialiazeDataTable();
+                    else {
+                        dataTable.table.ajax.reload();
+                    }
+                }
+            }
+
+            dataTable.getData();
+            $("#sltIP").prop("disabled", false);
+
+            $('input.form-control.input-sm[type=search]').unbind();
+            $('#output_filter.dataTables_filter').css("display", 'none');
+            $("#output_length.dataTables_length").parent().removeClass("col-sm-6").addClass('col-sm-push-10 col-sm-3');
+
+
+            $('#btnSearch').click(function (e) {
+                //supply the variables here
+                var model = {};
+                model.RadetPeriod =  "Q1 FY18";
+
+                let selectedIP = [];
+                $("#sltIP option:selected").each(function () {
+                    selectedIP.push($(this).val());
+                });
+                let selectedStates = [];
+                $("#sltstate option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedStates.push(val);
+                    }
+                });
+                let selectedLGA = [];
+                $("#sltLGA option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedLGA.push(val);
+                    }
+                });
+                let selectedFacilitties = [];
+                $("#sltFacility option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedFacilitties.push(val);
+                    }
+                });
+                model.IPs = selectedIP;
+                model.state_codes = selectedStates;
+                model.lga_codes = selectedLGA;
+                model.facilities = selectedFacilitties;
+                dataTable.table.search(JSON.stringify(model)).draw(false);
+            });
+
+            $(document).on('click','.deletebtn', function(e){
+                $("#loadImg"+e.currentTarget.id).show();
+                $.ajax({
+                    url: '/api/dqaapi/Delete?ID=' +e.currentTarget.id,
+                    type: 'POST',
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    $('#'+e.currentTarget.id).remove();
+                    $("#loadImg"+e.currentTarget.id).hide();
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
+            });
+
+
+            $(document).on('click','.click-row', function(e){
+                var id = e.currentTarget.parentElement.id;//e.currentTarget.id;
+
+                $.ajax({
+                    url: '/DQAFY2018Q1/GetReportDetails?metadataid=' +id,
+                    type: 'GET',
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    buildTable($.parseJSON(response));
+                    $('#reportdetails').modal('show');
+                    $("#loadImg").hide();
+                }).error(function (xhr, status, err) {
+                    alert(err);
+                    console.log(err);
+                });
+                return false;
+            });
+
+            function buildTable(dataList) {
+                $("#output_details tbody").empty();
+                $.each(dataList, function (i, d) {
+                    if(d.ThematicArea.indexOf("TB") == -1){
+                        var html = "<tr> ";
+                        html += "<td>" + d.ThematicArea + "</td>";
+                        html += "<td>" + d.IndicatorName + "</td>";
+                        html += "<td>" + d.IndicatorValueMonth1 + "</td>";
+                        html += "<td>" + d.IndicatorValueMonth2 + "</td>";
+                        html += "<td>" + d.IndicatorValueMonth3 + "</td>";
+                        html += "</tr>";
+                        $("#output_details tbody").append(html);
+                    }
+                });
+            }
+
+            $("#progress").hide();
+            $("#lding").hide();
+        })
+    </script>
+}

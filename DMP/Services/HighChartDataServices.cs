@@ -276,7 +276,158 @@ namespace ShieldPortal.Services
             };
         }
 
+        public AnalyticPageData GetQ1HTCConcurrency(string reportType, string ip = "")
+        {
+            var data = Utility.GetQ1FY18Analysis(ip, reportType.ToLower().Contains("partners"));
+            List<TempFacilityData> tempData = new List<TempFacilityData>();
 
+            foreach (DataRow dr in data.Rows)
+            {
+                //htc
+                var htc = ComputeConcurrence(dr[2], dr[3]);
+                List<object> htc_siteData = new List<object> { dr[1].ToString(), htc.concurrence };
+
+                //pmtct_stat
+                var pmtct_stat = ComputeConcurrence(dr[5], dr[6]);
+                List<object> pmtct_stat_siteData = new List<object> { dr[1].ToString(), pmtct_stat.concurrence };
+
+                //pmtct_art
+                var pmtct_art = ComputeConcurrence(dr[8], dr[9]);
+                List<object> pmtct_art_siteData = new List<object> { dr[1].ToString(), pmtct_art.concurrence };
+
+                //pmtct_eid
+                var pmtct_eid = ComputeConcurrence(dr[11], dr[12]);
+                List<object> pmtct_eid_siteData = new List<object> { dr[1].ToString(), pmtct_eid.concurrence };
+
+                //tx_new
+                var tx_new = ComputeConcurrence(dr[14], dr[15]);
+                List<object> tx_new_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
+
+                //tx_curr
+                var tx_curr = ComputeConcurrence(dr[17], dr[18]);
+                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_curr.concurrence };
+
+                //tb_stat
+                var tb_stat = ComputeConcurrence(dr[20], dr[21]);
+                List<object> tb_stat_siteData = new List<object> { dr[1].ToString(), tb_stat.concurrence };
+
+                //tb_art
+                var tb_art = ComputeConcurrence(dr[23], dr[24]);
+                List<object> tb_art_siteData = new List<object> { dr[1].ToString(), tb_art.concurrence };
+
+                //tx_tb
+                var tx_tb = ComputeConcurrence(dr[26], dr[27]);
+                List<object> tx_tb_siteData = new List<object> { dr[1].ToString(), tx_tb.concurrence };
+
+                //pmtct_fo
+                var pmtct_fo = ComputeConcurrence(dr[29], dr[30]);
+                List<object> pmtct_fo_siteData = new List<object> { dr[1].ToString(), pmtct_fo.concurrence };
+
+                //tx_ret
+                var tx_ret = ComputeConcurrence(dr[32], dr[33]);
+                List<object> tx_ret_siteData = new List<object> { dr[1].ToString(), tx_ret.concurrence };
+
+                //tx_pvls
+                var tx_pvls = ComputeConcurrence(dr[35], dr[36]);
+                List<object> tx_pvls_siteData = new List<object> { dr[1].ToString(), tx_pvls.concurrence };
+
+                var temp = new TempFacilityData();
+                temp.IP = dr[0].ToString();
+
+                if (htc.datim != 0 && htc.validated != 0)
+                {
+                    temp.DATIM_HTC_TST = htc.datim;
+                    temp.Validated_HTC_TST = htc.validated;
+                    temp.htc_Data = htc_siteData;
+                }
+
+                if (pmtct_stat.datim != 0 && pmtct_stat.validated != 0)
+                {
+                    temp.DATIM_PMTCT_STAT = pmtct_stat.datim;
+                    temp.Validated_PMTCT_STAT = pmtct_stat.validated;
+                    temp.pmtct_stat_Data = pmtct_stat_siteData;
+                }
+
+                if (pmtct_art.datim != 0 && pmtct_art.validated != 0)
+                {
+                    temp.DATIM_PMTCT_ART = pmtct_art.datim;
+                    temp.Validated_PMTCT_ART = pmtct_art.validated;
+                    temp.pmtct_art_Data = pmtct_art_siteData;
+                }
+
+                if (pmtct_eid.datim != 0 && pmtct_eid.validated != 0)
+                {
+                    temp.DATIM_PMTCT_EID = pmtct_eid.datim;
+                    temp.Validated_PMTCT_EID = pmtct_eid.validated;
+                    temp.pmtct_eid_Data = pmtct_eid_siteData;
+                }
+
+                if (tx_new.datim != 0 && tx_new.validated != 0)
+                {
+                    temp.DATIM_TX_NEW = tx_new.datim;
+                    temp.Validated_TX_NEW = tx_new.validated;
+                    temp.tx_new_Data = tx_new_siteData;
+                }
+
+                if (tx_curr.datim != 0 && tx_curr.validated != 0)
+                {
+                    temp.DATIM_TX_CURR = tx_curr.datim;
+                    temp.Validated_TX_CURR = tx_curr.validated;
+                    temp.tx_curr_Data = tx_curr_siteData;
+                }
+
+                if (tb_stat.datim != 0 && tb_stat.validated != 0)
+                {
+                    temp.DATIM_TB_STAT = tb_stat.datim;
+                    temp.Validated_TB_STAT = tb_stat.validated;
+                    temp.tb_stat_Data = tb_stat_siteData;
+                }
+
+                if (tb_art.datim != 0 && tb_art.validated != 0)
+                {
+                    temp.DATIM_TB_ART = tb_art.datim;
+                    temp.Validated_TB_ART = tb_art.validated;
+                    temp.tb_art_Data = tb_art_siteData;
+                }
+
+                if (tx_tb.datim != 0 && tx_tb.validated != 0)
+                {
+                    temp.DATIM_TX_TB = tx_tb.datim;
+                    temp.Validated_TX_TB = tx_tb.validated;
+                    temp.tx_tb_Data = tx_tb_siteData;
+                }
+
+                if (pmtct_fo.datim != 0 && pmtct_fo.validated != 0)
+                {
+                    temp.DATIM_PMTCT_FO = pmtct_fo.datim;
+                    temp.Validated_PMTCT_FO = pmtct_fo.validated;
+                    temp.pmtct_fo_Data = pmtct_fo_siteData;
+                }
+
+                if (tx_ret.datim != 0 && tx_ret.validated != 0)
+                {
+                    temp.DATIM_TX_RET = tx_ret.datim;
+                    temp.Validated_TX_RET = tx_ret.validated;
+                    temp.tx_ret_Data = tx_ret_siteData;
+                }
+
+                if (tx_pvls.datim != 0 && tx_pvls.validated != 0)
+                {
+                    temp.DATIM_TX_PVLS = tx_pvls.datim;
+                    temp.Validated_TX_PVLS = tx_pvls.validated;
+                    temp.tx_pvls_Data = tx_pvls_siteData;
+                }
+                //};
+                tempData.Add(temp);
+            }
+
+            var allDatamodel = PackageData(tempData);
+
+            return new AnalyticPageData
+            {
+                AllDataModel = allDatamodel,
+            };
+        }
         private HighchartDrilldownModel PackageData(List<TempFacilityData> tempData)
         {
             var hct_data = new List<Datum>();
@@ -628,7 +779,6 @@ namespace ShieldPortal.Services
             };
             return model;
         }
-
 
         public List<ChildSeriesData> RetrieveQIData(List<ChildSeriesData> data)
         {

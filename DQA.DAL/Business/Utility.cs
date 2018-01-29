@@ -499,6 +499,17 @@ namespace DQA.DAL.Business
 
             return dataTable;
         }
+        public static DataTable GetQ1FY18Analysis(string IP_id, bool get_partner_report)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "get_q1_FY18_analysis_report";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ip", IP_id);
+            cmd.Parameters.AddWithValue("@get_partner_report", get_partner_report);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
+        }
 
         public static DataSet GetDashboardStatistic(string IP, string reportPeriod)
         {

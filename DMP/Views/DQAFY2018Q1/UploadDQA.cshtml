@@ -1,0 +1,96 @@
+﻿@{
+    Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
+}
+@section AddToHead{
+    <style>
+        .form-control{
+            color:#029b17;
+        }
+        form{
+            color:#029b17;
+        }
+    </style>
+    } 
+
+    <div class="col-md-7">
+        <p style="color: red;font-weight: bold;"> The DQAs when completed at the facility can be uploaded using any of these two ways; upload the individual DQA tool for each facility or upload a zipped folder of all facilities DQAs for the IP and uploaded on the portal. After uploads are done be sure that the submission box is checked as uploaded.</p>
+            <div class="panel panel-success">
+                <div class="panel-heading clearfix" style="padding:8px 20%">
+                    <h4 class="panel-title">Upload DQA</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="progress active" id="progress">
+                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            <span class="sr-only">Loading...Please wait</span>
+                        </div>
+                    </div>
+                    <form class="form-horizontal" method="post" id="form">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">File</label>
+                            <div class="col-sm-10">
+                                <input type="file" id="field-file" name="upFile" class="form-control">
+                            </div>
+                        </div>
+                        <div class="line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                @*<span style="font-style:italic;color:red;"> upload of completed DQA tool is yet to open</span>*@
+                                <a class="btn btn-success btn-sm btn-outline" id="btnSubmit">Upload</a>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="output">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+</div>
+<div class="col-lg-2"></div>
+     
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            
+            $("#progress").hide();
+       
+            $("#btnSubmit").click(function () {
+
+                
+
+            $("#output tbody").empty();
+            $("#progress").show();
+            var data = new FormData();
+            var file = $('form input[type=file]')[0].files[0];
+            if (file == undefined) {
+                alert("no file attached");
+                return;
+            }
+            data.append('file', file);
+
+            $("#btnSubmit").prop("disabled", true);
+
+            $.ajax({
+                url: '/DQAFY2018Q1/PostDQAFile',
+                type: 'POST',
+                data: data,
+                async: true, 
+                cache: false,
+                contentType: false,
+                processData: false
+            }).done(function (data) {
+                $("#output tbody").prepend(data);
+                $("#btnSubmit").prop("disabled", false);
+                $("#progress").hide();
+            }).error(function (xhr, status, err) {
+                alert(err);
+                console.log(err);
+                $("#progress").hide();
+            });
+            return false;
+        });
+        });
+    </script>
+
+}

@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
+}
+@section AddToHead{
+<style>
+    .table > thead > tr > th {
+        font-weight: bold;
+    } 
+    .abbrev-full {
+        background-color: lightblue;
+    }
+</style>
+}
+ 
+<div class="col-md-9">
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title">DQA Summary Result</h4>
+
+        </div>
+        <div class="panel-body" id="resultpnl">
+            <table class="table table-bordered table-condensed table-hover">
+                <tr>
+                    <td><strong>LEGEND : </strong></td>
+                    <td class="abbrev">COM</td>
+                    <td class="abbrev-full">COMPLETENESS</td>
+                    <td class="abbrev">CON</td>
+                    <td class="abbrev-full">CONSISTENCY</td>
+                    <td class="abbrev">PRE</td>
+                    <td class="abbrev-full">PRECISION</td>
+                    <td class="abbrev">INT</td>
+                    <td class="abbrev-full">INTEGRITY</td>
+                    <td class="abbrev">VAL</td>
+                    <td class="abbrev-full">VALIDITY</td>
+                </tr>
+            </table>
+            <div id="divTable" class="table-responsive"></div>
+        </div>
+    </div>
+</div>
+ 
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: baseUrl() + "dqaapi/GetIpSummaryResult?year=2017&quarter=Q2&id=" + @ViewBag.ip_id, //"dqaapi/GetIpSummaryResult/" + @ViewBag.ip_id,
+                method: "GET",
+                contentType: "application/json",
+                success: function (result) {
+                    if(result.hasOwnProperty()){
+                        var jsonHtmlTable = ConvertJsonToTable(result.Table, 'table', "table table-bordered table-striped table-hover", 'Download');
+                        $("#divTable").html(jsonHtmlTable);
+                    }
+                    else {
+                        $("#resultpnl").empty();
+                        $("#resultpnl").append("<b> no DQA uploaded yet </b>");
+                    }                    
+                }
+            })
+        });
+    </script>
+    }
