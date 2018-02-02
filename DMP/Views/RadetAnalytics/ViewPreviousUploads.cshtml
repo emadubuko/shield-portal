@@ -242,6 +242,8 @@
     <script>
         $(document).ready(function () {
 
+            $("#sltReportPeriod option:eq(3)").attr("selected", true);
+
             var dataTable = {
                 table: null,
                 initialiazeDataTable: function () {
@@ -253,6 +255,7 @@
                         selectedIP.push($("#sltIP")[0].selectedOptions[0].value);
                     });
                     model.IPs = selectedIP;
+                    model.RadetPeriod = "Q1 FY18";
 
                     dataTable.table = $tabela.DataTable({
                         processing: true,

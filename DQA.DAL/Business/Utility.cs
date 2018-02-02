@@ -347,7 +347,7 @@ namespace DQA.DAL.Business
                                          TX_TB = table.TX_TB,
 
                                          TB_ART = table.TB_ART,
-
+                                          PMTCT_HEI_POS = table.PMTCT_HEI_POS,
 
                                          SelectedForDQA = table.SelectedForDQA,
                                          SelectedReason = table.SelectedReason

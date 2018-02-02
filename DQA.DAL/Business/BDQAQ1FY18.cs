@@ -696,8 +696,10 @@ namespace DQA.DAL.Business
                     sheet__all_Q.Cells["F23"].Value = site.PMTCT_ART;
                     //pmtct_eid
                     sheet__all_Q.Cells["F28"].Value = site.PMTCT_EID;
-                    //tx_new
-                    sheet__all_Q.Cells["F33"].Value = site.TX_NEW; 
+                    //PMTCT_HEI_POS
+                    sheet__all_Q.Cells["F33"].Value = site.PMTCT_HEI_POS;
+                    //TX_NEW
+                    sheet__all_Q.Cells["F38"].Value = site.TX_NEW;
 
                     var sheet__all_Summary = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
                     sheet__all_Summary.Cells["E12"].Value = tx_current_count;
