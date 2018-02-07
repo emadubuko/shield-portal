@@ -41,7 +41,7 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public string RADETScoreCardData()
         {
-            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];  
+            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
 
             var data = new RadetMetaDataDAO().GetScoreCard(period);
 
@@ -87,7 +87,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult UploadPage()
         {
-            
+
             var profile = new Services.Utils().GetloggedInProfile();
 
             if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
@@ -113,12 +113,12 @@ namespace ShieldPortal.Controllers
 
             foreach (var rdt in list)
             {
-                if (!model.IPLocation.Any(a => a.IP == rdt.IP && a.FacilityName == rdt.Facility && a.LGA == rdt.LGA && a.RadetPeriod == rdt.RadetPeriod))
+                if (!model.IPLocation.Any(a => a.IP == rdt.IP && a.FacilityName.ToLower().Trim() == rdt.Facility.ToLower().Trim() && a.LGA == rdt.LGA && a.RadetPeriod == rdt.RadetPeriod))
                 {
                     model.IPLocation.Add(
                 new IPLGAFacility
                 {
-                    FacilityName = rdt.Facility,
+                    FacilityName = rdt.Facility.ToLower().Trim(),
                     IP = rdt.IP,
                     LGA = rdt.LGA,
                     RadetPeriod = rdt.RadetPeriod
@@ -143,10 +143,10 @@ namespace ShieldPortal.Controllers
             {
                 searchModel.IPs = new List<string> { new Services.Utils().GetloggedInProfile().Organization.ShortName };
             }
-         
+
             RadetMetaDataDAO _dao = new RadetMetaDataDAO();
             var list = new RadetMetaDataDAO().RetrieveUsingPaging(searchModel, start.Value, length ?? 20, false, out totalRecords);
-             
+
             recordsFiltered = list.Count();
 
             list.ForEach(x =>
@@ -472,7 +472,7 @@ namespace ShieldPortal.Controllers
                                 MemoryStream stream = new MemoryStream();
                                 StreamUtils.Copy(zipStream, stream, new byte[4096]);
 
-                                var radetMetaData = new RadetMetaData(); 
+                                var radetMetaData = new RadetMetaData();
 
                                 status = new RADETProcessor().ReadRadetFile(stream, fileName, IP, LGAs, validFacilities, out radetMetaData, out errors);
 
@@ -514,11 +514,10 @@ namespace ShieldPortal.Controllers
                 else if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "XLSX")
                 {
                     Stream uploadedFileStream = Request.Files[0].InputStream;
-                    var radetMetaData = new RadetMetaData(); 
+                    var radetMetaData = new RadetMetaData();
 
                     status = new RADETProcessor().ReadRadetFile(uploadedFileStream, Request.Files[0].FileName, IP, LGAs, validFacilities, out radetMetaData, out errors);
-                    //what ever status, log feedback to the view via signal R
-                    NotifyPage(connectionId, Request.Files[0].FileName, errors);
+
 
                     if (errors.Count == 0) //if no errors
                     {
@@ -539,6 +538,10 @@ namespace ShieldPortal.Controllers
                             upload.RadetMetaData.Add(radetMetaData);
                         }
                     }
+
+                    //what ever status, log feedback to the view via signal R
+                    NotifyPage(connectionId, Request.Files[0].FileName, errors);
+
 
                     //append errors if any
                     uploadError.ErrorDetails.AddRange(errors);

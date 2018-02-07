@@ -33,6 +33,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -230,6 +231,7 @@
     <Compile Include="Controllers\DQAFY2017Q2Controller.cs" />
     <Compile Include="Controllers\DQAFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQAFY2017Q4Controller.cs" />
+    <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1329,6 +1331,7 @@
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.xlsx" />
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.pdf" />
     <None Include="Properties\PublishProfiles\portal.pubxml" />
+    <Content Include="Report\Template\DQI\Q1 FY18\DQI TOOL_unlocked.xlsm" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1428,6 +1431,9 @@
     <Content Include="Views\DQAFY2018Q1\RadetValidation.cshtml" />
     <Content Include="Views\DQAFY2018Q1\UploadDQA.cshtml" />
     <Content Include="Views\DQAFY2018Q1\UploadPivotTable.cshtml" />
+    <Content Include="Views\DQIFY2018Q1\Index.cshtml" />
+    <Content Include="Views\DQIFY2018Q1\DownloadDQITool.cshtml" />
+    <Content Include="Views\DQIFY2018Q1\UploadDQIResult.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1469,6 +1475,7 @@
     <Content Include="Views\Shared\_NHMISLayout.cshtml" />
     <Content Include="Views\Shared\_dqaFY17Q4layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY18Q1layout.cshtml" />
+    <Content Include="Views\Shared\dqiFY18Q1Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1513,6 +1520,10 @@
       <Project>{adc0f63f-ce6c-4be8-867f-16eaf68b00b4}</Project>
       <Name>DQA.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DQI.DAL\DQI.DAL.csproj">
+      <Project>{848b5ef2-1cb1-4049-8fbe-ac51ea96e8f6}</Project>
+      <Name>DQI.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EP.DAL\EP.DAL.csproj">
       <Project>{afc8203e-c2dc-4896-af36-85b6ccb86349}</Project>
       <Name>EP.DAL</Name>
@@ -1543,7 +1554,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>65097</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

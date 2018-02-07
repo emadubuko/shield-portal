@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShieldPortal", "DMP\ShieldPortal.csproj", "{D4691C2F-EF1F-472A-8852-60DCAF4C0FAA}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RADET.DAL", "RADET.DAL\RADET.DAL.csproj", "{5CB4C593-CE51-434A-B7C2-951FDD4468F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHMIS.DAL", "NHMIS.DAL\NHMIS.DAL.csproj", "{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DQI.DAL", "DQI.DAL\DQI.DAL.csproj", "{848B5EF2-1CB1-4049-8FBE-AC51EA96E8F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,8 +65,15 @@ Global
 		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{995F3D83-840F-4ACB-BFBD-51D99E05AC1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{848B5EF2-1CB1-4049-8FBE-AC51EA96E8F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{848B5EF2-1CB1-4049-8FBE-AC51EA96E8F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{848B5EF2-1CB1-4049-8FBE-AC51EA96E8F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{848B5EF2-1CB1-4049-8FBE-AC51EA96E8F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A78DDEF1-0585-4FEC-B32A-3B5F14A8AF8A}
 	EndGlobalSection
 EndGlobal
