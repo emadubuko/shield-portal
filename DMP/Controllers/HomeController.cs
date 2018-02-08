@@ -65,7 +65,11 @@ namespace ShieldPortal.Controllers
             {
                 ViewBag.breadcrumb = "Admin";
             }
-             
+            if (id.Contains("smr"))
+            {
+                ViewBag.breadcrumb = "Enhanced Monitoring";
+            }
+
             ViewBag.Container = id;
             return View();
         }
