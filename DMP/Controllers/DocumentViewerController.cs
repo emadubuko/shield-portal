@@ -15,7 +15,7 @@ using CommonUtil.DAO;
 using CommonUtil.DBSessionManager;
 using CommonUtil.Utilities;
 
-namespace ShieldPortal.Controllers
+namespace ShieldPortal.Controllers 
 {
     [Authorize]
     public class DocumentViewerController : Controller
