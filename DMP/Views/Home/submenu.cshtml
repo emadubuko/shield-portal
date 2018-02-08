@@ -196,13 +196,25 @@
 
         <div class="row">
             <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
-            <div class="col-sm-4">
+            @*<div class="col-sm-4">
                 <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
                     <div class="panel-body" style="margin-top: -15px;">
                         <table>
                             <tr>
                                 <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
                                 <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly reporting</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>*@
+            <div class="col-sm-4">
+                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                    <div class="panel-body" style="margin-top: -15px;">
+                        <table>
+                            <tr>
+                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HTS Assessment</strong></td>
                             </tr>
                         </table>
                     </div>
@@ -242,7 +254,7 @@
 
             <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
 
-            <div class="col-sm-4">
+            @*<div class="col-sm-4">
                 <div class="panel panel-info pnl-height" style="border-color:darkorange">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
@@ -253,6 +265,16 @@
                         <hr />
                         <h5 style="font-weight: bold">Overview</h5>
                         <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
+
+                    </div>
+                </div>
+            </div>*@
+            <div class="col-sm-4">
+                <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                    <div class="panel-body">
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p></p>
 
                     </div>
                 </div>
@@ -387,6 +409,32 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div id="smr" style="display:none">
+        <div class="row">
+            <div class="col-lg-1"> </div>
+
+            <div class="col-md-7">
+                <div class="panel panel-info" style="border-color:darkslategrey">
+                    <div class="panel-heading clearfix" style="background-color: darkslategrey;border-color:darkslategrey">
+                        <h4 class="panel-title">Semi Monthly Reporting</h4>
+                    </div>
+                    
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a href="@Url.Action("Dashboard", "BiWeeklyReport")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkslategrey; border-color:darkslategrey">Go to Semi Monthly Report</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
+
+                    </div>
+                </div>
+            </div>
+           
         </div>
     </div>
 
