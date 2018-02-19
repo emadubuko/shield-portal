@@ -326,7 +326,7 @@ namespace DQA.DAL.Business
             {
                 using (ExcelPackage package = new ExcelPackage(datimFile))
                 {
-                    var worksheet = package.Workbook.Worksheets["Facility Pivot Table"];
+                    var worksheet = package.Workbook.Worksheets.FirstOrDefault(); //["Facility Pivot Table"];
                     if (worksheet == null)
                     {
                         throw new ApplicationException("Invalid pivot table uploaded");
@@ -352,7 +352,7 @@ namespace DQA.DAL.Business
                             if (hf.ImplementingPartner.Id != profile.Organization.Id)
                             {
                                 sb.AppendLine("Facility [" + hf.Name + "] does not belong to the your IP [" + profile.Organization.ShortName + "]. Please correct and try again");
-                                continue;
+                                break;
                             }
 
                             //if(hf.Name != fName)
