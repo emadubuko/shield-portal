@@ -345,8 +345,9 @@ namespace ShieldPortal.Controllers
         }
 
 
-        public IHttpActionResult GetPivotTable(string Quater, List<string> IPs)
+        public IHttpActionResult GetPivotTable([FromUri] string Quater,string IPstring)
         {
+            List<string> IPs = JsonConvert.DeserializeObject<List<string>>(IPstring);
             var data = Utility.RetrievePivotTablesForComparison(IPs, Quater); 
 
             return Ok(data);

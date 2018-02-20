@@ -424,10 +424,12 @@ namespace DQA.DAL.Business
                                                  });
             if (ip != null && ip.Count > 0)
             {
-                if(ip.Count() == 1 && !string.IsNullOrEmpty(ip.FirstOrDefault()))
-                {
+                if(ip.Count() == 1 && string.IsNullOrEmpty(ip.FirstOrDefault()))
+                {              
+                    //do nothing
+                }
+                else
                     list = list.Where(x => ip.Contains(x.IP));
-                }                
             }
 
             if (state_code != null && state_code.Count > 0)
