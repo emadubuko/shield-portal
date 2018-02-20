@@ -407,20 +407,10 @@ namespace DQA.DAL.Business
             return list.ToList();
         }
 
-        public static List<PivotTableModel> RetrievePivotTablesForComparison(string ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
+        public static List<PivotTableModel> RetrievePivotTablesForComparison(List<string> ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
         {
-            IQueryable<dqa_pivot_table_upload> result = null;
-
-            if (string.IsNullOrEmpty(ip))
-            {
-                result = entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter);
-            }
-            else
-            {
-                result = entity.dqa_pivot_table_upload.Where(x => x.ImplementingPartner.ShortName == ip && x.Quarter == quarter);
-            }
-
-            IEnumerable<PivotTableModel> list = (from item in result
+             
+            var list = (from item in entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter)
                                                  from table in item.dqa_pivot_table
                                                  where table.TX_CURR > 0
                                                  select new PivotTableModel
@@ -432,6 +422,14 @@ namespace DQA.DAL.Business
                                                      TX_NEW = table.TX_NEW,
                                                      TheLGA = table.HealthFacility.lga,
                                                  });
+            if (ip != null && ip.Count > 0)
+            {
+                if(ip.Count() == 1 && !string.IsNullOrEmpty(ip.FirstOrDefault()))
+                {
+                    list = list.Where(x => ip.Contains(x.IP));
+                }                
+            }
+
             if (state_code != null && state_code.Count > 0)
             {
                 list = list.Where(x => state_code.Contains(x.TheLGA.state_code));
@@ -447,6 +445,8 @@ namespace DQA.DAL.Business
 
             return list.ToList();
         }
+
+         
 
         public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate, string radetPeriod)
         {

@@ -344,7 +344,15 @@ namespace ShieldPortal.Controllers
             return msg;
         }
 
-        
+
+        public IHttpActionResult GetPivotTable(string Quater, List<string> IPs)
+        {
+            var data = Utility.RetrievePivotTablesForComparison(IPs, Quater); 
+
+            return Ok(data);
+        }
+
+
         /*
         [HttpPost]
         public HttpResponseMessage RetrieveRadet(int id)
