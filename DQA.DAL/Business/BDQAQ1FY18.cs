@@ -54,7 +54,7 @@ namespace DQA.DAL.Business
                     metadata.ImplementingPartner = facility.ImplementingPartnerId.Value;
                     metadata.LgaId = facility.LGAId;
                     metadata.LgaLevel = 2;
-                    metadata.ReportPeriod = worksheet.Cells["Y2"].Value.ToString();
+                    metadata.ReportPeriod = "Q1 FY18"; //worksheet.Cells["Y2"].Value.ToString();
                     metadata.SiteId = Convert.ToInt32(facility.Id);
                     metadata.StateId = facility.lga.state.state_code; // state.state_code;
 
@@ -669,7 +669,7 @@ namespace DQA.DAL.Business
                     sheetn.Cells["T2"].Value = site.Lga;
                     sheetn.Cells["V2"].Value = site.FacilityName;
                     sheetn.Cells["AA2"].Value = site.FacilityCode;
-                    sheetn.Cells["Y2"].Value = "Q4 FY17";
+                    sheetn.Cells["Y2"].Value = "Q1 FY18";
 
                     sheetn.Cells["N10"].Value = tx_current_count;
                     //sheetn.Cells["X10"].Value = viral_load_count;
