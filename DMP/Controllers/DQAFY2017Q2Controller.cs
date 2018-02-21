@@ -433,11 +433,12 @@ namespace ShieldPortal.Controllers
         {
             string period = "Q3 FY17";
             string ip = "";
+            
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
                 ip = profile.Organization.ShortName;
 
-            var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period);
+            var pivot_data = Utility.RetrievePivotTablesForComparison(new List<string> { ip }, period);
             var iplocation = (from pvt in pivot_data
                               select new
                               {
@@ -482,7 +483,7 @@ namespace ShieldPortal.Controllers
                 ip = searchModel.IPs.FirstOrDefault();                
             }
             var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
-            var pivot_data = Utility.RetrievePivotTablesForComparison(ip, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
+            var pivot_data = Utility.RetrievePivotTablesForComparison(new List<string> { ip }, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
             var artSites = Utilities.GetARTSiteWithDATIMCode();
 
             List<dynamic> mydata = new List<dynamic>();
