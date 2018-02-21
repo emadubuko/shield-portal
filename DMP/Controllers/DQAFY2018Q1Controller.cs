@@ -154,8 +154,6 @@ namespace ShieldPortal.Controllers
             return View(data);
         }
 
-
-        //this is for Q2 upload
         [HttpPost]
         public string PostDQAFile()
         {
@@ -223,7 +221,7 @@ namespace ShieldPortal.Controllers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                messages += new BDQAQ4FY17().ReadWorkbook(extractedFilePath, userUploading);
+                                                messages += new BDQAQ1FY18().ReadWorkbook(extractedFilePath, userUploading);
                                                 countSuccess++;
                                             }
                                         }
@@ -291,7 +289,6 @@ namespace ShieldPortal.Controllers
             }); 
         }
 
-        //Q4 Fy17
         public ActionResult DQAAnalysisReport(string type)
         {
             string ip = "";

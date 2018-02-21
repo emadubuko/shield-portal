@@ -128,7 +128,7 @@ namespace DQA.DAL.Business
                                 ve.ErrorMessage));
                         }
                     }
-                    Logger.LogInfo("BDQAQ2.ReadWorkbook", sb.ToString());
+                    Logger.LogInfo("BDQAQ1FY18.ReadWorkbook", sb.ToString());
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred while processing the file " + filename + "</td></tr>";
                 }
                 catch (Exception ex)
@@ -160,14 +160,9 @@ namespace DQA.DAL.Business
             reported_data.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
             reported_data.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
             reported_data.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
-            reported_data.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
-            reported_data.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
-            reported_data.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
-            reported_data.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
-            reported_data.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
-            reported_data.Add(new XElement("TX_Curr", summaryworksheet.Cells["E12"].Value.ToString()));
-            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J12"].Value.ToString()));
-            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P12"].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_HEI_POS", summaryworksheet.Cells[i, 11].Value.ToString()));
+            reported_data.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 12].Value.ToString()));
+            reported_data.Add(new XElement("TX_CURR", summaryworksheet.Cells["E12"].Value.ToString()));
             summaries.Add(reported_data);
 
             i = 7;
@@ -176,20 +171,14 @@ namespace DQA.DAL.Business
             validation.Add(new XElement("HTC_TST_Pos", summaryworksheet.Cells[i, 3].Value.ToString()));
             validation.Add(new XElement("HTC_Only", summaryworksheet.Cells[i, 4].Value.ToString()));
             validation.Add(new XElement("HTC_Pos", summaryworksheet.Cells[i, 5].Value.ToString()));
-
             validation.Add(new XElement("PMTCT_STAT", summaryworksheet.Cells[i, 6].Value.ToString()));
             validation.Add(new XElement("PMTCT_STAT_Pos", summaryworksheet.Cells[i, 7].Value.ToString()));
             validation.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
             validation.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
             validation.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
-            validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
-            validation.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
-            validation.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
-            validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
-            validation.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
-            validation.Add(new XElement("TX_Curr", summaryworksheet.Cells["E13"].Value.ToString()));
-            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J13"].Value.ToString()));
-            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P13"].Value.ToString()));
+            validation.Add(new XElement("PMTCT_HEI_POS", summaryworksheet.Cells[i, 11].Value.ToString()));
+            validation.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 12].Value.ToString()));
+            validation.Add(new XElement("TX_CURR", summaryworksheet.Cells["E13"].Value.ToString()));
             summaries.Add(validation);
 
             i = 8;
@@ -203,15 +192,9 @@ namespace DQA.DAL.Business
             concurrency_rate.Add(new XElement("PMTCT_STAT_Knwpos", summaryworksheet.Cells[i, 8].Value.ToString()));
             concurrency_rate.Add(new XElement("PMTCT_ART", summaryworksheet.Cells[i, 9].Value.ToString()));
             concurrency_rate.Add(new XElement("PMTCT_EID", summaryworksheet.Cells[i, 10].Value.ToString()));
-            concurrency_rate.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 11].Value.ToString()));
-            concurrency_rate.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 12].Value.ToString()));
-            concurrency_rate.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 13].Value.ToString()));
-            concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 14].Value.ToString()));
-            concurrency_rate.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 15].Value.ToString()));
-            concurrency_rate.Add(new XElement("TX_Curr", summaryworksheet.Cells["E14"].Value.ToString()));
-            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J14"].Value.ToString()));
-            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P14"].Value.ToString()));
-
+            concurrency_rate.Add(new XElement("PMTCT_HEI_POS", summaryworksheet.Cells[i, 11].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_NEW", summaryworksheet.Cells[i, 12].Value.ToString()));
+            concurrency_rate.Add(new XElement("TX_CURR", summaryworksheet.Cells["E14"].Value.ToString()));
             summaries.Add(concurrency_rate);
 
 

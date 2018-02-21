@@ -10,7 +10,6 @@
         <EntityTypeShape EntityType="shield_dmpModel.dqa_funder" Width="1.5" PointX="2.75" PointY="9.75" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_indicator" PointX="8.375" PointY="0.75" Width="1.5" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_lnk_version_indicators" Width="1.5" PointX="8" PointY="5.875" />
-        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="9.75" PointY="8.75" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_report_value" PointX="10.625" PointY="0.75" Width="1.5" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_indicators" Width="1.5" PointX="10.75" PointY="4.75" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_summary_value" Width="1.5" PointX="11.75" PointY="7.75" />
@@ -38,6 +37,9 @@
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot__Uploa__45A94D10" />
         <AssociationConnector Association="shield_dmpModel.FK__dqa_pivot_ta__IP__6BB9E75F" />
         <EntityTypeShape EntityType="shield_dmpModel.dqa_FY17Q1_Analysyis" Width="1.5" PointX="9.625" PointY="12.75" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="13.375" PointY="0.75" />
+        <AssociationConnector Association="shield_dmpModel.FKA9A8FFC71C2BF06A" />
+        <AssociationConnector Association="shield_dmpModel.FKE287F3F1F9B891CC" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

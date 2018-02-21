@@ -58,6 +58,10 @@ namespace ShieldPortal.ViewModel
         public List<ChildSeriesData> tx_pvls_drilldown { get; set; }
         public List<ChildSeriesData> tx_pvls_drilldown_QI { get; set; }
 
+        public List<ParentSeries> pmtct_hei_pos_series { get; set; }
+        public List<ChildSeriesData> pmtct_hei_pos_drilldown { get; set; }
+        public List<ChildSeriesData> pmtct_hei_pos_drilldown_QI { get; set; }
+
         public List<ConcurrenceRateByPartner> ConcurrenceByPartner { get; set; }    
     }
 
@@ -132,6 +136,11 @@ namespace ShieldPortal.ViewModel
         public int DATIM_TX_PVLS { get; set; }
         public int Validated_TX_PVLS { get; set; }
         public List<object> tx_pvls_Data { get; set; }
+
+        public int DATIM_PMTCT_HEI_POS { get; set; }
+        public int Validated_PMTCT_HEI_POS { get; set; }
+        public List<object> pmtct_hei_pos_Data { get; set; }
+
     }
     public class ConcurrenceData
     {
@@ -147,13 +156,14 @@ namespace ShieldPortal.ViewModel
         public double PMTCT_STAT_Concurrence { get; set; } 
         public double PMTCT_ART_Concurrence { get; set; }  
         public double PMTCT_EID_Concurrence { get; set; }  
-        public double TX_NEW_Concurrence { get; set; }  
+        public double TX_NEW_Concurrence { get; set; }
         public double TX_CURR_Concurrence { get; set; }
         public double TB_STAT_Concurrence { get; set; }
-        public double PMTCT_FO_Concurrence { get; set; }
         public double TB_ART_Concurrence { get; set; }
-        public double TX_RET_Concurrence { get; set; }
         public double TX_TB_Concurrence { get; set; }
+        public double PMTCT_FO_Concurrence { get; set; }
+        public double TX_RET_Concurrence { get; set; }
         public double TX_PVLS_Concurrence { get; set; }
+        public double PMTCT_HEI_POS_Concurrence { get; set; }
     }
 }

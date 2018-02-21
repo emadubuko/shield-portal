@@ -37,5 +37,7 @@ namespace DQA.DAL.Data
         public virtual ImplementingPartner ImplementingPartner1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dqa_pivot_table> dqa_pivot_table { get; set; }
+        public virtual ImplementingPartner ImplementingPartner2 { get; set; }
+        public virtual ImplementingPartner ImplementingPartner3 { get; set; }
     }
 }
