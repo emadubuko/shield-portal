@@ -271,7 +271,7 @@ namespace DQA.DAL.Business
 
                 result = (int)command.ExecuteScalar();
             }
-            catch (Exception )
+            catch (Exception)
             {
 
             }
@@ -329,7 +329,7 @@ namespace DQA.DAL.Business
                                          OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
 
                                          PMTCT_ART = table.PMTCT_ART,
-                                         
+
                                          TX_CURR = table.TX_CURR,
                                          HTC_Only = table.HTC_Only,
                                          HTC_Only_POS = table.HTC_Only_POS,
@@ -347,7 +347,7 @@ namespace DQA.DAL.Business
                                          TX_TB = table.TX_TB,
 
                                          TB_ART = table.TB_ART,
-                                          PMTCT_HEI_POS = table.PMTCT_HEI_POS,
+                                         PMTCT_HEI_POS = table.PMTCT_HEI_POS,
 
                                          SelectedForDQA = table.SelectedForDQA,
                                          SelectedReason = table.SelectedReason
@@ -409,23 +409,23 @@ namespace DQA.DAL.Business
 
         public static List<PivotTableModel> RetrievePivotTablesForComparison(List<string> ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
         {
-             
+
             var list = (from item in entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter)
-                                                 from table in item.dqa_pivot_table
-                                                 where table.TX_CURR > 0
-                                                 select new PivotTableModel
-                                                 {
-                                                     IP = item.ImplementingPartner.ShortName,
-                                                     FacilityName = table.HealthFacility.Name,
-                                                     FacilityCode = table.HealthFacility.FacilityCode,
-                                                     TX_CURR = table.TX_CURR,
-                                                     TX_NEW = table.TX_NEW,
-                                                     TheLGA = table.HealthFacility.lga,
-                                                 });
+                        from table in item.dqa_pivot_table
+                        where table.TX_CURR > 0
+                        select new PivotTableModel
+                        {
+                            IP = item.ImplementingPartner.ShortName,
+                            FacilityName = table.HealthFacility.Name,
+                            FacilityCode = table.HealthFacility.FacilityCode,
+                            TX_CURR = table.TX_CURR,
+                            TX_NEW = table.TX_NEW,
+                            TheLGA = table.HealthFacility.lga,
+                        });
             if (ip != null && ip.Count > 0)
             {
-                if(ip.Count() == 1 && string.IsNullOrEmpty(ip.FirstOrDefault()))
-                {              
+                if (ip.Count() == 1 && string.IsNullOrEmpty(ip.FirstOrDefault()))
+                {
                     //do nothing
                 }
                 else
@@ -448,7 +448,49 @@ namespace DQA.DAL.Business
             return list.ToList();
         }
 
-         
+        public static List<PivotTableModel> RetrievePivotTablesForNDR(List<string> ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
+        {
+
+            var list = (from item in entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter)
+                        from table in item.dqa_pivot_table
+                        where table.TX_CURR > 0
+                        select new PivotTableModel
+                        {
+                            IP = item.ImplementingPartner.ShortName,
+                            FacilityName = table.HealthFacility.Name,
+                            FacilityCode = table.HealthFacility.FacilityCode,
+                            TX_CURR = table.TX_CURR,
+                            TX_NEW = table.TX_NEW,
+                            TX_PVLS = table.TX_PVLS,
+                            TX_RET = table.TX_RET,
+                            Lga = table.HealthFacility.lga.lga_name,
+                            State = table.HealthFacility.lga.state.state_name,
+                        });
+            if (ip != null && ip.Count > 0)
+            {
+                if (ip.Count() == 1 && string.IsNullOrEmpty(ip.FirstOrDefault()))
+                {
+                    //do nothing
+                }
+                else
+                    list = list.Where(x => ip.Contains(x.IP));
+            }
+
+            if (state_code != null && state_code.Count > 0)
+            {
+                list = list.Where(x => state_code.Contains(x.TheLGA.state_code));
+            }
+            if (lga_code != null && lga_code.Count > 0)
+            {
+                list = list.Where(x => lga_code.Contains(x.TheLGA.lga_code));
+            }
+            if (facilityName != null && facilityName.Count > 0)
+            {
+                list = list.Where(x => facilityName.Contains(x.FacilityName));
+            }
+
+            return list.ToList();
+        }
 
         public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate, string radetPeriod)
         {

@@ -345,10 +345,11 @@ namespace ShieldPortal.Controllers
         }
 
 
-        public IHttpActionResult GetPivotTable([FromUri] string Quater,string IPstring)
+        public IHttpActionResult GetPivotTable([FromUri] string Quater,string IPstring="")
         {
+           
             List<string> IPs = JsonConvert.DeserializeObject<List<string>>(IPstring);
-            var data = Utility.RetrievePivotTablesForComparison(IPs, Quater); 
+            var data = Utility.RetrievePivotTablesForNDR(IPs, Quater); 
 
             return Ok(data);
         }
