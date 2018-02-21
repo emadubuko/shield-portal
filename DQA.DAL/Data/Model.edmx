@@ -158,7 +158,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TB_ART" Type="int" Nullable="false" />
           <Property Name="TX_CURR" Type="int" Nullable="false" />
           <Property Name="PMTCT_ART" Type="int" Nullable="false" />
@@ -190,7 +190,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IP" Type="int" Nullable="false" />
           <Property Name="Quarter" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Year" Type="int" Nullable="false" />
@@ -201,7 +201,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SiteId" Type="int" Nullable="false" />
           <Property Name="LgaId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="StateId" Type="varchar" MaxLength="50" Nullable="false" />
@@ -230,7 +230,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="summary_code" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="thematic_area" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="indicator_element" Type="nvarchar" MaxLength="1000" Nullable="false" />
@@ -239,7 +239,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="metadata_id" Type="int" Nullable="false" />
           <Property Name="summary_object" Type="xml" Nullable="false" />
         </EntityType>
@@ -299,6 +299,102 @@
           <Property Name="geo_polictical_region" Type="nvarchar" MaxLength="50" />
           <Property Name="state_name" Type="nvarchar" MaxLength="250" />
         </EntityType>
+        <Association Name="FK6ECB7A12794DD3B7">
+          <End Role="states" Type="Self.states" Multiplicity="0..1" />
+          <End Role="lga" Type="Self.lga" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="states">
+              <PropertyRef Name="state_code" />
+            </Principal>
+            <Dependent Role="lga">
+              <PropertyRef Name="state_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKA9A8FFC71C2BF06A">
+          <End Role="ImplementingPartners" Type="Self.ImplementingPartners" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="Previous_IP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKA9A8FFC7C3F5A779">
+          <End Role="lga" Type="Self.lga" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lga">
+              <PropertyRef Name="lga_code" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="LGAId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKA9A8FFC7CC15123B">
+          <End Role="ImplementingPartners" Type="Self.ImplementingPartners" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="ImplementingPartnerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKDAADEEE960D0DD2E">
+          <End Role="states" Type="Self.states" Multiplicity="0..1" />
+          <End Role="lga" Type="Self.lga" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="states">
+              <PropertyRef Name="state_code" />
+            </Principal>
+            <Dependent Role="lga">
+              <PropertyRef Name="state_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKE287F3F135201EB8">
+          <End Role="lga" Type="Self.lga" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lga">
+              <PropertyRef Name="lga_code" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="LGAId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKE287F3F1C04CA587">
+          <End Role="ImplementingPartners" Type="Self.ImplementingPartners" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="ImplementingPartnerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKE287F3F1F9B891CC">
+          <End Role="ImplementingPartners" Type="Self.ImplementingPartners" Multiplicity="0..1" />
+          <End Role="HealthFacility" Type="Self.HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="Previous_IP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="shield_dmpModelStoreContainer">
           <EntitySet Name="dqa_comparison" EntityType="Self.dqa_comparison" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_dimensions" EntityType="Self.dqa_dimensions" Schema="dbo" store:Type="Tables" />
@@ -319,6 +415,38 @@
           <EntitySet Name="ImplementingPartners" EntityType="Self.ImplementingPartners" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="lga" EntityType="Self.lga" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="states" EntityType="Self.states" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK6ECB7A12794DD3B7" Association="Self.FK6ECB7A12794DD3B7">
+            <End Role="states" EntitySet="states" />
+            <End Role="lga" EntitySet="lga" />
+          </AssociationSet>
+          <AssociationSet Name="FKA9A8FFC71C2BF06A" Association="Self.FKA9A8FFC71C2BF06A">
+            <End Role="ImplementingPartners" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
+          <AssociationSet Name="FKA9A8FFC7C3F5A779" Association="Self.FKA9A8FFC7C3F5A779">
+            <End Role="lga" EntitySet="lga" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
+          <AssociationSet Name="FKA9A8FFC7CC15123B" Association="Self.FKA9A8FFC7CC15123B">
+            <End Role="ImplementingPartners" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
+          <AssociationSet Name="FKDAADEEE960D0DD2E" Association="Self.FKDAADEEE960D0DD2E">
+            <End Role="states" EntitySet="states" />
+            <End Role="lga" EntitySet="lga" />
+          </AssociationSet>
+          <AssociationSet Name="FKE287F3F135201EB8" Association="Self.FKE287F3F135201EB8">
+            <End Role="lga" EntitySet="lga" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
+          <AssociationSet Name="FKE287F3F1C04CA587" Association="Self.FKE287F3F1C04CA587">
+            <End Role="ImplementingPartners" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
+          <AssociationSet Name="FKE287F3F1F9B891CC" Association="Self.FKE287F3F1F9B891CC">
+            <End Role="ImplementingPartners" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacility" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -330,7 +458,6 @@
           <EntitySet Name="dqa_funder" EntityType="shield_dmpModel.dqa_funder" />
           <EntitySet Name="dqa_indicator" EntityType="shield_dmpModel.dqa_indicator" />
           <EntitySet Name="dqa_lnk_version_indicators" EntityType="shield_dmpModel.dqa_lnk_version_indicators" />
-          <EntitySet Name="dqa_report_metadata" EntityType="shield_dmpModel.dqa_report_metadata" />
           <EntitySet Name="dqa_report_value" EntityType="shield_dmpModel.dqa_report_value" />
           <EntitySet Name="dqa_summary_indicators" EntityType="shield_dmpModel.dqa_summary_indicators" />
           <EntitySet Name="dqa_summary_value" EntityType="shield_dmpModel.dqa_summary_value" />
@@ -400,6 +527,15 @@
             <End EntitySet="dqa_pivot_table" Role="dqa_pivot_table" />
           </AssociationSet>
           <EntitySet Name="dqa_FY17Q1_Analysyis" EntityType="shield_dmpModel.dqa_FY17Q1_Analysyis" />
+          <EntitySet Name="dqa_report_metadata" EntityType="shield_dmpModel.dqa_report_metadata" />
+          <AssociationSet Name="FKA9A8FFC71C2BF06A" Association="shield_dmpModel.FKA9A8FFC71C2BF06A">
+            <End Role="ImplementingPartner" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacilities" />
+          </AssociationSet>
+          <AssociationSet Name="FKE287F3F1F9B891CC" Association="shield_dmpModel.FKE287F3F1F9B891CC">
+            <End Role="ImplementingPartner" EntitySet="ImplementingPartners" />
+            <End Role="HealthFacility" EntitySet="HealthFacilities" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="dqa_facility_level">
           <Key>
@@ -442,24 +578,6 @@
           <Property Name="version_id" Type="Int32" Nullable="false" />
           <Property Name="indicator_code" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="dqa_versions" Relationship="shield_dmpModel.FK_LINK_VERSION" FromRole="dqa_lnk_version_indicators" ToRole="dqa_versions" />
-        </EntityType>
-        <EntityType Name="dqa_report_metadata">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SiteId" Type="Int32" Nullable="false" />
-          <Property Name="LgaId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="StateId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="LgaLevel" Type="Int32" Nullable="false" />
-          <Property Name="FundingAgency" Type="Int32" Nullable="false" />
-          <Property Name="ImplementingPartner" Type="Int32" Nullable="false" />
-          <Property Name="FiscalYear" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="AssessmentWeek" Type="Int32" Nullable="false" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ReportPeriod" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="ReportYear" Type="Int32" />
         </EntityType>
         <EntityType Name="dqa_report_value">
           <Key>
@@ -517,6 +635,8 @@
           <NavigationProperty Name="ImplementingPartner1" Relationship="shield_dmpModel.FKE287F3F1C04CA587" FromRole="HealthFacility" ToRole="ImplementingPartner" />
           <NavigationProperty Name="dqa_pivot_table" Relationship="shield_dmpModel.FK__dqa_pivot__Facil__6324A15E" FromRole="HealthFacility" ToRole="dqa_pivot_table" />
           <Property Name="Previous_IP" Type="Int32" />
+          <NavigationProperty Name="ImplementingPartner2" Relationship="shield_dmpModel.FKA9A8FFC71C2BF06A" FromRole="HealthFacility" ToRole="ImplementingPartner" />
+          <NavigationProperty Name="ImplementingPartner3" Relationship="shield_dmpModel.FKE287F3F1F9B891CC" FromRole="HealthFacility" ToRole="ImplementingPartner" />
         </EntityType>
         <EntityType Name="ImplementingPartner">
           <Key>
@@ -537,6 +657,8 @@
           <NavigationProperty Name="dqa_pivot_table_upload" Relationship="shield_dmpModel.FK__dqa_pivot_ta__IP__253C7D7E" FromRole="ImplementingPartner" ToRole="dqa_pivot_table_upload" />
           <Property Name="SubscribedApps" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="dqa_pivot_table" Relationship="shield_dmpModel.FK__dqa_pivot_ta__IP__6BB9E75F" FromRole="ImplementingPartner" ToRole="dqa_pivot_table" />
+          <NavigationProperty Name="HealthFacilities2" Relationship="shield_dmpModel.FKA9A8FFC71C2BF06A" FromRole="ImplementingPartner" ToRole="HealthFacility" />
+          <NavigationProperty Name="HealthFacilities3" Relationship="shield_dmpModel.FKE287F3F1F9B891CC" FromRole="ImplementingPartner" ToRole="HealthFacility" />
         </EntityType>
         <EntityType Name="lga">
           <Key>
@@ -891,6 +1013,48 @@
           <Property Name="Count_Fails" Type="Double" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="dqa_report_metadata">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SiteId" Type="Int32" Nullable="false" />
+          <Property Name="LgaId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StateId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LgaLevel" Type="Int32" Nullable="false" />
+          <Property Name="FundingAgency" Type="Int32" Nullable="false" />
+          <Property Name="ImplementingPartner" Type="Int32" Nullable="false" />
+          <Property Name="FiscalYear" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentWeek" Type="Int32" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReportPeriod" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ReportYear" Type="Int32" />
+        </EntityType>
+        <Association Name="FKA9A8FFC71C2BF06A">
+          <End Type="shield_dmpModel.ImplementingPartner" Role="ImplementingPartner" Multiplicity="0..1" />
+          <End Type="shield_dmpModel.HealthFacility" Role="HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartner">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="Previous_IP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKE287F3F1F9B891CC">
+          <End Type="shield_dmpModel.ImplementingPartner" Role="ImplementingPartner" Multiplicity="0..1" />
+          <End Type="shield_dmpModel.HealthFacility" Role="HealthFacility" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImplementingPartner">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HealthFacility">
+              <PropertyRef Name="Previous_IP" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -939,25 +1103,6 @@
                 <ScalarProperty Name="indicator_code" ColumnName="indicator_code" />
                 <ScalarProperty Name="version_id" ColumnName="version_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="dqa_report_metadata">
-            <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_metadata">
-              <MappingFragment StoreEntitySet="dqa_report_metadata">
-                <ScalarProperty Name="ReportYear" ColumnName="ReportYear" />
-                <ScalarProperty Name="ReportPeriod" ColumnName="ReportPeriod" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="AssessmentWeek" ColumnName="AssessmentWeek" />
-                <ScalarProperty Name="FiscalYear" ColumnName="FiscalYear" />
-                <ScalarProperty Name="ImplementingPartner" ColumnName="ImplementingPartner" />
-                <ScalarProperty Name="FundingAgency" ColumnName="FundingAgency" />
-                <ScalarProperty Name="LgaLevel" ColumnName="LgaLevel" />
-                <ScalarProperty Name="StateId" ColumnName="StateId" />
-                <ScalarProperty Name="LgaId" ColumnName="LgaId" />
-                <ScalarProperty Name="SiteId" ColumnName="SiteId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1207,6 +1352,25 @@
                 <ScalarProperty Name="DQA_FY17Q1_HTC_TST" ColumnName="DQA_FY17Q1_HTC_TST" />
                 <ScalarProperty Name="Facility" ColumnName="Facility" />
                 <ScalarProperty Name="IP" ColumnName="IP" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqa_report_metadata">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqa_report_metadata">
+              <MappingFragment StoreEntitySet="dqa_report_metadata">
+                <ScalarProperty Name="ReportYear" ColumnName="ReportYear" />
+                <ScalarProperty Name="ReportPeriod" ColumnName="ReportPeriod" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="AssessmentWeek" ColumnName="AssessmentWeek" />
+                <ScalarProperty Name="FiscalYear" ColumnName="FiscalYear" />
+                <ScalarProperty Name="ImplementingPartner" ColumnName="ImplementingPartner" />
+                <ScalarProperty Name="FundingAgency" ColumnName="FundingAgency" />
+                <ScalarProperty Name="LgaLevel" ColumnName="LgaLevel" />
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="LgaId" ColumnName="LgaId" />
+                <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

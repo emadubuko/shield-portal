@@ -305,31 +305,12 @@ namespace ShieldPortal.Services
 
                 //tx_curr
                 var tx_curr = ComputeConcurrence(dr[17], dr[18]);
-                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_curr.concurrence };
+                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
 
-                //tb_stat
-                var tb_stat = ComputeConcurrence(dr[20], dr[21]);
-                List<object> tb_stat_siteData = new List<object> { dr[1].ToString(), tb_stat.concurrence };
+                //pmtct_hei_pos
+                var pmtct_hei_pos = ComputeConcurrence(dr[20], dr[21]);
+                List<object> pmtct_hei_pos_siteData = new List<object> { dr[1].ToString(), pmtct_hei_pos.concurrence };
 
-                //tb_art
-                var tb_art = ComputeConcurrence(dr[23], dr[24]);
-                List<object> tb_art_siteData = new List<object> { dr[1].ToString(), tb_art.concurrence };
-
-                //tx_tb
-                var tx_tb = ComputeConcurrence(dr[26], dr[27]);
-                List<object> tx_tb_siteData = new List<object> { dr[1].ToString(), tx_tb.concurrence };
-
-                //pmtct_fo
-                var pmtct_fo = ComputeConcurrence(dr[29], dr[30]);
-                List<object> pmtct_fo_siteData = new List<object> { dr[1].ToString(), pmtct_fo.concurrence };
-
-                //tx_ret
-                var tx_ret = ComputeConcurrence(dr[32], dr[33]);
-                List<object> tx_ret_siteData = new List<object> { dr[1].ToString(), tx_ret.concurrence };
-
-                //tx_pvls
-                var tx_pvls = ComputeConcurrence(dr[35], dr[36]);
-                List<object> tx_pvls_siteData = new List<object> { dr[1].ToString(), tx_pvls.concurrence };
 
                 var temp = new TempFacilityData();
                 temp.IP = dr[0].ToString();
@@ -376,46 +357,11 @@ namespace ShieldPortal.Services
                     temp.tx_curr_Data = tx_curr_siteData;
                 }
 
-                if (tb_stat.datim != 0 && tb_stat.validated != 0)
+                if (pmtct_hei_pos.datim != 0 && pmtct_hei_pos.validated != 0)
                 {
-                    temp.DATIM_TB_STAT = tb_stat.datim;
-                    temp.Validated_TB_STAT = tb_stat.validated;
-                    temp.tb_stat_Data = tb_stat_siteData;
-                }
-
-                if (tb_art.datim != 0 && tb_art.validated != 0)
-                {
-                    temp.DATIM_TB_ART = tb_art.datim;
-                    temp.Validated_TB_ART = tb_art.validated;
-                    temp.tb_art_Data = tb_art_siteData;
-                }
-
-                if (tx_tb.datim != 0 && tx_tb.validated != 0)
-                {
-                    temp.DATIM_TX_TB = tx_tb.datim;
-                    temp.Validated_TX_TB = tx_tb.validated;
-                    temp.tx_tb_Data = tx_tb_siteData;
-                }
-
-                if (pmtct_fo.datim != 0 && pmtct_fo.validated != 0)
-                {
-                    temp.DATIM_PMTCT_FO = pmtct_fo.datim;
-                    temp.Validated_PMTCT_FO = pmtct_fo.validated;
-                    temp.pmtct_fo_Data = pmtct_fo_siteData;
-                }
-
-                if (tx_ret.datim != 0 && tx_ret.validated != 0)
-                {
-                    temp.DATIM_TX_RET = tx_ret.datim;
-                    temp.Validated_TX_RET = tx_ret.validated;
-                    temp.tx_ret_Data = tx_ret_siteData;
-                }
-
-                if (tx_pvls.datim != 0 && tx_pvls.validated != 0)
-                {
-                    temp.DATIM_TX_PVLS = tx_pvls.datim;
-                    temp.Validated_TX_PVLS = tx_pvls.validated;
-                    temp.tx_pvls_Data = tx_pvls_siteData;
+                    temp.DATIM_PMTCT_HEI_POS = pmtct_hei_pos.datim;
+                    temp.Validated_PMTCT_HEI_POS = pmtct_hei_pos.validated;
+                    temp.pmtct_hei_pos_Data = pmtct_hei_pos_siteData;
                 }
                 //};
                 tempData.Add(temp);
@@ -465,6 +411,10 @@ namespace ShieldPortal.Services
 
             var tx_pvls_data = new List<Datum>();
             List<ChildSeriesData> tx_pvls_ChildData = new List<ChildSeriesData>();
+
+            var pmtct_hei_pos_data = new List<Datum>();
+            List<ChildSeriesData> pmtct_hei_pos_ChildData = new List<ChildSeriesData>();
+
 
             List<ConcurrenceRateByPartner> ConcurrenceByPartner = new List<ConcurrenceRateByPartner>();
 
@@ -691,6 +641,22 @@ namespace ShieldPortal.Services
                     });
                 }
 
+                var pmtct_hei_pos = ComputeConcurrence(item.ToList().Sum(x => x.DATIM_PMTCT_HEI_POS), item.ToList().Sum(x => x.Validated_PMTCT_HEI_POS));
+                pmtct_hei_pos_data.Add(new Datum
+                {
+                    name = item.Key,
+                    drilldown = item.Key,
+                    y = pmtct_hei_pos.concurrence
+                });
+                if (item.ToList().Select(x => x.pmtct_hei_pos_Data).Count() > 0)
+                {
+                    pmtct_hei_pos_ChildData.Add(new ChildSeriesData
+                    {
+                        id = item.Key,
+                        name = item.Key,
+                        data = item.ToList().Where(x => x.pmtct_hei_pos_Data != null).Select(x => x.pmtct_hei_pos_Data).OrderByDescending(x => x[1]).ToList()
+                    });
+                }
 
                 ConcurrenceByPartner.Add(new ConcurrenceRateByPartner
                 {
@@ -706,7 +672,8 @@ namespace ShieldPortal.Services
                     TX_TB_Concurrence = tx_tb.concurrence,
                     PMTCT_FO_Concurrence = pmtct_fo.concurrence,
                     TX_RET_Concurrence = tx_ret.concurrence,
-                    TX_PVLS_Concurrence = tx_pvls.concurrence
+                    TX_PVLS_Concurrence = tx_pvls.concurrence,
+                    PMTCT_HEI_POS_Concurrence = pmtct_hei_pos.concurrence
 
                 });
             }
@@ -724,6 +691,7 @@ namespace ShieldPortal.Services
             var pmtct_fo_ChildData_qi = RetrieveQIData(pmtct_fo_ChildData);
             var tx_ret_ChildData_qi = RetrieveQIData(tx_ret_ChildData);
             var tx_pvls_ChildData_qi = RetrieveQIData(tx_pvls_ChildData);
+            var pmtct_hei_pos_ChildData_qi = RetrieveQIData(pmtct_hei_pos_ChildData);
 
             HighchartDrilldownModel model = new HighchartDrilldownModel
             {
@@ -774,6 +742,10 @@ namespace ShieldPortal.Services
                 tx_pvls_drilldown = tx_pvls_ChildData,
                 tx_pvls_series = new List<ParentSeries> { new ParentSeries { name = "Implementing Partner", colorByPoint = true, data = tx_pvls_data } },
                 tx_pvls_drilldown_QI = tx_pvls_ChildData_qi,
+
+                pmtct_hei_pos_drilldown = pmtct_hei_pos_ChildData,
+                pmtct_hei_pos_series = new List<ParentSeries> { new ParentSeries { name = "Implementing Partner", colorByPoint = true, data = pmtct_hei_pos_data } },
+                pmtct_hei_pos_drilldown_QI = pmtct_hei_pos_ChildData_qi,
 
                 ConcurrenceByPartner = ConcurrenceByPartner
             };

@@ -303,7 +303,6 @@ namespace ShieldPortal.Controllers
             cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
             var data = Utility.GetDatable(cmd);
              
-
             return View(data);
         }
 

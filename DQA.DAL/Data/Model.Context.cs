@@ -30,7 +30,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_funder> dqa_funder { get; set; }
         public virtual DbSet<dqa_indicator> dqa_indicator { get; set; }
         public virtual DbSet<dqa_lnk_version_indicators> dqa_lnk_version_indicators { get; set; }
-        public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
         public virtual DbSet<dqa_report_value> dqa_report_value { get; set; }
         public virtual DbSet<dqa_summary_indicators> dqa_summary_indicators { get; set; }
         public virtual DbSet<dqa_summary_value> dqa_summary_value { get; set; }
@@ -44,5 +43,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_pivot_table_upload> dqa_pivot_table_upload { get; set; }
         public virtual DbSet<dqa_pivot_table> dqa_pivot_table { get; set; }
         public virtual DbSet<dqa_FY17Q1_Analysyis> dqa_FY17Q1_Analysyis { get; set; }
+        public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
     }
 }
