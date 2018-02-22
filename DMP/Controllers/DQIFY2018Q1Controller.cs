@@ -59,7 +59,7 @@ namespace ShieldPortal.Controllers
                 ip = profile.Organization.ShortName;
             }
 
-            var DQISites = new QIEngine().GetQISites("Q4 FY17", ip);
+            var DQISites = new QIEngine().GetQISites("Q1 FY18", ip);
             
             return View(DQISites);
         }

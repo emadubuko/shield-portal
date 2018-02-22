@@ -423,10 +423,12 @@
                 return false;
             });
 
+           
+
             $(document).on('click', '.deletebtn', function (e) {
 
-                //alert("Modification to RADET is disabled at the moment")
-                //return;
+                alert("Modification to RADET is disabled at the moment")
+                return;
 
                 if (confirm('Confirm delete')) {
                     $(e.currentTarget.id).prop("disabled", true);

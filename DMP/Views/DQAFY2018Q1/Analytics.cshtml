@@ -7,6 +7,7 @@
 
     <link href="~/Content/jquery-ui.css" rel="stylesheet" />
     <script type="text/javascript">
+
         function reloadPage(e) {
             window.location.replace('/DQAFY2018Q1/Analytics?reportType=' + e.value);
         }
@@ -110,6 +111,9 @@
     <div class="panel panel-danger">
         <div class="panel-heading clearfix">
             <h2 style="margin-left:10em">Sites that require DQI</h2>
+            <i style="float: right;margin-top: -35px;">
+            <a id="dqibtn" class="btn btn-sm" href="@Url.Action("DownloadDQITool","DQIFY2018Q1")" style="background-color:teal;border-color:teal;color:#fff;" ><i class="fa fa-mail-forward"></i>&nbsp;&nbsp; Click to Begin QI process</a>
+            <span class="spinner" style="display:none;"> <img src="~/images/spinner.gif" class="spinner" style="width:40px;"/> please wait . . .</span></i> 
         </div>
         <div class="panel-body">
             <div class="tabs-container" id="resizer_intv" style="min-width: 350px; min-height: 200px">
@@ -169,8 +173,6 @@
 
 @section Scripts
 {
-    @*<script src="~/Scripts/jquery.min.js"></script>
-        <script src="~/plugins/blockui-master/js/jquery-ui.js"></script>*@
     <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
 <script src="~/Scripts/Highcharts/code/modules/no-data-to-display.js"></script>
     <script src="~/Scripts/Highcharts/code/modules/data.js"></script>
@@ -181,12 +183,15 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            $(".page-container").addClass("sidebar-collapsed");
             $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
 
             var report_type = window.location.href.split('?reportType=')[1];
             $("#rpt_type").val(report_type);
 
-
+            $("#dqibtn").click(function (e) {
+                $(".spinner").show();
+            });
 
             var myJsonData = {
                 chart: {
@@ -349,7 +354,7 @@
                         false
                     );
                     });
-                    $(".page-container").addClass("sidebar-collapsed");
+                    //$(".page-container").addClass("sidebar-collapsed");
                 }
             });
 
@@ -363,7 +368,7 @@
                         false
                     );
                     });
-                    $(".page-container").addClass("sidebar-collapsed");
+                    //$(".page-container").addClass("sidebar-collapsed");
                 }
             });
 
@@ -445,7 +450,9 @@
 
             $(".highcharts-title").css("color", "#000");
             $(".highcharts-title").css("fill", "#000");
+
             $(".page-container").addClass("sidebar-collapsed");
+            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
 
         });
     </script>

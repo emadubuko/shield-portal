@@ -96,10 +96,14 @@
 
                     var dt = state_data[i];
                     var pending = "";
-                    if (dt.Pending > 0) {
-                        pending = dt.Pending + " are yet to submit";
+                    if (dt.Submitted == null || dt.Submitted !== dt.Total) {
+                        if (dt.Submitted == null)
+                            var submited_actually = 0;
+                        else
+                            submited_actually = dt.Submitted;
+                        pending = (dt.Total - submited_actually) + " are yet to submit";
                     }
-                    else if (dt.Pending <= 0) {
+                    else if (dt.Submitted != null && dt.Submitted == dt.Total) {
                         pending = "All facilites in the state have submitted"
                     }
                     var percentage = 0;

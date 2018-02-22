@@ -160,6 +160,7 @@ namespace ShieldPortal.Controllers
             var messages = "";
             try
             {
+                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
                 Logger.LogInfo(" DQAQ1 FY2018,PostDQAFile", "processing dqa upload");
 
                 HttpResponseMessage result = null;
@@ -175,10 +176,15 @@ namespace ShieldPortal.Controllers
 
                         if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                         {
-
-                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q1 FY18/" + postedFile.FileName);
-                            postedFile.SaveAs(filePath);
-
+                            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q1 FY18/" + loggedinProfile.Organization.ShortName) + "\\";
+                            if (Directory.Exists(directory) == false)
+                            {
+                                Directory.CreateDirectory(directory);
+                            }
+                             
+                            var filePath = directory + postedFile.FileName; 
+                            Request.Files[0].SaveAs(filePath);
+                             
                             if (ext.ToUpper() == "ZIP")
                             {
                                 messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
@@ -402,7 +408,8 @@ namespace ShieldPortal.Controllers
         [HttpGet]
         public string GetReportDetails(int metadataid)
         {
-            return new BDQAQ1FY18().GetReportDetails(metadataid);
+            string Processed_result=  new BDQAQ1FY18().GetReportDetails(metadataid);
+            return Processed_result;
         }
 
         public void PopulateStates(object selectStatus = null)

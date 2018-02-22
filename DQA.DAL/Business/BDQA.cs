@@ -720,22 +720,22 @@ namespace DQA.DAL.Business
         //delete reports of a particular metadataId
         public void Delete(int metadataId)
         {
-            var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId);
+            var report_values = entity.dqa_report_value.Where(e => e.MetadataId == metadataId).ToList();
             entity.dqa_report_value.RemoveRange(report_values);
 
             var mt = entity.dqa_report_metadata.FirstOrDefault(e => e.Id == metadataId);
             if (mt != null)
                 entity.dqa_report_metadata.Remove(mt);
 
-            var dqa_summary = entity.dqa_summary_value.Where(s => s.metadata_id == metadataId);
+            var dqa_summary = entity.dqa_summary_value.Where(s => s.metadata_id == metadataId).ToList();
             if (dqa_summary != null)
                 entity.dqa_summary_value.RemoveRange(dqa_summary);
 
-            var dqadimension = entity.dqa_dimensions.Where(x => x.MetadataId == metadataId);
+            var dqadimension = entity.dqa_dimensions.Where(x => x.MetadataId == metadataId).ToList();
             if (dqadimension != null)
                 entity.dqa_dimensions.RemoveRange(dqadimension);
 
-            var dqacomparison = entity.dqa_comparison.Where(x => x.metadataId == metadataId);
+            var dqacomparison = entity.dqa_comparison.Where(x => x.metadataId == metadataId).ToList();
             if (dqacomparison != null)
                 entity.dqa_comparison.RemoveRange(dqacomparison);
 

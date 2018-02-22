@@ -513,7 +513,7 @@ namespace DQA.DAL.Business
         public static DataTable GetUploadReport(string reportPeriod, string IP_id, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
         {
             var cmd = new SqlCommand();
-            cmd.CommandText = "sp_get_q3_fy17_upload_report";
+            cmd.CommandText = "[sp_get_DQA_upload_report]";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@period", reportPeriod);
             cmd.Parameters.AddWithValue("@ip", IP_id);

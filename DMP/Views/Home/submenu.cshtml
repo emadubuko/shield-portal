@@ -52,7 +52,7 @@
             <div class="col-lg-4">
                 <div class="panel minimal" style="background-color: #ec407a;border-color:#ec407a">
                     <div class="panel-body" style="margin-top: -15px;">
-                        <a href="@Url.Action("index", "DMP")">
+                        <a href="@Url.Action("index", "DMP" )">
                             <table>
                                 <tr>
                                     <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
@@ -102,7 +102,7 @@
                         <div class="col-sm-12">
                             <ul class="list-item todo-list">
                                 <li>
-                                    <a href="@Url.Action("index", "DMP")" class="btn btn-sm btn-default btn-outline" style="color:#ec407a;text-transform: capitalize">Go to Data Management Plan</a>
+                                    <a href="@Url.Action("index", "DMP" )" class="btn btn-sm btn-default btn-outline" style="color:#ec407a;text-transform: capitalize">Go to Data Management Plan</a>
                                 </li>
                             </ul>
                         </div>
@@ -116,7 +116,7 @@
                             </p>
                             <p> In so doing, the CDC Data Management Summary will be a standardized document where detailed information pertaining to organizational Data Management is archived, to be referenced by CDC-funded implementing partners and relevant stakeholders.</p>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
@@ -147,7 +147,7 @@
                                 </div>
                             </div> &nbsp;&nbsp;
                             @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-                            { 
+                            {
                                 <div class="dropdown col-sm-2">
                                     <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                                         FY2016
@@ -166,7 +166,7 @@
                                 The ability to collect and report high quality data is the cornerstone of a data-driven approach for HIV program delivery. Data quality assessment gives us the true reflection of how efficient HIV program is and how close health outcomes have been achieved. As part of PEPFAR’s Accountability frame work, routine data quality assessments are required as a means of validating reported achievements.
                             </p>
                         </div>
-                       
+
 
                     </div>
                 </div>
@@ -176,21 +176,24 @@
                 <div class="panel panel-warning pnl-height">
                     <!-- panel body -->
                     <div class="panel-body">
-                        <div class="dropdown col-sm-2">
-                            <button class="btn btn-sm btn-info btn-outline dropdown-toggle" type="button" data-toggle="dropdown" style="border-color:darkcyan">
-                                FY2018
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/DQIFY2018Q1/Index">Q1 DQI</a><br />
-                                
+                        <div class="row">
+                            <div class="dropdown col-sm-2">
+                                <button class="btn btn-sm btn-info btn-outline dropdown-toggle" type="button" data-toggle="dropdown" style="border-color:darkcyan">
+                                    FY2018
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/DQIFY2018Q1/DownloadDQITool">Q1 DQI</a><br />
+
+                                </div>
                             </div>
-                        </div> 
+                        </div>
+
                         @*<h5 style="font-weight: bold"></h5>
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a class="btn btn-sm btn-info btn-outline" href="@Url.Action("index","DQIFY2018Q1")" style="text-transform: capitalize"> Go to FY2017 DQI</a>
-                            </li>
-                        </ul>*@
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a class="btn btn-sm btn-info btn-outline" href="@Url.Action(" index","DQIFY2018Q1")" style="text-transform: capitalize"> Go to FY2017 DQI</a>
+                                </li>
+                            </ul>*@
 
                         <hr />
                         <h5 style="font-weight: bold">Program Overview</h5>
@@ -204,33 +207,37 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"></div>
             @*<div class="col-sm-4">
-                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly reporting</strong></td>
-                            </tr>
-                        </table>
+                    <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                        <div class="panel-body" style="margin-top: -15px;">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly reporting</strong></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            </div>*@
-            <div class="col-sm-4">
-                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HTS Assessment</strong></td>
-                            </tr>
-                        </table>
+                </div>*@
+
+            <div style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
+                <div class="col-sm-4">
+                    <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                        <div class="panel-body" style="margin-top: -15px;">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">HTS Assessment</strong></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"></div>
 
             <div class="col-sm-4">
                 <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
@@ -245,7 +252,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
+            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
                 <div class="panel minimal teal-bg" style="background-color:deepskyblue; border-color:deepskyblue">
                     <div class="panel-body" style="margin-top: -15px;">
                         <table>
@@ -261,35 +268,38 @@
 
         <div class="row">
 
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"> </div>
 
-            @*<div class="col-sm-4">
-                <div class="panel panel-info pnl-height" style="border-color:darkorange">
-                    <div class="panel-body">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a href="@Url.Action("Dashboard", "BiWeeklyReport")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkorange; border-color:darkorange">Go to Semi Monthly Report</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Overview</h5>
-                        <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
+            <div style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
+                <div class="col-sm-4">
+                    <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                        <div class="panel-body">
+                            <hr />
+                            <h5 style="font-weight: bold">Overview</h5>
+                            <p></p>
 
-                    </div>
-                </div>
-            </div>*@
-            <div class="col-sm-4">
-                <div class="panel panel-info pnl-height" style="border-color:darkorange">
-                    <div class="panel-body">
-                        <hr />
-                        <h5 style="font-weight: bold">Overview</h5>
-                        <p></p>
-
+                        </div>
                     </div>
                 </div>
             </div>
+            @*<div class="col-sm-4">
+                    <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                        <div class="panel-body">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="@Url.Action(" Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkorange; border-color:darkorange">Go to Semi Monthly Report</a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <h5 style="font-weight: bold">Overview</h5>
+                            <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
 
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block")"></div>
+                        </div>
+                    </div>
+                </div>*@
+
+
+            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"></div>
 
             <div class="col-sm-4">
                 <div class="panel panel-success pnl-height">
@@ -311,7 +321,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none")">
+            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
                 <div class="panel panel-default pnl-height" style="border-color:deepskyblue">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
@@ -425,15 +435,15 @@
             <div class="col-lg-1"> </div>
 
             <div class="col-md-7">
-                <div class="panel panel-info" style="border-color:darkslategrey">
-                    <div class="panel-heading clearfix" style="background-color: darkslategrey;border-color:darkslategrey">
+                <div class="panel panel-info" style="border-color:chocolate">
+                    <div class="panel-heading clearfix" style="background-color: chocolate;border-color:chocolate">
                         <h4 class="panel-title">Semi Monthly Reporting</h4>
                     </div>
-                    
+
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
-                                <a href="@Url.Action("Dashboard", "BiWeeklyReport")" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkslategrey; border-color:darkslategrey">Go to Semi Monthly Report</a>
+                                <a href="@Url.Action("Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:chocolate; border-color:chocolate">Go to Semi Monthly Report</a>
                             </li>
                         </ul>
                         <hr />
@@ -443,7 +453,7 @@
                     </div>
                 </div>
             </div>
-           
+
         </div>
     </div>
 
@@ -460,24 +470,24 @@
                     <div class="panel-body">
                         <ul class="list-item mailbox-list">
                             <li>
-                                <a href=@Url.Action("index", "Organization") style="text-transform: capitalize;color: #ec407a">
+                                <a href=@Url.Action("index", "Organization" ) style="text-transform: capitalize;color: #ec407a">
                                     <i class="fa fa-bank"></i><span class="title">&nbsp; &nbsp;View List of Implementing Partners</span>
                                 </a>
                             </li>
                             <li>
-                                <a href=@Url.Action("index", "HealthFacility") style="text-transform: capitalize;color: #ec407a">
+                                <a href=@Url.Action("index", "HealthFacility" ) style="text-transform: capitalize;color: #ec407a">
                                     <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;View List of Health Facilities</span>
                                 </a>
                             </li>
                             <li>
-                                <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport") style="text-transform: capitalize;color: #ec407a">
+                                <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport" ) style="text-transform: capitalize;color: #ec407a">
                                     <i class="fa fa-hourglass-end"></i><span class="title">&nbsp; &nbsp;View Facility Perfomance Target</span>
                                 </a>
                             </li>
                             @if (HttpContext.Current.User.IsInRole("sys_admin"))
                             {
                                 <li>
-                                    <a href=@Url.Action("index", "Profile") style="text-transform: capitalize;color: #ec407a">
+                                    <a href=@Url.Action("index", "Profile" ) style="text-transform: capitalize;color: #ec407a">
                                         <i class="fa fa-users">
                                         </i><span class="title">&nbsp; &nbsp;Manage User Profiles</span>
                                     </a>
@@ -520,38 +530,46 @@
     @Scripts.Render("~/bundles/CreateDMPJs")
 
     <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            var container = @ViewBag.Container;
-            $(container).css('display', 'block');
+        /**/
+        /**/
+        var container = @ViewBag.Container;
+    /**/
+    /**/
+    $(container).css('display', 'block');
 
-            $('html, body').animate({
-                scrollTop: $("#breadcrumb").offset().top
-            }, 1000);
+    $('html, body').animate({
+        scrollTop: $("#breadcrumb").offset().top
+    }, 1000);
 
-            $("#userdetail").click(function (e) {
-                window.document.location = '/Profile/ProfileDetail?profileId=@ShieldPortal.Services.Utils.LoggedinProfileID'; //profile.Id;
+    $("#userdetail").click(function (e) {
+        /**/
+        /**/
+        window.document.location = '/Profile/ProfileDetail?profileId=@ShieldPortal.Services.Utils.LoggedinProfileID'; //profile.Id;
+    /**/
+    /**/
+});
+
+$('#changepassword').click(function () {
+    window.document.location = '/Account/ResetPassword';
+});
+
+        $("#logoff").click(function (e, n) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LogOff", "Account")',
+                contentType: "application/json; charset=utf-8",
+                cache: false,
+            }).done(function (dmpId) {
+                window.location.replace('@Url.Action("index", "Home")');
+            }).error(function (xhr, status, err) {
+                alert(err);
+                console.log(err);
             });
-
-            $('#changepassword').click(function () {
-                window.document.location = '/Account/ResetPassword';
-            });
-
-            $("#logoff").click(function (e, n) {
-                var someUrl = '@Url.Action("CreateNewProfile", "Profile")';
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("LogOff", "Account")',
-                    contentType: "application/json; charset=utf-8",
-                    cache: false,
-                }).done(function (dmpId) {
-                    window.location.replace('@Url.Action("index", "Home")');
-                }).error(function (xhr, status, err) {
-                    alert(err);
-                    console.log(err);
-                });
-                return false;
-            });
+            return false;
         });
+
+});
     </script>
 }
