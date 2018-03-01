@@ -305,7 +305,7 @@ namespace ShieldPortal.Services
 
                 //tx_curr
                 var tx_curr = ComputeConcurrence(dr[17], dr[18]);
-                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
+                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_curr.concurrence };
 
                 //pmtct_hei_pos
                 var pmtct_hei_pos = ComputeConcurrence(dr[20], dr[21]);
