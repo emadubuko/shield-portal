@@ -73,8 +73,6 @@ namespace DQA.DAL.Business
                             return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
                         }
                     }
-
-
                     entity.dqa_report_metadata.Add(metadata);
                     entity.SaveChanges();
 
@@ -85,6 +83,13 @@ namespace DQA.DAL.Business
 
                     for (var i = 7; i < 59; i++)
                     {
+                        if (worksheet.Cells[i, 2].Value == null)
+                            continue;
+                        var indicator_code = worksheet.Cells[i, 2].Value.ToString();
+                        var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
+                        if (indicator == null)
+                            continue;
+
                         var istValueMonth = worksheet.Cells[i, 4];
                         var sndValueMonth = worksheet.Cells[i, 5];
                         var trdValueMonth = worksheet.Cells[i, 6];
@@ -94,10 +99,14 @@ namespace DQA.DAL.Business
                         if (istValueMonth == null || istValueMonth.Value == null || sndValueMonth == null || sndValueMonth.Value == null || trdValueMonth == null || trdValueMonth.Value == null || question == null || question.Value == null)
                             continue;
 
-                        var indicator_code = worksheet.Cells[i, 2].Value.ToString();
-                        var indicator = indicators.FirstOrDefault(e => e.IndicatorCode == indicator_code);
-                        if (indicator == null)
-                            continue;
+                        int z = 0;
+                        if(!int.TryParse(istValueMonth.Value.ToString(), out z) || !int.TryParse(sndValueMonth.Value.ToString(), out z) || !int.TryParse(trdValueMonth.Value.ToString(), out z)){
+
+                            entity.dqa_report_metadata.Remove(metadata);
+                            entity.SaveChanges();
+                            return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>Non numeric entry found in the validation field. <br /> Ensure the file does not have circular reference error before uploading <br /> File :" + new FileInfo(filename).Name + "  </td></tr>";
+                        }
+                         
                         var report_value = new dqa_report_value();
                         report_value.MetadataId = metadata.Id;
                         report_value.IndicatorId = indicator.Id;
@@ -111,7 +120,7 @@ namespace DQA.DAL.Business
 
                     ReadSummary(worksheet, package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"], metadata.Id);
 
-                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
+                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + new FileInfo(filename).Name + " was processed successfully</td></tr>";
                 }
                 catch (DbEntityValidationException e)
                 {
@@ -129,14 +138,14 @@ namespace DQA.DAL.Business
                         }
                     }
                     Logger.LogInfo("BDQAQ1FY18.ReadWorkbook", sb.ToString());
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred while processing the file " + filename + "</td></tr>";
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred while processing the file " + new FileInfo(filename).Name + "</td></tr>";
                 }
                 catch (Exception ex)
                 {
                     entity.dqa_report_metadata.Remove(metadata);
                     entity.SaveChanges();
                     Logger.LogError(ex);
-                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>There are errors " + filename + "</td></tr>";
+                    return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>There are errors " + new FileInfo(filename).Name + "</td></tr>";
                 }
             }
         }

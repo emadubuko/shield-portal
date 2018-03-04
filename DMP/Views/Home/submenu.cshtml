@@ -21,7 +21,7 @@
 
             .btn-default.btn-outline:hover {
                 color: white;
-                background-color: darkorange;
+                /*background-color: darkorange;*/
                 border-color: darkorange;
             }
 
@@ -434,16 +434,16 @@
         <div class="row">
             <div class="col-lg-1"> </div>
 
-            <div class="col-md-7">
-                <div class="panel panel-info" style="border-color:chocolate">
-                    <div class="panel-heading clearfix" style="background-color: chocolate;border-color:chocolate">
+            <div class="col-sm-5">
+                <div class="panel panel-info" style="border-color:coral">
+                    <div class="panel-heading clearfix" style="background-color: coral;border-color:coral">
                         <h4 class="panel-title">Semi Monthly Reporting</h4>
                     </div>
 
                     <div class="panel-body">
                         <ul class="list-item todo-list">
                             <li>
-                                <a href="@Url.Action("Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:chocolate; border-color:chocolate">Go to Semi Monthly Report</a>
+                                <a href="@Url.Action("Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:coral; border-color:coral">Go to Semi Monthly Report</a>
                             </li>
                         </ul>
                         <hr />
@@ -454,6 +454,24 @@
                 </div>
             </div>
 
+            <div class="col-sm-5">
+                <div class="panel panel-info" style="border-color:darkturquoise">
+                    <div class="panel-heading clearfix" style="background-color: darkturquoise;border-color:darkturquoise">
+                        <h4 class="panel-title">Monthly Performance Monitoring  Reporting</h4>
+                    </div>
+
+                    <div class="panel-body">
+                        <ul class="list-item todo-list">
+                            <li>
+                                <a href="@Url.Action("index", "MPM" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkturquoise; border-color:darkturquoise">Go to Monthly Performance Monitoring</a>
+                            </li>
+                        </ul>
+                        <hr />
+                        <h5 style="font-weight: bold">Overview</h5>
+                        <p> </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
