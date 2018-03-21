@@ -7,6 +7,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using System.Linq;
+using System;
 
 namespace MPM.DAL.DAO
 {
@@ -47,12 +48,46 @@ namespace MPM.DAL.DAO
             }
         }
 
-        //public MetaData SearchForPreviousUpload(string reportingPeriod, int IpId)
-        //{
-        //    var session = BuildSession().SessionFactory.OpenStatelessSession();
-        //    var result = session.Query<MetaData>().Where(x => x.ReportingPeriod == reportingPeriod && x.IP.Id == IpId).FirstOrDefault();
-        //    return result;
-        //}
+        internal void UpdateRecord(MetaData mt)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_delete_MPM_data_list";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@metadataId", mt.Id);
+            GetDatable(cmd);
+            cmd.Dispose();
+
+            using (var session = BuildSession().SessionFactory.OpenStatelessSession())
+            using (var tx = session.BeginTransaction())
+            {
+               session.Update(mt);
+                foreach (var a in mt.ART)
+                {
+                    session.Insert(a);
+                }
+                foreach (var o in mt.HTS_Index)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.LinkageToTreatment)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.PITC)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.Pmtct_Viral_Load)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.PMTCT)
+                {
+                    session.Insert(o);
+                }
+                tx.Commit();
+            } 
+        }
 
         public IList<IPUploadReport> GenerateIPUploadReports(int OrgId, string reportingPeriod)
         {
@@ -68,11 +103,11 @@ namespace MPM.DAL.DAO
             {
                 criteria.Add(Restrictions.Eq("pd.ReportingPeriod", reportingPeriod));
             }
-
-
+             
             criteria.SetProjection(
                 Projections.Alias(Projections.GroupProperty("org.ShortName"), "IPName"),
-                 Projections.Alias(Projections.GroupProperty("pd.ReportingPeriod"), "ReportPeriod")
+                 Projections.Alias(Projections.GroupProperty("pd.ReportingPeriod"), "ReportPeriod"),
+                 Projections.Alias(Projections.GroupProperty("pd.Id"), "Id")
                 );
 
             IList<IPUploadReport> reports = criteria.SetResultTransformer(new NHibernate.Transform.AliasToBeanResultTransformer(typeof(IPUploadReport))).List<IPUploadReport>();
@@ -104,5 +139,7 @@ namespace MPM.DAL.DAO
             }
             return list;
         }
+
+       
     }
 }

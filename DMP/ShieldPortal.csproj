@@ -320,9 +320,12 @@
     <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="images\Loading_icon.gif" />
     <Content Include="images\pepfar.jpg" />
+    <Content Include="images\pepfar_logo.jpg" />
     <Content Include="images\Profile-image.png" />
     <Content Include="images\macbook-40.jpg" />
     <Content Include="images\office-40.jpg" />
+    <Content Include="images\shield.png" />
+    <Content Include="images\shield_login_burned.png" />
     <Content Include="images\shield_logo.jpg" />
     <Content Include="images\snooker.jpg" />
     <Content Include="Content\integral-core.css" />
@@ -1436,6 +1439,7 @@
     <Content Include="Views\DQIFY2018Q1\UploadDQIResult.cshtml" />
     <Content Include="Views\MPM\Index.cshtml" />
     <Content Include="Views\MPM\Upload.cshtml" />
+    <Content Include="Views\MPM\Dashboard.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

@@ -39,7 +39,7 @@
                                 <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
                             </a>
                         </li>
-                        @if (new ShieldPortal.Services.Utils().GetloggedInProfile().ContactEmailAddress.Contains("mgic"))
+                        @if (!User.IsInRole("ip"))
                         {
                             <li>
                                 <a href=@Url.Action("DQAAnalysisReport", "DQAFY2018Q1", new { type="Partners"}) style="color:#029b17;">

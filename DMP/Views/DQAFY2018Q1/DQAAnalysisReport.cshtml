@@ -1,11 +1,11 @@
 ﻿@model System.Data.DataTable
-@{    
+@{
     Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
 }
 
 
 @section AddToHead{
-    <style> 
+    <style>
         table.dataTable tbody th, table.dataTable tbody td {
             padding: 0px 10px;
         }
@@ -41,11 +41,11 @@
                 height: 55px;
             }
     </style>
-<script type="text/javascript">
+    <script type="text/javascript">
         function reloadPage(e) {
             window.location.replace('/DQAFY2018Q1/DQAAnalysisReport?type=' + e.value);
         }
-</script>
+    </script>
 }
 
 <h4 style="text-align: center;color: cornflowerblue;text-decoration: underline;"> FY 2018 Q1 DQA Analysis </h4>
@@ -58,14 +58,16 @@
                 <option value="UMB">UMB's Report</option>
             </select>
         </div>
+
     </div>
 
-    <div class="table-responsive" style="overflow-x: initial;font-size: 12px;">        
-        <table class="table table-striped table-bordered table-hover">
+    <div class="table-responsive" style="overflow-x: initial;font-size: 12px;">
+        <table class="table table-striped table-bordered table-hover" id="output">
             <thead>
                 <tr>
                     <th style="background-color:darkcyan; color:#fff; font-weight:bold">IP </th>
                     <th style="background-color:darkcyan; color:#fff; font-weight:bold">Facility</th>
+                    <th style="background-color:darkcyan; color:#fff; font-weight:bold">Org Unit</th>
 
                     <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black;"><div>DQA FY18 Q1 <br /> (HTC_TST)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated <br /> (HTC_TST)</div></th>
@@ -83,7 +85,7 @@
                     <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>DQA FY18 Q1<br /> (PMTCT_EID)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (PMTCT_EID)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (PMTCT_EID)</div></th>
-                     
+
 
                     <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>DQA FY18 Q1<br /> (TX_NEW)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TX_NEW)</div></th>
@@ -101,7 +103,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model !=null && Model.Rows != null && Model.Rows.Count > 0)
+                @if (Model != null && Model.Rows != null && Model.Rows.Count > 0)
                 {
                     foreach (System.Data.DataRow dr in Model.Rows)
                     {
@@ -109,7 +111,8 @@
                         <tr>
                             <td>@dr[0]</td>
                             <td>@dr[1]</td>
-
+                            <td>@string.Format("{0} {1}",dr[24].ToString().ToLower().Substring(0,2), dr[25])</td>
+                            
                             <td style="border-left-width:medium;border-left-color:black">@dr[2]</td>
                             <td>@dr[3]</td>
                             @if (dr[2].ToString() == "#DIV/0!") //dr[4] == null || dr[4].ToString() == "#DIV/0!")
@@ -342,7 +345,7 @@
                                 }
                                 <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                             }
-                         
+
                             <td>@failCount</td>
                         </tr>
                     }
@@ -357,25 +360,46 @@
 
 @section Scripts
 {
+    <script src="~/plugins/datatables/js/jszip.min.js"></script>
+    <script src="~/plugins/datatables/js/pdfmake.min.js"></script>
+    <script src="~/plugins/datatables/js/vfs_fonts.js"></script>
     <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
     <script>
         $(document).ready(function () {
             $('.table').DataTable({
                 "iDisplayLength": 100,
                 dom: 'Bfrtip',
                 buttons: [
-                {
-                    extend: 'print',
-                    text: 'Zoom Table',
-                    autoPrint: false,
-                    title: "FY 2018 Q1 DQA Report"
-                }
+                    {
+                        extend: 'print',
+                        text: 'Zoom Table',
+                        autoPrint: false,
+                        title: "FY 2018 Q1 DQA Report"
+                    },
+                    {
+                        text: 'Export to Excel',
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    //{
+                    //    extend: 'pdfHtml5',
+                    //    exportOptions: {
+                    //        columns: ':visible'
+                    //    }
+                    //}
                 ]
             });
 
-            var report_type = window.location.href.split('?type=')[1];           
+            var report_type = window.location.href.split('?type=')[1];
             $("#rpt_type").val(report_type);
 
+
+            $("#save_download").on('click', function (event) {
+                exportTableToCSV.apply(this, [$('#output'), 'Concurrence report.csv']);
+            });
 
         });
     </script>

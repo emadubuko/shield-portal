@@ -116,7 +116,7 @@ namespace CommonUtil.Utilities
                 result = 97;
             else if (x >= 1000 && x <= 4999)
                 result = 105;
-            else if (x >= 5000 && x <= 1000000)
+            else if (x >= 5000)
                 result = 107;
             else
                 result = x;

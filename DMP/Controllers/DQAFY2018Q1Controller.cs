@@ -20,6 +20,7 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
+    [Authorize]
     public class DQAFY2018Q1Controller : Controller
     {
         public ActionResult Index()
@@ -562,6 +563,8 @@ namespace ShieldPortal.Controllers
                     mydata2.Add(new
                     {
                         ShortName = item.IP,
+                        State = item.TheLGA.state.state_name,
+                        LGA = $"{item.TheLGA.lga_name}",
                         Facility = item.FacilityName,
                         Tx_New = r_data.Tx_New,
                         p_Tx_New = item.TX_NEW,

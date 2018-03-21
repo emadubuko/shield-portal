@@ -12,12 +12,12 @@ namespace MPM.DAL.DTO
         public virtual DateTime DateUploaded { get; set; }
         public virtual Organizations IP { get; set; }
 
-        public virtual List<HTS_Index> HTS_Index { get; set; }
-        public virtual List<LinkageToTreatment> LinkageToTreatment { get; set; }
-        public virtual List<ART> ART { get; set; }
-        public virtual  List<PMTCT_Viral_Load> Pmtct_Viral_Load { get; set; }
-        public virtual List<HTS_Other_PITC> PITC { get; set; }
-        public virtual List<PMTCT> PMTCT { get; set; }
+        public virtual IList<HTS_Index> HTS_Index { get; set; }
+        public virtual IList<LinkageToTreatment> LinkageToTreatment { get; set; }
+        public virtual IList<ART> ART { get; set; }
+        public virtual  IList<PMTCT_Viral_Load> Pmtct_Viral_Load { get; set; }
+        public virtual IList<HTS_Other_PITC> PITC { get; set; }
+        public virtual IList<PMTCT> PMTCT { get; set; }
     }
 
     public class UploadError
@@ -62,7 +62,7 @@ namespace MPM.DAL.DTO
     public class PMTCT_Viral_Load
     {
         public virtual int Id { get; set; }
-        public virtual string SiteName { get; set; }
+        public virtual HealthFacility Site { get; set; }
         public virtual string AgeGroup { get; set; }
         public virtual int? _less_than_1000 { get; set; }
         public virtual int? _greater_than_1000 { get; set; }
@@ -73,7 +73,7 @@ namespace MPM.DAL.DTO
     public class PMTCT
     {
         public virtual int Id { get; set; }
-        public virtual string SiteName { get; set; }
+        public virtual HealthFacility Site { get; set; }
         public virtual string AgeGroup { get; set; }
         public virtual string Description { get; set; }
         public virtual int? NewHIVPos { get; set; }
@@ -93,7 +93,7 @@ namespace MPM.DAL.DTO
     public abstract class BaseT
     {
         public virtual int Id { get; set; }
-        public virtual string SiteName { get; set; }
+        public virtual HealthFacility Site { get; set; }
         public virtual Sex Sex { get; set; }
         public virtual string AgeGroup { get; set; }
     }

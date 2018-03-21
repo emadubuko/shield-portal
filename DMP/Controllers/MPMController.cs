@@ -13,6 +13,7 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
+    [Authorize]
     public class MPMController : Controller
     {
         // GET: MPM
@@ -45,8 +46,7 @@ namespace ShieldPortal.Controllers
         }
 
         public ActionResult Upload()
-        {
-           
+        {           
             return View();
         }
 
@@ -90,7 +90,10 @@ namespace ShieldPortal.Controllers
             } 
         }
 
-
+        public ActionResult Dashboard()
+        {
+            return View();
+        }
 
        public Dictionary<string, int> IndexPeriods
         {

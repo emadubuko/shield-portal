@@ -13,34 +13,23 @@ namespace MPM.DAL.DTO
             Id(x => x.Id);
             Map(x => x.ReportingPeriod);
             Map(x => x.DateUploaded);
-            References(x => x.IP);
-            References(x => x.UploadedBy);
+            References(x => x.IP).Column("IP");
+            References(x => x.UploadedBy).Column("UserId");
             HasMany(x => x.HTS_Index).Inverse()
-                 .KeyColumn("MetaDataId").Cascade.None();
+                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.LinkageToTreatment).Inverse()
-                .KeyColumn("MetaDataId").Cascade.None();
+                .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.ART).Inverse()
-                .KeyColumn("MetaDataId").Cascade.None();
+                .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.PITC).Inverse()
-                .KeyColumn("MetaDataId").Cascade.None();
+                .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.PMTCT).Inverse()
-                .KeyColumn("MetaDataId").Cascade.None();
+                .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.Pmtct_Viral_Load).Inverse()
-                .KeyColumn("MetaDataId").Cascade.None();
+                .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
         }
     }
-
-    //public class UploadErrorMap : ClassMap<UploadError>
-    //{
-    //    public UploadErrorMap()
-    //    {
-    //        Table("mpm_UploadError");
-
-    //        Id(x => x.Id);
-    //        Map(x => x.ErrorMessage).CustomType(typeof(XmlType<List<string>>));
-    //        References(x => x.MetaData).Column("MetaDataId");
-    //    }
-    //}
+     
 
     public class LinkageToTreatmentMap : ClassMap<LinkageToTreatment>
     {
@@ -49,7 +38,7 @@ namespace MPM.DAL.DTO
             Table("mpm_LinkageToTreatment");
 
             Id(x => x.Id);
-            Map(x => x.SiteName);
+            References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.Sex);
             Map(x => x.POS);
@@ -65,7 +54,7 @@ namespace MPM.DAL.DTO
             Table("mpm_HTS_Index");
 
             Id(x => x.Id);
-            Map(x => x.SiteName);
+            References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.Sex);
             Map(x => x.POS);
@@ -82,7 +71,7 @@ namespace MPM.DAL.DTO
             Table("mpm_HTS_Other_PITC");
 
             Id(x => x.Id);
-            Map(x => x.SiteName);
+            References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.Sex);
             Map(x => x.POS);
@@ -99,7 +88,7 @@ namespace MPM.DAL.DTO
         {
             Table("mpm_ART");
             Id(x => x.Id);
-            Map(x => x.SiteName);
+            References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.Sex);
             Map(x => x.Denominator);
@@ -117,7 +106,7 @@ namespace MPM.DAL.DTO
             Table("mpm_PMTCT_Viral_Load");
 
             Id(x => x.Id);
-            Map(x => x.SiteName);
+            References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.Category); 
             Map(x => x._less_than_1000);
@@ -133,7 +122,7 @@ namespace MPM.DAL.DTO
             Table("mpm_PMTCT");
 
             Id(x => x.Id);
-            Map(x => x.SiteName);
+            References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.NewHIVPos);
             Map(x => x.NewOnART);

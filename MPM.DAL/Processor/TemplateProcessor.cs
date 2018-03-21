@@ -1,4 +1,5 @@
-﻿using CommonUtil.DBSessionManager;
+﻿using CommonUtil.DAO;
+using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
 using CommonUtil.Utilities;
 using MPM.DAL.DAO;
@@ -17,6 +18,8 @@ namespace MPM.DAL.Processor
     {
         public void ReadFile(Stream file, Profile loggedInProfile)
         {
+            var sites = new HealthFacilityDAO().RetrieveAll().ToDictionary(x => x.FacilityCode);
+
             using (ExcelPackage package = new ExcelPackage(file))
             {
                 var hts_index_sheet = package.Workbook.Worksheets["HTS_Index"];
@@ -28,31 +31,37 @@ namespace MPM.DAL.Processor
                 var mainWorksheet = package.Workbook.Worksheets["Guide"];
 
                 var period = ExcelHelper.ReadCellText(mainWorksheet, 15, 7);
-                var mt = new MetaData
-                {
-                    DateUploaded = DateTime.Now,
-                    IP = loggedInProfile.Organization,
-                    ReportingPeriod = period,
-                    UploadedBy = loggedInProfile, 
-                };
 
                 var dao = new MPMDAO();
-
+                var mt = new MetaData();
                 var previously = dao.GenerateIPUploadReports(loggedInProfile.Organization.Id, period);
-                if (previously != null && previously.Count != 0)
+
+                if (previously == null || previously.Count == 0)
                 {
-                    throw new ApplicationException("Duplicate Upload");
+                    mt = new MetaData
+                    {
+                        DateUploaded = DateTime.Now,
+                        IP = loggedInProfile.Organization,
+                        ReportingPeriod = period,
+                        UploadedBy = loggedInProfile,
+                    };
                 }
+                else
+                {
+                    mt = dao.Retrieve(previously.FirstOrDefault().Id);
+                    mt.DateUploaded = DateTime.Now;
+                    mt.UploadedBy = loggedInProfile;
+                }
+
 
                 try
                 {
-                    List<HTS_Index> hTS_Index_list = RetrieveHTS_data(hts_index_sheet, mt);
-                    List<LinkageToTreatment> linkage_list = RetrieveLinkageToTx_data(linkage_sheet, mt);
-                    List<ART> art_list = RetrieveART_data(art_sheet, mt);
-                    List<PMTCT_Viral_Load> pmtct_viral_load_list = RetrievePMTCTViralLoad_data(pmtct_viral_load_sheet, mt);
-                    List<HTS_Other_PITC> pitc_list = RetrievePITC_data(pitc_sheet, mt);
-                    List<PMTCT> pmtct_list = RetrievePMTCT_data(pmtct_sheet, mt);
-
+                    List<HTS_Index> hTS_Index_list = RetrieveHTS_data(hts_index_sheet, mt, sites);
+                    List<LinkageToTreatment> linkage_list = RetrieveLinkageToTx_data(linkage_sheet, mt, sites);
+                    List<ART> art_list = RetrieveART_data(art_sheet, mt, sites);
+                    List<PMTCT_Viral_Load> pmtct_viral_load_list = RetrievePMTCTViralLoad_data(pmtct_viral_load_sheet, mt, sites);
+                    List<HTS_Other_PITC> pitc_list = RetrievePITC_data(pitc_sheet, mt, sites);
+                    List<PMTCT> pmtct_list = RetrievePMTCT_data(pmtct_sheet, mt, sites);
 
                     mt.HTS_Index = hTS_Index_list;
                     mt.LinkageToTreatment = linkage_list;
@@ -61,33 +70,41 @@ namespace MPM.DAL.Processor
                     mt.PMTCT = pmtct_list;
                     mt.Pmtct_Viral_Load = pmtct_viral_load_list;
 
-                    new MPMDAO().BulkInsertWithStatelessSession(mt);
+                    if (previously == null || previously.Count == 0)
+                    {                        
+                        dao.BulkInsertWithStatelessSession(mt);
+                    }
+                    else
+                    {
+                        dao.UpdateRecord(mt);
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
-
-
-
             }
         }
-         
 
-        private List<PMTCT> RetrievePMTCT_data(ExcelWorksheet pmtct_sheet, MetaData mt)
+
+        private List<PMTCT> RetrievePMTCT_data(ExcelWorksheet pmtct_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<PMTCT> _list = new List<PMTCT>();
             int row = 5;
             while (true)
             {
-                var facCell = pmtct_sheet.Cells["B" + row];
+                var facCell = pmtct_sheet.Cells["C" + row];
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
                 }
                 else
                 {
-                    //string description = column < 9 ? "Percentage of HIV positive pregnant women receiving ART" : "Number of infants who had first virologic HIV test by 12 months of age";
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; //throw new ApplicationException("Invalid facility uploaded");
 
                     var newHivpos = Convert.ToString(pmtct_sheet.Cells[row, 4].Value);
                     var newArt = Convert.ToString(pmtct_sheet.Cells[row, 5].Value);
@@ -107,8 +124,8 @@ namespace MPM.DAL.Processor
                     {
                         _list.Add(new PMTCT
                         {
-                            SiteName = facCell.Value.ToString(),
-                           // AgeGroup = pmtct_sheet.Cells[3, 4].Value.ToString(),
+                            Site = site,
+                            // AgeGroup = pmtct_sheet.Cells[3, 4].Value.ToString(),
                             NewHIVPos = !string.IsNullOrEmpty(newHivpos) ? Convert.ToInt32(newHivpos) : (int?)null,
                             NewOnART = !string.IsNullOrEmpty(newArt) ? Convert.ToInt32(newArt) : (int?)null,
                             KnownHIVPos = !string.IsNullOrEmpty(knownPos) ? Convert.ToInt32(knownPos) : (int?)null,
@@ -125,28 +142,34 @@ namespace MPM.DAL.Processor
                         });
                     }
                 }
-                row += 1;
+                Loop: row += 1;
             }
             return _list;
         }
 
-        private List<HTS_Other_PITC> RetrievePITC_data(ExcelWorksheet pitc_sheet, MetaData mt)
+        private List<HTS_Other_PITC> RetrievePITC_data(ExcelWorksheet pitc_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<HTS_Other_PITC> _list = new List<HTS_Other_PITC>();
             int row = 5;
             while (true)
             {
-                var facCell = pitc_sheet.Cells["B" + row];
+                var facCell = pitc_sheet.Cells["C" + row];
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
                 }
                 else
                 {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; //throw new ApplicationException("Invalid facility uploaded");
+
+
                     int counter = 8;
                     for (int column = 8; ;)
                     {
-                        string _sdp = Convert.ToString(pitc_sheet.Cells[2,counter].Value);
+                        string _sdp = Convert.ToString(pitc_sheet.Cells[2, counter].Value);
                         if (string.IsNullOrEmpty(_sdp))
                             break;
 
@@ -158,7 +181,7 @@ namespace MPM.DAL.Processor
                             //female
                             _list.Add(new HTS_Other_PITC
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = pitc_sheet.Cells[3, column].Value.ToString(),
                                 Sex = Sex.F,
                                 SDP = _sdp,
@@ -167,8 +190,6 @@ namespace MPM.DAL.Processor
                                 MetaData = mt
                             });
                         }
-
-
                         //male
                         pos = Convert.ToString(pitc_sheet.Cells[row + 1, column].Value);
                         neg = Convert.ToString(pitc_sheet.Cells[row + 1, column + 1].Value);
@@ -177,7 +198,7 @@ namespace MPM.DAL.Processor
                         {
                             _list.Add(new HTS_Other_PITC
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = pitc_sheet.Cells[3, column].Value.ToString(),
                                 Sex = Sex.M,
                                 SDP = _sdp,
@@ -195,24 +216,30 @@ namespace MPM.DAL.Processor
                         }
                     }
                 }
-                row += 3;
+                Loop: row += 3;
             }
             return _list;
         }
 
-        private List<ART> RetrieveART_data(ExcelWorksheet art_sheet, MetaData mt)
+        private List<ART> RetrieveART_data(ExcelWorksheet art_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<ART> art_list = new List<ART>();
             int row = 5;
             while (true)
             {
-                var facCell = art_sheet.Cells["B" + row];
+                var facCell = art_sheet.Cells["C" + row];
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
                 }
                 else
                 {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; // throw new ApplicationException("Invalid facility uploaded");
+
+
                     for (int column = 5; column <= 73;)
                     {
                         ART_Indicator_Type indicatorType = column < 36 ? ART_Indicator_Type.Tx_RET : ART_Indicator_Type.Tx_VLA;
@@ -225,7 +252,7 @@ namespace MPM.DAL.Processor
                             //female
                             art_list.Add(new ART
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = art_sheet.Cells[3, column].Value.ToString(),
                                 Sex = Sex.F,
                                 IndicatorType = indicatorType,
@@ -244,7 +271,7 @@ namespace MPM.DAL.Processor
                         {
                             art_list.Add(new ART
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = art_sheet.Cells[3, column].Value.ToString(),
                                 Sex = Sex.M,
                                 IndicatorType = indicatorType,
@@ -262,24 +289,30 @@ namespace MPM.DAL.Processor
                         }
                     }
                 }
-                row += 3;
+                Loop: row += 3;
             }
             return art_list;
         }
 
-        List<PMTCT_Viral_Load> RetrievePMTCTViralLoad_data(ExcelWorksheet pmtct_viral_load_sheet, MetaData mt)
+        List<PMTCT_Viral_Load> RetrievePMTCTViralLoad_data(ExcelWorksheet pmtct_viral_load_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<PMTCT_Viral_Load> _list = new List<PMTCT_Viral_Load>();
             int row = 5;
             while (true)
             {
-                var facCell = pmtct_viral_load_sheet.Cells["B" + row];
+                var facCell = pmtct_viral_load_sheet.Cells["C" + row];
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
                 }
                 else
                 {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; // throw new ApplicationException("Invalid facility uploaded");
+
+
                     for (int column = 5; column <= 24;)
                     {
 
@@ -290,7 +323,7 @@ namespace MPM.DAL.Processor
                         {
                             _list.Add(new PMTCT_Viral_Load
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = pmtct_viral_load_sheet.Cells[3, column].Value.ToString(),
                                 Category = PMTCT_Category.Newly_Identified,
                                 _less_than_1000 = !string.IsNullOrEmpty(less_than_1000) ? Convert.ToInt32(less_than_1000) : (int?)null,
@@ -307,7 +340,7 @@ namespace MPM.DAL.Processor
                         {
                             _list.Add(new PMTCT_Viral_Load
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = pmtct_viral_load_sheet.Cells[3, column].Value.ToString(),
                                 Category = PMTCT_Category.Already_HIV_Positive,
                                 _less_than_1000 = !string.IsNullOrEmpty(less_than_1000) ? Convert.ToInt32(less_than_1000) : (int?)null,
@@ -318,24 +351,29 @@ namespace MPM.DAL.Processor
                         column += 2;
                     }
                 }
-                row += 3;
+                Loop: row += 3;
             }
             return _list;
         }
 
-        List<LinkageToTreatment> RetrieveLinkageToTx_data(ExcelWorksheet linkage_sheet, MetaData mt)
+        List<LinkageToTreatment> RetrieveLinkageToTx_data(ExcelWorksheet linkage_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<LinkageToTreatment> _list = new List<LinkageToTreatment>();
             int row = 5;
             while (true)
             {
-                var facCell = linkage_sheet.Cells["B" + row];
+                var facCell = linkage_sheet.Cells["C" + row];
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
                 }
                 else
                 {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; // throw new ApplicationException("Invalid facility uploaded");
+
                     for (int column = 5; column <= 24;)
                     {
 
@@ -347,7 +385,7 @@ namespace MPM.DAL.Processor
                             //female
                             _list.Add(new LinkageToTreatment
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = linkage_sheet.Cells[3, column].Value.ToString(),
                                 Sex = Sex.F,
                                 POS = !string.IsNullOrEmpty(f_POS) ? Convert.ToInt32(f_POS) : (int?)null,
@@ -365,7 +403,7 @@ namespace MPM.DAL.Processor
                         {
                             _list.Add(new LinkageToTreatment
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = linkage_sheet.Cells[3, column].Value.ToString(),
                                 Sex = Sex.M,
                                 POS = !string.IsNullOrEmpty(f_POS) ? Convert.ToInt32(m_POS) : (int?)null,
@@ -379,25 +417,30 @@ namespace MPM.DAL.Processor
 
                     }
                 }
-                row += 3;
+                Loop: row += 3;
             }
             return _list;
         }
 
 
-        List<HTS_Index> RetrieveHTS_data(ExcelWorksheet hts_index_sheet, MetaData mt)
+        List<HTS_Index> RetrieveHTS_data(ExcelWorksheet hts_index_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<HTS_Index> hTS_Index_list = new List<HTS_Index>();
             int row = 6;
             while (true)
             {
-                var facCell = hts_index_sheet.Cells["B" + row];
+                var facCell = hts_index_sheet.Cells["C" + row];
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
                 }
                 else
                 {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; // throw new ApplicationException("Invalid facility uploaded");
+
                     for (int column = 8; column <= 32;)
                     {
                         string testingtype = column < 17 ? hts_index_sheet.Cells[3, 8].Value.ToString() : hts_index_sheet.Cells[3, 17].Value.ToString();
@@ -410,13 +453,13 @@ namespace MPM.DAL.Processor
                             //female
                             hTS_Index_list.Add(new HTS_Index
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = hts_index_sheet.Cells[4, column].Value.ToString(),
                                 Sex = Sex.F,
                                 TestingType = testingtype,
                                 POS = !string.IsNullOrEmpty(f_POS) ? Convert.ToInt32(f_POS) : (int?)null,
                                 NEG = !string.IsNullOrEmpty(f_NEG) ? Convert.ToInt32(f_NEG) : (int?)null,
-                                MetaData =mt
+                                MetaData = mt
                             });
                         }
 
@@ -429,7 +472,7 @@ namespace MPM.DAL.Processor
                         {
                             hTS_Index_list.Add(new HTS_Index
                             {
-                                SiteName = facCell.Value.ToString(),
+                                Site = site,
                                 AgeGroup = hts_index_sheet.Cells[4, column].Value.ToString(),
                                 Sex = Sex.M,
                                 TestingType = testingtype,
@@ -447,7 +490,7 @@ namespace MPM.DAL.Processor
                         }
                     }
                 }
-                row += 3;
+                Loop: row += 3;
             }
             return hTS_Index_list;
         }

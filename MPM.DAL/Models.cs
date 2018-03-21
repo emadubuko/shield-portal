@@ -31,6 +31,7 @@ namespace MPM.DAL
 
     public class IPUploadReport
     {
+        public int Id { get; set; }
         public string IPName { get; set; }
         public string ReportPeriod { get; set; }
     }

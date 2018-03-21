@@ -207,21 +207,8 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"></div>
-            @*<div class="col-sm-4">
-                    <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
-                        <div class="panel-body" style="margin-top: -15px;">
-                            <table>
-                                <tr>
-                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly reporting</strong></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>*@
 
-            <div style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
+            <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="col-sm-4">
                     <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
                         <div class="panel-body" style="margin-top: -15px;">
@@ -236,9 +223,6 @@
                 </div>
             </div>
 
-
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"></div>
-
             <div class="col-sm-4">
                 <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
                     <div class="panel-body" style="margin-top: -15px;">
@@ -252,7 +236,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
+            <div class="col-sm-4" style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="panel minimal teal-bg" style="background-color:deepskyblue; border-color:deepskyblue">
                     <div class="panel-body" style="margin-top: -15px;">
                         <table>
@@ -267,10 +251,8 @@
         </div>
 
         <div class="row">
-
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"> </div>
-
-            <div style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
+            
+            <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="col-sm-4">
                     <div class="panel panel-info pnl-height" style="border-color:darkorange">
                         <div class="panel-body">
@@ -282,24 +264,6 @@
                     </div>
                 </div>
             </div>
-            @*<div class="col-sm-4">
-                    <div class="panel panel-info pnl-height" style="border-color:darkorange">
-                        <div class="panel-body">
-                            <ul class="list-item todo-list">
-                                <li>
-                                    <a href="@Url.Action(" Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkorange; border-color:darkorange">Go to Semi Monthly Report</a>
-                                </li>
-                            </ul>
-                            <hr />
-                            <h5 style="font-weight: bold">Overview</h5>
-                            <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
-
-                        </div>
-                    </div>
-                </div>*@
-
-
-            <div class="col-sm-1" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "none" : "block" )"></div>
 
             <div class="col-sm-4">
                 <div class="panel panel-success pnl-height">
@@ -321,7 +285,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-4" style="display:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "block" : "none" )">
+            <div class="col-sm-4" style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="panel panel-default pnl-height" style="border-color:deepskyblue">
                     <div class="panel-body">
                         <ul class="list-item todo-list">
