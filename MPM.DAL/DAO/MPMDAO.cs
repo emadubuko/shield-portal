@@ -60,7 +60,7 @@ namespace MPM.DAL.DAO
             using (var session = BuildSession().SessionFactory.OpenStatelessSession())
             using (var tx = session.BeginTransaction())
             {
-               session.Update(mt);
+                session.Update(mt);
                 foreach (var a in mt.ART)
                 {
                     session.Insert(a);
@@ -86,13 +86,13 @@ namespace MPM.DAL.DAO
                     session.Insert(o);
                 }
                 tx.Commit();
-            } 
+            }
         }
 
         public IList<IPUploadReport> GenerateIPUploadReports(int OrgId, string reportingPeriod)
         {
             ICriteria criteria = BuildSession()
-                .CreateCriteria<MetaData>("pd")          
+                .CreateCriteria<MetaData>("pd")
                 .CreateCriteria("IP", "org", NHibernate.SqlCommand.JoinType.InnerJoin);
 
             if (OrgId != 0)
@@ -103,7 +103,7 @@ namespace MPM.DAL.DAO
             {
                 criteria.Add(Restrictions.Eq("pd.ReportingPeriod", reportingPeriod));
             }
-             
+
             criteria.SetProjection(
                 Projections.Alias(Projections.GroupProperty("org.ShortName"), "IPName"),
                  Projections.Alias(Projections.GroupProperty("pd.ReportingPeriod"), "ReportPeriod"),
@@ -116,7 +116,7 @@ namespace MPM.DAL.DAO
 
 
         public List<MPMFacilityListing> GetPivotTableFromFacility(string IP)
-        { 
+        {
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_generate_MPM_facility_list";
             cmd.CommandType = CommandType.StoredProcedure;
@@ -129,9 +129,9 @@ namespace MPM.DAL.DAO
             {
                 list.Add(new MPMFacilityListing
                 {
-                    ART = row.Field<bool>("ART"),
-                    PMTCT = row.Field<bool>("PMTCT"),
-                    HTS = row.Field<bool>("HTS"),
+                    ART = Convert.ToBoolean(row.Field<string>("ART")),
+                    PMTCT = Convert.ToBoolean(row.Field<string>("PMTCT")),
+                    HTS = Convert.ToBoolean(row.Field<string>("HTS")),
                     DATIMCode = row.Field<string>("DatimCode"),
                     Facility = row.Field<string>("Facility"),
                     IP = row.Field<string>("IP")
@@ -140,6 +140,6 @@ namespace MPM.DAL.DAO
             return list;
         }
 
-       
+
     }
 }

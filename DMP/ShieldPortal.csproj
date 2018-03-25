@@ -1440,6 +1440,7 @@
     <Content Include="Views\MPM\Index.cshtml" />
     <Content Include="Views\MPM\Upload.cshtml" />
     <Content Include="Views\MPM\Dashboard.cshtml" />
+    <Content Include="Views\DQAFY2018Q1\UMB_Partner_Report.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

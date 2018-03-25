@@ -1,0 +1,238 @@
+﻿@model ShieldPortal.ViewModel.AnalyticPageData
+
+@{
+    Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
+}
+
+@section AddToHead{
+
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script type="text/javascript">
+
+        function reloadPage(e) {
+            window.location.replace('/DQAFY2018Q1/Analytics?reportType=' + e.value);
+        }
+    </script>
+    <style>
+        .nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus {
+            border-color: #ddd;
+            border-right-color: #fff;
+            color: #79B91C;
+            font-weight: bold;
+        }
+
+        .nav-tabs > li > a {
+            border-left-color: #ddd;
+            border-right-color: #FFF;
+            border-radius: 0;
+            z-index: 5;
+            color: #000;
+            text-decoration: underline;
+        }
+
+        #resizer {
+            border: 1px solid silver;
+        }
+
+        .tab-pane { /* make room for the resize handle */
+            padding: 10px;
+        }
+    </style>
+}
+
+<div class="col-md-11">
+
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix">
+            <h2 style="margin-left:10em"><span style="color: #fff;">Comparing UMB and Partners DQA Result</span> for all indicators</h2>
+        </div>
+        <div class="panel-body">
+
+            <div class="tabs-container" id="resizer" style="min-width: 350px; min-height: 200px">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a aria-expanded="true" href="#htc_div" data-toggle="tab">HTC</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_stat_div" data-toggle="tab">PMTCT_STAT</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_art_div" data-toggle="tab">PMTCT_ART</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_eid_div" data-toggle="tab">PMTCT_EID</a></li>
+                    <li class=""><a aria-expanded="false" href="#pmtct_hei_pos_div" data-toggle="tab">PMTCT_HEI_POS</a></li>
+                    <li class=""><a aria-expanded="false" href="#tx_new_div" data-toggle="tab">TX_NEW</a></li>
+                    <li class=""><a aria-expanded="false" href="#tx_curr_div" data-toggle="tab">TX_CURR</a></li>
+                </ul>
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="htc_div">
+                        <div id="HTC_TST">
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="pmtct_stat_div">
+                        <div id="PMTCT_STAT" style="height: 500px">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_art_div">
+                        <div id="PMTCT_ART"></div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_eid_div">
+                        <div id="PMTCT_EID">
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pmtct_hei_pos_div">
+                        <div id="PMTCT_HEI_POS"></div>
+                    </div>
+                    <div class="tab-pane" id="tx_new_div">
+                        <div id="TX_NEW"></div>
+                    </div>
+                    <div class="tab-pane" id="tx_curr_div">
+                        <div id="TX_CURR"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</div>
+
+@section Scripts
+{
+    <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/no-data-to-display.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/data.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
+    <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(".page-container").addClass("sidebar-collapsed");
+            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+
+
+            var comparisonData = JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.mainData))));
+
+            $.each(comparisonData, function (i, val) {
+                var divId = val.data[0].Type + '_' + val.indicator;
+
+                jQuery('<div/>', {
+                    id: divId,
+                }).appendTo('#' + val.indicator);
+                jQuery('<hr>').appendTo('#' + val.indicator);
+
+                var a_chart = Highcharts.chart(divId, {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: val.data[0].Type + ' ' + val.indicator + ' Result Comparison'
+                    },
+                    xAxis: {
+                        categories: val.Sites,
+                        title: {
+                            text: null
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Concurrence (%)',
+                            align: 'high'
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: ' %'
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.y:.1f}%'
+                            },
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -40,
+                        y: 80,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                        shadow: true
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: val.data[0].Type,
+                        data: val.data[0].data,
+                        color: '#7cb5ec',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}%'
+                        }
+                    }, {
+                        name: val.data[1].Type,
+                        data: val.data[1].data,
+                            color: 'purple',
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.y:.1f}%'
+                            }
+                    }]
+                });
+
+
+                var plain = "<button id='plain" + divId + "'>plain</button>";
+                var inverted = "<button id='inverted" + divId + "'>bar</button>";
+                $("#" + divId).append(plain);
+                $("#" + divId).append(inverted);
+
+
+                $(document).on('click', '#plain' + divId, function () {
+                    a_chart.update({
+                        chart: {
+                            inverted: false,
+                            polar: false
+                        },
+                    });
+                });
+
+                $(document).on('click', '#inverted' + divId, function () {
+                    a_chart.update({
+                        chart: {
+                            inverted: true,
+                            polar: false
+                        },
+                    });
+                });
+
+                $('#resizer').resizable({
+                    resize: function () {
+                        var $this = this;
+                        a_chart.setSize($this.offsetWidth - 20, $this.offsetHeight - 20, false);
+                    }
+                });
+
+
+
+            });
+            
+            $(".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se").css("background-color", "red")
+
+            $(".highcharts-title").css("color", "#000");
+            $(".highcharts-title").css("fill", "#000");
+
+            $(".page-container").addClass("sidebar-collapsed");
+            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+
+        });
+    </script>
+}

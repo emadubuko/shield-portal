@@ -74,9 +74,9 @@ namespace ShieldPortal.Controllers
                 {
                     Directory.CreateDirectory(directory);
                 }
-                 
+
                 Request.Files[0].SaveAs(directory + Request.Files[0].FileName);
-                
+
                 Stream uploadedFile = Request.Files[0].InputStream;
                 bool status = new BDQAQ1FY18().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
             }
@@ -182,10 +182,10 @@ namespace ShieldPortal.Controllers
                             {
                                 Directory.CreateDirectory(directory);
                             }
-                             
-                            var filePath = directory + postedFile.FileName; 
+
+                            var filePath = directory + postedFile.FileName;
                             Request.Files[0].SaveAs(filePath);
-                             
+
                             if (ext.ToUpper() == "ZIP")
                             {
                                 messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
@@ -293,7 +293,7 @@ namespace ShieldPortal.Controllers
             {
                 IPSummary,
                 cardData = ds.Tables[1].Rows[0].ItemArray
-            }); 
+            });
         }
 
         public ActionResult DQAAnalysisReport(string type)
@@ -310,9 +310,105 @@ namespace ShieldPortal.Controllers
             cmd.Parameters.AddWithValue("@ip", ip);
             cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
             var data = Utility.GetDatable(cmd);
-             
+
 
             return View(data);
+        }
+
+
+        public ActionResult UMB_Partner_Report()
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+
+            var Partners_data = new HighChartDataServices().GetQ1HTCConcurrency("Partners", ip);
+            var UMB_data = new HighChartDataServices().GetQ1HTCConcurrency("umb", ip);
+           
+            List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
+          
+
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.htc_drilldown, UMB_data.AllDataModel.htc_drilldown, "HTC_TST"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_stat_drilldown, UMB_data.AllDataModel.pmtct_stat_drilldown, "PMTCT_STAT"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_art_drilldown, UMB_data.AllDataModel.pmtct_art_drilldown, "PMTCT_ART"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_eid_drilldown, UMB_data.AllDataModel.pmtct_eid_drilldown, "PMTCT_EID"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_hei_pos_drilldown, UMB_data.AllDataModel.pmtct_hei_pos_drilldown, "PMTCT_HEI_POS"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.tx_new_drilldown, UMB_data.AllDataModel.tx_new_drilldown, "TX_NEW"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.tx_curr_drilldown, UMB_data.AllDataModel.tx_curr_drilldown, "TX_CURR"));
+
+
+            ViewBag.mainData = mainData;
+            return View(Partners_data);
+        }
+
+        public List<ViewModel.DQACompariosnModelMain> AppendComparisonList(List<ViewModel.ChildSeriesData> Partnersdata, List<ViewModel.ChildSeriesData> UMBdata, string type)
+        {
+            List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
+
+            var ip_htc_group = Partnersdata.GroupBy(x => x.name);
+            foreach (var k in ip_htc_group)
+            {
+                Dictionary<string, double> umb_facility_numbers = new Dictionary<string, double>();
+                var umb_grouping = UMBdata.Where(x => x.name == k.Key).ToList();
+                if(umb_grouping != null)
+                {
+                    umb_facility_numbers = ConvertToDoubleList(umb_grouping.SelectMany(x => x.data.SelectMany(y => y)).ToList());
+                }
+                 
+                var i = k.ToList().SelectMany(x => x.data.SelectMany(y => y)).ToList();
+                var partner_facility_numbers = ConvertToDoubleList(i);
+
+                List<string> sites = new List<string>();
+                List<double> _partnerNumbers = new List<double>();
+                List<double> _umb_numbers = new List<double>();
+
+                foreach (var d in umb_facility_numbers.Keys)
+                { 
+                    if (partner_facility_numbers.ContainsKey(d))
+                    {
+                        sites.Add(d);
+                        _partnerNumbers.Add(partner_facility_numbers[d]);
+                        _umb_numbers.Add(umb_facility_numbers[d]);
+                    }
+                }
+
+                mainData.Add(new ViewModel.DQACompariosnModelMain
+                {
+                    indicator = type,
+                    Sites = sites, //partner_nums.Select(x => x.Key).ToList(),
+                    data = new List<ViewModel.DQAComparisonModel>
+                    {
+                        new ViewModel.DQAComparisonModel
+                      {
+                           data = _partnerNumbers, //partner_nums.Select(x=>x.Value).ToList(),
+                            Type = k.Key,
+                      },
+                        new ViewModel.DQAComparisonModel
+                      {
+                           data = _umb_numbers, //umb_nums.Select(x=>x.Value).ToList(),
+                            Type = "UMB",
+                      }
+                    }
+                });
+            }
+
+            return mainData;
+        }
+
+
+        private Dictionary<string,double> ConvertToDoubleList(List<object> input)
+        {
+            Dictionary<string, double> d = new Dictionary<string, double>();
+            for(int i=0; i < input.Count;)
+            {
+                d.Add(Convert.ToString(input[i]), Math.Round(Convert.ToDouble(input[i+1]), 2));
+
+                i += 2;
+            }
+            return d;
         }
 
         public ActionResult IpDQA()
@@ -405,11 +501,11 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
-        
+
         [HttpGet]
         public string GetReportDetails(int metadataid)
         {
-            string Processed_result=  new BDQAQ1FY18().GetReportDetails(metadataid);
+            string Processed_result = new BDQAQ1FY18().GetReportDetails(metadataid);
             return Processed_result;
         }
 
@@ -419,7 +515,7 @@ namespace ShieldPortal.Controllers
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
         }
 
-        
+
 
         //this is the page
         public ActionResult DownloadDQATool(int? ip)
@@ -480,7 +576,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
-            string period = "Q1 FY18"; 
+            string period = "Q1 FY18";
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -521,7 +617,7 @@ namespace ShieldPortal.Controllers
             string period = "Q1 FY18";
             string startDate = "2017-10-01 00:00:00.000";
             string endDate = "2017-12-31 23:59:59.000";
-            
+
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -576,8 +672,8 @@ namespace ShieldPortal.Controllers
                         Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
                         Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
                     });
-                } 
-            } 
+                }
+            }
             return JsonConvert.SerializeObject(
                        new
                        {
