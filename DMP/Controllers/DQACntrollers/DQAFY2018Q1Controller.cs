@@ -151,7 +151,8 @@ namespace ShieldPortal.Controllers
                 var profile = new Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var data = new HighChartDataServices().GetQ1HTCConcurrency(reportType, ip);
+            var datatable = Utility.GetFY18Analysis(ip,"Q1 FY18", reportType.ToLower().Contains("partners"));
+            var data = new HighChartDataServices().GetConcurrency(datatable, reportType, ip);
             return View(data);
         }
 
@@ -325,8 +326,11 @@ namespace ShieldPortal.Controllers
                 ip = profile.Organization.ShortName;
             }
 
-            var Partners_data = new HighChartDataServices().GetQ1HTCConcurrency("Partners", ip);
-            var UMB_data = new HighChartDataServices().GetQ1HTCConcurrency("umb", ip);
+            var partner_datatable = Utility.GetFY18Analysis(ip, "Q1 FY18", true);
+            var umb_datatable = Utility.GetFY18Analysis(ip, "Q1 FY18", false);
+
+            var Partners_data = new HighChartDataServices().GetConcurrency(partner_datatable, "Partners", ip);
+            var UMB_data = new HighChartDataServices().GetConcurrency(umb_datatable, "umb", ip);
            
             List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
           

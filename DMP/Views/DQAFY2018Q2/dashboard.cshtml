@@ -1,6 +1,9 @@
-﻿@{
-    Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
+﻿
+@{
+    ViewBag.Title = "dashboard";
+    Layout = "~/Views/Shared/_dqaFY18Q2layout.cshtml";
 }
+
 
 <div class="col-md-9">
     <div class="row">
@@ -62,24 +65,24 @@
             </div>
         </div>
     </div>
-</div>     
+</div>
 
- 
+
 @section Scripts{
     <script>
-        $(document).ready(function () { 
+        $(document).ready(function () {
             $.ajax({
-                url: '/api/DQAAPI/GetDashboardStatistic?period=Q1 Fy18',
-                type: 'GET', 
+                url: '/api/DQAAPI/GetDashboardStatistic?period=Q2 Fy18',
+                type: 'GET',
                 cache: false,
-                contentType: "application/json", 
+                contentType: "application/json",
             }).done(function (response) {
-                buildDashboard(response); 
+                buildDashboard(response);
             }).error(function (xhr, status, err) {
                 alert(err);
                 console.log(err);
             });
-            
+
             function buildDashboard (data) {
                 //load state summary
                 $("#state_summary").empty();
@@ -123,13 +126,13 @@
 
                 $(".knob").knob();
 
-                if (all_data.cardData != "") { 
+                if (all_data.cardData != "") {
                     $("#facilities").text(all_data.cardData[0]);
                     $("#submitted").text(all_data.cardData[1]);
                     $("#lgas").text(all_data.cardData[2]);
                     $("#states").text(all_data.cardData[3]);
                 }
-            } 
+            }
         });
     </script>
-   }
+}

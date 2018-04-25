@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_dqaFY18Q1layout.cshtml";
+    Layout = "~/Views/Shared/_dqaFY18Q2layout.cshtml";
 }
 @section AddToHead{
     <style>
@@ -122,9 +122,9 @@
                         <tr>
                             <th>Thematic Area</th>
                             <th>Indicator</th>
-                            <th>Oct</th>
-                            <th>Nov</th>
-                            <th>Dec</th>
+                            <th>Jan</th>
+                            <th>Feb</th>
+                            <th>Mar</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -153,7 +153,7 @@
                     var $tabela = $("#output");
 
                     var model = {};
-                    model.RadetPeriod = "Q1 FY18";
+                    model.RadetPeriod = "Q2 FY18";
 
                     dataTable.table = $tabela.DataTable({
                         processing: true,
@@ -163,29 +163,29 @@
                         "oLanguage": { "sProcessing": "Loading... Please wait" },
                         ajax:
                             {
-                                url: "/DQAFY2018Q1/GetDQAUploadReport",
+                                url: "/DQAFY2018Q2/GetDQAUploadReport",
                                 type: "POST",
                             },
                         "oSearch": { "sSearch": JSON.stringify(model) },
                         "columnDefs": [
-                            { className: "click-row", "targets": [ 0,1,2,3,4,5,6 ] }
+                            { className: "click-row", "targets": [0, 1, 2, 3, 4, 5, 6] }
                         ],
                         "aoColumns": [
                             { "mData": "IP" },
-                             { "mData": "State" },
-                             { "mData": "LGA" },
-                             { "mData": "Facility" },
-                             {
-                                 "mData": "Uploaded_Date",
-                                 "render": function (data) {
-                                     var date = new Date(data);
-                                     var month = date.getMonth() + 1;
-                                     return date.toLocaleString('en-GB', { day:'numeric', month:'numeric', year: 'numeric',  hour: 'numeric',minute:'numeric', hour12: true });
-                                 }
-                             },
-                             { "mData": "UploadedBy" },
-                             {"mData" : "DoneBy"},
-                        { "mData": "LastColumn" }
+                            { "mData": "State" },
+                            { "mData": "LGA" },
+                            { "mData": "Facility" },
+                            {
+                                "mData": "Uploaded_Date",
+                                "render": function (data) {
+                                    var date = new Date(data);
+                                    var month = date.getMonth() + 1;
+                                    return date.toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
+                                }
+                            },
+                            { "mData": "UploadedBy" },
+                            { "mData": "DoneBy" },
+                            { "mData": "LastColumn" }
                         ],
                         "pagingType": "full_numbers"
                     });
@@ -210,7 +210,7 @@
             $('#btnSearch').click(function (e) {
                 //supply the variables here
                 var model = {};
-                model.RadetPeriod =  "Q1 FY18";
+                model.RadetPeriod = "Q2 FY18";
 
                 let selectedIP = [];
                 $("#sltIP option:selected").each(function () {
@@ -244,31 +244,36 @@
                 dataTable.table.search(JSON.stringify(model)).draw(false);
             });
 
-            $(document).on('click','.deletebtn', function(e){
-                $("#loadImg"+e.currentTarget.id).show();
-                $.ajax({
-                    url: '/api/dqaapi/Delete?ID=' +e.currentTarget.id,
-                    type: 'POST',
-                    async: true,
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                }).done(function (response) {
-                    $('#'+e.currentTarget.id).remove();
-                    $("#loadImg"+e.currentTarget.id).hide();
-                }).error(function (xhr, status, err) {
-                    alert(err);
-                    console.log(err);
-                });
+            $(document).on('click', '.deletebtn', function (e) {
+
+                var ans = confirm("You are about to delete this report. Are you sure ?");
+                if (ans) {
+                    $("#loadImg" + e.currentTarget.id).show();
+                    $.ajax({
+                        url: '/api/dqaapi/Delete?ID=' + e.currentTarget.id,
+                        type: 'POST',
+                        async: true,
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).done(function (response) {
+                        $('#' + e.currentTarget.id).remove();
+                        $("#loadImg" + e.currentTarget.id).hide();
+                    }).error(function (xhr, status, err) {
+                        alert(err);
+                        console.log(err);
+                    });
+                }
+
                 return false;
             });
 
 
-            $(document).on('click','.click-row', function(e){
+            $(document).on('click', '.click-row', function (e) {
                 var id = e.currentTarget.parentElement.id;//e.currentTarget.id;
 
                 $.ajax({
-                    url: '/DQAFY2018Q1/GetReportDetails?metadataid=' +id,
+                    url: '/DQAFY2018Q2/GetReportDetails?metadataid=' + id,
                     type: 'GET',
                     async: true,
                     cache: false,
@@ -288,7 +293,16 @@
             function buildTable(dataList) {
                 $("#output_details tbody").empty();
                 $.each(dataList, function (i, d) {
-                    if(d.ThematicArea.indexOf("TB") == -1){
+                    if (d.ThematicArea.indexOf("TB") == 0 || d.ThematicArea.indexOf("TX_TB") == 0) {
+                        var html = "<tr> ";
+                        html += "<td>" + d.ThematicArea + "</td>";
+                        html += "<td>" + d.IndicatorName + "</td>";
+                        html += "<td></td><td></td>";
+                        html += "<td>" + d.IndicatorValueMonth3 + "</td>";
+                        html += "</tr>";
+                        $("#output_details tbody").append(html);
+                    }
+                    else {
                         var html = "<tr> ";
                         html += "<td>" + d.ThematicArea + "</td>";
                         html += "<td>" + d.IndicatorName + "</td>";

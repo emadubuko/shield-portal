@@ -33,6 +33,10 @@
             padding-left: 20%;
             text-decoration: underline;
         }
+
+        .dropdown {
+            margin-right: 15px;
+        }
     </style>
 }
 <div class="main-content" style="padding-top: 0px;">
@@ -70,7 +74,9 @@
                             <table>
                                 <tr>
                                     <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
-                                    <td style="padding-left: 25px;"> <strong class="custom-heading-div">Data Quality Assessment</strong></td>
+                                    <td style="padding-left: 25px;">
+                                        <strong class="custom-heading-div">Data Quality Assessment</strong>
+                                    </td>
                                 </tr>
                             </table>
                         </a>
@@ -129,21 +135,25 @@
                         <div class="col-sm-12">
                             <div class="dropdown col-sm-2">
                                 <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                    FY2018
+                                    FY 2018
                                 </button>
                                 <div class="dropdown-menu">
+                                    @if (!User.IsInRole("ip"))
+                                    {
+                                        <a class="dropdown-item" href="/DQAFY2018Q2/index">Q2 DQA</a><br />
+                                    }
                                     <a class="dropdown-item" href="/DQAFY2018Q1/index">Q1 DQA</a>
                                 </div>
                             </div> &nbsp;&nbsp;
                             <div class="dropdown col-sm-2">
                                 <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                    FY2017
+                                    FY 2017
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/DQA/index">Q1 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2017Q2/index">Q2 DQA</a><br />
+                                    <a class="dropdown-item" href="/DQAFY2017Q4/index">Q4 DQA</a><br />
                                     <a class="dropdown-item" href="/DQAFY2017Q2/index">Q3 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2017Q4/index">Q4 DQA</a>
+                                    <a class="dropdown-item" href="/DQAFY2017Q2/index">Q2 DQA</a><br />
+                                    <a class="dropdown-item" href="/DQA/index">Q1 DQA</a><br />
                                 </div>
                             </div> &nbsp;&nbsp;
                             @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
@@ -251,7 +261,7 @@
         </div>
 
         <div class="row">
-            
+
             <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="col-sm-4">
                     <div class="panel panel-info pnl-height" style="border-color:darkorange">

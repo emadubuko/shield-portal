@@ -7,6 +7,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using ShieldPortal.Services;
+using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,46 +21,36 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
-    public class DQAFY2017Q4Controller : Controller
+    public class DQAFY2018Q2Controller : Controller
     {
         public ActionResult Index()
         {
             int ip_id = 0;
             if (User.IsInRole("ip"))
             {
-                ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+                ip_id = new Utils().GetloggedInProfile().Organization.Id;
             }
             ViewBag.ip_id = ip_id;
-
             return View("Dashboard");
         }
 
         public ActionResult UploadPivotTable()
         {
-            var profile = new Services.Utils().GetloggedInProfile();
-            List<UploadList> previousUploads = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            var profile = new Utils().GetloggedInProfile();            
+            int ip_id = 0;
+            if (User.IsInRole("ip"))
             {
-                previousUploads = Utility.RetrievePivotTables(0, "Q4 FY17");
+                ip_id = profile.Organization.Id;
             }
-            else
-            {
-                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id, "Q4 FY17");
-            }
+            List<UploadList> previousUploads = Utility.RetrievePivotTables(ip_id, "Q2 FY18");
             return View(previousUploads);
-        }
-
-        public ActionResult DeletePivotTable(int id)
-        {
-            new BDQAQ4FY17().DeletePivotTable(id);
-            return RedirectToAction("UploadPivotTable");
         }
 
         [HttpPost]
         public string ProcesssPivotTable(string reportPeriod)
         {
             HttpResponseMessage msg = null;
-            string result = "";
+            string result = ""; 
             if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
             {
                 msg = new HttpResponseMessage(HttpStatusCode.BadRequest); //, );
@@ -67,15 +58,58 @@ namespace ShieldPortal.Controllers
             }
             else
             {
-                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-                Request.Files[0].SaveAs(Server.MapPath("~/Report/Uploads/Pivot table Q4/" + loggedinProfile.Organization.ShortName + "_" + Request.Files[0].FileName));
-                
+                Profile loggedinProfile = new Utils().GetloggedInProfile();
+                string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/Pivot table " + reportPeriod + "/"
+                    + loggedinProfile.Organization.ShortName) + "/";
+                if (Directory.Exists(directory) == false)
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                Request.Files[0].SaveAs(directory + Request.Files[0].FileName);
+
                 Stream uploadedFile = Request.Files[0].InputStream;
-                bool status = new BDQAQ4FY17().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
+                bool status = new BDQAQ2FY18().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
             }
-            return result; //msg;
+            return result;
         }
 
+
+        public ActionResult DQAResult()
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+
+            var reports = Utility.GetUploadReport("Q2 FY18", ip);
+            List<dynamic> iplocation = new List<dynamic>();
+            foreach (DataRow dr in reports.Rows)
+            {
+                iplocation.Add(new
+                {
+                    IP = dr[0],
+                    FacilityName = dr[5],
+                    LGA = new
+                    {
+                        lga_name = dr[3],
+                        lga_code = dr[4],
+                        state_code = dr[2],
+                        DisplayName = string.Format("{0} ({1})", dr[3], dr[1]),
+                        State = new { state_name = dr[1], state_code = dr[2] }
+                    }
+                });
+            }
+            ViewBag.selectModel = JsonConvert.SerializeObject((iplocation), Formatting.None,
+                       new JsonSerializerSettings()
+                       {
+                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                           ContractResolver = new NHibernateContractResolver()
+                       });
+            ViewBag.IPCount = iplocation.Select(x => x.IP).Distinct().Count();
+            return View();
+        }
 
         [HttpPost]
         public string GetDQAUploadReport(int? draw, int? start, int? length)
@@ -87,7 +121,7 @@ namespace ShieldPortal.Controllers
             string ip = "";
             if (User.IsInRole("ip"))
             {
-                var profile = new Services.Utils().GetloggedInProfile();
+                var profile = new Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
             else if (searchModel.IPs != null)
@@ -100,8 +134,7 @@ namespace ShieldPortal.Controllers
             {
                 var dtt = new
                 {
-                    DT_RowId = dr[9].ToString(),
-                    //DT_RowClass = "click-row",
+                    DT_RowId = dr[9].ToString(), 
                     IP = dr[0],
                     State = dr[1],
                     LGA = dr[3],
@@ -144,22 +177,21 @@ namespace ShieldPortal.Controllers
                 var profile = new Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var data = new HighChartDataServices().GetQ4Concurrency(reportType, ip);
+            var datatable = Utility.GetFY18Analysis(ip, "Q2 FY18", reportType.ToLower().Contains("partners"));
+            var data = new HighChartDataServices().GetConcurrency(datatable, reportType, ip);
             return View(data);
         }
 
-
-        //this is for Q2 upload
         [HttpPost]
         public string PostDQAFile()
         {
             var messages = "";
             try
             {
-                Logger.LogInfo(" DQAQ4 FY2017,PostDQAFile", "processing dqa upload");
+                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
+                Logger.LogInfo(" DQAQ2 FY2018,PostDQAFile", "processing dqa upload");
 
-                HttpResponseMessage result = null;
-                var userUploading = new Services.Utils().GetloggedInProfile();
+                HttpResponseMessage result = null; 
 
                 if (Request.Files.Count > 0)
                 {
@@ -171,9 +203,16 @@ namespace ShieldPortal.Controllers
 
                         if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                         {
+                            string directory = System.Web.Hosting.HostingEnvironment
+                                .MapPath("~/Report/Uploads/DQA Q2 FY18/" 
+                                + loggedinProfile.Organization.ShortName) + "/";
+                            if (Directory.Exists(directory) == false)
+                            {
+                                Directory.CreateDirectory(directory);
+                            }
 
-                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q4 FY17/" + postedFile.FileName);
-                            postedFile.SaveAs(filePath);
+                            var filePath = directory + postedFile.FileName;
+                            Request.Files[0].SaveAs(filePath);
 
                             if (ext.ToUpper() == "ZIP")
                             {
@@ -217,7 +256,7 @@ namespace ShieldPortal.Controllers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                messages += new BDQAQ4FY17().ReadWorkbook(extractedFilePath, userUploading);
+                                                messages += new BDQAQ2FY18().ReadWorkbook(extractedFilePath, loggedinProfile);
                                                 countSuccess++;
                                             }
                                         }
@@ -234,7 +273,7 @@ namespace ShieldPortal.Controllers
                             }
                             else
                             {
-                                messages += new BDQAQ4FY17().ReadWorkbook(filePath, userUploading);
+                                messages += new BDQAQ2FY18().ReadWorkbook(filePath, loggedinProfile);
                             }
                         }
                         else
@@ -255,55 +294,126 @@ namespace ShieldPortal.Controllers
             }
             return messages;
         }
-
-
-
-        [HttpGet]
-        public string GetDashboardStatistic()
-        {
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
-            var ds = Utility.GetDashboardStatistic(ip, "Q4 FY17");
-            List<dynamic> IPSummary = new List<dynamic>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                IPSummary.Add(new
-                {
-                    Name = dr[0],
-                    Submitted = dr[1],
-                    Pending = dr[2],
-                    Total = dr[3],
-                });
-            }
-
-            return JsonConvert.SerializeObject(new
-            {
-                IPSummary,
-                cardData = ds.Tables[1].Rows[0].ItemArray
-            }); 
-        }
-
-        //Q4 Fy17
+         
         public ActionResult DQAAnalysisReport(string type)
         {
             string ip = "";
             if (User.IsInRole("ip"))
             {
-                var profile = new Services.Utils().GetloggedInProfile();
+                var profile = new Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
             var cmd = new SqlCommand();
-            cmd.CommandText = "get_q4_FY17_analysis_report";
+            cmd.CommandText = "get_FY18_analysis_report_by_quarter";
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@reportPeriod", "Q2 FY18");
             cmd.Parameters.AddWithValue("@ip", ip);
             cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
             var data = Utility.GetDatable(cmd);
+
+            string JSONresult;
+            JSONresult = JsonConvert.SerializeObject(data);
+            var convertedResult = JsonConvert.DeserializeObject<List<DQAAnalysisModel>>(JSONresult);
+
+            return View(convertedResult);
+        }
+
+       //this is comparison chart between dqa done by umb and the partners
+        public ActionResult UMB_Partner_Report()
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+
+            var partner_datatable = Utility.GetFY18Analysis(ip,"Q2 FY18", true);
+            var umb_datatable = Utility.GetFY18Analysis(ip, "Q2 FY18", false);
+            var Partners_data = new HighChartDataServices().GetConcurrency(partner_datatable, "Partners", ip);
+            var UMB_data = new HighChartDataServices().GetConcurrency(umb_datatable, "umb", ip);
+            //var Partners_data = new HighChartDataServices().GetQ1HTCConcurrency("Partners", ip);
+            //var UMB_data = new HighChartDataServices().GetQ1HTCConcurrency("umb", ip);
+
+            List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
              
-            return View(data);
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.htc_drilldown, UMB_data.AllDataModel.htc_drilldown, "HTC_TST"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_stat_drilldown, UMB_data.AllDataModel.pmtct_stat_drilldown, "PMTCT_STAT"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_art_drilldown, UMB_data.AllDataModel.pmtct_art_drilldown, "PMTCT_ART"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_eid_drilldown, UMB_data.AllDataModel.pmtct_eid_drilldown, "PMTCT_EID"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_hei_pos_drilldown, UMB_data.AllDataModel.pmtct_hei_pos_drilldown, "PMTCT_HEI_POS"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.tx_new_drilldown, UMB_data.AllDataModel.tx_new_drilldown, "TX_NEW"));
+            mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.tx_curr_drilldown, UMB_data.AllDataModel.tx_curr_drilldown, "TX_CURR"));
+
+
+            ViewBag.mainData = mainData;
+            return View(Partners_data);
+        }
+
+        List<ViewModel.DQACompariosnModelMain> AppendComparisonList(List<ViewModel.ChildSeriesData> Partnersdata, List<ViewModel.ChildSeriesData> UMBdata, string type)
+        {
+            List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
+
+            var ip_htc_group = Partnersdata.GroupBy(x => x.name);
+            foreach (var k in ip_htc_group)
+            {
+                Dictionary<string, double> umb_facility_numbers = new Dictionary<string, double>();
+                var umb_grouping = UMBdata.Where(x => x.name == k.Key).ToList();
+                if (umb_grouping != null)
+                {
+                    umb_facility_numbers = ConvertToDoubleList(umb_grouping.SelectMany(x => x.data.SelectMany(y => y)).ToList());
+                }
+
+                var i = k.ToList().SelectMany(x => x.data.SelectMany(y => y)).ToList();
+                var partner_facility_numbers = ConvertToDoubleList(i);
+
+                List<string> sites = new List<string>();
+                List<double> _partnerNumbers = new List<double>();
+                List<double> _umb_numbers = new List<double>();
+
+                foreach (var d in umb_facility_numbers.Keys)
+                {
+                    if (partner_facility_numbers.ContainsKey(d))
+                    {
+                        sites.Add(d);
+                        _partnerNumbers.Add(partner_facility_numbers[d]);
+                        _umb_numbers.Add(umb_facility_numbers[d]);
+                    }
+                }
+
+                mainData.Add(new ViewModel.DQACompariosnModelMain
+                {
+                    indicator = type,
+                    Sites = sites, //partner_nums.Select(x => x.Key).ToList(),
+                    data = new List<ViewModel.DQAComparisonModel>
+                    {
+                        new ViewModel.DQAComparisonModel
+                      {
+                           data = _partnerNumbers, //partner_nums.Select(x=>x.Value).ToList(),
+                            Type = k.Key,
+                      },
+                        new ViewModel.DQAComparisonModel
+                      {
+                           data = _umb_numbers, //umb_nums.Select(x=>x.Value).ToList(),
+                            Type = "UMB",
+                      }
+                    }
+                });
+            }
+
+            return mainData;
+        }
+
+
+        private Dictionary<string, double> ConvertToDoubleList(List<object> input)
+        {
+            Dictionary<string, double> d = new Dictionary<string, double>();
+            for (int i = 0; i < input.Count;)
+            {
+                d.Add(Convert.ToString(input[i]), Math.Round(Convert.ToDouble(input[i + 1]), 2)); 
+                i += 2;
+            }
+            return d;
         }
 
         public ActionResult IpDQA()
@@ -312,8 +422,7 @@ namespace ShieldPortal.Controllers
             {
                 PopulateStates();
                 return View("AllIPDQA");
-            }
-
+            } 
             else if (User.IsInRole("ip"))
             {
                 var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
@@ -359,49 +468,13 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
-        public ActionResult DQAResult()
-        {
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
 
-            var reports = Utility.GetUploadReport("Q4 FY17", ip);
-            List<dynamic> iplocation = new List<dynamic>();
-            foreach (DataRow dr in reports.Rows)
-            {
-                iplocation.Add(new
-                {
-                    IP = dr[0],
-                    FacilityName = dr[5],
-                    LGA = new
-                    {
-                        lga_name = dr[3],
-                        lga_code = dr[4],
-                        state_code = dr[2],
-                        DisplayName = string.Format("{0} ({1})", dr[3], dr[1]),
-                        State = new { state_name = dr[1], state_code = dr[2] }
-                    }
-                });
-            }
-            ViewBag.selectModel = JsonConvert.SerializeObject((iplocation), Formatting.None,
-                       new JsonSerializerSettings()
-                       {
-                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                           ContractResolver = new NHibernateContractResolver()
-                       });
-            ViewBag.IPCount = iplocation.Select(x => x.IP).Distinct().Count();
-            return View();
-        }
-
-        
 
         [HttpGet]
         public string GetReportDetails(int metadataid)
         {
-            return new BDQAQ4FY17().GetReportDetails(metadataid);
+            string Processed_result = new BDQAQ2FY18().GetReportDetails(metadataid);
+            return Processed_result;
         }
 
         public void PopulateStates(object selectStatus = null)
@@ -410,14 +483,14 @@ namespace ShieldPortal.Controllers
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
         }
 
-        
+
 
         //this is the page
         public ActionResult DownloadDQATool(int? ip)
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
-            string currentPeriod = "Q4 FY17";
+            string currentPeriod = "Q2 FY18";
 
             int getIP = 0;
             if (User.IsInRole("ip"))
@@ -438,28 +511,28 @@ namespace ShieldPortal.Controllers
         {
             var profile = new Services.Utils().GetloggedInProfile();
             //the radet period is on the config file
-            string file = await new BDQAQ4FY17().GenerateDQA(data, profile.Organization);
+            string file = await new BDQAQ2FY18().GenerateDQA(data, profile.Organization);
 
             return Json(file, JsonRequestBehavior.AllowGet);
         }
 
 
-        public async Task<ActionResult> downloadDQAResource(string fileType)
+        public async Task<ActionResult> DownloadDQAResource(string fileType)
         {
             string filename = "";
             switch (fileType)
             {
                 case "DQAUserGuide":
-                    filename = "Data Quality Assessment Userguide Q4.pdf";
+                    filename = "Data Quality Assessment Userguide Q2 FY18.pdf";
                     break;
                 case "PivotTable":
-                    filename = "DATIM PIVOT TABLE Q4.xlsx";
+                    filename = "DATIM PIVOT TABLE Q2 FY18.xlsx";
                     break;
                 case "SummarySheet":
-                    filename = "Summary Sheet Q4 DQA.pdf";
+                    filename = "Summary Sheet FY18 Q2 DQA.pdf";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/" + filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q2/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
@@ -471,9 +544,9 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
-            string period = "Q4 FY17"; 
+            string period = "Q2 FY18";
             string ip = "";
-            var profile = new Services.Utils().GetloggedInProfile();
+            var profile = new Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
                 ip = profile.Organization.ShortName;
 
@@ -481,8 +554,8 @@ namespace ShieldPortal.Controllers
             var iplocation = (from pvt in pivot_data
                               select new
                               {
-                                  FacilityName = pvt.FacilityName,
-                                  IP = pvt.IP,
+                                  pvt.FacilityName,
+                                  pvt.IP,
                                   LGA = new
                                   {
                                       pvt.TheLGA.lga_code,
@@ -509,10 +582,10 @@ namespace ShieldPortal.Controllers
             var search = Request["search[value]"];
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
 
-            string period = "Q4 FY17";
-            string startDate = "2017-07-01 00:00:00.000";
-            string endDate = "2017-09-30 23:59:59.000";
-            
+            string period = "Q2 FY18";
+            string startDate = "2018-01-01 00:00:00.000";
+            string endDate = "2018-03-31 23:59:59.000";
+
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -554,6 +627,8 @@ namespace ShieldPortal.Controllers
                     mydata2.Add(new
                     {
                         ShortName = item.IP,
+                        State = item.TheLGA.state.state_name,
+                        LGA = $"{item.TheLGA.lga_name}",
                         Facility = item.FacilityName,
                         Tx_New = r_data.Tx_New,
                         p_Tx_New = item.TX_NEW,
@@ -565,8 +640,8 @@ namespace ShieldPortal.Controllers
                         Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
                         Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
                     });
-                } 
-            } 
+                }
+            }
             return JsonConvert.SerializeObject(
                        new
                        {

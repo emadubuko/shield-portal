@@ -544,17 +544,30 @@ namespace DQA.DAL.Business
 
             return dataTable;
         }
-        public static DataTable GetQ1FY18Analysis(string IP_id, bool get_partner_report)
+        //public static DataTable GetQ1FY18Analysis(string IP_id, bool get_partner_report)
+        //{
+        //    var cmd = new SqlCommand();
+        //    cmd.CommandText = "get_q1_FY18_analysis_report";
+        //    cmd.CommandType = CommandType.StoredProcedure;
+        //    cmd.Parameters.AddWithValue("@ip", IP_id);
+        //    cmd.Parameters.AddWithValue("@get_partner_report", get_partner_report);
+        //    var dataTable = GetDatable(cmd);
+
+        //    return dataTable;
+        //}
+        public static DataTable GetFY18Analysis(string IP_id,string reportPeriod, bool get_partner_report)
         {
             var cmd = new SqlCommand();
-            cmd.CommandText = "get_q1_FY18_analysis_report";
+            cmd.CommandText = "get_FY18_analysis_report_by_quarter";
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@reportPeriod", reportPeriod);
             cmd.Parameters.AddWithValue("@ip", IP_id);
             cmd.Parameters.AddWithValue("@get_partner_report", get_partner_report);
             var dataTable = GetDatable(cmd);
 
             return dataTable;
         }
+
 
         public static DataSet GetDashboardStatistic(string IP, string reportPeriod)
         {
@@ -574,6 +587,14 @@ namespace DQA.DAL.Business
                 return null;
             }
 
+        }
+
+        public static void DeletePivotTable(int id)
+        {
+            var data = entity.dqa_pivot_table_upload.First(x => x.Id == id);
+            entity.dqa_pivot_table.RemoveRange(data.dqa_pivot_table).ToList();
+            entity.dqa_pivot_table_upload.Remove(data);
+            entity.SaveChanges();
         }
     }
 }

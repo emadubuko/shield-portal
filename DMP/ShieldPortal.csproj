@@ -225,11 +225,12 @@
     <Compile Include="Controllers\DMPDocumentController.cs" />
     <Compile Include="Controllers\DocumentViewerController.cs" />
     <Compile Include="Controllers\DQAApiController.cs" />
-    <Compile Include="Controllers\DQAController.cs" />
-    <Compile Include="Controllers\DQAFY2016Controller.cs" />
-    <Compile Include="Controllers\DQAFY2017Q2Controller.cs" />
-    <Compile Include="Controllers\DQAFY2018Q1Controller.cs" />
-    <Compile Include="Controllers\DQAFY2017Q4Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAController.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2016Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2017Q2Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2018Q1Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2017Q4Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2018Q2Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
@@ -263,6 +264,7 @@
     <Compile Include="ViewModel\DMPDocumentViewModel.cs" />
     <Compile Include="ViewModel\DMPViewModel.cs" />
     <Compile Include="ViewModel\DMP\StaffStatusByRoles.cs" />
+    <Compile Include="ViewModel\DQAAnalysisModel.cs" />
     <Compile Include="ViewModel\EditDocumentViewModel.cs" />
     <Compile Include="ViewModel\EP\EPDetailsViewModel.cs" />
     <Compile Include="ViewModel\HighchartDrilldownModel.cs" />
@@ -1335,6 +1337,8 @@
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.pdf" />
     <None Include="Properties\PublishProfiles\portal.pubxml" />
     <Content Include="Report\Template\DQI\Q1 FY18\DQI TOOL_unlocked.xlsm" />
+    <Content Include="Report\Template\DQA FY2018 Q2\DATIM PIVOT TABLE Q2 FY18.xlsx" />
+    <Content Include="Report\Template\DQA FY2018 Q2\Summary Sheet FY18 Q2 DQA.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1441,6 +1445,20 @@
     <Content Include="Views\MPM\Upload.cshtml" />
     <Content Include="Views\MPM\Dashboard.cshtml" />
     <Content Include="Views\DQAFY2018Q1\UMB_Partner_Report.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\dashboard.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\AllIPDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\Analytics.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\GetDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\IpDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\IpDQAAdmin.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\PendingFacilities.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\UMB_Partner_Report.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q2\UploadPivotTable.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1484,6 +1502,7 @@
     <Content Include="Views\Shared\_dqaFY18Q1layout.cshtml" />
     <Content Include="Views\Shared\dqiFY18Q1Layout.cshtml" />
     <Content Include="Views\Shared\_mpmlayout.cshtml" />
+    <Content Include="Views\Shared\_dqaFY18Q2layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

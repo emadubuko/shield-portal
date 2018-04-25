@@ -19,14 +19,24 @@ namespace RADET.DAL.DAO
 {
     public class RadetMetaDataDAO : BaseDAO<RadetMetaData, int>
     {
-        public DataTable GetScoreCard(string period)
+        public DataTable GetScoreCard(List<string> period)
         {
-            DataTable ds = new DataTable();
+            DataTable tvp = new DataTable();
+            tvp.Columns.Add(new DataColumn("data"));
+            foreach (var item in period)
+            {
+                tvp.Rows.Add(item);
+            }
+
+            DataTable ds = new DataTable(); 
 
             var cmd = new SqlCommand();
             cmd.CommandText = "[dbo].sp_getRadetScorecard";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@period", period);
+            SqlParameter tvparam = cmd.Parameters.AddWithValue("@items", tvp);
+            tvparam.SqlDbType = SqlDbType.Structured;
+
+            //cmd.Parameters.AddWithValue("@period", selectedPeriod);
 
             using (var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection())
             {

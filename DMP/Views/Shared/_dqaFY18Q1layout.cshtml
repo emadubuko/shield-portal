@@ -29,24 +29,17 @@
                                 <i class="fa fa-home"></i><span class="title">&nbsp; Home</span>
                             </a>
                         </li>
-                        @*<li>
-                                <a href="~/DQAFY2017Q4/Analytics?reportType=Partners" style="color:#029b17;">
-                                    <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
-                                </a>
-                            </li>*@
+                        
                         <li>
                             <a href="~/DQAFY2018Q1/Analytics?reportType=Partners" style="color:#029b17;">
                                 <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
                             </a>
                         </li>
-                        @if (!User.IsInRole("ip"))
-                        {
-                            <li>
-                                <a href=@Url.Action("DQAAnalysisReport", "DQAFY2018Q1", new { type="Partners"}) style="color:#029b17;">
-                                    <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
-                                </a>
-                            </li>
-                        }
+                        <li>
+                            <a href=@Url.Action("DQAAnalysisReport", "DQAFY2018Q1", new { type="Partners"}) style="color:#029b17;">
+                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
+                            </a>
+                        </li>
                         <li>
                             <a href=@Url.Action("UMB_Partner_Report", "DQAFY2018Q1") style="color:#029b17;">
                                 <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Report Comparison</span>

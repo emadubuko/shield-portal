@@ -95,6 +95,7 @@ namespace RADET.DAL.Services
         {
             metadata = new RadetMetaData();
             List<RadetPatientLineListing> lineItems = new List<RadetPatientLineListing>();
+            string currentReportPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
 
             error = new List<ErrorDetails>();
             string facilityName = "";
@@ -105,7 +106,7 @@ namespace RADET.DAL.Services
             List<string> validSex = System.Configuration.ConfigurationManager.AppSettings["validSex"].Split(',').ToList();
             List<string> validARTStatus = System.Configuration.ConfigurationManager.AppSettings["validARTStatus"].Split(',').ToList();
 
-            string RadetPeriod;
+            string selectedRadetPeriod;
             DateTime radetPeriodDate;
             //var validFacilities = GetARTSite();
 
@@ -140,7 +141,21 @@ namespace RADET.DAL.Services
                     });
                 }
 
-                if(Convert.ToString(mainWorksheet.Cells["S3"].Value) != "FY18" || Convert.ToString(mainWorksheet.Cells["S7"].Value)  != "Q1 FY18")
+                selectedRadetPeriod = ExcelHelper.ReadCell(mainWorksheet, 7, 19);
+                if (string.IsNullOrEmpty(selectedRadetPeriod))
+                {
+                    error.Add(new ErrorDetails
+                    {
+                        ErrorMessage = "RADET period not indicated",
+                        FileName = fileName,
+                        FileTab = "Main page",
+                        LineNo = "",
+                        PatientNo = ""
+                    });
+                    return false;
+                }
+
+                if (selectedRadetPeriod != currentReportPeriod) //"Q1 FY18")
                 {
                     error.Add(new ErrorDetails
                     {
@@ -152,8 +167,7 @@ namespace RADET.DAL.Services
                     });
                     return false;
                 }
-                 
-
+                
                 string ipshortname = ExcelHelper.ReadCell(mainWorksheet, 24, 19);
                 if (ipshortname == "CCRN")
                 {
@@ -263,21 +277,8 @@ namespace RADET.DAL.Services
                     facilityName = facilityName.Substring(3);
                 }
 
-                RadetPeriod = ExcelHelper.ReadCell(mainWorksheet, 7, 19);
-                if (string.IsNullOrEmpty(RadetPeriod))
-                {
-                    error.Add(new ErrorDetails
-                    {
-                        ErrorMessage = "RADET period not indicated",
-                        FileName = fileName,
-                        FileTab = "Main page",
-                        LineNo = "",
-                        PatientNo = ""
-                    });
-                }
-
-                var dd = ConvertQuarterToEndDate(RadetPeriod, fileName, ref error);
-                radetPeriodDate = dd.HasValue ? dd.Value : DateTime.Now;
+                var dd = ConvertQuarterToEndDate(selectedRadetPeriod, fileName, ref error);
+                radetPeriodDate = dd ?? DateTime.Now; // use today temporary just to complete the validation, the data will not save eventually
 
                 List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic", "Sheet1" }; //confirm the names
                 foreach (var worksheet in worksheets)
@@ -395,7 +396,7 @@ namespace RADET.DAL.Services
                     IP = IP,
                     LGA = _lga,
                     PatientLineListing = lineItems,
-                    RadetPeriod = RadetPeriod,
+                    RadetPeriod = selectedRadetPeriod,
                     Supplementary = lineItems.Select(x => x.RadetYear).Distinct().Count() == 1 && fileName.ToLower().Contains("supplementary") ? true : false
                 };
             }
@@ -407,7 +408,7 @@ namespace RADET.DAL.Services
             if (list == null || string.IsNullOrEmpty(facilityName))
                 return false;
 
-            return list.Any(x => x.ToLower() == facilityName.ToLower());
+            return list.Any(x => x.ToLower().Trim() == facilityName.ToLower().Trim());
         }
          
 

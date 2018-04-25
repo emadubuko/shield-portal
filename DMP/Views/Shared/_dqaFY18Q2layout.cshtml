@@ -13,7 +13,7 @@
             <ol class="breadcrumb breadcrumb-2">
                 <li><a href="/"><i class="icon-folder"></i>Home</a></li>
                 <li><a href="/Home/submenu?id=dmp">Data Management</a></li>
-                <li class="active">DQA FY2017 Q2</li>
+                <li class="active">DQA FY2018 Q2</li>
             </ol>
         </div>
     </div>
@@ -25,58 +25,63 @@
                 <div class="sidebar">
                     <ul id="side-nav" class="main-menu navbar-collapse collapse">
                         <li>
-                            <a href=@Url.Action("index", "DQAFY2017Q2") style="color:#029b17;">
+                            <a href=@Url.Action("index", "DQAFY2018Q2") style="color:#029b17;">
                                 <i class="fa fa-home"></i><span class="title">&nbsp; Home</span>
                             </a>
-                        </li>
+                        </li> 
                         <li>
-                            <a href="~/DQAFY2017Q2/Analytics?reportType=Partners" style="color:#029b17;">
+                            <a href="~/DQAFY2018Q2/Analytics?reportType=Partners" style="color:#029b17;">
                                 <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href=@Url.Action("DQAAnalysisReport", "DQAFY2017Q2", new { type="Partners"}) style="color:#029b17;">
+                            <a href=@Url.Action("DQAAnalysisReport", "DQAFY2018Q2", new { type="Partners"}) style="color:#029b17;">
                                 <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
                             </a>
                         </li>
                         <li>
-                            <a href=@Url.Action("DQAResult", "DQAFY2017Q2") style="color:#029b17;">
+                            <a href=@Url.Action("UMB_Partner_Report", "DQAFY2018Q2") style="color:#029b17;">
+                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Report Comparison</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("DQAResult", "DQAFY2018Q2") style="color:#029b17;">
                                 <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Result</span>
                             </a>
                         </li>
                         <li>
-                            <a href=@Url.Action("RadetValidation", "DQAFY2017Q2") style="color:#029b17;">
+                            <a href=@Url.Action("RadetValidation", "DQAFY2018Q2") style="color:#029b17;">
                                 <i class="fa fa-check-square-o"></i><span class="title">&nbsp; RADET Validation</span>
                             </a>
                         </li>
                         <li>
-                            <a href=@Url.Action("UploadDQA", "DQAFY2017Q2") style="color:#029b17;">
+                            <a href=@Url.Action("UploadDQA", "DQAFY2018Q2") style="color:#029b17;">
                                 <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload DQA</span>
                             </a>
                         </li>
                         <li>
-                            <a href=@Url.Action("UploadPivotTable", "DQAFY2017Q2") style="color:#029b17;">
+                            <a href=@Url.Action("UploadPivotTable", "DQAFY2018Q2") style="color:#029b17;">
                                 <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Site selection <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Pivot Table)</span>
                             </a>
                         </li>
                         <li class="navigation-header">Downloads</li>
                         <li>
-                            <a href="~/DQAFY2017Q2/DownloadDQATool" style="color:deeppink;">
+                            <a href="~/DQAFY2018Q2/DownloadDQATool" style="color:deeppink;">
                                 <i class="fa fa-download"></i><span class="title">&nbsp; DQA tool</span>
                             </a>
                         </li>
                         <li>
-                            <a download="Printable DQA tool" href="~/Report/Template/DQA FY2017 Q3/Printable Summary sheet DQA_Q3R.pdf" style="color:deeppink;">
+                            <a download="Printable DQA tool" href="~/DQAFY2018Q2/downloadDQAResource?fileType=SummarySheet" style="color:deeppink;">
                                 <i class="fa fa-download"></i><span class="title">&nbsp;Printable DQA tool</span>
                             </a>
                         </li>
                         <li>
-                            <a href="~/DQAFY2017Q2/downloadDQAResource?fileType=PivotTable" style="color:deeppink;">
+                            <a href="~/DQAFY2018Q2/downloadDQAResource?fileType=PivotTable" style="color:deeppink;">
                                 <i class="fa fa-download"></i><span class="title">&nbsp; Pivot Table Template</span>
                             </a>
                         </li>
                         <li>
-                            <a href="~/DQAFY2017Q2/downloadDQAResource?fileType=DQAUserGuide" style="color:deeppink;">
+                            <a href="~/DQAFY2018Q2/downloadDQAResource?fileType=DQAUserGuide" style="color:deeppink;">
                                 <i class="fa fa-download"></i> <span class="title">&nbsp; DQA user guide</span>
                             </a>
                         </li>

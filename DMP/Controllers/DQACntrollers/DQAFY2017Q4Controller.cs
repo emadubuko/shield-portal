@@ -1,5 +1,4 @@
-﻿using CommonUtil.DAO;
-using CommonUtil.DBSessionManager;
+﻿using CommonUtil.DBSessionManager;
 using CommonUtil.Entities;
 using CommonUtil.Utilities;
 using DQA.DAL.Business;
@@ -8,10 +7,10 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using ShieldPortal.Services;
-using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,8 +20,7 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
-    [Authorize]
-    public class DQAFY2017Q2Controller : Controller
+    public class DQAFY2017Q4Controller : Controller
     {
         public ActionResult Index()
         {
@@ -36,258 +34,50 @@ namespace ShieldPortal.Controllers
             return View("Dashboard");
         }
 
-        public ActionResult Analytics(string reportType= "Partners")
+        public ActionResult UploadPivotTable()
         {
-            string ip = "";
-            if (User.IsInRole("ip"))
+            var profile = new Services.Utils().GetloggedInProfile();
+            List<UploadList> previousUploads = null;
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
             {
-                var profile = new Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
+                previousUploads = Utility.RetrievePivotTables(0, "Q4 FY17");
             }
-            var data = new HighChartDataServices().GetHTCConcurrency(reportType, ip);
-            return View(data);
+            else
+            {
+                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id, "Q4 FY17");
+            }
+            return View(previousUploads);
         }
 
-        //this is for Q2 upload
+        public ActionResult DeletePivotTable(int id)
+        {
+            new BDQAQ4FY17().DeletePivotTable(id);
+            return RedirectToAction("UploadPivotTable");
+        }
+
         [HttpPost]
-        public string PostDQAFile()
+        public string ProcesssPivotTable(string reportPeriod)
         {
-            var messages = "";
-            try
+            HttpResponseMessage msg = null;
+            string result = "";
+            if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
             {
-                Logger.LogInfo(" DQAFY2017,PostDQAFile", "processing dqa upload");
-
-                HttpResponseMessage result = null;
-                var userUploading = new Services.Utils().GetloggedInProfile();
-
-                if (Request.Files.Count > 0)
-                {
-                    var docfiles = new List<string>();
-                    foreach (string file in Request.Files)
-                    {
-                        var postedFile = Request.Files[file];
-                        string ext = Path.GetExtension(postedFile.FileName).Substring(1);
-
-                        if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
-                        {
-
-                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q3 FY16/" + postedFile.FileName);
-                            postedFile.SaveAs(filePath);
-                            
-                            if (ext.ToUpper() == "ZIP")
-                            {
-                                messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
-                                var countFailed = 0;
-                                try
-                                {
-                                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                                    using (ZipFile zipFile = new ZipFile(fs))
-                                    {
-                                        var countProcessed = 0;
-                                        var countSuccess = 0;
-                                        var step = 0;
-                                        var total = (int)zipFile.Count;
-                                        var currentFile = "";
-                                        
-                                        foreach (ZipEntry zipEntry in zipFile)
-                                        {
-                                            step++;
-
-                                            if (!zipEntry.IsFile)
-                                            {
-                                                continue;
-                                            }
-                                            currentFile = zipEntry.Name;
-                                            var entryFileName = zipEntry.Name;
-                                            var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
-                                            var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
-                                            var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
-                                            
-                                            if (extractedDirectory.Length > 0)
-                                            {
-                                                Directory.CreateDirectory(extractedDirectory);
-                                            }
-
-                                            if (entryExt.ToUpper() == "XLS" || entryExt.ToUpper() == "XLSX" || entryExt.ToUpper() == "XLSM")
-                                            {
-                                                countProcessed++;
-                                                Stream zipStream = zipFile.GetInputStream(zipEntry);
-                                                using (FileStream entryStream = System.IO.File.Create(extractedFilePath))
-                                                {
-                                                    StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
-                                                }
-                                                messages += new BDQAQ2().ReadWorkbook(extractedFilePath, userUploading);
-                                                countSuccess++;
-                                            }
-                                        }
-                                        zipFile.IsStreamOwner = true;
-                                        zipFile.Close();
-                                    }
-                                }
-                                catch (Exception exp)
-                                {
-                                    Logger.LogError(exp);
-                                    countFailed++;
-                                    messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
-                                }
-                            }
-                            else
-                            {
-                                messages += new BDQAQ2().ReadWorkbook(filePath, userUploading);
-                            }
-                        }
-                        else
-                        {
-                            messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
-                        }
-                    }
-                }
-                else
-                {
-                    result = new HttpResponseMessage(HttpStatusCode.BadRequest);
-                }
+                msg = new HttpResponseMessage(HttpStatusCode.BadRequest); //, );
+                result = "No file was uploaded";
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogError(ex);
-                messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred</td></tr>";
+                Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
+                Request.Files[0].SaveAs(Server.MapPath("~/Report/Uploads/Pivot table Q4/" + loggedinProfile.Organization.ShortName + "_" + Request.Files[0].FileName));
+                
+                Stream uploadedFile = Request.Files[0].InputStream;
+                bool status = new BDQAQ4FY17().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
             }
-            return messages;
+            return result; //msg;
         }
 
-        [HttpGet]
-        public string GetDashboardStatistic()
-        {
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
-            var ds = Utility.GetDashboardStatistic(ip, "Q3 FY17");
-            List<dynamic> IPSummary = new List<dynamic>();
-            foreach(DataRow dr in ds.Tables[0].Rows)
-            {
-                IPSummary.Add(new
-                {
-                    Name = dr[0],
-                    Submitted = dr[1],
-                    Pending = dr[2],
-                    Total = dr[3],
-                });
-            }
-              
-            return JsonConvert.SerializeObject(new
-            {
-                IPSummary,
-                cardData = ds.Tables[1].Rows[0].ItemArray
-            });
-        }
 
-        //Q3 Fy17
-        public ActionResult DQAAnalysisReport(string type)
-        {
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
-            var data = Utility.GetQ3Analysis(ip, type.ToLower().Contains("partners"));
-
-            return View(data);
-        }
-         
-        public ActionResult IpDQA()
-        {
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                PopulateStates();
-                return View("AllIPDQA");
-            }
-
-            else if (User.IsInRole("ip"))
-            {
-                var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
-                ViewBag.ip_name = new Services.Utils().GetloggedInProfile().Organization.Name;
-
-                PopulateStates();
-
-                ViewBag.ip_id = ip_id;
-                return View();
-            }
-            return View("~/Views/Shared/Denied.cshtml");
-        }
-         
-        public ActionResult GetDQA(int id)
-        {
-            ViewBag.metadataId = id;
-            return View();
-        }
-
-        public ActionResult IPDQAResult(int id)
-        {
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                PopulateStates();
-                PopulateStates();
-
-                ViewBag.ip_id = id;
-                return View("IpDQAAdmin");
-            }
-            return View("~/Views/Shared/Denied.cshtml");
-        }
-
-        public ActionResult UploadDQA()
-        {
-            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
-            ViewBag.ip_id = ip_id;
-
-            return View();
-        }
-
-        public ActionResult PendingFacilities()
-        {
-            return View();
-        }
-
-        public ActionResult DQAResult()
-        {
-            string ip = "";
-            if (User.IsInRole("ip"))
-            {
-                var profile = new Services.Utils().GetloggedInProfile();
-                ip = profile.Organization.ShortName;
-            }
-
-            var reports = Utility.GetUploadReport("Q3 FY17", ip);
-            List<dynamic> iplocation = new List<dynamic>();
-            foreach (DataRow dr in reports.Rows)
-            {
-                iplocation.Add(new
-                {
-                    IP = dr[0],
-                    FacilityName = dr[5],
-                    LGA = new
-                    {
-                        lga_name = dr[3],
-                        lga_code = dr[4],
-                        state_code = dr[2],
-                        DisplayName = string.Format("{0} ({1})", dr[3], dr[1]),
-                        State = new { state_name = dr[1], state_code = dr[2] }
-                    }
-                });
-            }
-            ViewBag.selectModel = JsonConvert.SerializeObject((iplocation), Formatting.None,
-                       new JsonSerializerSettings()
-                       {
-                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                           ContractResolver = new NHibernateContractResolver()
-                       });
-            ViewBag.IPCount = iplocation.Select(x => x.IP).Distinct().Count();
-            return View();
-        }
-
+        [HttpPost]
         public string GetDQAUploadReport(int? draw, int? start, int? length)
         {
             //string ReportPeriod, int IP
@@ -300,7 +90,7 @@ namespace ShieldPortal.Controllers
                 var profile = new Services.Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            else if (searchModel.IPs !=null)
+            else if (searchModel.IPs != null)
             {
                 ip = searchModel.IPs.FirstOrDefault();
             }
@@ -345,10 +135,274 @@ namespace ShieldPortal.Controllers
                        });
         }
 
+
+        public ActionResult Analytics(string reportType = "Partners")
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var datatable = Utility.GetQ4Analysis(ip, reportType.ToLower().Contains("partners"));
+            var data = new HighChartDataServices().GetConcurrency(datatable, reportType, ip);
+            return View(data);
+        }
+
+
+        //this is for Q2 upload
+        [HttpPost]
+        public string PostDQAFile()
+        {
+            var messages = "";
+            try
+            {
+                Logger.LogInfo(" DQAQ4 FY2017,PostDQAFile", "processing dqa upload");
+
+                HttpResponseMessage result = null;
+                var userUploading = new Services.Utils().GetloggedInProfile();
+
+                if (Request.Files.Count > 0)
+                {
+                    var docfiles = new List<string>();
+                    foreach (string file in Request.Files)
+                    {
+                        var postedFile = Request.Files[file];
+                        string ext = Path.GetExtension(postedFile.FileName).Substring(1);
+
+                        if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
+                        {
+
+                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQA Q4 FY17/" + postedFile.FileName);
+                            postedFile.SaveAs(filePath);
+
+                            if (ext.ToUpper() == "ZIP")
+                            {
+                                messages += "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td><strong>" + postedFile.FileName + "</strong> : Decompressing please wait.</td></tr>";
+                                var countFailed = 0;
+                                try
+                                {
+                                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                                    using (ZipFile zipFile = new ZipFile(fs))
+                                    {
+                                        var countProcessed = 0;
+                                        var countSuccess = 0;
+                                        var step = 0;
+                                        var total = (int)zipFile.Count;
+                                        var currentFile = "";
+
+                                        foreach (ZipEntry zipEntry in zipFile)
+                                        {
+                                            step++;
+
+                                            if (!zipEntry.IsFile)
+                                            {
+                                                continue;
+                                            }
+                                            currentFile = zipEntry.Name;
+                                            var entryFileName = zipEntry.Name;
+                                            var extractedFilePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/tempData/"), entryFileName);
+                                            var extractedDirectory = Path.GetDirectoryName(extractedFilePath);
+                                            var entryExt = Path.GetExtension(extractedFilePath).Substring(1);
+
+                                            if (extractedDirectory.Length > 0)
+                                            {
+                                                Directory.CreateDirectory(extractedDirectory);
+                                            }
+
+                                            if (entryExt.ToUpper() == "XLS" || entryExt.ToUpper() == "XLSX" || entryExt.ToUpper() == "XLSM")
+                                            {
+                                                countProcessed++;
+                                                Stream zipStream = zipFile.GetInputStream(zipEntry);
+                                                using (FileStream entryStream = System.IO.File.Create(extractedFilePath))
+                                                {
+                                                    StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
+                                                }
+                                                messages += new BDQAQ4FY17().ReadWorkbook(extractedFilePath, userUploading);
+                                                countSuccess++;
+                                            }
+                                        }
+                                        zipFile.IsStreamOwner = true;
+                                        zipFile.Close();
+                                    }
+                                }
+                                catch (Exception exp)
+                                {
+                                    Logger.LogError(exp);
+                                    countFailed++;
+                                    messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong>: An Error occured. Please check the files.</td></tr>";
+                                }
+                            }
+                            else
+                            {
+                                messages += new BDQAQ4FY17().ReadWorkbook(filePath, userUploading);
+                            }
+                        }
+                        else
+                        {
+                            messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td><strong>" + postedFile.FileName + "</strong> could not be processed. File is not an excel spreadsheet</td></tr>";
+                        }
+                    }
+                }
+                else
+                {
+                    result = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred</td></tr>";
+            }
+            return messages;
+        }
+
+
+
+        [HttpGet]
+        public string GetDashboardStatistic()
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var ds = Utility.GetDashboardStatistic(ip, "Q4 FY17");
+            List<dynamic> IPSummary = new List<dynamic>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                IPSummary.Add(new
+                {
+                    Name = dr[0],
+                    Submitted = dr[1],
+                    Pending = dr[2],
+                    Total = dr[3],
+                });
+            }
+
+            return JsonConvert.SerializeObject(new
+            {
+                IPSummary,
+                cardData = ds.Tables[1].Rows[0].ItemArray
+            }); 
+        }
+
+        //Q4 Fy17
+        public ActionResult DQAAnalysisReport(string type)
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var cmd = new SqlCommand();
+            cmd.CommandText = "get_q4_FY17_analysis_report";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ip", ip);
+            cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
+            var data = Utility.GetDatable(cmd);
+             
+            return View(data);
+        }
+
+        public ActionResult IpDQA()
+        {
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                PopulateStates();
+                return View("AllIPDQA");
+            }
+
+            else if (User.IsInRole("ip"))
+            {
+                var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+                ViewBag.ip_name = new Services.Utils().GetloggedInProfile().Organization.Name;
+
+                PopulateStates();
+
+                ViewBag.ip_id = ip_id;
+                return View();
+            }
+            return View("~/Views/Shared/Denied.cshtml");
+        }
+
+        public ActionResult GetDQA(int id)
+        {
+            ViewBag.metadataId = id;
+            return View();
+        }
+
+        public ActionResult IPDQAResult(int id)
+        {
+            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+            {
+                PopulateStates();
+                PopulateStates();
+
+                ViewBag.ip_id = id;
+                return View("IpDQAAdmin");
+            }
+            return View("~/Views/Shared/Denied.cshtml");
+        }
+
+        public ActionResult UploadDQA()
+        {
+            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+            ViewBag.ip_id = ip_id;
+
+            return View();
+        }
+
+        public ActionResult PendingFacilities()
+        {
+            return View();
+        }
+
+        public ActionResult DQAResult()
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+
+            var reports = Utility.GetUploadReport("Q4 FY17", ip);
+            List<dynamic> iplocation = new List<dynamic>();
+            foreach (DataRow dr in reports.Rows)
+            {
+                iplocation.Add(new
+                {
+                    IP = dr[0],
+                    FacilityName = dr[5],
+                    LGA = new
+                    {
+                        lga_name = dr[3],
+                        lga_code = dr[4],
+                        state_code = dr[2],
+                        DisplayName = string.Format("{0} ({1})", dr[3], dr[1]),
+                        State = new { state_name = dr[1], state_code = dr[2] }
+                    }
+                });
+            }
+            ViewBag.selectModel = JsonConvert.SerializeObject((iplocation), Formatting.None,
+                       new JsonSerializerSettings()
+                       {
+                           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                           ContractResolver = new NHibernateContractResolver()
+                       });
+            ViewBag.IPCount = iplocation.Select(x => x.IP).Distinct().Count();
+            return View();
+        }
+
+        
+
         [HttpGet]
         public string GetReportDetails(int metadataid)
         {
-            return new BDQAQ2().GetReportDetails(metadataid);
+            return new BDQAQ4FY17().GetReportDetails(metadataid);
         }
 
         public void PopulateStates(object selectStatus = null)
@@ -357,27 +411,14 @@ namespace ShieldPortal.Controllers
             ViewBag.states = new SelectList(statusQuery, "state_code", "state_name", selectStatus);
         }
 
-        public ActionResult UploadPivotTable()
-        {
-            var profile = new Services.Utils().GetloggedInProfile();
-            List<UploadList> previousUploads = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                previousUploads = Utility.RetrievePivotTables(0, "Q3 FY17");
-            }
-            else
-            {
-                previousUploads = Utility.RetrievePivotTables(profile.Organization.Id, "Q3 FY17");
-            }
-            return View(previousUploads);
-        }
+        
 
         //this is the page
         public ActionResult DownloadDQATool(int? ip)
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
-            string currentPeriod = "Q3 FY17";
+            string currentPeriod = "Q4 FY17";
 
             int getIP = 0;
             if (User.IsInRole("ip"))
@@ -398,7 +439,7 @@ namespace ShieldPortal.Controllers
         {
             var profile = new Services.Utils().GetloggedInProfile();
             //the radet period is on the config file
-            string file = await new BDQAQ2().GenerateDQA(data, profile.Organization);
+            string file = await new BDQAQ4FY17().GenerateDQA(data, profile.Organization);
 
             return Json(file, JsonRequestBehavior.AllowGet);
         }
@@ -410,16 +451,16 @@ namespace ShieldPortal.Controllers
             switch (fileType)
             {
                 case "DQAUserGuide":
-                    filename = "THE DATA QUALITY ASSESSMENT USER GUIDE FOR FY17 Q3.pdf";
+                    filename = "Data Quality Assessment Userguide Q4.pdf";
                     break;
                 case "PivotTable":
-                    filename = "DATIM PIVOT TABLE SAMPLE.xlsx";
+                    filename = "DATIM PIVOT TABLE Q4.xlsx";
                     break;
                 case "SummarySheet":
-                    filename = "Printable Summary sheet DQA_Q3R.pdf";
+                    filename = "Summary Sheet Q4 DQA.pdf";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q3/" + filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2017 Q4/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
@@ -431,9 +472,8 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
-            string period = "Q3 FY17";
+            string period = "Q4 FY17"; 
             string ip = "";
-            
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
                 ip = profile.Organization.ShortName;
@@ -445,11 +485,11 @@ namespace ShieldPortal.Controllers
                                   FacilityName = pvt.FacilityName,
                                   IP = pvt.IP,
                                   LGA = new
-                                  {                                       
+                                  {
                                       pvt.TheLGA.lga_code,
                                       pvt.TheLGA.lga_name,
                                       pvt.TheLGA.state_code,
-                                      DisplayName =  string.Format("{0} ({1})", pvt.TheLGA.lga_name, pvt.TheLGA.state.state_name),
+                                      DisplayName = string.Format("{0} ({1})", pvt.TheLGA.lga_name, pvt.TheLGA.state.state_name),
                                       State = new { pvt.TheLGA.state.state_name, pvt.TheLGA.state.state_code }
                                   }
                               });
@@ -470,17 +510,17 @@ namespace ShieldPortal.Controllers
             var search = Request["search[value]"];
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
 
-            string period = "Q3 FY17";
-            string startDate = "2017-04-01 00:00:00.000";
-            string endDate = "2017-06-30 23:59:59.000";
-              
+            string period = "Q4 FY17";
+            string startDate = "2017-07-01 00:00:00.000";
+            string endDate = "2017-09-30 23:59:59.000";
+            
             string ip = "";
             var profile = new Services.Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
                 ip = profile.Organization.ShortName;
             else
             {
-                ip = searchModel.IPs.FirstOrDefault();                
+                ip = searchModel.IPs.FirstOrDefault();
             }
             var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
             var pivot_data = Utility.RetrievePivotTablesForComparison(new List<string> { ip }, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
@@ -526,20 +566,8 @@ namespace ShieldPortal.Controllers
                         Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
                         Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
                     });
-                }
-                //else
-                //{
-                //    mydata2.Add(new
-                //    {
-                //        ShortName = item.IP,
-                //        Facility = item.FacilityName,
-                //        p_Tx_New = item.TX_NEW,
-                //        p_Tx_Curr = item.TX_CURR,
-                //    });
-                //}
-            }
-
-
+                } 
+            } 
             return JsonConvert.SerializeObject(
                        new
                        {
@@ -548,43 +576,6 @@ namespace ShieldPortal.Controllers
                            iTotalDisplayRecords = mydata2.Count(),
                            aaData = mydata2
                        });
-            //return JsonConvert.SerializeObject(mydata2);
         }
-
-        /*
-        public ActionResult UploadRadet()
-        {
-            var profile = new Services.Utils().GetloggedInProfile();
-            List<RadetUploadReport> previousUploads = null;
-            if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-            {
-                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(0, 2017, "Q2(Jan-Mar)");
-                ViewBag.showdelete = true;
-            }
-            else
-            {
-                ViewBag.showdelete = false;
-                previousUploads = new RadetUploadReportDAO().RetrieveRadetUpload(profile.Organization.Id, 2017, "Q2(Jan-Mar)");
-            }
-            List<RadetReportModel> list = new List<ViewModel.RadetReportModel>();
-            if (previousUploads != null)
-            {
-                list = (from entry in previousUploads
-                        select new RadetReportModel
-                        {
-                            Facility = entry.Facility,
-                            IP = entry.IP.ShortName,
-                            dqa_quarter = entry.dqa_quarter,
-                            dqa_year = entry.dqa_year,
-                            UploadedBy = entry.UploadedBy.FullName,
-                            DateUploaded = entry.DateUploaded,
-                            Id = entry.Id, 
-                        }).ToList();
-            }
-
-            return View(list);
-        }
-        */
-
     }
 }
