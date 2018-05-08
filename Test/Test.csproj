@@ -105,7 +105,7 @@
       <Name>DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\DMP\ShieldPortal.csproj">
-      <Project>{D4691C2F-EF1F-472A-8852-60DCAF4C0FAA}</Project>
+      <Project>{d4691c2f-ef1f-472a-8852-60dcaf4c0faa}</Project>
       <Name>ShieldPortal</Name>
     </ProjectReference>
     <ProjectReference Include="..\DQA.DAL\DQA.DAL.csproj">

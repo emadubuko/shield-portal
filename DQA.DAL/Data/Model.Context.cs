@@ -44,5 +44,6 @@ namespace DQA.DAL.Data
         public virtual DbSet<dqa_pivot_table> dqa_pivot_table { get; set; }
         public virtual DbSet<dqa_FY17Q1_Analysyis> dqa_FY17Q1_Analysyis { get; set; }
         public virtual DbSet<dqa_report_metadata> dqa_report_metadata { get; set; }
+        public virtual DbSet<dqi_report_value> dqi_report_value { get; set; }
     }
 }
