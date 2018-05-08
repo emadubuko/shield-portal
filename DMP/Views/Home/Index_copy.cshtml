@@ -5,7 +5,7 @@
     <style>
         .custom-heading-div {
             color: #fff;
-            font-size: 16px;
+            font-size: 20px;
         }
 
         .popover-content {
@@ -106,10 +106,10 @@
         </div>
 
         <div class="col-sm-3" id="hiv-aids-eval">
-            <div class="panel minimal" style="background-color:peru; border-color:peru">
+            <div class="panel minimal" style="background-color:dimgray; border-color:dimgray">
                 <div class="panel-body">
                     @*href="/home/submenu?id=hiv_aid"*@
-                    <a href="https://ndr.shieldnigeriaproject.com" target="_blank">
+                    <a data-toggle="popover" title="" data-placement="bottom" data-content="Coming soon" aria-describedby="popover851239">
                         <table>
                             <tr>
                                 <td><i class="fa fa-history fa-3x" style="color: #fff;"></i> </td>
@@ -228,9 +228,10 @@
                                 <td style="padding-left: 25px;"><strong class="custom-heading-div">Admin</strong> </td>
                             </tr>
                         </table>
-                        <h2 style="padding-left: 15%; margin-top: -30px;color:gold">
+                        <h2 style="padding-left: 15%; margin-top: -60px;color:gold">
+                            <strong style="padding-left: 50%;font-size:40px">@MvcApplication.Sessions.Values.Count()</strong>
                             <br />
-                            <span style="font-size:14px">@MvcApplication.Sessions.Values.Count() Active Users within the last 1 hr</span>
+                            <span style="padding-left: 20%;font-size:14px">Active Users within the last 1 hour</span>
                         </h2>
                     </div>
                 </a>
