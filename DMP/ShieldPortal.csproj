@@ -1516,6 +1516,7 @@
     <Folder Include="Report\Uploads\DQA Q1 FY18\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
     <Folder Include="Report\Uploads\DQA Q4 FY17\" />
+    <Folder Include="Report\Uploads\DQI Q1 FY18\" />
     <Folder Include="Report\Uploads\Pivot table Q1\" />
     <Folder Include="Report\Uploads\Pivot table Q4\" />
     <Folder Include="Report\Uploads\RADET\" />

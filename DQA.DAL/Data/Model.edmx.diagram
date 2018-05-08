@@ -40,6 +40,7 @@
         <EntityTypeShape EntityType="shield_dmpModel.dqa_report_metadata" Width="1.5" PointX="13.375" PointY="0.75" />
         <AssociationConnector Association="shield_dmpModel.FKA9A8FFC71C2BF06A" />
         <AssociationConnector Association="shield_dmpModel.FKE287F3F1F9B891CC" />
+        <EntityTypeShape EntityType="shield_dmpModel.dqi_report_value" Width="1.5" PointX="15.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -139,7 +139,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IndicatorCode" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="IndicatorName" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="ThematicArea" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -219,7 +219,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MetadataId" Type="int" Nullable="false" />
           <Property Name="IndicatorId" Type="int" Nullable="false" />
           <Property Name="IndicatorValueMonth1" Type="decimal" Precision="18" Scale="0" />
@@ -250,11 +250,36 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="version_number" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="dqi_report_value">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ImplementingPartner" Type="nvarchar" MaxLength="10" />
+          <Property Name="DqaIndicator" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="AffectedFacilityNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ImprovementApproach" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DataCollectionMethod" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Problem" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProblemResolved" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="WhyDoesProblemOccur" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="ImprovementApproach_Analyze" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Interventions" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="ImprovementApproach_Develop" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="ViableInterventions" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="ProcessTracking" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="MeasureIndicators" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="EvaluateIndicators" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Indicators" Type="xml" Nullable="false" />
+          <Property Name="ReportPeriod" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreateDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="HealthFacility">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" />
           <Property Name="FacilityCode" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
@@ -411,6 +436,7 @@
           <EntitySet Name="dqa_summary_indicators" EntityType="Self.dqa_summary_indicators" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_summary_value" EntityType="Self.dqa_summary_value" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="dqa_versions" EntityType="Self.dqa_versions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="dqi_report_value" EntityType="Self.dqi_report_value" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HealthFacility" EntityType="Self.HealthFacility" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImplementingPartners" EntityType="Self.ImplementingPartners" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="lga" EntityType="Self.lga" Schema="dbo" store:Type="Tables" />
@@ -536,6 +562,7 @@
             <End Role="ImplementingPartner" EntitySet="ImplementingPartners" />
             <End Role="HealthFacility" EntitySet="HealthFacilities" />
           </AssociationSet>
+          <EntitySet Name="dqi_report_value" EntityType="shield_dmpModel.dqi_report_value" />
           </EntityContainer>
         <EntityType Name="dqa_facility_level">
           <Key>
@@ -1055,6 +1082,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="dqi_report_value">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ImplementingPartner" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DqaIndicator" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="AffectedFacilityNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImprovementApproach" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DataCollectionMethod" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Problem" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProblemResolved" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="WhyDoesProblemOccur" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ImprovementApproach_Analyze" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Interventions" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ImprovementApproach_Develop" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ViableInterventions" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ProcessTracking" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MeasureIndicators" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EvaluateIndicators" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Indicators" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReportPeriod" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1370,6 +1422,32 @@
                 <ScalarProperty Name="StateId" ColumnName="StateId" />
                 <ScalarProperty Name="LgaId" ColumnName="LgaId" />
                 <ScalarProperty Name="SiteId" ColumnName="SiteId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dqi_report_value">
+            <EntityTypeMapping TypeName="shield_dmpModel.dqi_report_value">
+              <MappingFragment StoreEntitySet="dqi_report_value">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ReportPeriod" ColumnName="ReportPeriod" />
+                <ScalarProperty Name="Indicators" ColumnName="Indicators" />
+                <ScalarProperty Name="EvaluateIndicators" ColumnName="EvaluateIndicators" />
+                <ScalarProperty Name="MeasureIndicators" ColumnName="MeasureIndicators" />
+                <ScalarProperty Name="ProcessTracking" ColumnName="ProcessTracking" />
+                <ScalarProperty Name="ViableInterventions" ColumnName="ViableInterventions" />
+                <ScalarProperty Name="ImprovementApproach_Develop" ColumnName="ImprovementApproach_Develop" />
+                <ScalarProperty Name="Interventions" ColumnName="Interventions" />
+                <ScalarProperty Name="ImprovementApproach_Analyze" ColumnName="ImprovementApproach_Analyze" />
+                <ScalarProperty Name="WhyDoesProblemOccur" ColumnName="WhyDoesProblemOccur" />
+                <ScalarProperty Name="ProblemResolved" ColumnName="ProblemResolved" />
+                <ScalarProperty Name="Problem" ColumnName="Problem" />
+                <ScalarProperty Name="DataCollectionMethod" ColumnName="DataCollectionMethod" />
+                <ScalarProperty Name="ImprovementApproach" ColumnName="ImprovementApproach" />
+                <ScalarProperty Name="AffectedFacilityNumber" ColumnName="AffectedFacilityNumber" />
+                <ScalarProperty Name="DqaIndicator" ColumnName="DqaIndicator" />
+                <ScalarProperty Name="ImplementingPartner" ColumnName="ImplementingPartner" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
