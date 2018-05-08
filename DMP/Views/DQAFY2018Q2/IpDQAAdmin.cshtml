@@ -1,0 +1,185 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-control" content="no-store, must-revalidate">
+    <meta http-equiv="Vary" content="*">
+
+    <title>Shield Portal</title>
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/umb-icon.jpg' />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <script type="text/javascript">
+        {
+            var profileId = '@ShieldPortal.Services.Utils.LoggedinProfileID';
+        }
+    </script>
+    <style>
+        .table > thead > tr > th {
+            font-weight: bold;
+        }
+
+        .abbrev-full {
+            background-color: lightblue;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="page-container">
+
+        <div class="main-header row">
+            <div class="col-sm-12 col-xs-12">
+                <div class="site-logo">
+                    <a><img src="~/images/shield_logo.jpg" alt="Shield Logo" width="150" title="SHIELD" /></a>
+                </div>
+                <!-- User info -->
+                <div class="pull-right">
+                    <ul class="user-info">
+                        <li class="profile-info dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false" role="button" aria-haspopup="true">
+                                <img width="44" class="img-circle avatar" alt="" src="~/images/Profile-image.png"> <span id="user">@ShieldPortal.Services.Utils.DisplayBadge </span> <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a id="userdetail" style="cursor:pointer"><i class="icon-user"></i>My profile</a></li>
+                                <li><a id="changepassword" style="cursor:pointer"><i class="fa fa-key"></i>Change password</a></li>
+                                <li><a href='#' id="logoff"><i class="icon-logout"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+
+            <div class="row">
+                @*side bar*@
+                <div class="col-md-3" id="sidebar">
+                    <div class="panel panel-success">
+                        <div class="panel-body" style="padding-bottom: 0px;">
+                            <ul class="list-item mailbox-list">
+                                <li>
+                                    <a href=@Url.Action("UploadDQA", "DQAFY2017Q2") style="color:#029b17;">
+                                        <i class="fa fa-cloud-upload"></i><span class="title">Upload DQA</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("UploadPivotTable", "DQAFY2017Q2") style="color:#029b17;">
+                                        <i class="fa fa-cloud-upload"></i><span class="title">Site Selection</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("index", "DQAFY2017Q2") style="color:#029b17;">
+                                        <i class="fa fa-newspaper-o"></i><span class="title">DQA Dashboard</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("DQAResult", "DQAFY2017Q2") style="color:#029b17;">
+                                        <i class="fa fa-newspaper-o"></i><span class="title">DQA Result</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("IpDQA", "DQAFY2017Q2") style="color:#029b17;">
+                                        <i class="fa fa-newspaper-o"></i><span class="title">DQA Summary</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href='@Url.Action("PendingFacilities", "DQAFY2017Q2")' style="color:#029b17;">
+                                        <i class="fa fa-newspaper-o"></i><span class="title">Pending Facilities</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel panel-success">
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title">DQA Summary Result</h4>
+
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-condensed table-hover">
+                                        <tr>
+                                            <td><strong>LEGEND : </strong></td>
+                                            <td class="abbrev">COM</td>
+                                            <td class="abbrev-full">COMPLETENESS</td>
+                                            <td class="abbrev">CON</td>
+                                            <td class="abbrev-full">CONSISTENCY</td>
+                                            <td class="abbrev">PRE</td>
+                                            <td class="abbrev-full">PRECISION</td>
+                                            <td class="abbrev">INT</td>
+                                            <td class="abbrev-full">INTEGRITY</td>
+                                            <td class="abbrev">VAL</td>
+                                            <td class="abbrev-full">VALIDITY</td>
+
+
+                                        </tr>
+                                    </table>
+                                    <div id="divTable" class="table-responsive"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel panel-success">
+                                <div class="panel-heading clearfix">
+                                    <h4 class="panel-title"> DQA LIST</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped table-hover" id="output">
+                                            <thead>
+                                                <tr>
+                                                    <th>Site</th>
+                                                    <th>Lga</th>
+                                                    <th>State</th>
+                                                    <th>FiscalYear</th>
+                                                    <th>UploadDate</th>
+                                                    <th>Quarer</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    <script src="~/Scripts/fns/base.js" type="text/javascript"></script>
+    <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
+    <script src="~/Scripts/jsonTable.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            getIPDQASummaryAdmin(@ViewBag.ip_id);
+        });
+    </script>
+
+</body>
+</html>

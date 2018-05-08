@@ -356,5 +356,27 @@ namespace CommonUtil.DBSessionManager
             _trans = null;
         }
 
+
+        public DataTable GetDatable(SqlCommand command)
+        {
+            var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
+            command.Connection = conn;
+            var dataTable = new DataTable();
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                }
+                SqlDataAdapter da = new SqlDataAdapter(command); 
+                da.Fill(dataTable);
+            }
+            finally
+            {
+                command.Dispose();
+            }
+            return dataTable;
+        }
+
     }
 }

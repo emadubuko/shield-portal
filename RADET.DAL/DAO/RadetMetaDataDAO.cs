@@ -12,20 +12,31 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace RADET.DAL.DAO
 {
     public class RadetMetaDataDAO : BaseDAO<RadetMetaData, int>
     {
-        public DataTable GetScoreCard(string period)
+        public DataTable GetScoreCard(List<string> period)
         {
-            DataTable ds = new  DataTable();
+            DataTable tvp = new DataTable();
+            tvp.Columns.Add(new DataColumn("data"));
+            foreach (var item in period)
+            {
+                tvp.Rows.Add(item);
+            }
+
+            DataTable ds = new DataTable(); 
 
             var cmd = new SqlCommand();
             cmd.CommandText = "[dbo].sp_getRadetScorecard";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@period", period);
+            SqlParameter tvparam = cmd.Parameters.AddWithValue("@items", tvp);
+            tvparam.SqlDbType = SqlDbType.Structured;
+
+            //cmd.Parameters.AddWithValue("@period", selectedPeriod);
 
             using (var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection())
             {
@@ -37,7 +48,7 @@ namespace RADET.DAL.DAO
                     conn.Open();
 
                 da.Fill(ds);
-            }            
+            }
             return ds;
         }
 
@@ -66,7 +77,7 @@ namespace RADET.DAL.DAO
                    .Add(Projections.Property("lga.lga_code"), "LGA_code")
                    )
                 .SetResultTransformer(Transformers.AliasToBean<RadetReportModel2>());
-                        
+
 
             if (search != null)
             {
@@ -91,7 +102,7 @@ namespace RADET.DAL.DAO
                     criteria.Add(Restrictions.Eq("pt.RadetPeriod", search.RadetPeriod));
                 }
             }
-            
+
 
             var countCriteria = CriteriaTransformer.Clone(criteria).SetProjection(Projections.RowCount());
             totalCount = Convert.ToInt32(countCriteria.UniqueResult());
@@ -103,7 +114,7 @@ namespace RADET.DAL.DAO
                 criteria.SetMaxResults(maxRows);
             }
             var result = criteria.List<RadetReportModel2>() as List<RadetReportModel2>;
-            return result; 
+            return result;
         }
 
 
@@ -142,8 +153,8 @@ namespace RADET.DAL.DAO
         {
             ISession session = BuildSession();
             var result = session.Query<RadetPatientLineListing>()
-                .Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod 
-                                             && x.MetaData.IP.ShortName == IP 
+                .Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod
+                                             && x.MetaData.IP.ShortName == IP
                                              && x.MetaData.Facility.Trim() == facility);
             return result.ToList();
         }
@@ -237,15 +248,15 @@ namespace RADET.DAL.DAO
             criteria.CreateAlias("rmt.LGA", "lga");
             criteria.CreateAlias("rmt.IP", "ip");
             if (IPs != null && IPs.Count > 0)
-            { 
+            {
                 criteria.Add(Restrictions.In("ip.ShortName", IPs));
             }
             if (lga_codes != null && lga_codes.Count > 0)
             {
                 criteria.Add(Restrictions.In("rmt.LGA.lga_code", lga_codes));
             }
-            if(states !=null && states.Count > 0)
-            {                
+            if (states != null && states.Count > 0)
+            {
                 criteria.CreateAlias("lga.State", "st");
                 criteria.Add(Restrictions.In("st.state_code", states));
             }
@@ -286,7 +297,7 @@ namespace RADET.DAL.DAO
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            if(RadetData.Count > 0)
+            if (RadetData.Count > 0)
             {
                 int totalCount = 0;
                 RadetMetaDataSearchModel search = new Models.RadetMetaDataSearchModel
@@ -331,14 +342,15 @@ namespace RADET.DAL.DAO
                                 }
                             }
                         }
-                        else{
+                        else
+                        {
 
                         }
                     }
-                    transaction.Commit(); 
+                    transaction.Commit();
                 }
             }
-             
+
             stopwatch.Stop();
             var time = stopwatch.Elapsed;
             return time;
@@ -380,8 +392,8 @@ namespace RADET.DAL.DAO
         {
             //return session.Query<RadetPatient>().FirstOrDefault(f => f.PatientId == patient.PatientId && f.HospitalNo == patient.HospitalNo && f.Sex == patient.Sex && f.IP == patient.IP && f.FacilityName == patient.FacilityName);
             var id = (from f in session.Query<RadetPatient>()
-                     where f.PatientId == patient.PatientId && f.HospitalNo == patient.HospitalNo && f.Sex == patient.Sex && f.IP == patient.IP && f.FacilityName == patient.FacilityName
-                     select f.Id).FirstOrDefault();
+                      where f.PatientId == patient.PatientId && f.HospitalNo == patient.HospitalNo && f.Sex == patient.Sex && f.IP == patient.IP && f.FacilityName == patient.FacilityName
+                      select f.Id).FirstOrDefault();
             return id;
         }
 
@@ -394,7 +406,7 @@ namespace RADET.DAL.DAO
 
         private bool CheckPreviousUpload(IStatelessSession session, CommonUtil.Entities.Organizations iP, CommonUtil.Entities.LGA lGA, string radetPeriod, string facilityName)
         {
-            string queryString = string.Format(" SELECT COUNT(*) FROM [radet_MetaData] where RadetPeriod = '{0}' and Facility = '{1}' and IP = '{2}' and LGA = '{3}'", radetPeriod, facilityName.Replace("'","''"), iP.Id, lGA.lga_code);
+            string queryString = string.Format(" SELECT COUNT(*) FROM [radet_MetaData] where RadetPeriod = '{0}' and Facility = '{1}' and IP = '{2}' and LGA = '{3}'", radetPeriod, facilityName.Replace("'", "''"), iP.Id, lGA.lga_code);
             var result = session.CreateSQLQuery(queryString).UniqueResult<int>();
 
             return result != 0;
@@ -410,13 +422,14 @@ namespace RADET.DAL.DAO
             ISession session = BuildSession();
             var Current_year_tx_new = session.Query<RadetPatientLineListing>().Count(c => c.MetaData.Id == id && c.ARTStartDate.HasValue && c.ARTStartDate.Value.Year == DateTime.Now.Year && c.CurrentARTStatus == "Active");
             var SelectedForDQA = session.Query<RadetPatientLineListing>().Count(x => x.MetaData.Id == id && x.SelectedForDQA);
-            var Tx_Current = session.Query<RadetPatientLineListing>().Count(c => c.MetaData.Id == id && c.CurrentARTStatus == "Active");
+            // var Tx_Current = session.Query<RadetPatientLineListing>().Count(c => c.MetaData.Id == id && !string.IsNullOrEmpty(c.CurrentARTStatus) && c.CurrentARTStatus == "Active");
 
 
             var lineItems = from item in session.Query<RadetPatientLineListing>()
                             .Where(x => x.MetaData.Id == id)
                             select new
                             {
+                                item.MetaData.Facility,
                                 item.RadetPatient.PatientId,
                                 item.RadetPatient.HospitalNo,
                                 item.RadetPatient.Sex,
@@ -436,20 +449,52 @@ namespace RADET.DAL.DAO
                                 item.CurrentARTStatus,
                                 item.SelectedForDQA,
                                 item.RadetYear,
+                                item.MetaData.RadetPeriod
                             };
 
+            DateTime cutoffdate = ConvertQuarterToEndDate(lineItems.FirstOrDefault().RadetPeriod);
+
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_calculateStatusByRadetId";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@radetId", id);
+            cmd.Parameters.AddWithValue("@enddate", cutoffdate);
+
+            var dataTable = GetDatable(cmd);
+            cmd.Dispose();
+            var Tx_Current = Convert.ToInt32(dataTable.Rows[0][0]);
 
             var processData = new
             {
                 data = lineItems,
-                Current_year_tx_new = Current_year_tx_new,
-                SelectedForDQA = SelectedForDQA,
-                Tx_Current = Tx_Current
+                lineItems.FirstOrDefault().Facility,
+                Current_year_tx_new,
+                SelectedForDQA,
+                Tx_Current
             };
 
             string result = Newtonsoft.Json.JsonConvert.SerializeObject(processData);
             return result;
         }
+
+        public DateTime ConvertQuarterToEndDate(string RadetPeriod)
+        {
+            string quarter = RadetPeriod.Split(' ')[0];
+            int year = Convert.ToInt32(RadetPeriod.Substring(5, 2));
+            string endDay = "";
+            switch (quarter)
+            {
+                case "Q1": endDay = "31/12/" + (year - 1); break;
+                case "Q2": endDay = "31/3/" + year; break;
+                case "Q3": endDay = "30/6/" + year; break;
+                case "Q4": endDay = "30/9/" + year; break;
+            }
+
+            DateTime date = DateTime.ParseExact(endDay, "d/M/yy", new CultureInfo("en-US"), DateTimeStyles.None);
+            
+            return date;
+        }
+
 
         /*
      public IList<RadetPatientLineListing> SearchPatientLineListing(List<string> IPs, List<string> lga_codes, List<string> facilities, string RadetPeriod = "")

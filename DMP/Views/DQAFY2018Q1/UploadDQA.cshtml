@@ -65,6 +65,7 @@
             var file = $('form input[type=file]')[0].files[0];
             if (file == undefined) {
                 alert("no file attached");
+                $("#progress").hide();
                 return;
             }
             data.append('file', file);

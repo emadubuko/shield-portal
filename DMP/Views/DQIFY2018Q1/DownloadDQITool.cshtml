@@ -14,8 +14,8 @@
         }
     </script>
     <style>
-        th{
-            text-align:center
+        th {
+            text-align: center
         }
     </style>
 }
@@ -48,18 +48,18 @@
                     <tbody>
                         @foreach (var item in Model.IPLevel)
                         {
-                        <tr style="text-align: CENTER;">
-                            <td>@item.IP</td>
-                            <td>@item.TotalSites</td>
-                            <td>@item.WorstPerformingIndicator</td>
-                            <td>@item.NoOfSitesAffected </td>
-                            <td>@item.AverageConcurrence</td>
-                            <td>
-                                <a class="btn btn-sm btn-success downloadforIP" id="@item.IP" style="text-transform:capitalize">
-                                    <i class="fa fa-download"></i>&nbsp;&nbsp;&nbsp;Download DQI Tool
-                                </a>
-                            </td>
-                        </tr>
+                            <tr style="text-align: CENTER;">
+                                <td>@item.IP</td>
+                                <td>@item.TotalSites</td>
+                                <td>@item.WorstPerformingIndicator</td>
+                                <td>@item.NoOfSitesAffected </td>
+                                <td>@item.AverageConcurrence</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success downloadforIP" id="@item.IP" style="text-transform:capitalize">
+                                        <i class="fa fa-download"></i>&nbsp;&nbsp;&nbsp;Download DQI Tool
+                                    </a>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -72,7 +72,7 @@
                         <tr style="text-align: CENTER;">
                             <th>IP</th>
                             <th>Facility</th>
-                            <th>State/LGA</th>
+                            <th>Org Unit</th>
                             <th>Worst Performing  indicator</th>
                             <th>Reported</th>
                             <th>Validated</th>
@@ -86,7 +86,7 @@
                             <tr style="text-align: CENTER;">
                                 <td>@item.IP</td>
                                 <td>@item.Facilty.Name </td>
-                                <td>@item.Facilty.LGA.DisplayName</td>
+                                <td>@string.Format("{0} {1}", item.Facilty.LGA.State.state_name.Substring(0,2).ToLower(), item.Facilty.LGA.lga_name)</td>
                                 <td>@item.Indicator</td>
                                 <td>@item.DATIM</td>
                                 <td>@item.Validated</td>
@@ -98,22 +98,46 @@
                 </table>
 
             </div>
-
-
         </div>
-
-
     </div>
 </div>
 
 @section Scripts
 {
-<script>
+    <script src="~/plugins/datatables/js/jszip.min.js"></script>
+    <script src="~/plugins/datatables/js/pdfmake.min.js"></script>
+    <script src="~/plugins/datatables/js/vfs_fonts.js"></script>
+    <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script>
         $(document).ready(function () {
             $('#detailsTbl').DataTable({
                 "iDisplayLength": 50,
                 "bAutoWidth": false,
+                buttons: [
+                    {
+                        extend: 'print',
+                        text: 'Zoom Table',
+                        autoPrint: false,
+                        title: "FY 2018 Q1 DQA Report"
+                    },
+                    {
+                        text: 'Export to Excel',
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ],
+                dom: 'Bfrtip',
             });
+
+
 
             var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.IPLevel));
             var selectedIP = {};
@@ -125,7 +149,7 @@
                     if (d.IP == e.currentTarget.id) {
                         selectedIP = d;
                     }
-                }); 
+                });
 
                 $.ajax({
                     url: '/DQIFY2018Q1/DownloadIPDQITool',
@@ -165,5 +189,5 @@
                 return false;
             });
         });
-</script>
+    </script>
 }

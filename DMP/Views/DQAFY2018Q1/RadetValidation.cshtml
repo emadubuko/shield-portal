@@ -76,7 +76,7 @@
 <div class="col-md-9">
     <div class="panel panel-success">
         <div class="panel-heading clearfix" style="padding:8px 20%">
-            <h5 class="panel-title">Radet validation</h5>
+            <h5 class="panel-title">RADET validation</h5>
         </div>
         <div class="panel-body">
             <div class="row">
@@ -91,31 +91,24 @@
                     <div class="form-group">
                         <label class="col-sm-1 control-label" for="sltIP">IP</label>
                         <div class="col-sm-4">
-                            <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
-                            </select>
+                            <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple></select>
                         </div>
 
                         <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
                         <div class="col-sm-4">
-                            <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
-                                
-                            </select>
+                            <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple></select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-1 control-label" for="sltstate">State</label>
                         <div class="col-sm-4">
-                            <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple>
-                                 
-                            </select>
+                            <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple></select>
                         </div>
 
                         <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
                         <div class="col-sm-4">
-                            <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
-                                
-                            </select>
+                            <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple></select>
                         </div>
                     </div>
 
@@ -141,12 +134,14 @@
                     <thead>
                         <tr>
                             <th>IP</th>
+                            <th>State</th>
+                            <th>LGA</th>
                             <th>Facility</th>
-                            <th>Tx_Curr (RADET)</th>
+                            <th style="border-left-width:medium;border-left-color:black;">Tx_Curr (RADET)</th>
                             <th>Tx_Curr (DATIM)</th>
                             <th>Difference</th>
                             <th>% Difference</th>
-                            <th>Tx_New (RADET)</th>
+                            <th style="border-left-width:medium;border-left-color:black;">Tx_New (RADET)</th>
                             <th>Tx_New (DATIM)</th>
                             <th>Difference</th>
                             <th>% Difference</th>
@@ -169,7 +164,7 @@
         $(document).ready(function () {
 
             populate_all_controls();
-            
+
             var dataTable = {
                 table: null,
                 initialiazeDataTable: function () {
@@ -188,23 +183,23 @@
                         sEcho: 3,
                         paging: false,
                         "oLanguage": { "sProcessing": "Loading... Please wait" },
-                       // "aLengthMenu": [[50, 100, 200], [50, 100, 200]],
+                        // "aLengthMenu": [[50, 100, 200], [50, 100, 200]],
                         ajax:
-                            {
-                                url: "/DQAFY2018Q1/RadetValidationData",
-                                type: "POST",
-                            },
+                        {
+                            url: "/DQAFY2018Q1/RadetValidationData",
+                            type: "POST",
+                        },
                         "oSearch": { "sSearch": JSON.stringify(model) },
-                        "aoColumnDefs": [{ 
-                            "aTargets": [4],
-                            "createdCell" : function(td, cellData, rowData, row, col){
+                        "aoColumnDefs": [{
+                            "aTargets": [6],
+                            "createdCell": function (td, cellData, rowData, row, col) {
                                 if (parseInt(cellData) != 0) {
                                     $(td).addClass('change-difference');
                                 }
-                            }, 
+                            },
                         },
                         {
-                            "aTargets": [5],
+                            "aTargets": [7],
                             "createdCell": function (td, cellData, rowData, row, col) {
                                 if (parseInt(cellData) > 10) {
                                     $(td).addClass('changed-concurrency');
@@ -215,15 +210,15 @@
                             }
                         },
                         {
-                            "aTargets": [8],
+                            "aTargets": [10],
                             "createdCell": function (td, cellData, rowData, row, col) {
                                 if (parseInt(cellData) != 0) {
-                                    $(td).addClass('change-difference'); 
+                                    $(td).addClass('change-difference');
                                 }
                             }
                         },
                         {
-                            "aTargets": [9],
+                            "aTargets": [11],
                             "createdCell": function (td, cellData, rowData, row, col) {
                                 if (parseInt(cellData) > 10) {
                                     $(td).addClass('changed-concurrency');
@@ -236,15 +231,17 @@
                         ],
                         "aoColumns": [
                             { "mData": "ShortName" },
-                             { "mData": "Facility" },
-                             { "mData": "Tx_Curr" },
-                             { "mData": "p_Tx_Curr" },
-                             { "mData": "Tx_Curr_difference" },
-                             { "mData": "Tx_Curr_concurrency" },
-                             { "mData": "Tx_New" },
-                             { "mData": "p_Tx_New" },
-                             { "mData": "Tx_New_difference" },
-                             { "mData": "Tx_New_concurrency" },
+                            { "mData": "State" },
+                            { "mData": "LGA" },
+                            { "mData": "Facility" },
+                            { "mData": "Tx_Curr" },
+                            { "mData": "p_Tx_Curr" },
+                            { "mData": "Tx_Curr_difference" },
+                            { "mData": "Tx_Curr_concurrency" },
+                            { "mData": "Tx_New" },
+                            { "mData": "p_Tx_New" },
+                            { "mData": "Tx_New_difference" },
+                            { "mData": "Tx_New_concurrency" },
                         ],
                         "pagingType": "full_numbers"
                     });

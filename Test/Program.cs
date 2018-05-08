@@ -39,24 +39,25 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            LGADao dao = new LGADao();
-            var lga = dao.RetrieveAll().GroupBy(x=>x.State.state_name);
-            var states = new List<St>();
-            foreach(var g in lga)
-            {
-                states.Add(new St
-                {
-                    State = g.Key,
-                    LGAList = g.ToList().Select(x=>x.lga_name).ToList()
-                });
-            }
-            
-            string j = Newtonsoft.Json.JsonConvert.SerializeObject(states);
-            Console.WriteLine(j);
+            CopyExcelFileContent();
+            //LGADao dao = new LGADao();
+            //var lga = dao.RetrieveAll().GroupBy(x=>x.State.state_name);
+            //var states = new List<St>();
+            //foreach(var g in lga)
+            //{
+            //    states.Add(new St
+            //    {
+            //        State = g.Key,
+            //        LGAList = g.ToList().Select(x=>x.lga_name).ToList()
+            //    });
+            //}
 
-            Console.WriteLine("started");
+            //string j = Newtonsoft.Json.JsonConvert.SerializeObject(states);
+            //Console.WriteLine(j);
 
-            TransfromColumns();
+            //Console.WriteLine("started");
+
+            //TransfromColumns();
 
             //ReadExcelFiles();
 
@@ -316,18 +317,72 @@ namespace Test
                         facSheet.Cells[oRow, 1].Value = cell.Value;
                         facSheet.Cells[oRow, 2].Value = lga;
 
-                        oRow += 1; 
-                    } 
+                        oRow += 1;
+                    }
                 }
                 package.Save();
-            }            
+            }
         }
- 
+
+        private static void CopyExcelFileContent()
+        {
+            using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Document\RADET\st vincent duplicate.xlsx")))
+            {
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\Users\Emeka C. Madubuko\Documents\24 Jan 2018_Qi_RADET_CCFN_St.VincentHospital.xlsx")))
+                {
+                    List<string> skipPages = new List<string>() { "MainPage", "StateLGA", "SOP", "Summary", "Historic", "Sheet1" };
+
+                    var sheets = package.Workbook.Worksheets;
+                    foreach (var sheet in sheets)
+                    {
+                        if (skipPages.Any(a => a == sheet.Name))
+                            continue;
+
+                        int emptycols = 0;
+
+                        var newsheet = excelToExport.Workbook.Worksheets.Add(sheet.Name);
+                        for (int row = 1; ; ++row)
+                        {
+                            string patientId = ExcelHelper.ReadCell(sheet, row, 7);
+                            string artRegimenAtStart = ExcelHelper.ReadCell(sheet, row, 16);
+                            if (string.IsNullOrEmpty(patientId) && string.IsNullOrEmpty(artRegimenAtStart))
+                            {
+                                emptycols++;
+                                if (emptycols > 3)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            emptycols = 0;
+
+
+                            for (int col = 1; col <= 30; col++)
+                            {
+                                var cell = sheet.Cells[row, col];
+
+                                if (cell == null || cell.Value == null)
+                                {
+                                    emptycols += 1;
+                                    continue;
+                                }
+                                newsheet.Cells[row, col].Value = cell.Value;
+                            }
+                        }
+                    }
+                }
+                excelToExport.Save();
+            }
+
+        }
 
         private static void CopyExcelFile()
         {
 
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.16Oct17.xlsx")))
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(@"C:\Users\Emeka C. Madubuko\Documents\24 Jan 2018_Qi_RADET_CCFN_St.VincentHospital.xlsx")))
             {
                 var sheets = package.Workbook.Worksheets;
                 foreach (var sheet in sheets)
@@ -343,7 +398,7 @@ namespace Test
                         row++;
                     }
                     faclities.Shuffle();
-                    using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Tina\TAU Data Analysis.16Oct17.Randomized.xlsx")))
+                    using (var excelToExport = new ExcelPackage(new FileInfo(@"C:\MGIC\Document\RADET\st vincent duplicate.xlsx")))
                     {
                         var aSheet = excelToExport.Workbook.Worksheets[sheet.Name];
                         int i = 4;

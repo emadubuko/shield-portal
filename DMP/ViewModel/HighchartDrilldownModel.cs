@@ -166,4 +166,18 @@ namespace ShieldPortal.ViewModel
         public double TX_PVLS_Concurrence { get; set; }
         public double PMTCT_HEI_POS_Concurrence { get; set; }
     }
+
+
+    public class DQACompariosnModelMain
+    {
+        public string indicator { get; set; }
+        public List<string> Sites { get; set; }
+        public List<DQAComparisonModel> data { get; set; }
+    }
+
+    public class DQAComparisonModel
+    {        
+        public string Type { get; set; } //partner or UMB
+        public List<double> data { get; set; }
+    }
 }

@@ -345,14 +345,51 @@ namespace ShieldPortal.Controllers
         }
 
 
-        public IHttpActionResult GetPivotTable([FromUri] string Quater,string IPstring)
+        public IHttpActionResult GetPivotTable([FromUri] string Quater,string IPstring="")
         {
+           
             List<string> IPs = JsonConvert.DeserializeObject<List<string>>(IPstring);
-            var data = Utility.RetrievePivotTablesForComparison(IPs, Quater); 
+            var data = Utility.RetrievePivotTablesForNDR(IPs, Quater); 
 
             return Ok(data);
         }
 
+        [HttpGet]
+        public string GetDashboardStatistic(string period)
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var ds = Utility.GetDashboardStatistic(ip, period);
+            List<dynamic> IPSummary = new List<dynamic>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                IPSummary.Add(new
+                {
+                    Name = dr[0],
+                    Submitted = dr[1],
+                    Pending = dr[2],
+                    Total = dr[3],
+                });
+            }
+            return JsonConvert.SerializeObject(new
+            {
+                IPSummary,
+                cardData = ds.Tables[1].Rows[0].ItemArray
+            });
+        }
+
+       
+
+        [HttpPost]
+        public IHttpActionResult DeletePivotTable(int id)
+        {
+            Utility.DeletePivotTable(id);
+            return Ok();
+        }
 
         /*
         [HttpPost]

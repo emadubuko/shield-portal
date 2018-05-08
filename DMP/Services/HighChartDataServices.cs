@@ -10,173 +10,61 @@ namespace ShieldPortal.Services
 {
     public class HighChartDataServices
     {
-
-        public AnalyticPageData GetHTCConcurrency(string reportType, string ip = "")
-        {
-            var data = Utility.GetQ3Analysis(ip, reportType.ToLower().Contains("partners"));
+        //var data = Utility.GetQ4Analysis(ip, reportType.ToLower().Contains("partners"));
+        public AnalyticPageData GetConcurrency(DataTable data, string reportType, string ip = "")
+        {            
             List<TempFacilityData> tempData = new List<TempFacilityData>();
 
             foreach (DataRow dr in data.Rows)
             {
                 //htc
-                var htc = ComputeConcurrence(dr[2], dr[3]);
-                List<object> htc_siteData = new List<object> { dr[1].ToString(), htc.concurrence };
+                //dr.Field<int>("HTC");
+                var htc = ComputeConcurrence(dr.Field<string>("HTC"), dr.Field<string>("Validate_HTC"));//(dr[2], dr[3]);
+                List<object> htc_siteData = new List<object> { dr.Field<string>("Facility"), htc.concurrence }; //{ dr[1].ToString(), htc.concurrence };
 
                 //pmtct_stat
-                var pmtct_stat = ComputeConcurrence(dr[5], dr[6]);
+                var pmtct_stat = ComputeConcurrence(dr.Field<string>("PMTCT_STAT"), dr.Field<string>("Validate_PMTCT_STAT")); //(dr[5], dr[6]);
                 List<object> pmtct_stat_siteData = new List<object> { dr[1].ToString(), pmtct_stat.concurrence };
 
                 //pmtct_art
-                var pmtct_art = ComputeConcurrence(dr[8], dr[9]);
-                List<object> pmtct_art_siteData = new List<object> { dr[1].ToString(), pmtct_art.concurrence };
+                var pmtct_art = ComputeConcurrence(dr.Field<string>("PMTCT_ART"), dr.Field<string>("Validate_PMTCT_ART")); // (dr[8], dr[9]);
+                List<object> pmtct_art_siteData = new List<object> { dr.Field<string>("Facility"), pmtct_art.concurrence };
 
                 //pmtct_eid
-                var pmtct_eid = ComputeConcurrence(dr[11], dr[12]);
-                List<object> pmtct_eid_siteData = new List<object> { dr[1].ToString(), pmtct_eid.concurrence };
+                var pmtct_eid = ComputeConcurrence(dr.Field<string>("PMTCT_EID"), dr.Field<string>("Validate_PMTCT_EID")); //(dr[11], dr[12]);
+                List<object> pmtct_eid_siteData = new List<object> { dr.Field<string>("Facility"), pmtct_eid.concurrence };
 
                 //tx_new
-                var tx_new = ComputeConcurrence(dr[14], dr[15]);
-                List<object> tx_new_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
+                var tx_new = ComputeConcurrence(dr.Field<string>("TX_NEW"), dr.Field<string>("Validate_TX_NEW")); //(dr[14], dr[15]);
+                List<object> tx_new_siteData = new List<object> { dr.Field<string>("Facility"), tx_new.concurrence };
 
                 //tx_curr
-                var tx_curr = ComputeConcurrence(dr[17], dr[18]);
-                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_curr.concurrence };
-
-                var temp = new TempFacilityData();
-                temp.IP = dr[0].ToString();
-
-                if (htc.datim != 0 && htc.validated != 0)
-                {
-                    temp.DATIM_HTC_TST = htc.datim;
-                    temp.Validated_HTC_TST = htc.validated;
-                    temp.htc_Data = htc_siteData;
-                }
-
-                if (pmtct_stat.datim != 0 && pmtct_stat.validated != 0)
-                {
-                    temp.DATIM_PMTCT_STAT = pmtct_stat.datim;
-                    temp.Validated_PMTCT_STAT = pmtct_stat.validated;
-                    temp.pmtct_stat_Data = pmtct_stat_siteData;
-                }
-
-                if (pmtct_art.datim != 0 && pmtct_art.validated != 0)
-                {
-                    temp.DATIM_PMTCT_ART = pmtct_art.datim;
-                    temp.Validated_PMTCT_ART = pmtct_art.validated;
-                    temp.pmtct_art_Data = pmtct_art_siteData;
-                }
-
-                if (pmtct_eid.datim != 0 && pmtct_eid.validated != 0)
-                {
-                    temp.DATIM_PMTCT_EID = pmtct_eid.datim;
-                    temp.Validated_PMTCT_EID = pmtct_eid.validated;
-                    temp.pmtct_eid_Data = pmtct_eid_siteData;
-                }
-
-                if (tx_new.datim != 0 && tx_new.validated != 0)
-                {
-                    temp.DATIM_TX_NEW = tx_new.datim;
-                    temp.Validated_TX_NEW = tx_new.validated;
-                    temp.tx_new_Data = tx_new_siteData;
-                }
-
-                if (tx_curr.datim != 0 && tx_curr.validated != 0)
-                {
-                    temp.DATIM_TX_CURR = tx_curr.datim;
-                    temp.Validated_TX_CURR = tx_curr.validated;
-                    temp.tx_curr_Data = tx_curr_siteData;
-                }
-
-                //};
-                tempData.Add(temp);
-            }
-
-            //List<TempFacilityData> QIData = new List<TempFacilityData>();
-            //QIData.AddRange(tempData.Where(x => x.htc_Data != null 
-            //                                && (Convert.ToInt32(x.htc_Data[1]) < 95
-            //                                || Convert.ToInt32(x.htc_Data[1]) > 105)));
-            //QIData.AddRange(tempData.Where(x => x.pmtct_stat_Data != null
-            //                                && (Convert.ToInt32(x.pmtct_stat_Data[1]) < 95
-            //                                || Convert.ToInt32(x.pmtct_stat_Data[1]) > 105)));
-            //QIData.AddRange(tempData.Where(x => x.pmtct_art_Data != null
-            //                                && (Convert.ToInt32(x.pmtct_art_Data[1]) < 95
-            //                                || Convert.ToInt32(x.pmtct_art_Data[1]) > 105)));
-            //QIData.AddRange(tempData.Where(x => x.pmtct_eid_Data != null
-            //                                && (Convert.ToInt32(x.pmtct_eid_Data[1]) < 95
-            //                                || Convert.ToInt32(x.pmtct_eid_Data[1]) > 105)));
-            //QIData.AddRange(tempData.Where(x => x.tx_new_Data != null
-            //                                && (Convert.ToInt32(x.tx_new_Data[1]) < 95
-            //                                || Convert.ToInt32(x.tx_new_Data[1]) > 105)));
-            //QIData.AddRange(tempData.Where(x => x.tx_curr_Data != null
-            //                                && (Convert.ToInt32(x.tx_curr_Data[1]) < 95
-            //                                || Convert.ToInt32(x.tx_curr_Data[1]) > 105)));
-
-
-            var allDatamodel = PackageData(tempData);
-
-            // var QIDataModel = PackageData(QIData);
-            return new AnalyticPageData
-            {
-                AllDataModel = allDatamodel,
-                // QIDataModel = QIDataModel
-            };
-            //return allDatamodel;
-        }
-
-        public AnalyticPageData GetQ4Concurrency(string reportType, string ip = "")
-        {
-            var data = Utility.GetQ4Analysis(ip, reportType.ToLower().Contains("partners"));
-            List<TempFacilityData> tempData = new List<TempFacilityData>();
-
-            foreach (DataRow dr in data.Rows)
-            {
-                //htc
-                var htc = ComputeConcurrence(dr[2], dr[3]);
-                List<object> htc_siteData = new List<object> { dr[1].ToString(), htc.concurrence };
-
-                //pmtct_stat
-                var pmtct_stat = ComputeConcurrence(dr[5], dr[6]);
-                List<object> pmtct_stat_siteData = new List<object> { dr[1].ToString(), pmtct_stat.concurrence };
-
-                //pmtct_art
-                var pmtct_art = ComputeConcurrence(dr[8], dr[9]);
-                List<object> pmtct_art_siteData = new List<object> { dr[1].ToString(), pmtct_art.concurrence };
-
-                //pmtct_eid
-                var pmtct_eid = ComputeConcurrence(dr[11], dr[12]);
-                List<object> pmtct_eid_siteData = new List<object> { dr[1].ToString(), pmtct_eid.concurrence };
-
-                //tx_new
-                var tx_new = ComputeConcurrence(dr[14], dr[15]);
-                List<object> tx_new_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
-
-                //tx_curr
-                var tx_curr = ComputeConcurrence(dr[17], dr[18]);
-                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_curr.concurrence };
+                var tx_curr = ComputeConcurrence(dr.Field<string>("TX_Curr"), dr.Field<string>("Validate_TX_Curr")); //(dr[17], dr[18]);
+                List<object> tx_curr_siteData = new List<object> { dr.Field<string>("Facility"), tx_curr.concurrence };
 
                 //tb_stat
-                var tb_stat = ComputeConcurrence(dr[20], dr[21]);
-                List<object> tb_stat_siteData = new List<object> { dr[1].ToString(), tb_stat.concurrence };
+                 var tb_stat = !string.IsNullOrEmpty(dr.Field<string>("Tb_STAT")) ? ComputeConcurrence(dr.Field<string>("Tb_STAT"), dr.Field<string>("Validate_Tb_STAT")) : new ConcurrenceData(); //(dr[20], dr[21]);
+                List<object> tb_stat_siteData = new List<object> { dr.Field<string>("Facility"), tb_stat.concurrence };
 
                 //tb_art
-                var tb_art = ComputeConcurrence(dr[23], dr[24]);
-                List<object> tb_art_siteData = new List<object> { dr[1].ToString(), tb_art.concurrence };
+                var tb_art = !string.IsNullOrEmpty(dr.Field<string>("Tb_ART")) ?  ComputeConcurrence(dr.Field<string>("Tb_ART"), dr.Field<string>("Validate_Tb_ART")) : new ConcurrenceData(); //(dr[23], dr[24]);
+                List<object> tb_art_siteData = new List<object> { dr.Field<string>("Facility"), tb_art.concurrence };
 
                 //tx_tb
-                var tx_tb = ComputeConcurrence(dr[26], dr[27]);
-                List<object> tx_tb_siteData = new List<object> { dr[1].ToString(), tx_tb.concurrence };
+                var tx_tb = !string.IsNullOrEmpty(dr.Field<string>("TX_TB")) ? ComputeConcurrence(dr.Field<string>("TX_TB"), dr.Field<string>("Validate_TX_TB")) : new ConcurrenceData(); //(dr[26], dr[27]);
+                List<object> tx_tb_siteData = new List<object> { dr.Field<string>("Facility"), tx_tb.concurrence };
 
                 //pmtct_fo
-                var pmtct_fo = ComputeConcurrence(dr[29], dr[30]);
-                List<object> pmtct_fo_siteData = new List<object> { dr[1].ToString(), pmtct_fo.concurrence };
+                var pmtct_fo = !string.IsNullOrEmpty(dr.Field<string>("PMTCT_FO"))  ? ComputeConcurrence(dr.Field<string>("PMTCT_FO"), dr.Field<string>("Validate_PMTCT_FO")) : new ConcurrenceData(); //(dr[29], dr[30]);
+                List<object> pmtct_fo_siteData = new List<object> { dr.Field<string>("Facility"), pmtct_fo.concurrence };
 
                 //tx_ret
-                var tx_ret = ComputeConcurrence(dr[32], dr[33]);
-                List<object> tx_ret_siteData = new List<object> { dr[1].ToString(), tx_ret.concurrence };
+                var tx_ret = !string.IsNullOrEmpty(dr.Field<string>("TX_RET")) ? ComputeConcurrence(dr.Field<string>("TX_RET"), dr.Field<string>("Validate_TX_RET")) : new ConcurrenceData(); //(dr[32], dr[33]);
+                List<object> tx_ret_siteData = new List<object> { dr.Field<string>("Facility"), tx_ret.concurrence };
 
                 //tx_pvls
-                var tx_pvls = ComputeConcurrence(dr[35], dr[36]);
-                List<object> tx_pvls_siteData = new List<object> { dr[1].ToString(), tx_pvls.concurrence };
+                var tx_pvls = !string.IsNullOrEmpty(dr.Field<string>("TX_PLVS")) ?  ComputeConcurrence(dr.Field<string>("TX_PLVS"), dr.Field<string>("Validate_TX_PLVS")) : new ConcurrenceData(); //(dr[35], dr[36]);
+                List<object> tx_pvls_siteData = new List<object> { dr.Field<string>("Facility"), tx_pvls.concurrence };
 
                 var temp = new TempFacilityData();
                 temp.IP = dr[0].ToString();
@@ -275,105 +163,7 @@ namespace ShieldPortal.Services
                 AllDataModel = allDatamodel,
             };
         }
-
-        public AnalyticPageData GetQ1HTCConcurrency(string reportType, string ip = "")
-        {
-            var data = Utility.GetQ1FY18Analysis(ip, reportType.ToLower().Contains("partners"));
-            List<TempFacilityData> tempData = new List<TempFacilityData>();
-
-            foreach (DataRow dr in data.Rows)
-            {
-                //htc
-                var htc = ComputeConcurrence(dr[2], dr[3]);
-                List<object> htc_siteData = new List<object> { dr[1].ToString(), htc.concurrence };
-
-                //pmtct_stat
-                var pmtct_stat = ComputeConcurrence(dr[5], dr[6]);
-                List<object> pmtct_stat_siteData = new List<object> { dr[1].ToString(), pmtct_stat.concurrence };
-
-                //pmtct_art
-                var pmtct_art = ComputeConcurrence(dr[8], dr[9]);
-                List<object> pmtct_art_siteData = new List<object> { dr[1].ToString(), pmtct_art.concurrence };
-
-                //pmtct_eid
-                var pmtct_eid = ComputeConcurrence(dr[11], dr[12]);
-                List<object> pmtct_eid_siteData = new List<object> { dr[1].ToString(), pmtct_eid.concurrence };
-
-                //tx_new
-                var tx_new = ComputeConcurrence(dr[14], dr[15]);
-                List<object> tx_new_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
-
-                //tx_curr
-                var tx_curr = ComputeConcurrence(dr[17], dr[18]);
-                List<object> tx_curr_siteData = new List<object> { dr[1].ToString(), tx_new.concurrence };
-
-                //pmtct_hei_pos
-                var pmtct_hei_pos = ComputeConcurrence(dr[20], dr[21]);
-                List<object> pmtct_hei_pos_siteData = new List<object> { dr[1].ToString(), pmtct_hei_pos.concurrence };
-
-
-                var temp = new TempFacilityData();
-                temp.IP = dr[0].ToString();
-
-                if (htc.datim != 0 && htc.validated != 0)
-                {
-                    temp.DATIM_HTC_TST = htc.datim;
-                    temp.Validated_HTC_TST = htc.validated;
-                    temp.htc_Data = htc_siteData;
-                }
-
-                if (pmtct_stat.datim != 0 && pmtct_stat.validated != 0)
-                {
-                    temp.DATIM_PMTCT_STAT = pmtct_stat.datim;
-                    temp.Validated_PMTCT_STAT = pmtct_stat.validated;
-                    temp.pmtct_stat_Data = pmtct_stat_siteData;
-                }
-
-                if (pmtct_art.datim != 0 && pmtct_art.validated != 0)
-                {
-                    temp.DATIM_PMTCT_ART = pmtct_art.datim;
-                    temp.Validated_PMTCT_ART = pmtct_art.validated;
-                    temp.pmtct_art_Data = pmtct_art_siteData;
-                }
-
-                if (pmtct_eid.datim != 0 && pmtct_eid.validated != 0)
-                {
-                    temp.DATIM_PMTCT_EID = pmtct_eid.datim;
-                    temp.Validated_PMTCT_EID = pmtct_eid.validated;
-                    temp.pmtct_eid_Data = pmtct_eid_siteData;
-                }
-
-                if (tx_new.datim != 0 && tx_new.validated != 0)
-                {
-                    temp.DATIM_TX_NEW = tx_new.datim;
-                    temp.Validated_TX_NEW = tx_new.validated;
-                    temp.tx_new_Data = tx_new_siteData;
-                }
-
-                if (tx_curr.datim != 0 && tx_curr.validated != 0)
-                {
-                    temp.DATIM_TX_CURR = tx_curr.datim;
-                    temp.Validated_TX_CURR = tx_curr.validated;
-                    temp.tx_curr_Data = tx_curr_siteData;
-                }
-
-                if (pmtct_hei_pos.datim != 0 && pmtct_hei_pos.validated != 0)
-                {
-                    temp.DATIM_PMTCT_HEI_POS = pmtct_hei_pos.datim;
-                    temp.Validated_PMTCT_HEI_POS = pmtct_hei_pos.validated;
-                    temp.pmtct_hei_pos_Data = pmtct_hei_pos_siteData;
-                }
-                //};
-                tempData.Add(temp);
-            }
-
-            var allDatamodel = PackageData(tempData);
-
-            return new AnalyticPageData
-            {
-                AllDataModel = allDatamodel,
-            };
-        }
+              
         private HighchartDrilldownModel PackageData(List<TempFacilityData> tempData)
         {
             var hct_data = new List<Datum>();
@@ -752,7 +542,7 @@ namespace ShieldPortal.Services
             return model;
         }
 
-        public List<ChildSeriesData> RetrieveQIData(List<ChildSeriesData> data)
+        private List<ChildSeriesData> RetrieveQIData(List<ChildSeriesData> data)
         {
             List<ChildSeriesData> QI_Data = new List<ChildSeriesData>();
             foreach (var i in data)

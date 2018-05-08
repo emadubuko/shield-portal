@@ -38,11 +38,29 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
+        List<string> GetCurrentFY()
+        {
+            List<string> periodsInFY = new List<string>();
+            if (DateTime.Now.Month >= 10 && DateTime.Now.Month <= 12)
+            { 
+                periodsInFY.Add($"Q1 FY{DateTime.Now.AddYears(1).ToString("yy")}");
+            }
+            else
+            {
+                periodsInFY.Add($"Q1 FY{DateTime.Now.ToString("yy")}");
+                periodsInFY.Add($"Q2 FY{DateTime.Now.ToString("yy")}");
+                periodsInFY.Add($"Q3 FY{DateTime.Now.ToString("yy")}");
+                periodsInFY.Add($"Q4 FY{DateTime.Now.ToString("yy")}");
+            }
+            return periodsInFY;
+        }
+
+
         [HttpPost]
         public string RADETScoreCardData()
         {
-            string period = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-
+            List<string> period = GetCurrentFY(); //System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+             
             var data = new RadetMetaDataDAO().GetScoreCard(period);
 
             List<dynamic> mydata = new List<dynamic>();
