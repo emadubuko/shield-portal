@@ -1,5 +1,6 @@
 ﻿using CommonUtil.Entities;
 using CommonUtil.Utilities;
+using DQI.DAL.Model;
 using DQI.DAL.Services;
 using ShieldPortal.Services;
 using System;
@@ -20,39 +21,41 @@ namespace ShieldPortal.Controllers
         // GET: DQIFY2018Q1
         public ActionResult Index()
         {
-            return View();
+            var loggedinUser = new Utils().GetloggedInProfile();
+            var reports = new QIEngine().RetrieveUpload(loggedinUser, "Q1 FY18");
+            return View(reports);
+        }
+
+        [HttpPost]
+        public JsonResult RetriveDetails(int id)
+        {
+            var item =  new QIEngine().RetrieveUpload(id);
+            return Json(new
+            {
+                item.ImplementingPartner,
+                item.DqaIndicator,
+                item.AffectedFacilityNumber,
+                item.ImprovementApproach,
+                item.DataCollectionMethod,
+                item.Problem,
+                //item.pr
+                item.ProblemResolved,
+                WhyDoesProblemOccur = item.WhyDoesProblemOccur.Replace("<i>", "i. ").Replace("<ii>", "ii. ").Replace("<iii>", "iii. ").Replace("<iv>", "iv. ").Replace("<v>", "v. ").Replace("<i>", "i. ").Replace("</i>", "<br />").Replace("</ii>", "<br />").Replace("</iii>", "<br />").Replace("</iv>", "<br />").Replace("</v>", "<br />"),
+                item.ImprovementApproach_Analyze,
+                Interventions = item.Interventions.Replace("<i>","i. ").Replace("<ii>", "ii. ").Replace("<iii>", "iii. ").Replace("<iv>", "iv. ").Replace("<v>", "v. ").Replace("<i>", "i. ").Replace("</i>", "<br />").Replace("</ii>", "<br />").Replace("</iii>", "<br />").Replace("</iv>", "<br />").Replace("</v>", "<br />"),
+                item.ImprovementApproach_Develop,
+                ProcessTracking = item.ProcessTracking.Replace("<i>", "i. ").Replace("<ii>", "ii. ").Replace("<iii>", "iii. ").Replace("<iv>", "iv. ").Replace("<v>", "v. ").Replace("<i>", "i. ").Replace("</i>", "<br />").Replace("</ii>", "<br />").Replace("</iii>", "<br />").Replace("</iv>", "<br />").Replace("</v>", "<br />"),
+                item.MeasureIndicators,
+                item.EvaluateIndicators,
+                Indicators = XMLUtil.FromXml<List<ProcessTable>>(item.Indicators) //XMLUtil.FromXml<Reported_data>(item.Indicators)
+            });
         }
 
         public ActionResult UploadDQIResult()
         {
             return View();
         }
-
-        //[HttpPost]
-        //public string ProcessFile()
-        //{ 
-        //    string result = "";
-        //    if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
-        //    {  
-        //        result = "No file was uploaded";
-        //    }
-        //    else
-        //    {
-        //        Profile loggedinProfile = new Utils().GetloggedInProfile();
-        //        string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQI/Q1 FY18/" + loggedinProfile.Organization.ShortName) + "\\";
-        //        if (Directory.Exists(directory) == false)
-        //        {
-        //            Directory.CreateDirectory(directory);
-        //        }
-
-        //        Request.Files[0].SaveAs(directory + DateTime.Now.ToString("dd_MMM_yyyyh") + Request.Files[0].FileName);
-
-        //        Stream uploadedFile = Request.Files[0].InputStream;
-        //        bool status = new QIEngine().ProcessUpload(uploadedFile, "Q1 FY18", loggedinProfile, out result);
-        //    }
-        //    return result;
-        //}
-
+         
         public ActionResult DownloadDQITool()
         {
             string ip = "";
@@ -89,7 +92,6 @@ namespace ShieldPortal.Controllers
             {
                 Logger.LogInfo("DQIQ1 FY2018,ProcessFile", "processing dqi upload");
 
-                HttpResponseMessage result = null;
                 var userUploading = new Services.Utils().GetloggedInProfile();
 
                 if (Request.Files.Count > 0)
@@ -100,9 +102,8 @@ namespace ShieldPortal.Controllers
                         var postedFile = Request.Files[file];
                         string ext = Path.GetExtension(postedFile.FileName).Substring(1);
 
-                        if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
+                        if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM")
                         {
-
                             var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQI Q1 FY18/" + postedFile.FileName);
                             postedFile.SaveAs(filePath);
 
@@ -116,13 +117,14 @@ namespace ShieldPortal.Controllers
                 }
                 else
                 {
-                    result = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    //result = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    return "00|File uploaded successfully";
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
-                messages += "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred</td></tr>";
+                messages += ex.Message;
             }
             return messages;
         }

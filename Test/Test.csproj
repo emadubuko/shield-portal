@@ -111,6 +111,10 @@
       <Project>{ADC0F63F-CE6C-4BE8-867F-16EAF68B00B4}</Project>
       <Name>DQA.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DQI.DAL\DQI.DAL.csproj">
+      <Project>{848B5EF2-1CB1-4049-8FBE-AC51EA96E8F6}</Project>
+      <Name>DQI.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RADET.DAL\RADET.DAL.csproj">
       <Project>{5CB4C593-CE51-434A-B7C2-951FDD4468F5}</Project>
       <Name>RADET.DAL</Name>

@@ -26,13 +26,15 @@ namespace DQA.DAL.Data
         public string ImprovementApproach_Analyze { get; set; }
         public string Interventions { get; set; }
         public string ImprovementApproach_Develop { get; set; }
-        public string ViableInterventions { get; set; }
         public string ProcessTracking { get; set; }
         public string MeasureIndicators { get; set; }
         public string EvaluateIndicators { get; set; }
         public string Indicators { get; set; }
         public string ReportPeriod { get; set; }
-        public System.DateTime CreateDate { get; set; }
-        public string CreatedBy { get; set; }
+        public System.DateTime LastUpdatedDate { get; set; }
+        public string uploadedBy { get; set; }
+    
+        public virtual dqi_report_value dqi_report_value1 { get; set; }
+        public virtual dqi_report_value dqi_report_value2 { get; set; }
     }
 }

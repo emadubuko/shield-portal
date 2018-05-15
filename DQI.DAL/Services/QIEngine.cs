@@ -2,17 +2,17 @@
 using CommonUtil.Entities;
 using DQI.DAL.DAO;
 using DQI.DAL.Model;
-using DQA.DAL.Data;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Data.Entity.Validation;
+using System.Linq; 
 using System.Text;
 using CommonUtil.Utilities;
 using System.Xml.Linq;
+using DQA.DAL.Data;
+using System.Data.Entity.Validation;
 
 namespace DQI.DAL.Services
 {
@@ -79,10 +79,41 @@ namespace DQI.DAL.Services
             return dqiModel;
         }
 
-        //public bool ProcessUpload(Stream uploadedFile, string v, Profile loggedinProfile, out string result)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public List<IPLevelDQI> RetrieveUpload(Profile loggedinProfile, string report_period)
+        {
+            string ip = loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.ShortName : "";
+            if (!string.IsNullOrEmpty(ip))
+            {
+                return (from item in entities.dqi_report_value.Where(e => e.ReportPeriod == report_period && e.ImplementingPartner == ip)
+                        select new IPLevelDQI
+                        {
+                            Id = item.Id,
+                            IP = item.ImplementingPartner,
+                            WorstPerformingIndicator = item.DqaIndicator,
+                            AffectedSites = item.AffectedFacilityNumber,
+                            LastUpdatedDate = item.LastUpdatedDate,
+                            UploadedBy = item.uploadedBy
+                        }).ToList();
+            }
+            else
+            {
+                return (from item in entities.dqi_report_value.Where(e => e.ReportPeriod == report_period)
+                        select new IPLevelDQI
+                        {
+                            Id = item.Id,
+                            IP = item.ImplementingPartner,
+                            WorstPerformingIndicator = item.DqaIndicator,
+                            AffectedSites = item.AffectedFacilityNumber,
+                            LastUpdatedDate = item.LastUpdatedDate,
+                            UploadedBy = item.uploadedBy
+                        }).ToList();
+            }
+        }
+
+        public dqi_report_value RetrieveUpload(int id)
+        {
+            return entities.dqi_report_value.Where(e => e.Id == id).FirstOrDefault(); 
+        }
 
         public void PopulateTool(IPLevelDQI data, string directory, string fileName, string template)
         { 
@@ -99,7 +130,7 @@ namespace DQI.DAL.Services
             }
         }
 
-        public string ProcessUpload(string filename, CommonUtil.Entities.Profile loggedinProfile)
+        public string ProcessUpload(string filename, Profile loggedinProfile)
         {
             using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
             {
@@ -107,85 +138,116 @@ namespace DQI.DAL.Services
                 var report = new dqi_report_value();
                 try
                 {
-                    var worksheet = package.Workbook.Worksheets["IP Dashboard"];
-                    var wksheet = package.Workbook.Worksheets["Data Entry"];
+                    var datasheet = package.Workbook.Worksheets["IP Dashboard"];
+                    
+                    report.ImplementingPartner = datasheet.Cells["C2"].Value.ToString();
+                    report.DqaIndicator = datasheet.Cells["C4"].Value.ToString();
+                    report.AffectedFacilityNumber = datasheet.Cells["C6"].Value.ToString();
 
-                    var reported_data = new XElement("reported_data");
-                    var indicators = new XElement("indicators");
-                    indicators.Add(new XElement("Process Indicators", wksheet.Cells["A2"].Value.ToString()));
-                    indicators.Add(new XElement("Process Indicators", wksheet.Cells["A4"].Value.ToString()));
-                    indicators.Add(new XElement("Process Indicators", wksheet.Cells["A6"].Value.ToString()));
-                    indicators.Add(new XElement("Process Indicators", wksheet.Cells["A8"].Value.ToString()));
-                    indicators.Add(new XElement("Process Indicators", wksheet.Cells["A10"].Value.ToString()));
-                    reported_data.Add(indicators);
+                    if (datasheet.Cells["C8"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>What quality improvement approach will you use?</b></td></tr>";
+                    }
+                    else
+                    {
+                        report.ImprovementApproach = datasheet.Cells["C8"].Value.ToString();
+                    }
+                    if (datasheet.Cells["C10"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>What data collection method are you using for this?</b></td></tr>";
+                    }
+                    report.DataCollectionMethod = datasheet.Cells["C10"].Value.ToString();
 
-                    var num = new XElement("numerators");
-                    num.Add(new XElement("Week 1", wksheet.Cells["C2"].Value.ToString()));
-                    num.Add(new XElement("Week 2", wksheet.Cells["D2"].Value.ToString()));
-                    num.Add(new XElement("Week 3", wksheet.Cells["E2"].Value.ToString()));
-                    num.Add(new XElement("Week 4", wksheet.Cells["F2"].Value.ToString()));
-                    num.Add(new XElement("Week 5", wksheet.Cells["G2"].Value.ToString()));
-                    num.Add(new XElement("Week 6", wksheet.Cells["H2"].Value.ToString()));
-                    num.Add(new XElement("Week 7", wksheet.Cells["I2"].Value.ToString()));
-                    num.Add(new XElement("Week 8", wksheet.Cells["J2"].Value.ToString()));
-                    num.Add(new XElement("Week 9", wksheet.Cells["K2"].Value.ToString()));
-                    num.Add(new XElement("Week 10", wksheet.Cells["L2"].Value.ToString()));
-                    num.Add(new XElement("Week 11", wksheet.Cells["M2"].Value.ToString()));
-                    num.Add(new XElement("Week 12", wksheet.Cells["N2"].Value.ToString()));
-                    reported_data.Add(num);
+                    if (datasheet.Cells["C13"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>What is the problem?</b></td></tr>";
+                    }
+                    report.Problem = datasheet.Cells["C13"].Value.ToString();
 
-                    var den = new XElement("denominators");
-                    den.Add(new XElement("Week 1", wksheet.Cells["C3"].Value.ToString()));
-                    den.Add(new XElement("Week 2", wksheet.Cells["D3"].Value.ToString()));
-                    den.Add(new XElement("Week 3", wksheet.Cells["E3"].Value.ToString()));
-                    den.Add(new XElement("Week 4", wksheet.Cells["F3"].Value.ToString()));
-                    den.Add(new XElement("Week 5", wksheet.Cells["G3"].Value.ToString()));
-                    den.Add(new XElement("Week 6", wksheet.Cells["H3"].Value.ToString()));
-                    den.Add(new XElement("Week 7", wksheet.Cells["I3"].Value.ToString()));
-                    den.Add(new XElement("Week 8", wksheet.Cells["J3"].Value.ToString()));
-                    den.Add(new XElement("Week 9", wksheet.Cells["K3"].Value.ToString()));
-                    den.Add(new XElement("Week 10", wksheet.Cells["L3"].Value.ToString()));
-                    den.Add(new XElement("Week 11", wksheet.Cells["M3"].Value.ToString()));
-                    den.Add(new XElement("Week 12", wksheet.Cells["N3"].Value.ToString()));
-                    reported_data.Add(den);
+                    if (datasheet.Cells["C14"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>How do you know this is a problem?</b></td></tr>";
+                    }
+                    string how_you_know_this_is_the_problem = datasheet.Cells["C14"].Value.ToString();
 
+                    if (datasheet.Cells["C15"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>How will you know when the problem is resolved?</b></td></tr>";
+                    }
+                    report.ProblemResolved = datasheet.Cells["C15"].Value.ToString();
 
-                    report.ImplementingPartner = worksheet.Cells["C2"].ToString();
-                    report.DqaIndicator = worksheet.Cells["C4"].ToString();
-                    report.AffectedFacilityNumber = worksheet.Cells["C6"].ToString();
-                    report.ImprovementApproach = worksheet.Cells["C8"].ToString();
-                    report.DataCollectionMethod = worksheet.Cells["C10"].ToString();
-                    report.Problem = worksheet.Cells["C13"].ToString();
-                    report.ProblemResolved = worksheet.Cells["C14"].ToString() + worksheet.Cells["C15"].ToString();
-                    report.WhyDoesProblemOccur = worksheet.Cells["D18"].ToString() + "-" + worksheet.Cells["D19"].ToString() + "-" + worksheet.Cells["D20"].ToString() + "-"+ worksheet.Cells["D21"].ToString() + worksheet.Cells["D22"].ToString();
-                    report.ImprovementApproach_Analyze = worksheet.Cells["C23"].ToString();
-                    report.Interventions = worksheet.Cells["D26"].ToString() + "-" + worksheet.Cells["D27"].ToString() + "-" + worksheet.Cells["D28"].ToString() + "-" + worksheet.Cells["D29"].ToString() + worksheet.Cells["D30"].ToString();
-                    report.ImprovementApproach_Develop = worksheet.Cells["C31"].ToString();
-                    report.ViableInterventions = worksheet.Cells["C34"].ToString();
-                    report.ProcessTracking = worksheet.Cells["D35"].ToString() + "-" + worksheet.Cells["D36"].ToString() + "-" + worksheet.Cells["D37"].ToString() + "-" + worksheet.Cells["D38"].ToString() + worksheet.Cells["D39"].ToString();
-                    report.MeasureIndicators = worksheet.Cells["C40"].ToString();
-                    report.EvaluateIndicators = worksheet.Cells["C41"].ToString();
+                    var whyProblemOccurXML = new XElement("Why_problem_occur",
+                                                            new XElement("i", datasheet.Cells["D18"].Value),
+                                                            new XElement("ii", datasheet.Cells["D19"].Value),
+                                                            new XElement("iii", datasheet.Cells["D20"].Value),
+                                                            new XElement("iv", datasheet.Cells["D21"].Value),
+                                                            new XElement("v", datasheet.Cells["D22"].Value));
+                    report.WhyDoesProblemOccur = whyProblemOccurXML.Value.ToString();
+
+                    if (datasheet.Cells["C23"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>Which Quality Improvement approach did you use to analyze the problem?</b></td></tr>";
+                    }
+                    report.ImprovementApproach_Analyze = datasheet.Cells["C23"].Value.ToString();
+
+                    var interventionXML = new XElement("interventions",
+                                                new XElement("i", datasheet.Cells["D26"].Value),
+                                                new XElement("ii", datasheet.Cells["D27"].Value),
+                                                new XElement("iii", datasheet.Cells["D28"].Value),
+                                                new XElement("iv", datasheet.Cells["D29"].Value),
+                                                new XElement("v", datasheet.Cells["D30"].Value));
+                    report.Interventions = interventionXML.ToString();
+
+                    if (datasheet.Cells["C31"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>Which Quality Improvement approach did you apply in developing these interventions?</b></td></tr>";
+                    }
+                    report.ImprovementApproach_Develop = datasheet.Cells["C31"].Value.ToString();
+
+                     
+                    var processTrackingXML = new XElement("process_tracking",
+                                                        new XElement("i", datasheet.Cells["D35"].Value),
+                                                        new XElement("ii", datasheet.Cells["D36"].Value),
+                                                        new XElement("iii", datasheet.Cells["D37"].Value),
+                                                        new XElement("iv", datasheet.Cells["D38"].Value),
+                                                        new XElement("v", datasheet.Cells["D39"].Value));
+                    //report.ViableInterventions = processTrackingXML.ToString(); // datasheet.Cells["C34"].ToString();
+                    report.ProcessTracking = processTrackingXML.ToString();
+
+                    if (datasheet.Cells["C40"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>How often will you measure these chosen indicators?</b></td></tr>";
+                    }
+                    report.MeasureIndicators = datasheet.Cells["C40"].Value.ToString();
+
+                    if (datasheet.Cells["C41"].Value == null)
+                    {
+                        return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td> please provide response for the question <b>How often will you evaluate the indicators?</b></td></tr>";
+                    }
+                    report.EvaluateIndicators = datasheet.Cells["C41"].Value.ToString();
+
                     report.ReportPeriod = "Q1 FY18";
-                    report.CreateDate = DateTime.Now;
-                    report.CreatedBy = loggedinProfile.ContactEmailAddress;
-                    report.Indicators = reported_data.ToString();
+                    report.LastUpdatedDate = DateTime.Now;
+                    report.uploadedBy = loggedinProfile.Username;
 
+                    var entrysheet = package.Workbook.Worksheets["Data Entry"];
+
+                    List<ProcessTable> processTable = ReadExcelTable(entrysheet);
+                     
+                    report.Indicators = XMLUtil.ConvertToXml(processTable);
+                     
                     var report_valid = entities.dqi_report_value
                         .Where(e => e.ReportPeriod == report.ReportPeriod
                         && e.ImplementingPartner == report.ImplementingPartner);
 
                     foreach (var item in report_valid)
                     {
-                        var thatUserRole = new CommonUtil.DAO.ProfileDAO().GetRoleByEmail(item.CreatedBy);
-                        if (thatUserRole == loggedinProfile.RoleName)
-                        {
-                            return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>" + filename + " could not be processed. Report already exists in the database</td></tr>";
-                        }
+                        entities.dqi_report_value.Remove(item);                      
                     }
                     entities.dqi_report_value.Add(report);
                     entities.SaveChanges();          
 
-                    return "<tr><td class='text-center'><i class='icon-check icon-larger green-color'></i></td><td>" + filename + " was processed successfully</td></tr>";
+                    return "00|<i class='icon-check icon-larger green-color'></i>File was processed successfully";
                 }
                 catch (DbEntityValidationException e)
                 {
@@ -215,5 +277,131 @@ namespace DQI.DAL.Services
             }
         }
 
+
+        List<ProcessTable> ReadExcelTable(ExcelWorksheet entrysheet)
+        {
+            List<ProcessTable> processTable = new List<ProcessTable>();
+            for (int row = 2; row <= 10;)
+            {
+                var cell = entrysheet.Cells["A" + row];
+
+                if (cell != null && cell.Value != null && cell.Value.ToString() != "0")
+                {
+                    processTable.Add(new ProcessTable
+                    {
+                        Name = ExcelHelper.ReadCellText(entrysheet, row, 1),
+                        Numerator_Definition = ExcelHelper.ReadCellText(entrysheet, row, 2),
+                        Denominator_Definition = ExcelHelper.ReadCellText(entrysheet, row + 1, 2),
+                        Week_1 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["C" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["C" + (row + 1)].Value.ToInt()
+                        },
+                        Week_2 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["D" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["D" + (row + 1)].Value.ToInt()
+                        },
+                        Week_3 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["E" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["E" + (row + 1)].Value.ToInt()
+                        },
+                        Week_4 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["F" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["F" + (row + 1)].Value.ToInt()
+                        },
+                        Week_5 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["G" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["G" + (row + 1)].Value.ToInt()
+                        },
+                        Week_6 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["H" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["H" + (row + 1)].Value.ToInt()
+                        },
+                        Week_7 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["I" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["I" + (row + 1)].Value.ToInt()
+                        },
+                        Week_8 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["J" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["J" + (row + 1)].Value.ToInt()
+                        },
+                        Week_9 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["K" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["K" + (row + 1)].Value.ToInt()
+                        },
+                        Week_10 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["L" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["L" + (row + 1)].Value.ToInt()
+                        },
+                        Week_11 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["M" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["M" + (row + 1)].Value.ToInt()
+                        },
+                        Week_12 = new WeekData
+                        {
+                            Numerator = entrysheet.Cells["N" + row].Value.ToInt(),
+                            Denominator = entrysheet.Cells["N" + (row + 1)].Value.ToInt()
+                        }
+                    });
+                }
+                row = row + 2;
+            }
+            return processTable;
+        }
+
     }
+
+    
 }
+
+
+//var reported_data = new XElement("reported_data");
+//var indicators = new XElement("indicators");
+//indicators.Add(new XElement("process_indicator", entrysheet.Cells["A2"].Value));
+//                    indicators.Add(new XElement("process_indicator", entrysheet.Cells["A4"].Value));
+//                    indicators.Add(new XElement("process_indicator", entrysheet.Cells["A6"].Value));
+//                    indicators.Add(new XElement("process_indicator", entrysheet.Cells["A8"].Value));
+//                    indicators.Add(new XElement("process_indicator", entrysheet.Cells["A10"].Value));
+//                    reported_data.Add(indicators);
+
+//                    var num = new XElement("numerators");
+//num.Add(new XElement("Week_1", entrysheet.Cells["C2"].Value));
+//                    num.Add(new XElement("Week_2", entrysheet.Cells["D2"].Value));
+//                    num.Add(new XElement("Week_3", entrysheet.Cells["E2"].Value));
+//                    num.Add(new XElement("Week_4", entrysheet.Cells["F2"].Value));
+//                    num.Add(new XElement("Week_5", entrysheet.Cells["G2"].Value));
+//                    num.Add(new XElement("Week_6", entrysheet.Cells["H2"].Value));
+//                    num.Add(new XElement("Week_7", entrysheet.Cells["I2"].Value));
+//                    num.Add(new XElement("Week_8", entrysheet.Cells["J2"].Value));
+//                    num.Add(new XElement("Week_9", entrysheet.Cells["K2"].Value));
+//                    num.Add(new XElement("Week_10", entrysheet.Cells["L2"].Value));
+//                    num.Add(new XElement("Week_11", entrysheet.Cells["M2"].Value));
+//                    num.Add(new XElement("Week_12", entrysheet.Cells["N2"].Value));
+//                    reported_data.Add(num);
+
+//                    var den = new XElement("denominators");
+//den.Add(new XElement("Week_1", entrysheet.Cells["C3"].Value));
+//                    den.Add(new XElement("Week_2", entrysheet.Cells["D3"].Value));
+//                    den.Add(new XElement("Week_3", entrysheet.Cells["E3"].Value));
+//                    den.Add(new XElement("Week_4", entrysheet.Cells["F3"].Value));
+//                    den.Add(new XElement("Week_5", entrysheet.Cells["G3"].Value));
+//                    den.Add(new XElement("Week_6", entrysheet.Cells["H3"].Value));
+//                    den.Add(new XElement("Week_7", entrysheet.Cells["I3"].Value));
+//                    den.Add(new XElement("Week_8", entrysheet.Cells["J3"].Value));
+//                    den.Add(new XElement("Week_9", entrysheet.Cells["K3"].Value));
+//                    den.Add(new XElement("Week_10", entrysheet.Cells["L3"].Value));
+//                    den.Add(new XElement("Week_11", entrysheet.Cells["M3"].Value));
+//                    den.Add(new XElement("Week_12", entrysheet.Cells["N3"].Value));
+//                    reported_data.Add(den);
+                    
+//                    report.Indicators = reported_data.ToString();

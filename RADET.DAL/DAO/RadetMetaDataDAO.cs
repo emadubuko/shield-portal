@@ -155,7 +155,7 @@ namespace RADET.DAL.DAO
             var result = session.Query<RadetPatientLineListing>()
                 .Where(x => x.SelectedForDQA && x.MetaData.RadetPeriod == RadetPeriod
                                              && x.MetaData.IP.ShortName == IP
-                                             && x.MetaData.Facility.Trim() == facility);
+                                             && x.MetaData.Facility.Trim() == facility).OrderBy(x => x.RadetPatient.PatientId);
             return result.ToList();
         }
 

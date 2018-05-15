@@ -39,6 +39,16 @@ namespace CommonUtil.Utilities
             return val;
         }
 
+        public static int? ToInt(this object item)
+        {
+            if (item == null)
+                return null;
+            
+            int val = 0;
+            int.TryParse(item.ToString(), out val);
+            return val;
+        }
+
         public static string GetFirstString(this string item)
         {
             if (string.IsNullOrEmpty(item))

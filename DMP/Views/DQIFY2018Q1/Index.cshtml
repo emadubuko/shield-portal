@@ -1,8 +1,539 @@
-﻿
+﻿@model List<DQI.DAL.Model.IPLevelDQI>
 @{
-    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/dqiFY18Q1Layout.cshtml";
 }
+@section AddToHead{
+    <style>
+        .Adjusted-header {
+            padding-left: 30%;
+            padding-top: 10px;
+            height: 30px;
+            color: chocolate;
+            font-weight: bold;
+        }
 
-<h2>Index</h2>
+        .form-horizontal .form-group {
+            border-bottom: 1px solid #ccc;
+        }
 
+        div > span {
+            color: #333;
+        }
+
+        .flexheader {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+
+        .panel-warning {
+            border-color: #fff;
+        }
+
+            .panel-warning > .panel-heading {
+                color: #FFF;
+                background-color: chocolate;
+                border-color: chocolate;
+            }
+
+        .form-control {
+            border-color: cadetblue;
+        }
+
+        .title {
+            font-weight: 300;
+            color: #000;
+            padding-left: 10px;
+        }
+
+        .table-responsive {
+            min-height: .01%;
+            overflow-x: initial !important;
+        }
+        tr {
+            text-align: left !important;
+        }
+    </style>
+}
+
+
+<h2>Dashboard</h2>
+
+
+
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix" style="padding:8px 30%">
+            <h5 class="panel-title">Upload tracker</h5>
+            <div style="float:right">
+                <i style="display:none" id="loadImg"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>
+            </div>
+        </div>
+
+
+        <div class="panel-body">
+            <div class="table-responsive" style="overflow:initial">
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Worst Performing Indicator</th>
+                            <th>#Sites affected</th>
+                            <th>Last updated Date</th>
+                            <th>Uploaded By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr style="text-align: CENTER;">
+                                <td>@item.IP</td>
+                                <td>@item.WorstPerformingIndicator</td>
+                                <td>@item.AffectedSites</td>
+                                <td>@item.LastUpdatedDate.ToString("dd-MMM-yyyy") </td>
+                                <td>@item.UploadedBy</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success view-details" id="@item.Id" style="text-transform:capitalize">
+                                        &nbsp;&nbsp;&nbsp;View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <br />
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="detailsModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" style="width: 97%;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="Adjusted-header">
+                    <h4>Details</h4>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" style="margin-top: -40px;float: right;"> Close</button>
+                </div>
+
+            </div>
+
+            <form id="previewWizard">
+
+                <div class="panel panel-warning">
+
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4">Implementing Partner</label>
+                                <span id="ImplementingPartner" class="col-sm-7"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    What DQA Indicator are you trying to improve?
+                                </label>
+                                <span id="DqaIndicator" class="col-sm-7"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    How many of the facilities are affected by this?
+                                </label>
+                                <span id="AffectedFacilityNumber" class="col-sm-7"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    What quality improvement approach will you use?
+                                </label>
+                                <span id="ImprovementApproach" class="col-sm-7"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    What data collection method are you using for this?
+                                </label>
+                                <span id="DataCollectionMethod" class="col-sm-7"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-warning">
+                    <div>
+                        <h4 class="Adjusted-header">Step 1: Identify</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4" for="Problem">
+                                    What is the problem?
+                                </label>
+                                <div>
+                                    <span id="Problem" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="how_you_know_this_is_the_problem">
+                                    How do you know this is a problem?
+                                </label>
+                                <div>
+                                    <span id="how_you_know_this_is_the_problem" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="ProblemResolved">
+                                    How will you know when the problem is resolved?
+                                </label>
+                                <div>
+                                    <span id="ProblemResolved" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-warning">
+                    <div>
+                        <h4 class="Adjusted-header">Step 2: Analyze</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4" for="WhyDoesProblemOccur">
+                                    Why does the problem occur?
+                                </label>
+                                <div>
+                                    <span id="WhyDoesProblemOccur" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="ImprovementApproach_Analyze">
+                                    Which Quality Improvement approach did you use to analyze the problem?
+                                </label>
+                                <div>
+                                    <span id="ImprovementApproach_Analyze" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-warning">
+                    <div>
+                        <h4 class="Adjusted-header">Step 3: Develop</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4" for="Interventions">
+                                    What possible interventions can help solve this problem?
+                                </label>
+                                <div>
+                                    <span id="Interventions" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="ImprovementApproach_Develop">
+                                    Which Quality Improvement approach did you apply in developing these interventions?
+                                </label>
+                                <div>
+                                    <span id="ImprovementApproach_Develop" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-warning">
+                    <div>
+                        <h4 class="Adjusted-header">Step 4: Test and implement</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4" for="ProcessTracking">
+                                    Which are the most viable interventions amongst all listed above that you have chosen?
+                                </label>
+                                <div>
+                                    <span id="ProcessTracking" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="MeasureIndicators">
+                                    How often will you measure these chosen indicators?
+                                </label>
+                                <div>
+                                    <span id="MeasureIndicators" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="EvaluateIndicators">
+                                    How often will you evaluate the indicators?
+                                </label>
+                                <div>
+                                    <span id="EvaluateIndicators" class="col-sm-7"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="Indicators" class="col-sm-push-3 col-sm-8"></div>
+
+                <div class="row">
+                    <div class="col-sm-push-2 col-sm-7">
+                        <div id="processchart"></div>
+                    </div>                   
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.modal-dialog').draggable({
+                handle: ".modal-header"
+            });
+
+            $(".view-details").click(function (e) {
+
+                $("#loadImg").show();
+                var ip = 1;
+                $.ajax({
+                    url: '/DQIFY2018Q1/RetriveDetails?id=' + e.currentTarget.id,
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                }).done(function (data) {
+                    populatemodal(data)
+                    $('#detailsModal').modal('show');
+                    $("#loadImg").hide()
+                }).error(function (xhr, status, err) {
+                    alert("System has error occurred");
+                    console.log(xhr.responseText);
+                });
+                return false;
+            });
+
+
+            function populatemodal(data) {
+
+                Object.keys(data).forEach(function (key, index) {
+                    if (key === "Indicators") {
+                    }
+                    else if (key === "Interventions" || key === "ProcessTracking" || key === "WhyDoesProblemOccur") {
+                        let val = data[key];
+                        $("#" + key).html(val);
+                    }
+                    else {
+                        $("#" + key).html(data[key]);
+                    }
+
+                });
+
+                //build table and chart
+                $("#Indicators").empty();
+                let chartData = [];
+                
+                var table = "<table class='table table-striped table-bordered'><thead><tr><th>Process Indicator</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>Week 5</th><th>Week 6</th><th>Week 7</th><th>Week 8</th><th>Week 9</th><th>Week 10</th><th>Week 11</th><th>Week 12</th></tr></thead>";
+                table += "<tbody>";
+
+                data.Indicators.forEach(function (val, i) {
+                   
+                    let indicators = val.ProcessTable;
+                    var name = val.Name;
+                    if (name !== "0") {                       
+                        var linedata = [];
+
+                        table += "<tr>";
+                        table += "<td>" + name + "</td>";
+                        if (val.Week_1.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_1 = 100 * val.Week_1.Numerator / val.Week_1.Denominator;
+                            linedata.push(percent_val_1);
+                            table += "<td>" + parseFloat(percent_val_1).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_2.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_2 = 100 * val.Week_2.Numerator / val.Week_2.Denominator;
+                            linedata.push(percent_val_2);
+                            table += "<td>" + parseFloat(percent_val_2).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_3.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_3 = 100 * val.Week_3.Numerator / val.Week_3.Denominator;
+                            linedata.push(percent_val_3);
+                            table += "<td>" + parseFloat(percent_val_3).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_4.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_4 = 100 * val.Week_4.Numerator / val.Week_4.Denominator;
+                            linedata.push(percent_val_4);
+                            table += "<td>" + parseFloat(percent_val_4).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_5.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_5 = 100 * val.Week_5.Numerator / val.Week_5.Denominator;
+                            linedata.push(percent_val_5);
+                            table += "<td>" + parseFloat(percent_val_5).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_6.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_6 = 100 * val.Week_6.Numerator / val.Week_6.Denominator;
+                            linedata.push(percent_val_6);
+                            table += "<td>" + parseFloat(percent_val_6).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_7.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_7 = 100 * val.Week_7.Numerator / val.Week_7.Denominator;
+                            linedata.push(percent_val_7);
+                            table += "<td>" + parseFloat(percent_val_7).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_8.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_8 = 100 * val.Week_8.Numerator / val.Week_8.Denominator;
+                            linedata.push(percent_val_8);
+                            table += "<td>" + parseFloat(percent_val_8).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_9.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_9 = 100 * val.Week_9.Numerator / val.Week_9.Denominator;
+                            linedata.push(percent_val_9);
+                            table += "<td>" + parseFloat(percent_val_9).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_10.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_10 = 100 * val.Week_10.Numerator / val.Week_10.Denominator;
+                            linedata.push(percent_val_10);
+                            table += "<td>" + parseFloat(percent_val_10).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_11.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_11 = 100 * val.Week_11.Numerator / val.Week_11.Denominator;
+                            linedata.push(percent_val_11);
+                            table += "<td>" + parseFloat(percent_val_11).toFixed("2") + "</td>";
+                        }
+                        if (val.Week_12.Numerator === null) {
+                            table += "<td></td>";
+                        }
+                        else {
+                            var percent_val_12 = 100 * val.Week_12.Numerator / val.Week_12.Denominator;
+                            linedata.push(percent_val_12);
+                            table += "<td>" + parseFloat(percent_val_12).toFixed("2") + "</td>";
+                        }
+                        table += "</tr>";
+
+                        chartData[i] = { name: name, data: linedata };
+                    }
+                });
+                
+                table += "</table>";
+                $("#Indicators").append(table);
+                 
+                buildChart(chartData)
+            }
+
+
+            function buildChart(data) {
+
+
+                Highcharts.chart('processchart', {
+                    title: {
+                        text: 'Process Improvement Chart'
+                    },
+                    xAxis: {
+                        categories: [
+                            'Week 1',
+                            'Week 2',
+                            'Week 3',
+                            'Week 4',
+                            'Week 5',
+                            'Week 6',
+                            'Week 7',
+                            'Week 8',
+                            'Week 9',
+                            'Week 10',
+                            'Week 11',
+                            'Week 12',
+                        ]
+                    },
+                    yAxis: {
+                        title: {
+                            text: '% achivement'
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
+                    },
+
+                    plotOptions: {
+                        series: {
+                            label: {
+                                connectorAllowed: false
+                            }, 
+                        }
+                    },
+
+                    series: data,
+
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 500
+                            },
+                            chartOptions: {
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom'
+                                }
+                            }
+                        }]
+                    }
+
+                });
+            }
+
+
+
+        });
+    </script>
+}
