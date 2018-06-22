@@ -1333,10 +1333,10 @@
     <Content Include="Report\Template\DQA FY2017 Q3\realData Quality Assessment tool_v3.xlsm" />
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.xlsx" />
     <Content Include="Report\Template\DQA FY2017 Q4\Summary Sheet Q4 DQA.pdf" />
-    <None Include="Properties\PublishProfiles\portal.pubxml" />
     <Content Include="Report\Template\DQI\Q1 FY18\DQI TOOL_unlocked.xlsm" />
     <Content Include="Report\Template\DQA FY2018 Q2\DATIM PIVOT TABLE Q2 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q2\Summary Sheet FY18 Q2 DQA.pdf" />
+    <None Include="Properties\PublishProfiles\myprofile.pubxml" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />

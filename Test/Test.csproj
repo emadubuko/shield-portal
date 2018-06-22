@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AfenetUtil.cs" />
+    <Compile Include="Ifunaya.cs" />
     <Compile Include="MosisFiles.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

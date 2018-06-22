@@ -40,8 +40,8 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            
-            CopyExcelFileContent();
+            Ifunaya.MergeFiles();
+           // CopyExcelFileContent();
             //LGADao dao = new LGADao();
             //var lga = dao.RetrieveAll().GroupBy(x=>x.State.state_name);
             //var states = new List<St>();

@@ -40,6 +40,20 @@ namespace ShieldPortal.ViewModel
         public string RadetPeriod { get; set; }
         public string LGA { get; set; }
         public string State { get; set; }
+
+        public string CurrentAge
+        {
+            get
+            {
+                double days = DateTime.Now.Subtract(ARTStartDate.Value).TotalDays;
+                if (AgeInYears != 0)
+                {
+                    return AgeInYears + Math.Round(days / 365, 0) + " years";
+                }
+                else
+                    return AgeInMonths + Math.Round(days / 30, 0) + " months";
+            }
+        }
     }
 
     public class RandomizerModel

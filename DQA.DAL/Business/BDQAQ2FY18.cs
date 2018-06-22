@@ -626,6 +626,7 @@ namespace DQA.DAL.Business
 
                     if (radet != null)
                     {
+                        //radet = radet.OrderBy(x => x.RadetPatient.PatientId).ToList();
                         var sheet = package.Workbook.Worksheets["TX_CURR"];
 
                         int row = 1;

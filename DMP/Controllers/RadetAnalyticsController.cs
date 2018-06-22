@@ -344,13 +344,21 @@ namespace ShieldPortal.Controllers
 
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("IP, State, LGA, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status");
+            sb.AppendLine("IP, State, LGA, Facility, Patient Id,Hospital No,Sex,Age At Start Of ART (In Years),Age At Start Of ART (In Months),ART Start Date,Last Pickup Date,Months Of ARV Refill,Regimen Line At ART Start,Regimen At Start Of ART,Current Regimen Line,Current ART Regimen,Pregnancy Status,Current Viral Load,Date Of Current Viral Load,Viral Load Indication,Current ART Status, Current Age");
 
             Action<ExportData> _action = (ExportData pt) =>
             {
-                sb.AppendLine(string.Format("{0},{1},{2},\'{3}\',\'{4}\',\'{5}\',{6},{7},{8},{9:dd-MMM-yyyy},{10:dd-MMM-yyyy},{11},\'{12}\',\'{13}\',\'{14}\',\'{15}\',{16},\'{17}\',{18}, \'{19}\', {20}",
-                                  pt.IPShortName, pt.State, pt.LGA, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "", !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo : "", !string.IsNullOrEmpty(pt.Sex) ? pt.Sex : "",
-                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill, !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "", !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus, !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "", pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MMM-yyyy") : "", pt.ViralLoadIndication, pt.CurrentARTStatus));
+                sb.AppendLine(string.Format("{0},{1},{2},\'{3}\',\'{4}\',\'{5}\',{6},{7},{8},{9:dd-MMM-yyyy},{10:dd-MMM-yyyy},{11},\'{12}\',\'{13}\',\'{14}\',\'{15}\',{16},\'{17}\',{18}, \'{19}\', {20}, {21}",
+                                  pt.IPShortName, pt.State, pt.LGA, pt.Facility.Replace(',', ' '), !string.IsNullOrEmpty(pt.PatientId) ? pt.PatientId : "",
+                                  !string.IsNullOrEmpty(pt.HospitalNo) ? pt.HospitalNo : "", !string.IsNullOrEmpty(pt.Sex) ? pt.Sex : "",
+                                  pt.AgeInYears, pt.AgeInMonths, pt.ARTStartDate, pt.LastPickupDate, pt.MonthsOfARVRefill,
+                                  !string.IsNullOrEmpty(pt.RegimenLineAtARTStart) ? pt.RegimenLineAtARTStart.Replace(',', ' ') : "",
+                                  !string.IsNullOrEmpty(pt.RegimenAtStartOfART) ? pt.RegimenAtStartOfART.Replace(',', ' ') : "",
+                                  !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentRegimenLine.Replace(',', ' ') : "",
+                                  !string.IsNullOrEmpty(pt.CurrentRegimenLine) ? pt.CurrentARTRegimen.Replace(',', ' ') : "", pt.PregnancyStatus,
+                                  !string.IsNullOrEmpty(pt.CurrentViralLoad) ? pt.CurrentViralLoad.Replace(',', ' ') : "",
+                                  pt.DateOfCurrentViralLoad.HasValue ? pt.DateOfCurrentViralLoad.Value.ToString("dd-MMM-yyyy") : "",
+                                  pt.ViralLoadIndication, pt.CurrentARTStatus, pt.CurrentAge));
             };
 
             List<ExportData> result = new List<ViewModel.ExportData>();

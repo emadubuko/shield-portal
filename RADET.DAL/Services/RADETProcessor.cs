@@ -42,7 +42,10 @@ namespace RADET.DAL.Services
                     active.Shuffle();
                     inactive.Shuffle();
 
+                    //newTable.AddRange(active.Where(x=>x.RandomlySelect).Take(no_of_active_to_select));
+                    //newTable.AddRange(inactive.Where(x => x.RandomlySelect).Take(no_of_inactive_to_select));
 
+                    
                     foreach (var item in active.Take(no_of_active_to_select))
                     {
                         item.RandomlySelect = true;
@@ -79,7 +82,7 @@ namespace RADET.DAL.Services
                         int i = _dao.RunSQL(sb_0.ToString());
                         if (i != S_0.Count())
                             throw new ApplicationException("an error occured");
-                    }
+                    }                    
                 }
             }
 
