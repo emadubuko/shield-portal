@@ -130,7 +130,7 @@ namespace DQI.DAL.Services
             }
         }
 
-        public string ProcessUpload(string filename, Profile loggedinProfile)
+        public string ProcessUpload(string filename, Profile loggedinProfile, string ReportPeriod)
         {
             using (ExcelPackage package = new ExcelPackage(new FileInfo(filename)))
             {
@@ -226,7 +226,7 @@ namespace DQI.DAL.Services
                     }
                     report.EvaluateIndicators = datasheet.Cells["C41"].Value.ToString();
 
-                    report.ReportPeriod = "Q1 FY18";
+                    report.ReportPeriod = ReportPeriod;
                     report.LastUpdatedDate = DateTime.Now;
                     report.uploadedBy = loggedinProfile.Username;
 

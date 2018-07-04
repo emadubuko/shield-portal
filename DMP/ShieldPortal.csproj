@@ -230,6 +230,7 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2017Q4Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q2Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
+    <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1336,7 +1337,7 @@
     <Content Include="Report\Template\DQI\Q1 FY18\DQI TOOL_unlocked.xlsm" />
     <Content Include="Report\Template\DQA FY2018 Q2\DATIM PIVOT TABLE Q2 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q2\Summary Sheet FY18 Q2 DQA.pdf" />
-    <None Include="Properties\PublishProfiles\myprofile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1407,8 +1408,6 @@
     <Content Include="Views\NHMIS\Upload.cshtml" />
     <Content Include="Views\DQAFY2017Q2\RadetValidation.cshtml" />
     <Content Include="Views\DQAFY2017Q2\DQAAnalysisReport.cshtml" />
-    <Content Include="Views\Home\Index - Copy.cshtml" />
-    <Content Include="Views\Home\submenu - Copy.cshtml" />
     <Content Include="Views\NHMIS\Index.cshtml" />
     <Content Include="Views\DQAFY2017Q4\AllIPDQA.cshtml" />
     <Content Include="Views\DQAFY2017Q4\Analytics.cshtml" />
@@ -1457,6 +1456,10 @@
     <Content Include="Views\DQAFY2018Q2\UMB_Partner_Report.cshtml" />
     <Content Include="Views\DQAFY2018Q2\UploadDQA.cshtml" />
     <Content Include="Views\DQAFY2018Q2\UploadPivotTable.cshtml" />
+    <Content Include="Views\DQIFY2018Q2\DownloadDQITool.cshtml" />
+    <Content Include="Views\DQIFY2018Q2\Index.cshtml" />
+    <Content Include="Views\DQIFY2018Q2\UploadDQIResult.cshtml" />
+    <Content Include="Views\Shared\dqiFY18Q2Layout.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
