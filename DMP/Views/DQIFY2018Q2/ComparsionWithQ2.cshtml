@@ -59,15 +59,16 @@
                     </select>
                 </div>
 
-                <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
+                <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
                 <div class="col-sm-4">
-                    <select id="sltFacility" class="select2 form-control custom_filter" data-id="3" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
-                        @foreach (var f in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.FacilityName).OrderBy(x => x))
+                    <select id="sltLGA" class="select2 form-control custom_filter" data-id="2" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
+                        @foreach (var l in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.LGA).Distinct().OrderBy(x => x.lga_name))
                         {
-                            <option value="@f">@f</option>
+                            <option value="@l.lga_code">@l.lga_name</option>
                         }
                     </select>
                 </div>
+                
             </div>
 
             <div class="form-group">
@@ -81,12 +82,12 @@
                     </select>
                 </div>
 
-                <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
+                <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
                 <div class="col-sm-4">
-                    <select id="sltLGA" class="select2 form-control custom_filter" data-id="2" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
-                        @foreach (var l in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.LGA).Distinct().OrderBy(x => x.lga_name))
+                    <select id="sltFacility" class="select2 form-control custom_filter" data-id="3" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
+                        @foreach (var f in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.FacilityName).OrderBy(x => x))
                         {
-                            <option value="@l.lga_code">@l.lga_name</option>
+                            <option value="@f">@f</option>
                         }
                     </select>
                 </div>
