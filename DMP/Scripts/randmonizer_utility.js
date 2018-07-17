@@ -61,7 +61,7 @@ function populate_all_controls() {
             _buildLGA.push(a.LGA.lga_code);
             $("#sltLGA").append($('<option>', {
                 value: a.LGA.lga_code,
-                text: a.LGA.DisplayName
+                text: a.LGA.lga_name
             }));
         }
         if (checkforuniqueness(_buildFacility, a.FacilityName).length == 0) {
@@ -100,7 +100,7 @@ $("#sltIP").change(function (e) {
                 _buildLGA_.push(a.LGA.lga_code);
                 $("#sltLGA").append($('<option>', {
                     value: a.LGA.lga_code,
-                    text: a.LGA.DisplayName
+                    text: a.LGA.lga_name
                 }));
             }
             if (checkforuniqueness(_buildFacility_, a.FacilityName).length == 0) {
@@ -130,7 +130,7 @@ $("#sltIP").change(function (e) {
                     _buildLGA_.push(a.LGA.lga_code);
                     $("#sltLGA").append($('<option>', {
                         value: a.LGA.lga_code,
-                        text: a.LGA.DisplayName
+                        text: a.LGA.lga_name
                     }));
                 }
                 if (checkforuniqueness(_buildFacility_, a.FacilityName).length == 0) {
@@ -163,7 +163,7 @@ $("#sltstate").change(function (e) {
                 _buildLGA_.push(a.LGA.lga_code);
                 $("#sltLGA").append($('<option>', {
                     value: a.LGA.lga_code,
-                    text: a.LGA.DisplayName
+                    text: a.LGA.lga_name
                 }));
             }
             if (checkforuniqueness(_buildFacility_, a.FacilityName).length == 0) {
@@ -188,7 +188,7 @@ $("#sltstate").change(function (e) {
                         _buildLGA_.push(z.LGA.lga_code);
                         $("#sltLGA").append($('<option>', {
                             value: z.LGA.lga_code,
-                            text: z.LGA.DisplayName
+                            text: z.LGA.lga_name
                         }));
                     }
                 });
@@ -209,7 +209,7 @@ $("#sltstate").change(function (e) {
                     _buildLGA_.push(a.LGA.lga_code);
                     $("#sltLGA").append($('<option>', {
                         value: a.LGA.lga_code,
-                        text: a.LGA.DisplayName
+                        text: a.LGA.lga_name
                     }));
                 }
                 if (checkforuniqueness(_buildFacility_, a.FacilityName).length == 0) {

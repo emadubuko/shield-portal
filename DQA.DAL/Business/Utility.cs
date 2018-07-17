@@ -317,7 +317,9 @@ namespace DQA.DAL.Business
                 List<PivotTableModel> result = new List<PivotTableModel>();
                 foreach (var item in pivotTableUpload)
                 {
-                    result.AddRange((from table in item.dqa_pivot_table.OrderByDescending(x => x.SelectedForDQA)
+                    result.AddRange((from table in item.dqa_pivot_table
+                                     .OrderByDescending(x => x.SelectedForDQA)
+                                     
                                      select new PivotTableModel
                                      {
                                          Id = table.Id,

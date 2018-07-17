@@ -9,11 +9,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using ShieldPortal.ViewModel;
+using System.Data.SqlClient;
+using CommonUtil.DBSessionManager;
+using System.Data;
 
 namespace ShieldPortal.Services
 {
     public class Utils
     {
+        public List<IPLGAFacility> GetDashBoardFilter(string IP)
+        {
+            string sql = "select ip.ShortName 'IP', hf.Name, l.lga_code from HealthFacility hf, ImplementingPartners ip,  lga l where hf.ImplementingPartnerId = ip.Id and hf.LGAId = l.lga_code";
+            if (!string.IsNullOrEmpty(IP))
+            {
+                sql = string.Format("{0} and ip.ShortName='{1}'", sql, IP);
+            }
+
+            var cmd = new SqlCommand(sql);
+            var data = DQA.DAL.Business.Utility.GetDatable(cmd);
+
+            List<IPLGAFacility> IPLocation = new List<IPLGAFacility>();
+            var lgas = new BaseDAO<LGA, int>().RetrieveAll().ToDictionary(x => x.lga_code);
+
+            foreach (DataRow dr in data.Rows)
+            {
+                string lga = Convert.ToString(dr[2]);
+                IPLocation.Add(new IPLGAFacility
+                {
+                    IP = Convert.ToString(dr[0]),
+                    FacilityName = Convert.ToString(dr[1]),
+                    LGA = lgas[lga]
+                });
+            }
+            return IPLocation.Distinct().ToList();
+        }
 
         public static IQueryable<IdentityRole> RetrieveRoles()
         {

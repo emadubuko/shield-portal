@@ -6,6 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
+using System.Data.SqlClient;
+using System.Data;
+using DQA.DAL.Business;
+using Newtonsoft.Json;
+using ShieldPortal.ViewModel;
 
 namespace ShieldPortal.Controllers
 {
@@ -17,6 +22,32 @@ namespace ShieldPortal.Controllers
             var loggedinUser = new Utils().GetloggedInProfile();
             var reports = new QIEngine().RetrieveUpload(loggedinUser, "Q2 FY18");
             return View(reports);
+        }
+
+        public ActionResult ComparsionWithQ2(string report_type = "partners")
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_FY18_Comparison_Fail_Count_2_Quarter";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@secondPeriod", "Q2 FY18");
+            cmd.Parameters.AddWithValue("@firstPeriod", "Q1 FY18");
+            cmd.Parameters.AddWithValue("@ip", ip);
+            cmd.Parameters.AddWithValue("@get_partner_report", report_type.ToLower().Contains("partners"));
+            var data = Utility.GetDatable(cmd);
+
+            string JSONresult;
+            JSONresult = JsonConvert.SerializeObject(data);
+            var convertedResult = JsonConvert.DeserializeObject<List<DQAFailCountComparisonModel>>(JSONresult);
+
+            ViewBag.IPLocation = new Utils().GetDashBoardFilter(ip);
+
+            return View(convertedResult);
         }
 
         [HttpPost]
@@ -45,7 +76,7 @@ namespace ShieldPortal.Controllers
         }
 
         public ActionResult UploadDQIResult()
-        {
+        { 
             return View();
         }
 

@@ -52,4 +52,15 @@ namespace ShieldPortal.ViewModel
         public string State_name { get; set; }
         public string Lga_name { get; set; }
     }
+
+    public class DQAFailCountComparisonModel
+    {
+        public string IP { get; set; }
+        public string Facility { get; set; }         
+        public string State { get; set; }
+        public string Lga { get; set; }
+        public int? Q2_FAIL_COUNT { get; set; }
+        public int? Q1_FAIL_COUNT { get; set; }
+
+    }
 }
