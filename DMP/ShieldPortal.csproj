@@ -229,6 +229,7 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2017Q4Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q2Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2018Q3Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
@@ -1338,6 +1339,8 @@
     <Content Include="Report\Template\DQA FY2018 Q2\DATIM PIVOT TABLE Q2 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q2\Summary Sheet FY18 Q2 DQA.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Report\Template\DQA FY2018 Q3\DATIM PIVOT TABLE FOR Q3 FY18.xlsx" />
+    <Content Include="Report\Template\DQA FY2018 Q3\Summary Sheet FY18 Q3 DQA.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1461,6 +1464,15 @@
     <Content Include="Views\DQIFY2018Q2\UploadDQIResult.cshtml" />
     <Content Include="Views\Shared\dqiFY18Q2Layout.cshtml" />
     <Content Include="Views\DQIFY2018Q2\ComparsionWithQ2.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\Analytics.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\dashboard.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\UMB_Partner_Report.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2018Q3\UploadPivotTable.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1505,6 +1517,7 @@
     <Content Include="Views\Shared\dqiFY18Q1Layout.cshtml" />
     <Content Include="Views\Shared\_mpmlayout.cshtml" />
     <Content Include="Views\Shared\_dqaFY18Q2layout.cshtml" />
+    <Content Include="Views\Shared\_dqaFY18Q3layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

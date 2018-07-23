@@ -1,37 +1,31 @@
 ﻿using CommonUtil.DAO;
-using CommonUtil.Mapping;
+using CommonUtil.Entities;
 using CommonUtil.Utilities;
 using DQA.DAL.Data;
 using DQA.DAL.Model;
+using OfficeOpenXml;
+using RADET.DAL.DAO;
+using RADET.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
-using System.Web;
+using System.Threading.Tasks;
 
 namespace DQA.DAL.Business
 {
-    public static class Utility
+    public class Utility
     {
         readonly static shield_dmpEntities entity = new shield_dmpEntities();
 
-        /// <summary>
-        /// Get the number of states a parnter is working in
-        /// </summary>
-        /// <param name="partnerId">the id of the partner</param>
-        /// <returns>The number of states a partner has facilities in</returns>
         public static int GetIpStateCount(int partnerId)
         {
-
             var cmd = new SqlCommand();
             cmd.CommandText = string.Format("select count(distinct(state_code)) from [dbo].[lga] where lga_code in (select lgaId from [dbo].[HealthFacility]  where [ImplementingPartnerId]={0})", partnerId);
             cmd.CommandType = CommandType.Text;
-
             var result = GetNumberValue(cmd);
-
-
-
             return result; //.Select(e=>e.State).Distinct().Count();
         }
 
@@ -42,16 +36,10 @@ namespace DQA.DAL.Business
         /// <returns>The number of lgas a partner has facilities in</returns>
         public static int GetIpLGACount(int partnerId)
         {
-            //return entity.HealthFacilities.Where(e => e.ImplementingPartnerId == partnerId).Select(e => e.LGA).Distinct().Count();
-
             var cmd = new SqlCommand();
             cmd.CommandText = string.Format("select count(distinct(lga_code)) from [dbo].[lga] where lga_code in (select lgaId from [dbo].[HealthFacility]  where [ImplementingPartnerId]={0})", partnerId);
             cmd.CommandType = CommandType.Text;
-
             var result = GetNumberValue(cmd);
-
-
-
             return result;
         }
 
@@ -79,7 +67,6 @@ namespace DQA.DAL.Business
 
         public static List<StateSummary> GetStateIpStateSummary(int partnerId, string reporting_period)
         {
-
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_get_IP_state_summary";
             cmd.CommandType = CommandType.StoredProcedure;
@@ -100,47 +87,23 @@ namespace DQA.DAL.Business
                 }
                 summaries.Add(summary);
             }
-
-            //var states= entity.dqa_facility.Where(e => e.Partners == partnerId).Select(e => e.State).Distinct();
-            //var summaries = new List<StateSummary>();
-            //foreach (var stateId in states)
-            //{
-            //    var summary = new StateSummary();
-            //    var state = entity.dqa_states.FirstOrDefault(e => e.id == stateId);
-            //    if (state == null) continue;
-            //    summary.Id = state.id;
-            //    summary.Name = state.state_name;
-
-            //    //get the facilities submitted for the state
-            //    summary.Submitted = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.StateId == stateId && e.ReportPeriod == reporting_period).Count();
-            //    var total_state_facilities = entity.dqa_facility.Count(e => e.Partners == partnerId && e.State == stateId);
-            //    summary.Pending = total_state_facilities - summary.Submitted;
-            //    if (total_state_facilities > 0)
-            //    {
-            //        var value= (float.Parse(summary.Submitted.ToString()) / float.Parse(total_state_facilities.ToString())) * 100;
-
-            //        summary.Percentage =Convert.ToInt32(value);//((summary.Submitted / total_state_facilities) * 100);
-            //    }
-            //    summaries.Add(summary);
-            //}
             return summaries;
         }
 
-
-        public static List<HealthFacility> GetSubmittedFacilities(int partnerId, string reporting_period)
+        public static List<Data.HealthFacility> GetSubmittedFacilities(int partnerId, string reporting_period)
         {
             var facility_ids = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == reporting_period).Select(e => e.Id).ToList();
             return entity.HealthFacilities.Where(x => facility_ids.Contains((int)x.Id)).ToList();
         }
 
 
-        public static List<HealthFacility> GetPendingFacilities(int partnerId, string reporting_period)
+        public static List<Data.HealthFacility> GetPendingFacilities(int partnerId, string reporting_period)
         {
             var facility_ids = entity.dqa_report_metadata.Where(e => e.ImplementingPartner == partnerId && e.ReportPeriod == reporting_period).Select(e => e.Id).ToList();
             return entity.HealthFacilities.Where(x => !facility_ids.Contains((int)x.Id)).ToList();
         }
 
-        public static HealthFacility GetFacility(int facilityId)
+        public static Data.HealthFacility GetFacility(int facilityId)
         {
             return entity.HealthFacilities.FirstOrDefault(e => e.Id == facilityId);
         }
@@ -184,7 +147,6 @@ namespace DQA.DAL.Business
             {
                 connection.Open();
                 SqlDataAdapter da = new SqlDataAdapter(command);
-                // this will query your database and return the result to your datatable
                 da.Fill(dataTable);
             }
             finally
@@ -194,81 +156,14 @@ namespace DQA.DAL.Business
             return dataTable;
         }
 
-        /*
-        public static lga GetLga(string lgaId)
-        {
-            return entity.lgas.FirstOrDefault(e=>e.lga_code==lgaId);
-        }
-
-        public static state GetState(int stateId)
-        {
-            return entity.states.Find(stateId);
-        }
-
-        public static string GetFacilityLevel(int levelId)
-        {
-            try
-            {
-                return "";// entity.dqa_facility_level.FirstOrDefault(e => e.Id == levelId).FacilityLevel;
-            }
-            
-            catch (Exception)
-            {
-                return "";
-            }
-        }
-
-        public static string GetFacilityType(int typeId)
-        {
-            try
-            {
-                return "";//entity.dqa_facility_type.FirstOrDefault(e => e.Id == typeId).TypeName;
-            }
-            catch(Exception ex)
-            {
-                return "";
-            }
-            
-        }
-
-        public static string GetStringValue(SqlCommand command)
-        {
-            var connection = (SqlConnection)entity.Database.Connection;
-            command.Connection = connection;
-            //command.CommandType = CommandType.StoredProcedure;
-            var result = "";
-            try
-            {
-                connection.Open();
-
-                result = (string)command.ExecuteScalar();
-
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return result;
-
-        }
-        */
-
         public static int GetNumberValue(SqlCommand command)
         {
             var connection = (SqlConnection)entity.Database.Connection;
             command.Connection = connection;
-            //command.CommandType = CommandType.StoredProcedure;
             var result = 0;
             try
             {
                 connection.Open();
-
                 result = (int)command.ExecuteScalar();
             }
             catch (Exception)
@@ -286,7 +181,6 @@ namespace DQA.DAL.Business
         {
             var conn = (SqlConnection)entity.Database.Connection;
             SqlDataAdapter da = new SqlDataAdapter();
-            //SqlCommand cmd = conn.CreateCommand();
             cmd.Connection = conn;
             da.SelectCommand = cmd;
             DataSet ds = new DataSet();
@@ -319,7 +213,7 @@ namespace DQA.DAL.Business
                 {
                     result.AddRange((from table in item.dqa_pivot_table
                                      .OrderByDescending(x => x.SelectedForDQA)
-                                     
+
                                      select new PivotTableModel
                                      {
                                          Id = table.Id,
@@ -331,7 +225,6 @@ namespace DQA.DAL.Business
                                          OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
 
                                          PMTCT_ART = table.PMTCT_ART,
-
                                          TX_CURR = table.TX_CURR,
                                          HTC_Only = table.HTC_Only,
                                          HTC_Only_POS = table.HTC_Only_POS,
@@ -411,7 +304,6 @@ namespace DQA.DAL.Business
 
         public static List<PivotTableModel> RetrievePivotTablesForComparison(List<string> ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
         {
-
             var list = (from item in entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter)
                         from table in item.dqa_pivot_table
                         where table.TX_CURR > 0
@@ -452,7 +344,6 @@ namespace DQA.DAL.Business
 
         public static List<PivotTableModel> RetrievePivotTablesForNDR(List<string> ip, string quarter, List<string> state_code = null, List<string> lga_code = null, List<string> facilityName = null)
         {
-
             var list = (from item in entity.dqa_pivot_table_upload.Where(x => x.Quarter == quarter)
                         from table in item.dqa_pivot_table
                         where table.TX_CURR > 0
@@ -496,8 +387,6 @@ namespace DQA.DAL.Business
 
         public static DataTable GetRADETNumbers(string partnerShortName, string startQuarterDate, string endQuarterDate, string radetPeriod)
         {
-            // string radetPeriod = System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_aggregate_radet";
             cmd.CommandType = CommandType.StoredProcedure;
@@ -546,18 +435,8 @@ namespace DQA.DAL.Business
 
             return dataTable;
         }
-        //public static DataTable GetQ1FY18Analysis(string IP_id, bool get_partner_report)
-        //{
-        //    var cmd = new SqlCommand();
-        //    cmd.CommandText = "get_q1_FY18_analysis_report";
-        //    cmd.CommandType = CommandType.StoredProcedure;
-        //    cmd.Parameters.AddWithValue("@ip", IP_id);
-        //    cmd.Parameters.AddWithValue("@get_partner_report", get_partner_report);
-        //    var dataTable = GetDatable(cmd);
 
-        //    return dataTable;
-        //}
-        public static DataTable GetFY18Analysis(string IP_id,string reportPeriod, bool get_partner_report)
+        public static DataTable GetFY18Analysis(string IP_id, string reportPeriod, bool get_partner_report)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "get_FY18_analysis_report_by_quarter";
@@ -569,7 +448,6 @@ namespace DQA.DAL.Business
 
             return dataTable;
         }
-
 
         public static DataSet GetDashboardStatistic(string IP, string reportPeriod)
         {
@@ -597,6 +475,218 @@ namespace DQA.DAL.Business
             entity.dqa_pivot_table.RemoveRange(data.dqa_pivot_table).ToList();
             entity.dqa_pivot_table_upload.Remove(data);
             entity.SaveChanges();
+        }
+
+        public static string GetReportDetails(int metadataid)
+        {
+            var report_value = new dqa_report_value();
+            var result = (from item in entity.dqa_report_value.Where(x => x.MetadataId == metadataid)
+                          select new
+                          {
+                              item.dqa_indicator.ThematicArea,
+                              item.dqa_indicator.IndicatorName,
+                              item.IndicatorValueMonth1,
+                              item.IndicatorValueMonth2,
+                              item.IndicatorValueMonth3
+                          }).ToList();
+            string Processed_result = Newtonsoft.Json.JsonConvert.SerializeObject(result);
+            return Processed_result;
+        }
+
+        public async Task<string> GenerateDQA(List<PivotTableModel> facilities, Organizations ip, string fileName, string directory, string template, string reportingPeriod)
+        {
+            string zippedFile = directory + "\\" + fileName;
+
+            if (Directory.Exists(directory) == false)
+            {
+                Directory.CreateDirectory(directory);
+            }
+            else
+            {
+                try
+                {
+                    string[] filenames = Directory.GetFiles(directory);
+                    foreach (var file in filenames)//incase the folder is not empty
+                    {
+                        File.Delete(file);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
+            }
+            var artSites = Utilities.GetARTSiteWithDATIMCode();
+
+            //site name come from pivot table and names match the data in health facility in the database
+            foreach (var site in facilities)
+            {
+                artSites.TryGetValue(site.FacilityCode, out string radetSite);
+
+                if (string.IsNullOrEmpty(radetSite))
+                {
+                    radetSite = site.FacilityName;
+                }
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
+                {
+                    var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, radetSite);
+                    radet = radet.Where(x => !x.MetaData.Supplementary).ToList();
+                    if (radet.Count > 107)
+                    {
+                        radet.Shuffle();
+                        radet = radet.Take(107).ToList();
+                    }
+                    int tx_current_count = radet.Count;
+
+                    int viral_load_count = radet.Count(x => !string.IsNullOrEmpty(x.CurrentViralLoad));
+                    int viral_load_count_suppression = 0;
+
+
+                    if (radet != null)
+                    {
+                        var sheet = package.Workbook.Worksheets["TX_CURR"];
+
+                        int row = 1;
+                        for (int i = 0; i < radet.Count(); i++)
+                        {
+                            row++;
+                            sheet.Cells["A" + row].Value = radet[i].RadetPatient.PatientId;
+                            sheet.Cells["B" + row].Value = radet[i].RadetPatient.HospitalNo;
+                            sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
+                            sheet.Cells["D" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_years == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_years.ToString();
+                            sheet.Cells["E" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_months == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_months.ToString();
+                            sheet.Cells["F" + row].Value = radet[i].ARTStartDate;// string.Format("{0:d-MMM-yyyy}", radet[i].ARTStartDate);
+                            sheet.Cells["F" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                            sheet.Cells["G" + row].Value = radet[i].LastPickupDate; // string.Format("{0:d-MMM-yyyy}", radet[i].LastPickupDate);
+                            sheet.Cells["G" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+
+                            sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill;
+
+                            sheet.Cells["M" + row].Value = radet[i].RegimenLineAtARTStart;
+                            sheet.Cells["N" + row].Value = radet[i].RegimenAtStartOfART;
+
+                            sheet.Cells["Q" + row].Value = radet[i].CurrentRegimenLine;
+                            sheet.Cells["R" + row].Value = radet[i].CurrentARTRegimen;
+                            sheet.Cells["U" + row].Value = radet[i].PregnancyStatus;
+
+                            string currentViralLoad = radet[i].CurrentViralLoad;
+                            sheet.Cells["V" + row].Value = currentViralLoad;
+                            sheet.Cells["W" + row].Value = radet[i].DateOfCurrentViralLoad; // string.Format("{0:d-MMM-yyyy}", radet[i].DateOfCurrentViralLoad);
+                            sheet.Cells["W" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                            sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
+                            sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
+
+                            if (!string.IsNullOrEmpty(currentViralLoad) && !string.IsNullOrEmpty(currentViralLoad.Trim()))
+                            {
+                                int.TryParse(currentViralLoad, out int cvl);
+                                if (cvl <= 1000)
+                                {
+                                    viral_load_count_suppression += 1;
+                                }
+                            }
+                        }
+                    }
+
+                    var sheetn = package.Workbook.Worksheets["Worksheet"];
+                    sheetn.Cells["P2"].Value = site.IP;
+                    sheetn.Cells["R2"].Value = site.State;
+                    sheetn.Cells["T2"].Value = site.Lga;
+                    sheetn.Cells["V2"].Value = site.FacilityName;
+                    sheetn.Cells["AA2"].Value = site.FacilityCode;
+                    sheetn.Cells["Y2"].Value = reportingPeriod;
+
+                    sheetn.Cells["N10"].Value = tx_current_count;
+
+                    var sheet__all_Q = package.Workbook.Worksheets["All Questions"];
+                    //hts_tst
+                    sheet__all_Q.Cells["F2"].Value = site.HTS_TST;
+                    sheet__all_Q.Cells["F3"].Value = site.HTC_Only_POS + site.PMTCT_STAT_NEW;
+                    sheet__all_Q.Cells["F4"].Value = site.HTC_Only;
+                    sheet__all_Q.Cells["F5"].Value = site.HTC_Only_POS;
+                    //pmtct_stat
+                    sheet__all_Q.Cells["F12"].Value = site.PMTCT_STAT;
+                    sheet__all_Q.Cells["F13"].Value = site.PMTCT_STAT_NEW;
+                    sheet__all_Q.Cells["F14"].Value = site.PMTCT_STAT_PREV;
+                    //pmtct_art
+                    sheet__all_Q.Cells["F23"].Value = site.PMTCT_ART;
+                    //pmtct_eid
+                    sheet__all_Q.Cells["F28"].Value = site.PMTCT_EID;
+                    //PMTCT_HEI_POS
+                    sheet__all_Q.Cells["F33"].Value = site.PMTCT_HEI_POS;
+                    //TX_NEW
+                    sheet__all_Q.Cells["F38"].Value = site.TX_NEW;
+
+                    //TB_STAT
+                    sheet__all_Q.Cells["F44"].Value = site.TB_STAT;
+                    //TB_ART
+                    sheet__all_Q.Cells["F50"].Value = site.TB_ART;
+                    //TX_TB
+                    sheet__all_Q.Cells["F55"].Value = site.TX_TB;
+                    //PMTCT_FO
+                    sheet__all_Q.Cells["F65"].Value = site.PMTCT_FO;
+
+                    var sheet__all_Summary = package.Workbook.Worksheets["DQA Summary (Map to Quest Ans)"];
+                    sheet__all_Summary.Cells["E12"].Value = tx_current_count;
+
+                    package.SaveAs(new FileInfo(directory + "/" + site.FacilityName + ".xlsm"));
+                }
+            }
+            await new Utilities().ZipFolder(directory);
+            return fileName;
+        }
+
+
+        public List<dynamic> RadetForValidationData(RadetMetaDataSearchModel searchModel, string ip, string period, string startDate, string endDate)
+        {
+            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
+            var pivot_data = Utility.RetrievePivotTablesForComparison(new List<string> { ip }, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
+            var artSites = Utilities.GetARTSiteWithDATIMCode();
+
+            List<dynamic> mydata = new List<dynamic>();
+            List<dynamic> mydata2 = new List<dynamic>();
+
+            foreach (DataRow dr in radet_data.Rows)
+            {
+                var dtt = new
+                {
+                    ShortName = dr[0],
+                    Facility = dr[1],
+                    Tx_New = dr[2],
+                    Tx_Curr = dr[3],
+                };
+                mydata.Add(dtt);
+            }
+            foreach (var item in pivot_data)
+            {
+                string radetSite;
+                artSites.TryGetValue(item.FacilityCode, out radetSite);
+                if (string.IsNullOrEmpty(radetSite))
+                {
+                    radetSite = item.FacilityName;
+                }
+                var r_data = mydata.FirstOrDefault(x => x.ShortName == item.IP && x.Facility == radetSite);
+                if (r_data != null)
+                {
+                    int tx_new = item.TX_NEW.HasValue ? item.TX_NEW.Value : 0;
+                    mydata2.Add(new
+                    {
+                        ShortName = item.IP,
+                        State = item.TheLGA.state.state_name,
+                        LGA = $"{item.TheLGA.lga_name}",
+                        Facility = item.FacilityName,
+                        r_data.Tx_New,
+                        p_Tx_New = item.TX_NEW,
+                        Tx_New_difference = Math.Abs((int)r_data.Tx_New - tx_new),
+                        Tx_New_concurrency = 100 * Math.Abs((int)r_data.Tx_New - tx_new) / (int)r_data.Tx_New,
+
+                        r_data.Tx_Curr,
+                        p_Tx_Curr = item.TX_CURR,
+                        Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
+                        Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
+                    });
+                }
+            }
+            return mydata2;
         }
     }
 }

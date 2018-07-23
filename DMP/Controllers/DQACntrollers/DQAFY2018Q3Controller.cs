@@ -19,10 +19,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace ShieldPortal.Controllers
+namespace ShieldPortal.Controllers.DQACntrollers
 {
-    public class DQAFY2018Q2Controller : Controller
+    public class DQAFY2018Q3Controller : Controller
     {
+        // GET: DQAFY2018Q3
         public ActionResult Index()
         {
             int ip_id = 0;
@@ -36,13 +37,13 @@ namespace ShieldPortal.Controllers
 
         public ActionResult UploadPivotTable()
         {
-            var profile = new Utils().GetloggedInProfile();            
+            var profile = new Utils().GetloggedInProfile();
             int ip_id = 0;
             if (User.IsInRole("ip"))
             {
                 ip_id = profile.Organization.Id;
             }
-            List<UploadList> previousUploads = Utility.RetrievePivotTables(ip_id, "Q2 FY18");
+            List<UploadList> previousUploads = Utility.RetrievePivotTables(ip_id, "Q3 FY18");
             return View(previousUploads);
         }
 
@@ -50,7 +51,7 @@ namespace ShieldPortal.Controllers
         public string ProcesssPivotTable(string reportPeriod)
         {
             HttpResponseMessage msg = null;
-            string result = ""; 
+            string result = "";
             if (Request.Files.Count == 0 || string.IsNullOrEmpty(Request.Files[0].FileName))
             {
                 msg = new HttpResponseMessage(HttpStatusCode.BadRequest); //, );
@@ -68,7 +69,7 @@ namespace ShieldPortal.Controllers
                 Request.Files[0].SaveAs(directory + Request.Files[0].FileName);
 
                 Stream uploadedFile = Request.Files[0].InputStream;
-                bool status = new BDQAQ2FY18().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
+                bool status = new BDQAQ3FY18().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
             }
             return result;
         }
@@ -83,7 +84,7 @@ namespace ShieldPortal.Controllers
                 ip = profile.Organization.ShortName;
             }
 
-            var reports = Utility.GetUploadReport("Q2 FY18", ip);
+            var reports = Utility.GetUploadReport("Q3 FY18", ip);
             List<dynamic> iplocation = new List<dynamic>();
             foreach (DataRow dr in reports.Rows)
             {
@@ -134,7 +135,7 @@ namespace ShieldPortal.Controllers
             {
                 var dtt = new
                 {
-                    DT_RowId = dr[9].ToString(), 
+                    DT_RowId = dr[9].ToString(),
                     IP = dr[0],
                     State = dr[1],
                     LGA = dr[3],
@@ -177,7 +178,7 @@ namespace ShieldPortal.Controllers
                 var profile = new Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var datatable = Utility.GetFY18Analysis(ip, "Q2 FY18", reportType.ToLower().Contains("partners"));
+            var datatable = Utility.GetFY18Analysis(ip, "Q3 FY18", reportType.ToLower().Contains("partners"));
             var data = new HighChartDataServices().GetConcurrency(datatable, reportType, ip);
             return View(data);
         }
@@ -189,9 +190,9 @@ namespace ShieldPortal.Controllers
             try
             {
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-                Logger.LogInfo(" DQAQ2 FY2018,PostDQAFile", "processing dqa upload");
+                Logger.LogInfo(" DQAQ3 FY2018,PostDQAFile", "processing dqa upload");
 
-                HttpResponseMessage result = null; 
+                HttpResponseMessage result = null;
 
                 if (Request.Files.Count > 0)
                 {
@@ -204,7 +205,7 @@ namespace ShieldPortal.Controllers
                         if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                         {
                             string directory = System.Web.Hosting.HostingEnvironment
-                                .MapPath("~/Report/Uploads/DQA Q2 FY18/" 
+                                .MapPath("~/Report/Uploads/DQA Q3 FY18/"
                                 + loggedinProfile.Organization.ShortName) + "/";
                             if (Directory.Exists(directory) == false)
                             {
@@ -256,7 +257,7 @@ namespace ShieldPortal.Controllers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                messages += new BDQAQ2FY18().ReadWorkbook(extractedFilePath, loggedinProfile);
+                                                messages += new BDQAQ3FY18().ReadWorkbook(extractedFilePath, loggedinProfile);
                                                 countSuccess++;
                                             }
                                         }
@@ -273,7 +274,7 @@ namespace ShieldPortal.Controllers
                             }
                             else
                             {
-                                messages += new BDQAQ2FY18().ReadWorkbook(filePath, loggedinProfile);
+                                messages += new BDQAQ3FY18().ReadWorkbook(filePath, loggedinProfile);
                             }
                         }
                         else
@@ -294,7 +295,7 @@ namespace ShieldPortal.Controllers
             }
             return messages;
         }
-         
+
         public ActionResult DQAAnalysisReport(string type)
         {
             string ip = "";
@@ -306,7 +307,7 @@ namespace ShieldPortal.Controllers
             var cmd = new SqlCommand();
             cmd.CommandText = "get_FY18_analysis_report_by_quarter";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@reportPeriod", "Q2 FY18");
+            cmd.Parameters.AddWithValue("@reportPeriod", "Q3 FY18");
             cmd.Parameters.AddWithValue("@ip", ip);
             cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
             var data = Utility.GetDatable(cmd);
@@ -318,7 +319,7 @@ namespace ShieldPortal.Controllers
             return View(convertedResult);
         }
 
-       //this is comparison chart between dqa done by umb and the partners
+        //this is comparison chart between dqa done by umb and the partners
         public ActionResult UMB_Partner_Report()
         {
             string ip = "";
@@ -328,15 +329,13 @@ namespace ShieldPortal.Controllers
                 ip = profile.Organization.ShortName;
             }
 
-            var partner_datatable = Utility.GetFY18Analysis(ip,"Q2 FY18", true);
-            var umb_datatable = Utility.GetFY18Analysis(ip, "Q2 FY18", false);
+            var partner_datatable = Utility.GetFY18Analysis(ip, "Q3 FY18", true);
+            var umb_datatable = Utility.GetFY18Analysis(ip, "Q3 FY18", false);
             var Partners_data = new HighChartDataServices().GetConcurrency(partner_datatable, "Partners", ip);
             var UMB_data = new HighChartDataServices().GetConcurrency(umb_datatable, "umb", ip);
-            //var Partners_data = new HighChartDataServices().GetQ1HTCConcurrency("Partners", ip);
-            //var UMB_data = new HighChartDataServices().GetQ1HTCConcurrency("umb", ip);
+       
+            List<DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
 
-            List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
-             
             mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.htc_drilldown, UMB_data.AllDataModel.htc_drilldown, "HTC_TST"));
             mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_stat_drilldown, UMB_data.AllDataModel.pmtct_stat_drilldown, "PMTCT_STAT"));
             mainData.AddRange(AppendComparisonList(Partners_data.AllDataModel.pmtct_art_drilldown, UMB_data.AllDataModel.pmtct_art_drilldown, "PMTCT_ART"));
@@ -350,9 +349,9 @@ namespace ShieldPortal.Controllers
             return View(Partners_data);
         }
 
-        List<ViewModel.DQACompariosnModelMain> AppendComparisonList(List<ViewModel.ChildSeriesData> Partnersdata, List<ViewModel.ChildSeriesData> UMBdata, string type)
+        List<DQACompariosnModelMain> AppendComparisonList(List<ChildSeriesData> Partnersdata, List<ChildSeriesData> UMBdata, string type)
         {
-            List<ViewModel.DQACompariosnModelMain> mainData = new List<ViewModel.DQACompariosnModelMain>();
+            List<DQACompariosnModelMain> mainData = new List<DQACompariosnModelMain>();
 
             var ip_htc_group = Partnersdata.GroupBy(x => x.name);
             foreach (var k in ip_htc_group)
@@ -381,18 +380,18 @@ namespace ShieldPortal.Controllers
                     }
                 }
 
-                mainData.Add(new ViewModel.DQACompariosnModelMain
+                mainData.Add(new DQACompariosnModelMain
                 {
                     indicator = type,
                     Sites = sites, //partner_nums.Select(x => x.Key).ToList(),
-                    data = new List<ViewModel.DQAComparisonModel>
+                    data = new List<DQAComparisonModel>
                     {
                         new ViewModel.DQAComparisonModel
                       {
                            data = _partnerNumbers, //partner_nums.Select(x=>x.Value).ToList(),
                             Type = k.Key,
                       },
-                        new ViewModel.DQAComparisonModel
+                        new DQAComparisonModel
                       {
                            data = _umb_numbers, //umb_nums.Select(x=>x.Value).ToList(),
                             Type = "UMB",
@@ -410,7 +409,7 @@ namespace ShieldPortal.Controllers
             Dictionary<string, double> d = new Dictionary<string, double>();
             for (int i = 0; i < input.Count;)
             {
-                d.Add(Convert.ToString(input[i]), Math.Round(Convert.ToDouble(input[i + 1]), 2)); 
+                d.Add(Convert.ToString(input[i]), Math.Round(Convert.ToDouble(input[i + 1]), 2));
                 i += 2;
             }
             return d;
@@ -422,11 +421,11 @@ namespace ShieldPortal.Controllers
             {
                 PopulateStates();
                 return View("AllIPDQA");
-            } 
+            }
             else if (User.IsInRole("ip"))
             {
-                var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
-                ViewBag.ip_name = new Services.Utils().GetloggedInProfile().Organization.Name;
+                var ip_id = new Utils().GetloggedInProfile().Organization.Id;
+                ViewBag.ip_name = new Utils().GetloggedInProfile().Organization.Name;
 
                 PopulateStates();
 
@@ -457,7 +456,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult UploadDQA()
         {
-            var ip_id = new Services.Utils().GetloggedInProfile().Organization.Id;
+            var ip_id = new Utils().GetloggedInProfile().Organization.Id;
             ViewBag.ip_id = ip_id;
 
             return View();
@@ -490,7 +489,7 @@ namespace ShieldPortal.Controllers
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
-            string currentPeriod = "Q2 FY18";
+            string currentPeriod = "Q3 FY18";
 
             int getIP = 0;
             if (User.IsInRole("ip"))
@@ -509,9 +508,12 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public async Task<ActionResult> DownloadDQATool(List<PivotTableModel> data)
         {
-            var profile = new Services.Utils().GetloggedInProfile();
-            //the radet period is on the config file
-            string file = await new BDQAQ2FY18().GenerateDQA(data, profile.Organization);
+            var profile = new Utils().GetloggedInProfile();
+
+            string fileName = "DQA_Q3_" + profile.Organization.ShortName + ".zip";
+            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q3/DQA_Q3_" + profile.Organization.ShortName);
+            string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q3/FY18_Q3_Data Quality Assessment tool_v6.xlsm");
+            string file = await new Utility().GenerateDQA(data, profile.Organization, fileName, directory,template, "Q3 FY18");
 
             return Json(file, JsonRequestBehavior.AllowGet);
         }
@@ -523,16 +525,16 @@ namespace ShieldPortal.Controllers
             switch (fileType)
             {
                 case "DQAUserGuide":
-                    filename = "Data Quality Assessment Userguide Q2 FY18.pdf";
+                    filename = "Data Quality Assessment Userguide Q3 FY18.pdf";
                     break;
                 case "PivotTable":
-                    filename = "DATIM PIVOT TABLE Q2 FY18.xlsx";
+                    filename = "DATIM PIVOT TABLE FOR Q3 FY18.xlsx";
                     break;
                 case "SummarySheet":
-                    filename = "Summary Sheet FY18 Q2 DQA.pdf";
+                    filename = "Summary Sheet FY18 Q3 DQA.pdf";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q2/" + filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q3/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
@@ -544,7 +546,7 @@ namespace ShieldPortal.Controllers
 
         public ActionResult RadetValidation()
         {
-            string period = "Q2 FY18";
+            string period = "Q3 FY18";
             string ip = "";
             var profile = new Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -582,12 +584,12 @@ namespace ShieldPortal.Controllers
             var search = Request["search[value]"];
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
 
-            string period = "Q2 FY18";
-            string startDate = "2018-01-01 00:00:00.000";
-            string endDate = "2018-03-31 23:59:59.000";
+            string period = "Q3 FY18";
+            string startDate = "2018-04-01";
+            string endDate = "2018-06-30";
 
             string ip = "";
-            var profile = new Services.Utils().GetloggedInProfile();
+            var profile = new Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
                 ip = profile.Organization.ShortName;
             else
@@ -605,6 +607,6 @@ namespace ShieldPortal.Controllers
                            iTotalDisplayRecords = mydata2.Count(),
                            aaData = mydata2
                        });
-        } 
+        }
     }
 }
