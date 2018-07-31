@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "~/Views/Shared/_genLayout.cshtml";
+    ViewBag.Title = "MER Surface | Data Quality Improvement";
+}
+
+
+@section AddToHead{
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/bundles/CreateDMPCss")
+    <script type="text/javascript">
+        {
+            var profileId = '@ShieldPortal.Services.Utils.LoggedinProfileID';
+        }
+    </script>
+    <style>
+        .panel-default {
+            border-color: darkorange;
+        }
+
+            .panel-default > .panel-heading {
+                color: #fff;
+                background-color: darkorange;
+                border-color: darkorange;
+            }
+
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+            background-color: darkorange;
+            border-color: darkorange;
+            color: #FFFFFF;
+            z-index: 5;
+        }
+
+        .pagination > li > a, .pagination > li > span, .pager > li > a, .pager > li > span {
+            color: darkorange;
+        }
+
+        .title {
+            font-weight: 500;
+            color: #000;
+            padding-left: 10px;
+        }
+
+        .main-header {
+            padding: 10px;
+            border-bottom: solid 2px darkorange;
+        }
+
+        .page-container {
+            background-color: #fff !important;
+        }
+    </style>
+
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+}
+
+<div class="main-content" style="padding-top: 0px;">
+
+    <div class="row" id="breadcrumb">
+        <div class="col-sm-5 col-sm-push-3">
+            <ol class="breadcrumb breadcrumb-2">
+                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                <li><a href="/Home/submenu?id=dmp">Data management</a></li>
+                <li class="active">Data Quality Improvement</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+
+        @*side bar*@
+        <div class="col-md-3">
+            <div class="page-sidebar">
+                <div class="sidebar">
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
+                        <li>
+                            <a href=@Url.Action("index", "DQIFY2018Q3") style="color:darkorange;">
+                                <i class="fa fa-area-chart"></i><span class="title">&nbsp;Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("ComparsionWithQ3", "DQIFY2018Q3", new { report_type="Partners"}) style="color:darkorange;">
+                                <i class="fa fa-area-chart"></i><span class="title">&nbsp;Comparsion With Q2</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("UploadDQIResult", "DQIFY2018Q3") style="color:darkorange;">
+                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp;Upload Report</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("DownloadDQITool", "DQIFY2018Q3") style="color:darkorange;">
+                                <i class="fa fa-download"></i><span class="title">&nbsp;Download DQI Tool</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                    <hr />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-9">
+            @RenderBody()
+        </div>
+    </div>
+
+</div>
+
+@section Scripts
+{
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/plugins/metismenu/js/jquery.metisMenu.js"></script>
+    <script src="~/Scripts/loader.js"></script>
+    @Scripts.Render("~/bundles/CreateDMPJs")
+    @Scripts.Render("~/bundles/dataTables")
+
+    <script src="~/Scripts/profile-display.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        $(".dt-button.buttons-collection.buttons-colvis").css('display', 'none')
+    </script>
+}
