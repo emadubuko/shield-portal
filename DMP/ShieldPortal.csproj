@@ -232,6 +232,7 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q3Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
+    <Compile Include="Controllers\DQIFY2018Q3Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1474,6 +1475,11 @@
     <Content Include="Views\DQAFY2018Q3\UMB_Partner_Report.cshtml" />
     <Content Include="Views\DQAFY2018Q3\UploadDQA.cshtml" />
     <Content Include="Views\DQAFY2018Q3\UploadPivotTable.cshtml" />
+    <Content Include="Views\DQIFY2018Q3\ComparsionWithQ3.cshtml" />
+    <Content Include="Views\DQIFY2018Q3\DownloadDQITool.cshtml" />
+    <Content Include="Views\DQIFY2018Q3\Index.cshtml" />
+    <Content Include="Views\DQIFY2018Q3\UploadDQIResult.cshtml" />
+    <Content Include="Views\Shared\dqiFY18Q3Layout.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
