@@ -517,6 +517,7 @@ namespace DQA.DAL.Business
                 }
             }
             var artSites = Utilities.GetARTSiteWithDATIMCode();
+            Logger.LogInfo("generate dqa", " got art sites");
 
             //site name come from pivot table and names match the data in health facility in the database
             foreach (var site in facilities)
@@ -530,63 +531,83 @@ namespace DQA.DAL.Business
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
                 {
                     var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, radetSite);
-                    radet = radet.Where(x => !x.MetaData.Supplementary).ToList();
-                    if (radet.Count > 107)
+                    int tx_current_count = site.TX_CURR;// 0;
+                    
+                    if (radet != null && radet.Count() > 0)
                     {
-                        radet.Shuffle();
-                        radet = radet.Take(107).ToList();
-                    }
-                    int tx_current_count = radet.Count;
-
-                    int viral_load_count = radet.Count(x => !string.IsNullOrEmpty(x.CurrentViralLoad));
-                    int viral_load_count_suppression = 0;
-
-
-                    if (radet != null)
-                    {
-                        var sheet = package.Workbook.Worksheets["TX_CURR"];
-
-                        int row = 1;
-                        for (int i = 0; i < radet.Count(); i++)
+                        radet = radet.Where(x => !x.MetaData.Supplementary).ToList();
+                        if (radet.Count > 107)
                         {
-                            row++;
-                            sheet.Cells["A" + row].Value = radet[i].RadetPatient.PatientId;
-                            sheet.Cells["B" + row].Value = radet[i].RadetPatient.HospitalNo;
-                            sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
-                            sheet.Cells["D" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_years == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_years.ToString();
-                            sheet.Cells["E" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_months == 0 ? "" : radet[i].RadetPatient.Age_at_start_of_ART_in_months.ToString();
-                            sheet.Cells["F" + row].Value = radet[i].ARTStartDate;// string.Format("{0:d-MMM-yyyy}", radet[i].ARTStartDate);
-                            sheet.Cells["F" + row].Style.Numberformat.Format = "d-MMM-yyyy";
-                            sheet.Cells["G" + row].Value = radet[i].LastPickupDate; // string.Format("{0:d-MMM-yyyy}", radet[i].LastPickupDate);
-                            sheet.Cells["G" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                            radet.Shuffle();
+                            radet = radet.Take(107).ToList();
+                        }
+                         tx_current_count = radet.Count;
 
-                            sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill;
-
-                            sheet.Cells["M" + row].Value = radet[i].RegimenLineAtARTStart;
-                            sheet.Cells["N" + row].Value = radet[i].RegimenAtStartOfART;
-
-                            sheet.Cells["Q" + row].Value = radet[i].CurrentRegimenLine;
-                            sheet.Cells["R" + row].Value = radet[i].CurrentARTRegimen;
-                            sheet.Cells["U" + row].Value = radet[i].PregnancyStatus;
-
-                            string currentViralLoad = radet[i].CurrentViralLoad;
-                            sheet.Cells["V" + row].Value = currentViralLoad;
-                            sheet.Cells["W" + row].Value = radet[i].DateOfCurrentViralLoad; // string.Format("{0:d-MMM-yyyy}", radet[i].DateOfCurrentViralLoad);
-                            sheet.Cells["W" + row].Style.Numberformat.Format = "d-MMM-yyyy";
-                            sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
-                            sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
-
-                            if (!string.IsNullOrEmpty(currentViralLoad) && !string.IsNullOrEmpty(currentViralLoad.Trim()))
-                            {
-                                int.TryParse(currentViralLoad, out int cvl);
-                                if (cvl <= 1000)
+                        int viral_load_count = radet.Count(x => !string.IsNullOrEmpty(x.CurrentViralLoad));
+                        int viral_load_count_suppression = 0;
+                        
+                        if (radet != null)
+                        {
+                            try
+                            {                                
+                                var sheet = package.Workbook.Worksheets["TX_CURR"];
+                                
+                                int row = 1;
+                                for (int i = 0; i < radet.Count(); i++)
                                 {
-                                    viral_load_count_suppression += 1;
+                                    row++;
+                                                                      
+                                    sheet.Cells["A" + row].Value = radet[i].RadetPatient.PatientId;
+                                    sheet.Cells["B" + row].Value = radet[i].RadetPatient.HospitalNo;
+                                    sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
+                                    sheet.Cells["D" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_years == 0 ? "" : string.Format("{0}", radet[i].RadetPatient.Age_at_start_of_ART_in_years);
+                                    sheet.Cells["E" + row].Value = radet[i].RadetPatient.Age_at_start_of_ART_in_months == 0 ? "" : string.Format("{0}", radet[i].RadetPatient.Age_at_start_of_ART_in_months);
+                                    sheet.Cells["F" + row].Value = radet[i].ARTStartDate;// string.Format("{0:d-MMM-yyyy}", radet[i].ARTStartDate);
+                                    sheet.Cells["F" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                                    sheet.Cells["G" + row].Value = radet[i].LastPickupDate; // string.Format("{0:d-MMM-yyyy}", radet[i].LastPickupDate);
+                                    sheet.Cells["G" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+
+                                    sheet.Cells["J" + row].Value = radet[i].MonthsOfARVRefill;
+
+                                    sheet.Cells["M" + row].Value = radet[i].RegimenLineAtARTStart;
+                                    sheet.Cells["N" + row].Value = radet[i].RegimenAtStartOfART;
+
+                                    sheet.Cells["Q" + row].Value = radet[i].CurrentRegimenLine;
+                                    sheet.Cells["R" + row].Value = radet[i].CurrentARTRegimen;
+                                    sheet.Cells["U" + row].Value = radet[i].PregnancyStatus;
+
+                                    string currentViralLoad = radet[i].CurrentViralLoad;
+                                    sheet.Cells["V" + row].Value = currentViralLoad;
+                                    sheet.Cells["W" + row].Value = radet[i].DateOfCurrentViralLoad; // string.Format("{0:d-MMM-yyyy}", radet[i].DateOfCurrentViralLoad);
+                                    sheet.Cells["W" + row].Style.Numberformat.Format = "d-MMM-yyyy";
+                                    sheet.Cells["X" + row].Value = radet[i].ViralLoadIndication;
+                                    sheet.Cells["Y" + row].Value = radet[i].CurrentARTStatus;
+
+                                    if (!string.IsNullOrEmpty(currentViralLoad) && !string.IsNullOrEmpty(currentViralLoad.Trim()))
+                                    {
+                                        int.TryParse(currentViralLoad, out int cvl);
+                                        if (cvl <= 1000)
+                                        {
+                                            viral_load_count_suppression += 1;
+                                        }
+                                    }
                                 }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogInfo("package ", package.File.FullName);
+                                Logger.LogInfo("package.Workbook.Worksheets.Count() ", package.Workbook.Worksheets.Count());
+                              
+                                Logger.LogInfo("generateDQA try_catch", string.Format("{0},{1},{2}", reportingPeriod, site.IP, radetSite));
+                                Logger.LogError(ex);
+                                throw ex;
                             }
                         }
                     }
-
+                    else
+                    {
+                        Logger.LogInfo("Genrate DQA", "No Radet file for facility " + radetSite);
+                    }
                     var sheetn = package.Workbook.Worksheets["Worksheet"];
                     sheetn.Cells["P2"].Value = site.IP;
                     sheetn.Cells["R2"].Value = site.State;

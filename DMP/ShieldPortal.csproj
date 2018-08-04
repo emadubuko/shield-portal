@@ -1341,6 +1341,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Report\Template\DQA FY2018 Q3\DATIM PIVOT TABLE FOR Q3 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q3\Summary Sheet FY18 Q3 DQA.pdf" />
+    <Content Include="Report\Template\DQA FY2018 Q3\FY18_Q3_Data Quality Assessment tool_v7.xlsm" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
