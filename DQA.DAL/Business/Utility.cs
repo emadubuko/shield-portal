@@ -274,6 +274,8 @@ namespace DQA.DAL.Business
                                                          select new PivotTableModel
                                                          {
                                                              IP = table.IP.ToString(),
+                                                             State = table.HealthFacility.lga.state.state_name,
+                                                             Lga  = table.HealthFacility.lga.lga_name,
                                                              FacilityName = table.HealthFacility.Name,
                                                              FacilityCode = table.HealthFacility.FacilityCode,
                                                              OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
