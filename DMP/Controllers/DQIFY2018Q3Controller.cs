@@ -20,7 +20,7 @@ namespace ShieldPortal.Controllers
         public ActionResult Index()
         {
             var loggedinUser = new Utils().GetloggedInProfile();
-            var reports = new QIEngine().RetrieveUpload(loggedinUser, "Q2 FY18");
+            var reports = new QIEngine().RetrieveUpload(loggedinUser, "Q3 FY18");
             return View(reports);
         }
 

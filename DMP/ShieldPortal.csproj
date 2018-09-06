@@ -1343,6 +1343,7 @@
     <Content Include="Report\Template\DQA FY2018 Q3\DATIM PIVOT TABLE FOR Q3 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q3\Summary Sheet FY18 Q3 DQA.pdf" />
     <Content Include="Report\Template\DQA FY2018 Q3\FY18_Q3_Data Quality Assessment tool_v7.xlsm" />
+    <Content Include="Report\Template\MPM\GSM_Template.xlsm" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1480,6 +1481,7 @@
     <Content Include="Views\DQIFY2018Q3\Index.cshtml" />
     <Content Include="Views\DQIFY2018Q3\UploadDQIResult.cshtml" />
     <Content Include="Views\Shared\dqiFY18Q3Layout.cshtml" />
+    <Content Include="Views\MPM\Download.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1534,7 +1536,6 @@
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
     <Folder Include="Report\Template\DQA FY2018 Q1\" />
-    <Folder Include="Report\Template\MPM\" />
     <Folder Include="Report\Uploads\DQA Q1 FY18\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
     <Folder Include="Report\Uploads\DQA Q4 FY17\" />

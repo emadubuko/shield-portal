@@ -11,13 +11,23 @@ namespace MPM.DAL.DTO
         public virtual Profile UploadedBy { get; set; }
         public virtual DateTime DateUploaded { get; set; }
         public virtual Organizations IP { get; set; }
-
+        public virtual ReportLevel ReportLevel { get; set; }
+        public virtual string ReportLevelValue { get; set; }
         public virtual IList<HTS_Index> HTS_Index { get; set; }
         public virtual IList<LinkageToTreatment> LinkageToTreatment { get; set; }
         public virtual IList<ART> ART { get; set; }
-        public virtual  IList<PMTCT_Viral_Load> Pmtct_Viral_Load { get; set; }
+        public virtual IList<PMTCT_Viral_Load> Pmtct_Viral_Load { get; set; }
         public virtual IList<HTS_Other_PITC> PITC { get; set; }
         public virtual IList<PMTCT> PMTCT { get; set; }
+        public virtual IList<PMTCT_EID> PMTCT_EID { get; set; }
+
+        public virtual IList<TB_TPT_Eligible> TB_TPT_Eligible { get; set; }
+        public virtual IList<TB_Screened> TB_Screened { get; set; }
+        public virtual IList<TB_Presumptive> TB_Presumptives { get; set; }
+        public virtual IList<TB_Presumptive_Diagnosed> TB_Presumptives_Diagnosis { get; set; }
+        public virtual IList<TB_TPT_Completed> TB_TPT_Completed { get; set; }
+        public virtual IList<TB_HIV_Treatment> TB_HIV_Treatment { get; set; }
+
     }
 
     public class UploadError
@@ -81,12 +91,70 @@ namespace MPM.DAL.DTO
         public virtual int? KnownHIVPos { get; set; }
         public virtual int? AlreadyOnART { get; set; }
 
-        public virtual int? SampleCollected_between_0_to_2 { get; set; }
-        public virtual int? Pos_between_0_to_2 { get; set; }
-        public virtual int? ARTInitiation_between_0_to_2 { get; set; }
-        public virtual int? SampleCollected_between_2_to_12 { get; set; }
-        public virtual int? Pos_between_2_to_12 { get; set; }
-        public virtual int? ARTInitiation_between_2_to_12 { get; set; }
+        //public virtual int? SampleCollected_between_0_to_2 { get; set; }
+        //public virtual int? Pos_between_0_to_2 { get; set; }
+        //public virtual int? ARTInitiation_between_0_to_2 { get; set; }
+        //public virtual int? SampleCollected_between_2_to_12 { get; set; }
+        //public virtual int? Pos_between_2_to_12 { get; set; }
+        //public virtual int? ARTInitiation_between_2_to_12 { get; set; }
+
+        public virtual MetaData MetaData { get; set; }
+        public virtual int? NewClient { get; set; }
+        public virtual int? NewlyTested { get; set; }
+    }
+
+    public class PMTCT_EID
+    {
+        public virtual int Id { get; set; }
+        public virtual HealthFacility Site { get; set; }
+        public virtual string AgeGroup { get; set; }
+        public virtual int? SampleCollected { get; set; }
+        public virtual int? Pos { get; set; }
+        public virtual int? ARTInitiation { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_Screened : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_Presumptive : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_Presumptive_Diagnosed : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_TPT_Completed : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_TPT_Eligible : BaseT
+    {
+        public virtual int? PLHIV_eligible_for_TPT { get; set; }
+        public virtual int? Started_on_TPT { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_HIV_Treatment : BaseT
+    {
+        public virtual int? New_TB_Cases { get; set; }
+        public virtual int? Tx_TB { get; set; }
+        public virtual string Description { get; set; }
         public virtual MetaData MetaData { get; set; }
     }
 
@@ -114,5 +182,9 @@ namespace MPM.DAL.DTO
         Newly_Identified = 1,
         Already_HIV_Positive = 2
     }
-     
+
+    public enum ReportLevel
+    {
+        State, LGA, Facility, IP
+    }
 }

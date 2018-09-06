@@ -21,6 +21,8 @@ namespace CommonUtil.Entities
 
         public virtual Organizations Previous_IP { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }
-         
+
+        public virtual bool GranularSite { get; set; }
+
     }
 }

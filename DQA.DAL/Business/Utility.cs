@@ -5,6 +5,7 @@ using DQA.DAL.Data;
 using DQA.DAL.Model;
 using OfficeOpenXml;
 using RADET.DAL.DAO;
+using RADET.DAL.Entities;
 using RADET.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -275,7 +276,7 @@ namespace DQA.DAL.Business
                                                          {
                                                              IP = table.IP.ToString(),
                                                              State = table.HealthFacility.lga.state.state_name,
-                                                             Lga  = table.HealthFacility.lga.lga_name,
+                                                             Lga = table.HealthFacility.lga.lga_name,
                                                              FacilityName = table.HealthFacility.Name,
                                                              FacilityCode = table.HealthFacility.FacilityCode,
                                                              OVC_Total = table.OVC.HasValue && table.OVC_NotReported.HasValue ? table.OVC.Value + table.OVC_NotReported.Value : 0,
@@ -521,20 +522,26 @@ namespace DQA.DAL.Business
             var artSites = Utilities.GetARTSiteWithDATIMCode();
             Logger.LogInfo("generate dqa", " got art sites");
 
+            IList<RadetPatientLineListing> radet = null;
+
             //site name come from pivot table and names match the data in health facility in the database
             foreach (var site in facilities)
             {
                 artSites.TryGetValue(site.FacilityCode, out string radetSite);
 
-                if (string.IsNullOrEmpty(radetSite))
+                if (!string.IsNullOrEmpty(radetSite))
                 {
-                    radetSite = site.FacilityName;
+                    radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, radetSite);
                 }
+                if(radet == null || radet.Count == 0)
+                {
+                    radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, site.FacilityName);
+                }
+
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
                 {
-                    var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, radetSite);
                     int tx_current_count = site.TX_CURR;// 0;
-                    
+
                     if (radet != null && radet.Count() > 0)
                     {
                         radet = radet.Where(x => !x.MetaData.Supplementary).ToList();
@@ -543,22 +550,22 @@ namespace DQA.DAL.Business
                             radet.Shuffle();
                             radet = radet.Take(107).ToList();
                         }
-                         tx_current_count = radet.Count;
+                        tx_current_count = radet.Count;
 
                         int viral_load_count = radet.Count(x => !string.IsNullOrEmpty(x.CurrentViralLoad));
                         int viral_load_count_suppression = 0;
-                        
+
                         if (radet != null)
                         {
                             try
-                            {                                
+                            {
                                 var sheet = package.Workbook.Worksheets["TX_CURR"];
-                                
+
                                 int row = 1;
                                 for (int i = 0; i < radet.Count(); i++)
                                 {
                                     row++;
-                                                                      
+
                                     sheet.Cells["A" + row].Value = radet[i].RadetPatient.PatientId;
                                     sheet.Cells["B" + row].Value = radet[i].RadetPatient.HospitalNo;
                                     sheet.Cells["C" + row].Value = radet[i].RadetPatient.Sex;
@@ -599,7 +606,7 @@ namespace DQA.DAL.Business
                             {
                                 Logger.LogInfo("package ", package.File.FullName);
                                 Logger.LogInfo("package.Workbook.Worksheets.Count() ", package.Workbook.Worksheets.Count());
-                              
+
                                 Logger.LogInfo("generateDQA try_catch", string.Format("{0},{1},{2}", reportingPeriod, site.IP, radetSite));
                                 Logger.LogError(ex);
                                 throw ex;

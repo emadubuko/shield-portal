@@ -8,20 +8,7 @@
     <link href="~/Content/jquery-ui.css" rel="stylesheet" />
 
     <style>
-        /*th.rotate {
-            height: 90px;
-            white-space: nowrap;
-        }
-
-            th.rotate > div {
-                transform: rotate(-90deg);
-                width: 30px;
-            }
-
-                th.rotate > div > span {
-                    padding: 5px 10px;
-                }*/
-
+       
         .btn-sm, .btn-group-sm > .btn {
             padding: 0px;
         }
@@ -47,8 +34,8 @@
         <table style="width:100%" class="table table-striped table-bordered">
             <thead>
                 <tr style="color: #FFF;background-color: darkturquoise;border-color: darkturquoise;">
-                    <th></th>
                     <th>IP</th>
+                    <th>State</th>
                     <th><div><span>Jan @DateTime.Now.Year</span></div></th>
                     <th><div><span>Feb @DateTime.Now.Year</span></div></th>
                     <th><div><span>Mar @DateTime.Now.Year</span></div></th>
@@ -67,23 +54,21 @@
 
                 @foreach (var item in Model.IPReports)
                 {
-                    <tr>
-                        <td>
-                            @*<a href="~/BiWeeklyReport/BiWeeklyReportDownload?IP=@item.Key&fYear=@Model.SelectedYear" class="btn btn-sm btn-danger" style="text-transform:capitalize"><i class="icon-download"></i>Download</a>*@
-                        </td>
-                        <td>@item.Key</td>
-                        @foreach (var date in item.Value)
+                <tr>
+                    <td>@item.Key.Split('|')[1]</td>
+                    <td>@item.Key.Split('|')[0]</td>
+                    @foreach (var date in item.Value)
+                    {
+                        if (date)
                         {
-                            if (date)
-                            {
-                                <td><a class="btn btn-sm btn-success"><i class="icon-check"></i></a></td>
-                            }
-                            else
-                            {
-                                <td><a class="btn btn-sm btn-danger"><i class="icon-cancel"></i></a></td>
-                            }
+                            <td><a class="btn btn-sm btn-success"><i class="icon-check"></i></a></td>
                         }
-                    </tr>
+                        else
+                        {
+                            <td><a class="btn btn-sm btn-danger"><i class="icon-cancel"></i></a></td>
+                        }
+                    }
+                </tr>
                 }
             </tbody>
         </table>

@@ -7,18 +7,23 @@
 <div class="col-md-8">
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
-            Health Facilities
-            <span class="col-sm-push-6 col-sm-1">
+            <span class="col-sm-offset-2 col-sm-2">Health Facilities</span> 
+            <span class="col-sm-1">
                 <a id="uploadfacilitybtn" href='#' class="btn btn-black btn-sm btn-outline">
                     <i class="fa fa-plus"></i> Upload New Facilities
                 </a>
             </span>
-            <span class="col-sm-push-10 col-sm-1">
+            <span class="col-sm-offset-2 col-sm-1">
                 <a id="dmpCreate" href='@Url.Action("CreateHealthFacility", "HealthFacility")' class="btn btn-black btn-sm btn-outline">
                     <i class="fa fa-plus"></i> Add New Facility
                 </a>
-            </span>               
-                <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">            
+            </span>
+            <span class="col-sm-offset-2 col-sm-1">
+                <a id="markasGSM" href='#' class="btn btn-black btn-sm btn-outline">
+                    <i class="fa fa-plus"></i> Mark GSM Facilities
+                </a>
+            </span>
+            <img id="loadImg" style="display:none" class="center" src="~/images/spinner.gif" width="36">
         </div>
         <div class="panel-body">
             <div class="table-responsive">
@@ -91,10 +96,16 @@
                 $('#dmpCreate').disabled = true;
             });
 
+            let url;
             $("#uploadfacilitybtn").click(function () {
+                url = '/HealthFacility/Upload';
                 $('#uploadModal').modal('show');
             });
 
+            $("#markasGSM").click(function () {
+                url = '/HealthFacility/UploadGSM';
+                $('#uploadModal').modal('show');
+            });
 
             $("#upload").click(function (e, n) {
 
@@ -118,7 +129,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: '/HealthFacility/Upload',
+                    url: url,
                     contentType: false,
                     processData: false,
                     data: data,

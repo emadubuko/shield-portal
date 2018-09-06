@@ -16,43 +16,51 @@ namespace ShieldPortal.Controllers
     [Authorize]
     public class MPMController : Controller
     {
+        Profile loggedinProfile;
+
+        public MPMController()
+        {
+            loggedinProfile = new Services.Utils().GetloggedInProfile();
+        }
+
         // GET: MPM
         public ActionResult Index()
         {
-            Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
             var vm = new UploadViewModel();
-            vm.ImplementingPartner = loggedinProfile.RoleName == "ip" ? new List<string> { loggedinProfile.Organization.ShortName } : new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
-
+            //vm.ImplementingPartner = loggedinProfile.RoleName == "ip" ? new List<string> { loggedinProfile.Organization.ShortName } : new OrganizationDAO().RetrieveAll().Select(x => x.ShortName).ToList();
 
             vm.IPReports = new Dictionary<string, List<bool>>();
 
-            var reports = new MPMDAO().GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "").GroupBy(x => x.IPName);
-            foreach (var r in reports)
+            var reports = new MPMDAO().GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "", "", null)
+                .GroupBy(x => x.IPName);
+
+            foreach (var iplevel in reports)
             {
-                List<bool> uploaded = new List<bool>(12);
-                var ipEntries = r.ToList().Select(x => x.ReportPeriod).ToList();
-
-                foreach (var index in IndexPeriods.Keys)
+                vm.ImplementingPartner = iplevel.Key;
+                foreach (var state in iplevel.GroupBy(x=>x.ReportingLevelValue))
                 {
-                    if (ipEntries.Any(x => x.Contains(index)))
-                        uploaded.Add(true);
-                    else
-                        uploaded.Add(false);
+                    var entries = state.ToList().Select(x => x.ReportPeriod).ToList();
+                    List<bool> uploaded = new List<bool>(12);
+                    foreach (var index in IndexPeriods.Keys)
+                    {
+                        if (entries.Any(x => x.Contains(index)))
+                            uploaded.Add(true);
+                        else
+                            uploaded.Add(false);
+                    }
+                    vm.IPReports.Add(state.Key + "|"+ iplevel.Key, uploaded);
                 }
-
-                vm.IPReports.Add(r.Key, uploaded);
             }
             return View(vm);
         }
 
         public ActionResult Upload()
-        {           
+        {
             return View();
         }
 
         public JsonResult ProcessFile()
         {
-            Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
             string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/MPM/" + loggedinProfile.Organization.ShortName) + "\\";
             if (Directory.Exists(directory) == false)
             {
@@ -62,7 +70,7 @@ namespace ShieldPortal.Controllers
             if (Request.Files.Count == 0)
                 return Json("<span style='color: red;'> no file uploaded</span>");
 
-            var filePath = directory + DateTime.Now.ToString("dd MMM yyyy") + "_" + Request.Files[0].FileName; 
+            var filePath = directory + DateTime.Now.ToString("dd MMM yyyy") + "_" + Request.Files[0].FileName;
             Request.Files[0].SaveAs(filePath);
 
             try
@@ -70,24 +78,33 @@ namespace ShieldPortal.Controllers
                 new TemplateProcessor().ReadFile(Request.Files[0].InputStream, loggedinProfile);
                 return Json("Uploaded succesfully");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json("<span style='color: red;'>" + ex.Message + "</span>");
             }
         }
-         
 
-        public async Task<ActionResult> DownloadTemplate()
+        public ActionResult Download()
         {
-            Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-            string file = new TemplateProcessor().PopulateTemplate(loggedinProfile);
+            var facilities = new HealthFacilityDAO().RetrievebyIP(loggedinProfile.Organization.Id);
+            List<State> states = new List<State>();
+            if (facilities != null)
+                states.AddRange(facilities.Select(x => x.LGA.State).Distinct());
 
-            using (var stream = System.IO.File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
-            {
-                byte[] fileBytes = new byte[stream.Length];
-                await stream.ReadAsync(fileBytes, 0, fileBytes.Length);
-                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "CDC MPM Tool_" + loggedinProfile.Organization.ShortName + ".xlsm");
-            } 
+            return View(states);
+        }
+
+        [HttpPost]
+        public JsonResult DownloadTemplate(string state)
+        {
+            string file = new TemplateProcessor().PopulateTemplate(loggedinProfile, state);
+            return Json(file, JsonRequestBehavior.AllowGet);
+            //using (var stream = System.IO.File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            //{
+            //    byte[] fileBytes = new byte[stream.Length];
+            //    await stream.ReadAsync(fileBytes, 0, fileBytes.Length);
+            //    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "CDC MPM Tool_" + loggedinProfile.Organization.ShortName + "_" + state + ".xlsm");
+            //} 
         }
 
         public ActionResult Dashboard()
@@ -95,7 +112,7 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
-       public Dictionary<string, int> IndexPeriods
+        public Dictionary<string, int> IndexPeriods
         {
             get
             {

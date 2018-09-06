@@ -101,7 +101,7 @@ namespace ShieldPortal.Controllers
                             var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQI Q1 FY18/" + postedFile.FileName);
                             postedFile.SaveAs(filePath);
 
-                            messages += new QIEngine().ProcessUpload(filePath, userUploading, "Q2 FY18");
+                            messages += new QIEngine().ProcessUpload(filePath, userUploading, "Q1 FY18");
                         }
                         else
                         {
