@@ -516,7 +516,7 @@ namespace DQA.DAL.Business
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex);
+                    Logger.LogError(ex); 
                 }
             }
             var artSites = Utilities.GetARTSiteWithDATIMCode();
