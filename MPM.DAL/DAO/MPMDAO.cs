@@ -8,6 +8,7 @@ using NHibernate.Criterion;
 using NHibernate.Linq;
 using System.Linq;
 using System;
+using NHibernate.Engine;
 
 namespace MPM.DAL.DAO
 {
@@ -151,8 +152,8 @@ namespace MPM.DAL.DAO
             ICriteria criteria = BuildSession()
                 .CreateCriteria<MetaData>("pd")
                 .CreateCriteria("IP", "org", NHibernate.SqlCommand.JoinType.InnerJoin);
-          
-            
+
+
             if (OrgId != 0)
             {
                 criteria.Add(Restrictions.Eq("org.Id", OrgId));
@@ -209,6 +210,44 @@ namespace MPM.DAL.DAO
             return list;
         }
 
+        public DataTable GetUploadReport(string reportPeriod)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "[sp_mpm_report]";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@reportPeriod", reportPeriod);
+            var dataTable = GetDatable(cmd);
 
+            return dataTable;
+        }
+
+        public string GetLastReport(int ip_id = 0)
+        {
+            string sql = "select top 1 ReportingPeriod from [dbo].[mpm_MetaData] ";
+            if (ip_id != 0)
+            {
+                sql += "where Ip =" + ip_id;
+            }
+            sql += " order by cast('01'+'-'+ReportingPeriod as datetime) desc";
+            var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
+            var cmd = new SqlCommand(sql, conn);
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+            }
+            try
+            {
+                var result = cmd.ExecuteScalar();
+                return result.ToString();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                cmd.Dispose();
+            }
+        }
     }
 }

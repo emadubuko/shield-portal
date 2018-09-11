@@ -343,6 +343,51 @@ namespace CommonUtil.Utilities
             return iframe;
         }
 
+
+        public string ConvertDataTableToHTML(DataTable dt)
+        {
+            string html = "<table class='table table-striped table-bordered table-hover' style='font-size:12px; width: 100%'>";
+            //add header row
+            html += "<thead style='background-color: #337ab7;color: #fff;'><tr>";
+            for (int i = 0; i < dt.Columns.Count; i++)
+                if (dt.Columns[i].DataType.Name.ToString().ToLower() == "decimal")
+                {
+                    html += "<td class=' sum'>" + dt.Columns[i].ColumnName + "</td>";
+                }
+                else if ("int32,int64".Contains(dt.Columns[i].DataType.Name.ToString().ToLower()))
+                {
+                    html += "<td class=' sum'>" + dt.Columns[i].ColumnName + "</td>";
+                }
+                else
+                {
+                    html += "<td>" + dt.Columns[i].ColumnName + "</td>";
+                }
+            html += "</tr></thead>";
+
+            //add rows
+            html += "<tbody>";
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                html += "<tr>";
+                for (int j = 0; j < dt.Columns.Count; j++)
+                    if (dt.Columns[j].DataType.Name.ToString().ToLower() == "decimal")
+                    {
+                        html += "<td class=' sum'>" + string.Format("{0:N2}", dt.Rows[i][j]) + "</td>";
+                    }
+                    else if ("int32,int64".Contains(dt.Columns[j].DataType.Name.ToString().ToLower()))
+                    {
+                        html += "<td class=' sum'>" + string.Format("{0:N0}", dt.Rows[i][j]) + "</td>";
+                    }
+                    else
+                    {
+                        html += "<td>" + dt.Rows[i][j].ToString() + "</td>";
+                    }
+                html += "</tr>";
+            }
+            html += "</tbody></table>";
+            return html;
+        }
+
         private class FACLGA
         {
             public string Facility { get; set; }

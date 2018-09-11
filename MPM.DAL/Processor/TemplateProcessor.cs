@@ -158,7 +158,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.F,
                                 Description = Description,
-                                Number = female_count.ToInt()
+                                Number = female_count.ToInt(),
+                                 MetaData = mt
                             });
                         }
                         if (male_count != null)
@@ -169,7 +170,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.M,
                                 Description = Description,
-                                Number = male_count.ToInt()
+                                Number = male_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                     }
@@ -190,7 +192,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.F,
                                 Description = Description,
-                                Number = female_count.ToInt()
+                                Number = female_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                         if (male_count != null)
@@ -201,7 +204,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.M,
                                 Description = Description,
-                                Number = male_count.ToInt()
+                                Number = male_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                     }
@@ -222,7 +226,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.F,
                                 Description = Description,
-                                Number = female_count.ToInt()
+                                Number = female_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                         if (male_count != null)
@@ -233,7 +238,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.M,
                                 Description = Description,
-                                Number = male_count.ToInt()
+                                Number = male_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                     }
@@ -253,7 +259,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.F,
                                 Description = Description,
-                                Number = female_count.ToInt()
+                                Number = female_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                         if (male_count != null)
@@ -264,7 +271,8 @@ namespace MPM.DAL.Processor
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.M,
                                 Description = Description,
-                                Number = male_count.ToInt()
+                                Number = male_count.ToInt(),
+                                MetaData = mt
                             });
                         }
                     }
@@ -291,6 +299,7 @@ namespace MPM.DAL.Processor
                                 Description = Description,
                                 PLHIV_eligible_for_TPT = plhiv_eligible_female.ToInt(),
                                 Started_on_TPT = started_tpt_female.ToInt(),
+                                MetaData = mt
                             });
                         }
                         if (plhiv_eligible_male != null || started_tpt_male != null)
@@ -303,6 +312,7 @@ namespace MPM.DAL.Processor
                                 Description = Description,
                                 PLHIV_eligible_for_TPT = plhiv_eligible_male.ToInt(),
                                 Started_on_TPT = started_tpt_male.ToInt(),
+                                MetaData = mt
                             });
                         }
                     }
@@ -330,6 +340,7 @@ namespace MPM.DAL.Processor
                                 Description = Description,
                                 New_TB_Cases = new_tb_female.ToInt(),
                                 Tx_TB = tx_tb_female.ToInt(),
+                                MetaData = mt
                             });
                         }
                         if (new_tb_male != null || tx_tb_male != null)
@@ -341,7 +352,8 @@ namespace MPM.DAL.Processor
                                 Sex = Sex.M,
                                 Description = Description,
                                 Tx_TB = tx_tb_male.ToInt(),
-                                New_TB_Cases = new_tb_male.ToInt()
+                                New_TB_Cases = new_tb_male.ToInt(),
+                                MetaData = mt
                             });
                         }
                     }
