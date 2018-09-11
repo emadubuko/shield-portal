@@ -1226,7 +1226,6 @@
     <Content Include="Resources\APIN_sample.xlsx" />
     <Content Include="Resources\CCFN_sample.xlsx" />
     <Content Include="Resources\CIHP_sample.xlsx" />
-    <Content Include="Report\UploadsCopy of DQA Draft 4.v2.2 %2814thJan%29 HT %28002%29.xlsx" />
     <Content Include="Resources\DQA resourse files\Data Quality Assessment Tool.Q1R.xlsm" />
     <Content Include="Resources\DQA resourse files\DQA Summary Report.Q1R.pdf" />
     <Content Include="Resources\DQA resourse files\DQA_user_guide_18Feb2017.docx" />
