@@ -61,11 +61,12 @@ namespace MPM.DAL.Processor
                 }
                 else
                 {
-                    mt = dao.Retrieve(previously.FirstOrDefault().Id);
-                    mt.DateUploaded = DateTime.Now;
-                    mt.UploadedBy = loggedInProfile;
-                    mt.ReportLevel = DTO.ReportLevel.State;
-                    mt.ReportLevelValue = ReportLevelValue;
+                    throw new ApplicationException("Report already exist");
+                    //mt = dao.Retrieve(previously.FirstOrDefault().Id);
+                    //mt.DateUploaded = DateTime.Now;
+                    //mt.UploadedBy = loggedInProfile;
+                    //mt.ReportLevel = DTO.ReportLevel.State;
+                    //mt.ReportLevelValue = ReportLevelValue;
                 }
 
 
@@ -103,14 +104,15 @@ namespace MPM.DAL.Processor
                     mt.TB_TPT_Completed = tB_completed;
                     mt.TB_TPT_Eligible = tb_eligible_list;
 
-                    if (previously == null || previously.Count == 0)
-                    {
-                        dao.BulkInsertWithStatelessSession(mt);
-                    }
-                    else
-                    {
-                        dao.UpdateRecord(mt);
-                    }
+                    dao.BulkInsertWithStatelessSession(mt);
+                    //if (previously == null || previously.Count == 0)
+                    //{
+                        
+                    //}
+                    //else
+                    //{
+                    //    dao.UpdateRecord(mt);
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -159,7 +161,7 @@ namespace MPM.DAL.Processor
                                 Sex = Sex.F,
                                 Description = Description,
                                 Number = female_count.ToInt(),
-                                 MetaData = mt
+                                MetaData = mt
                             });
                         }
                         if (male_count != null)
@@ -414,7 +416,7 @@ namespace MPM.DAL.Processor
                         }
                     }
 
-                    for (int column = 72; column <= 23; column += 2)
+                    for (int column = 73; column <= 78; column += 3)
                     {
                         var sample_collected = pmtct_sheet.Cells[row, column].Value;
                         var pos = pmtct_sheet.Cells[row, column + 1].Value;
@@ -608,7 +610,7 @@ namespace MPM.DAL.Processor
                         var f_den = art_sheet.Cells[row, column].Value;
                         var f_num = art_sheet.Cells[row, column + 1].Value;
 
-                        if (f_den !=null || f_num !=null) //ignore if both values are empty
+                        if (f_den != null || f_num != null) //ignore if both values are empty
                         {
                             //female
                             art_list.Add(new ART
@@ -628,7 +630,7 @@ namespace MPM.DAL.Processor
                         var m_den = art_sheet.Cells[row + 1, column].Value;
                         var m_num = art_sheet.Cells[row + 1, column + 1].Value;
 
-                        if (m_den !=null || m_num !=null) //ignore if both values are empty
+                        if (m_den != null || m_num != null) //ignore if both values are empty
                         {
                             art_list.Add(new ART
                             {
@@ -671,41 +673,39 @@ namespace MPM.DAL.Processor
                     sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
 
                     if (site == null)
-                        goto Loop; ; // throw new ApplicationException("Invalid facility uploaded");
-
+                        goto Loop; // throw new ApplicationException("Invalid facility uploaded");
 
                     for (int column = 5; column <= 24;)
                     {
+                        var less_than_1000 = pmtct_viral_load_sheet.Cells[row, column].Value;
+                        var _greater_than_1000 = pmtct_viral_load_sheet.Cells[row, column + 1].Value;
 
-                        var less_than_1000 = Convert.ToString(pmtct_viral_load_sheet.Cells[row, column].Value);
-                        var _greater_than_1000 = Convert.ToString(pmtct_viral_load_sheet.Cells[row, column + 1].Value);
-
-                        if (!string.IsNullOrEmpty(less_than_1000) && !string.IsNullOrEmpty(_greater_than_1000)) //ignore if both values are empty
+                        if (less_than_1000 != null && _greater_than_1000 != null) //ignore if both values are empty
                         {
                             _list.Add(new PMTCT_Viral_Load
                             {
                                 Site = site,
                                 AgeGroup = pmtct_viral_load_sheet.Cells[3, column].Value.ToString(),
                                 Category = PMTCT_Category.Newly_Identified,
-                                _less_than_1000 = !string.IsNullOrEmpty(less_than_1000) ? Convert.ToInt32(less_than_1000) : (int?)null,
-                                _greater_than_1000 = !string.IsNullOrEmpty(_greater_than_1000) ? Convert.ToInt32(_greater_than_1000) : (int?)null,
+                                _less_than_1000 = less_than_1000.ToInt(), 
+                                _greater_than_1000 = _greater_than_1000.ToInt(), 
                                 MetaData = mt
                             });
                         }
 
 
-                        less_than_1000 = Convert.ToString(pmtct_viral_load_sheet.Cells[row + 1, column].Value);
-                        _greater_than_1000 = Convert.ToString(pmtct_viral_load_sheet.Cells[row + 1, column + 1].Value);
+                        less_than_1000 = pmtct_viral_load_sheet.Cells[row + 1, column].Value;
+                        _greater_than_1000 = pmtct_viral_load_sheet.Cells[row + 1, column + 1].Value;
 
-                        if (!string.IsNullOrEmpty(less_than_1000) && !string.IsNullOrEmpty(_greater_than_1000)) //ignore if both values are empty
+                        if (less_than_1000 != null && _greater_than_1000 != null) //ignore if both values are empty
                         {
                             _list.Add(new PMTCT_Viral_Load
                             {
                                 Site = site,
                                 AgeGroup = pmtct_viral_load_sheet.Cells[3, column].Value.ToString(),
                                 Category = PMTCT_Category.Already_HIV_Positive,
-                                _less_than_1000 = !string.IsNullOrEmpty(less_than_1000) ? Convert.ToInt32(less_than_1000) : (int?)null,
-                                _greater_than_1000 = !string.IsNullOrEmpty(_greater_than_1000) ? Convert.ToInt32(_greater_than_1000) : (int?)null,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
                                 MetaData = mt
                             });
                         }
@@ -928,6 +928,7 @@ namespace MPM.DAL.Processor
 
             return fileName;
         }
+
 
 
 

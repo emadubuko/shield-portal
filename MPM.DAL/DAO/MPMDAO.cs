@@ -238,6 +238,9 @@ namespace MPM.DAL.DAO
             try
             {
                 var result = cmd.ExecuteScalar();
+                if (result == null)
+                    return string.Empty;
+
                 return result.ToString();
             }
             catch(Exception ex)

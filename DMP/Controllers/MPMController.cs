@@ -39,18 +39,18 @@ namespace ShieldPortal.Controllers
             foreach (var iplevel in reports)
             {
                 vm.ImplementingPartner = iplevel.Key;
-                foreach (var state in iplevel.GroupBy(x=>x.ReportingLevelValue))
+                foreach (var state in iplevel.GroupBy(x => x.ReportingLevelValue))
                 {
                     var entries = state.ToList().Select(x => x.ReportPeriod).ToList();
                     List<bool> uploaded = new List<bool>(12);
                     foreach (var index in IndexPeriods.Keys)
-                    { 
+                    {
                         if (entries.Any(x => x.Contains(index)))
                             uploaded.Add(true);
                         else
                             uploaded.Add(false);
                     }
-                    vm.IPReports.Add(state.Key + "|"+ iplevel.Key, uploaded);
+                    vm.IPReports.Add(state.Key + "|" + iplevel.Key, uploaded);
                 }
             }
             ViewBag.reportPeriod = mpmDAO.GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
@@ -68,7 +68,7 @@ namespace ShieldPortal.Controllers
                 ip = profile.Organization.ShortName;
             }
 
-            if(string.IsNullOrEmpty(reportPeriod))
+            if (string.IsNullOrEmpty(reportPeriod))
                 reportPeriod = mpmDAO.GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
 
             DataTable reports = null;
@@ -77,19 +77,19 @@ namespace ShieldPortal.Controllers
             {
                 reports = mpmDAO.GetUploadReport(reportPeriod);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
-           
-             
+
+
             List<dynamic> reportView = new List<dynamic>();
 
             foreach (DataRow dr in reports.Rows)
             {
                 if (!string.IsNullOrEmpty(ip) && dr.Field<string>("IP") != ip)
                     continue;
-                reportView.Add(new 
+                reportView.Add(new
                 {
                     IP = dr.Field<string>("IP"),
                     State = dr.Field<string>("State"),
@@ -108,7 +108,7 @@ namespace ShieldPortal.Controllers
                     TB_Presumptive_Diagnosed = dr.Field<string>("TB_Presumptive_Diagnosed"),
                     TPT_Completed = dr.Field<string>("TPT_Completed"),
                     TPT_Eligible = dr.Field<string>("TPT_Eligible"),
-                }); 
+                });
             }
             //ViewBag.CompletionReport = reportView;
             return Json(reportView);
@@ -117,6 +117,26 @@ namespace ShieldPortal.Controllers
         public ActionResult Upload()
         {
             return View();
+        }
+
+        public async Task<ActionResult> NDR_Statictics()
+        {
+            var data = await new NDR_StatisticsDAO().RetrieveAll();
+            string reportPeriod = new MPMDAO().GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+
+                data = data.Where(x => x.Facility.Organization.Id == profile.Organization.Id).ToList();
+            }
+
+            data = data//.Where(x => x.ReportPeriod == reportPeriod)
+                .OrderByDescending(o => o.Facility.GranularSite).ToList();
+
+            ViewBag.reportPeriod = reportPeriod;
+            return View(data);
         }
 
         public JsonResult ProcessFile()

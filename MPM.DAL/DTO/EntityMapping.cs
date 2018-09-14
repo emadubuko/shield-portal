@@ -183,7 +183,7 @@ namespace MPM.DAL.DTO
     {
         public TB_ScreenedMap()
         {
-            Table("mpm_PMTCT");
+            Table("mpm_TB_Screened");
 
             Id(x => x.Id);
             References(x => x.Site).Column("SiteId");
@@ -262,6 +262,7 @@ namespace MPM.DAL.DTO
             References(x => x.MetaData).Column("MetaDataId");
         }
     }
+
     public class TB_HIV_TreatmentMap : ClassMap<TB_HIV_Treatment>
     {
         public TB_HIV_TreatmentMap()

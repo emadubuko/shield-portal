@@ -30,6 +30,8 @@
                 <li class="active"><a aria-expanded="true" href="#ist90" data-toggle="tab">First 90</a></li>
                 <li class=""><a aria-expanded="false" href="#2nd90" data-toggle="tab">Second 90</a></li>
                 <li class=""><a aria-expanded="false" href="#3rd90" data-toggle="tab">Third 90</a></li>
+                <li class=""><a aria-expanded="false" href="#pmtct_cascade" data-toggle="tab">PMTCT Cascade</a></li>
+                <li class=""><a aria-expanded="false" href="#tb_cascade" data-toggle="tab">TB HIV Cascade</a></li>
             </ul>
 
             <div class="tab-content">
@@ -92,12 +94,13 @@
                         </object>
                     </div>
 
-                    <div class='tableauPlaceholder' style='width: 1200px; height: 827px;'>
-                        <object class='tableauViz' width='1200' height='827' style='display:none;'>
+                    <hr />
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 827px;'>
+                        <object class='tableauViz' width='1000' height='827' style='display:none;'>
                             <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
                             <param name='embed_code_version' value='3' />
                             <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
-                            <param name='name' value='PMTCT&#47;POSPMTCT' />
+                            <param name='name' value='ART&#47;TX_RET' />
                             <param name='tabs' value='no' />
                             <param name='toolbar' value='no' />
                             <param name='showAppBanner' value='false' />
@@ -108,41 +111,6 @@
                             }
                         </object>
                     </div>
-
-
-                    <div class='tableauPlaceholder' style='width: 1200px; height: 827px;'>
-                        <object class='tableauViz' width='1200' height='827' style='display:none;'>
-                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
-                            <param name='embed_code_version' value='3' />
-                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
-                            <param name='name' value='PMTCT&#47;OnARTPMTCT' />
-                            <param name='tabs' value='no' />
-                            <param name='toolbar' value='no' />
-                            <param name='showAppBanner' value='false' />
-                            <param name='filter' value='iframeSizedToWindow=true' />
-                            @if (User.IsInRole("ip"))
-                            {
-                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
-                            }
-                        </object>
-                    </div>
-
-                    <div class='tableauPlaceholder' style='width: 1200px; height: 827px;'>
-                        <object class='tableauViz' width='1200' height='827' style='display:none;'>
-                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
-                            <param name='embed_code_version' value='3' />
-                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
-                            <param name='name' value='PMTCT&#47;HEIPOSvsART' />
-                            <param name='tabs' value='no' />
-                            <param name='toolbar' value='no' />
-                            <param name='showAppBanner' value='false' />
-                            <param name='filter' value='iframeSizedToWindow=true' />
-                            @if (User.IsInRole("ip"))
-                            {
-                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
-                            }
-                        </object>
-                    </div> 
                 </div>
 
                 <div class="tab-pane" id="3rd90">
@@ -163,12 +131,13 @@
                         </object>
                     </div>
 
+                    <hr />
                     <div class='tableauPlaceholder' style='width: 1000px; height: 827px;'>
                         <object class='tableauViz' width='1000' height='827' style='display:none;'>
                             <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
                             <param name='embed_code_version' value='3' />
                             <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
-                            <param name='name' value='PMTCT&#47;HEISamplecollection' />
+                            <param name='name' value='ART&#47;Tx_VLA' />
                             <param name='tabs' value='no' />
                             <param name='toolbar' value='no' />
                             <param name='showAppBanner' value='false' />
@@ -179,8 +148,49 @@
                             }
                         </object>
                     </div>
-
                 </div>
+
+                <div class="tab-pane" id="pmtct_cascade">
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 827px;'>
+                        <object class='tableauViz' width='1000' height='827' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='PMTCTCascade&#47;PMTCTCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tb_cascade">
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 827px;'>
+                        <object class='tableauViz' width='1000' height='1200' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
