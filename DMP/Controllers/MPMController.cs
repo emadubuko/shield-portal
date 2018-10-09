@@ -95,6 +95,11 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
+        public ActionResult Download()
+        {
+            return View();
+        }
+
        public Dictionary<string, int> IndexPeriods
         {
             get

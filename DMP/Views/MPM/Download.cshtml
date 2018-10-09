@@ -1,0 +1,53 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_mpmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <script type='text/javascript' src='https://us-west-2b.online.tableau.com/javascripts/api/viz_v1.js'></script>
+
+    <style>
+        html, body {
+            height: 100%
+        }
+    </style>
+
+    <script type="text/javascript">
+        var tableauUrl = "https://us-west-2b.online.tableau.com/#/site/mpmdataanalysis";
+    </script>
+}
+
+
+<h2>Download</h2>
+
+<div class="col-sm-8">
+    <div class="row">
+
+       <div class="form-group">
+           <select class="form-control">
+               <option class="form-control" value="FCT">FCT</option>
+               <option class="form-control" value="Delta">Delta</option>
+           </select><br />
+
+           <input type="button" value="Download" class="btn btn-lg btn-primary col-lg-offset-4" />
+
+       </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+
+    <script>
+        $(document).ready(function () {
+
+            $(".tabToolbarButton.tab-widget.edit").hide();
+
+        });
+    </script>
+}

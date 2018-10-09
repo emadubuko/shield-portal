@@ -1479,6 +1479,7 @@
     <Content Include="Views\DQIFY2018Q3\Index.cshtml" />
     <Content Include="Views\DQIFY2018Q3\UploadDQIResult.cshtml" />
     <Content Include="Views\Shared\dqiFY18Q3Layout.cshtml" />
+    <Content Include="Views\MPM\Download.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
