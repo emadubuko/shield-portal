@@ -17,6 +17,7 @@ namespace CommonUtil.Mapping
             References(x => x.Organization).Column("ImplementingPartnerId").Not.Nullable();
             References(x => x.Previous_IP).Column("Previous_IP");
             Map(x => x.LinkCode);
+            Map(x => x.GranularSite);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using CommonUtil.Utilities;
 using OfficeOpenXml;
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 
@@ -19,8 +21,8 @@ namespace Test
             //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi_Reports_March_2017\Ebonyi_Reports_March_2017\Seeds report\";
 
             string baseLocation_HTS_TST = @"C:\Users\cmadubuko\Documents\Mosis\facilities\Imo State _SEED_March 2017\Imo HTS_TST\";
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\Apr 2017_Enugu_Final\Apr 2017_Enugu_Final\HTS_TST_Disaggregation_Report\";
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi_Reports_March_2017\Ebonyi_Reports_March_2017\HTS_TST_Ebonyi_10_3_2017";
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\Apr 2017_Enugu_Final\Apr 2017_Enugu_Final\HTS_TST_Disaggregation_Report\";
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi_Reports_March_2017\Ebonyi_Reports_March_2017\HTS_TST_Ebonyi_10_3_2017";
 
 
             string[] hts_files = Directory.GetFiles(baseLocation_HTS_TST, "*.xlsx", SearchOption.AllDirectories);
@@ -52,7 +54,7 @@ namespace Test
 
 
                     object fID = firstSheet.Cells["F5"].Value;
-                    if(fID == null)
+                    if (fID == null)
                     {
                         fID = firstSheet.Cells["E2"].Value;
                     }
@@ -62,13 +64,13 @@ namespace Test
                         continue;
                     }
                     string facilityId = fID.ToString();
-                   
-                        //throw new ApplicationException("Invalid HTS File");
+
+                    //throw new ApplicationException("Invalid HTS File");
 
                     ExcelPackage art_pmtct_package = null;
                     ExcelWorksheets art_pmtct_sheets = null;
 
-                    foreach(var f in art_pmtct_files)
+                    foreach (var f in art_pmtct_files)
                     {
                         if (f.Contains(@"\~$"))
                             continue;
@@ -88,9 +90,9 @@ namespace Test
                         continue;
                         //throw new ApplicationException("unable to locate second source");
                     }
-                       
-                    
-                   
+
+
+
                     foreach (var htc_sheet in htc_sheets)
                     {
                         using (ExcelPackage template_package = new ExcelPackage(new FileInfo(template)))
@@ -115,7 +117,7 @@ namespace Test
                                         else
                                         {
                                             template_sheet.Cells[z[1]].Value = ReadaCel(htc_sheet, z[2]);
-                                        }                                       
+                                        }
                                     }
                                     else //art_pmtct
                                     {
@@ -131,8 +133,8 @@ namespace Test
                                         else
                                         {
                                             template_sheet.Cells[z[1]].Value = ReadaCel(art_pmtct_sheet, z[2]);
-                                        }                                        
-                                    } 
+                                        }
+                                    }
                                 }
                             }
 
@@ -154,15 +156,15 @@ namespace Test
         public static void ProcessPMTCTFile()
         {
             string baseLocation = @"C:\Users\cmadubuko\Documents\Mosis\facilities\Apr 2017_Enugu_Final\Apr 2017_Enugu_Final\Enugu SEEDS_Apr 2017\PMTCT\";
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\Imo State _SEED_March 2017\Seeds\IMO PMTCT\";
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\Imo State _SEED_March 2017\Seeds\IMO PMTCT\";
 
             //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi_Reports_March_2017\Ebonyi_Reports_March_2017\Seeds report\PMTCT\";
             string processedFileDirectory = @"C:\Users\cmadubuko\Documents\Mosis\facilities\Enugu PMTCT Processed\";
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\IMO PMTCT Processed\";
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi PMTCT Processed\";
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\IMO PMTCT Processed\";
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi PMTCT Processed\";
 
             string[] files = Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.AllDirectories);
-            
+
             string[] mapping = File.ReadAllText(@"C:\Users\cmadubuko\Documents\Mosis\Mapping PMTCT MSF.csv").Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             string template = @"C:\Users\cmadubuko\Documents\Mosis\PMTCT MSF (version 1).xlsx";
 
@@ -172,7 +174,7 @@ namespace Test
                     continue;
 
                 Console.WriteLine(file);
-               
+
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(file)))
                 {
                     var pSheets = package.Workbook.Worksheets;
@@ -222,11 +224,11 @@ namespace Test
         {
             string baseLocation = @"C:\Users\cmadubuko\Documents\Mosis\facilities\Imo State _SEED_March 2017\Seeds\Imo ART\";
 
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\Apr 2017_Enugu_Final\Apr 2017_Enugu_Final\Enugu SEEDS_Apr 2017\ART\";
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\Apr 2017_Enugu_Final\Apr 2017_Enugu_Final\Enugu SEEDS_Apr 2017\ART\";
             //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi_Reports_March_2017\Ebonyi_Reports_March_2017\Seeds report\ART\";
             string processedFileDirectory = @"C:\Users\cmadubuko\Documents\Mosis\facilities\IMO ART Processed\";
-                
-                //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi ART processed\";
+
+            //"C:\Users\cmadubuko\Documents\Mosis\facilities\Ebonyi ART processed\";
 
             string[] files = Directory.GetFiles(baseLocation, "*.xlsx", SearchOption.AllDirectories);
 
@@ -246,7 +248,7 @@ namespace Test
                         using (ExcelPackage template_package = new ExcelPackage(new FileInfo(template)))
                         {
                             var sheet = template_package.Workbook.Worksheets.FirstOrDefault();
-                            for (int i=1; i< mapping.Count(); i++)
+                            for (int i = 1; i < mapping.Count(); i++)
                             {
                                 string[] z = mapping[i].Split(',');
 
@@ -299,10 +301,114 @@ namespace Test
         }
 
         private static string ReadaCel(ExcelWorksheet sheet, string address)
-        {  
+        {
             return ExcelHelper.ReadCell(sheet, address);
         }
 
+
+        public static void GeneratePeadLineListing()
+        {
+            string directory = System.Configuration.ConfigurationManager.AppSettings["excelFile"];
+            string sql = System.Configuration.ConfigurationManager.AppSettings["peadQuery"];
+            SqlCommand cmd = new SqlCommand(sql);
+            DataTable dataTable = RetrieveAsDataTable(cmd);
+            cmd.Dispose();
+
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                string currentFacility = "";
+                int row = 2;
+                ExcelWorksheet workSheet = null;
+                foreach (DataRow dr in dataTable.Rows)
+                {
+                    var facility = dr.Field<string>("Facility");
+                    if(facility.Length > 29)
+                    {
+                        facility = facility.Substring(0, 29);
+                    }
+                    
+                    if (string.IsNullOrEmpty(currentFacility))
+                    {
+                        package.Workbook.Worksheets.Add(facility);
+                        workSheet = package.Workbook.Worksheets[facility];
+                        workSheet.Cells["A1"].Value = "IP";
+                        workSheet.Cells["B1"].Value = "STATE";
+                        workSheet.Cells["C1"].Value = "LGA";
+                        workSheet.Cells["D1"].Value = "Facility";
+                        workSheet.Cells["E1"].Value = "PatientId";
+                        workSheet.Cells["F1"].Value = "HospitalNo";
+                        workSheet.Cells["G1"].Value = "Age at start of ART (in_years)";
+                        workSheet.Cells["H1"].Value = "Age at start of ART (in_months)";
+                        workSheet.Cells["I1"].Value = "Sex";
+                        workSheet.Cells["J1"].Value = "ART Start Date";
+                        workSheet.Cells["K1"].Value = "CurrentARTStatus";
+                        currentFacility = facility;
+                    }
+                    else if (facility != currentFacility)
+                    {
+                        package.SaveAs(new FileInfo(directory + "/" + currentFacility + ".xlsx"));
+                        package.Workbook.Worksheets.Delete(1);
+                        package.Workbook.Worksheets.Add(facility);
+                        workSheet = package.Workbook.Worksheets[facility];
+                        workSheet.Cells["A1"].Value = "IP";
+                        workSheet.Cells["B1"].Value = "STATE";
+                        workSheet.Cells["C1"].Value = "LGA";
+                        workSheet.Cells["D1"].Value = "Facility";
+                        workSheet.Cells["E1"].Value = "PatientId";
+                        workSheet.Cells["F1"].Value = "HospitalNo";
+                        workSheet.Cells["G1"].Value = "Age at start of ART (in_years)";
+                        workSheet.Cells["H1"].Value = "Age at start of ART (in_months)";
+                        workSheet.Cells["I1"].Value = "Sex";
+                        workSheet.Cells["J1"].Value = "ART Start Date";
+                        workSheet.Cells["K1"].Value = "CurrentARTStatus";
+                        currentFacility = facility;
+                        row = 2;
+                    }
+                    
+                    workSheet.Cells["A" + row].Value = dr.Field<string>("Shortname");
+                    workSheet.Cells["B" + row].Value = dr.Field<string>("state_name");
+                    workSheet.Cells["C" + row].Value = dr.Field<string>("lga_name");
+                    workSheet.Cells["D" + row].Value = dr.Field<string>("Facility");
+                    workSheet.Cells["E" + row].Value = dr.Field<string>("PatientId");
+                    workSheet.Cells["F" + row].Value = dr.Field<string>("HospitalNo");
+                    workSheet.Cells["G" + row].Value = dr.Field<int>("Age_at_start_of_ART_in_years");
+                    workSheet.Cells["H" + row].Value = dr.Field<int>("Age_at_start_of_ART_in_months");
+                    workSheet.Cells["I" + row].Value = dr.Field<string>("Sex");
+                    workSheet.Cells["J" + row].Value = dr.Field<DateTime>("ARTStartDate");
+                    workSheet.Cells["K" + row].Value = dr.Field<string>("CurrentARTStatus");
+                    row++; 
+                }
+
+                //package.Save();
+            }
+        }
+
+
+        public static DataTable RetrieveAsDataTable(SqlCommand cmd)
+        {
+            DataTable ds = new DataTable();
+            string sqlConnection = System.Configuration.ConfigurationManager.AppSettings["shield_db"];
+            try
+            {
+                using (var conn = new SqlConnection(sqlConnection))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter();
+                    cmd.Connection = conn;
+                    da.SelectCommand = cmd;
+
+                    if (conn.State != ConnectionState.Open)
+                        conn.Open();
+
+                    da.Fill(ds);
+                    cmd.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
-     
+
 }

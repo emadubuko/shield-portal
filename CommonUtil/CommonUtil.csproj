@@ -70,6 +70,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -81,9 +82,9 @@
     <Compile Include="DAO\AfenetReportDAO.cs" />
     <Compile Include="DAO\HealthFacilityDAO.cs" />
     <Compile Include="DAO\LGADao.cs" />
+    <Compile Include="DAO\NDR_StatisticsDAO.cs" />
     <Compile Include="DAO\OrganizationDAO.cs" />
     <Compile Include="DAO\ProfileDAO.cs" />
-    <Compile Include="DAO\RadetUploadReportDAO.cs" />
     <Compile Include="DAO\StateDao.cs" />
     <Compile Include="DBSessionManager\BaseDAO.cs" />
     <Compile Include="DBSessionManager\NhibernateSessionManager.cs" />
@@ -93,8 +94,7 @@
     <Compile Include="Entities\LGA.cs" />
     <Compile Include="Entities\Organizations.cs" />
     <Compile Include="Entities\Profile.cs" />
-    <Compile Include="Entities\RadetTable.cs" />
-    <Compile Include="Entities\RadetUploadReport.cs" />
+    <Compile Include="Entities\NDR_Statistics.cs" />
     <Compile Include="Entities\State.cs" />
     <Compile Include="Enums\OrganizationType.cs" />
     <Compile Include="Mapping\AfenetReportMap.cs" />
@@ -102,8 +102,7 @@
     <Compile Include="Mapping\LGAMap.cs" />
     <Compile Include="Mapping\OrganizationsMap.cs" />
     <Compile Include="Mapping\ProfileMap.cs" />
-    <Compile Include="Mapping\RadetLineListingMap.cs" />
-    <Compile Include="Mapping\RadetUploadReportMap.cs" />
+    <Compile Include="Mapping\NDR_StatisticsMap.cs" />
     <Compile Include="Mapping\StateMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ExcelHelper.cs" />

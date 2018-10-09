@@ -75,6 +75,23 @@ namespace ShieldPortal.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public ActionResult UploadGSM()
+        {
+            var files = Request.Files;
+            if (files == null || files.Count == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "no files uploaded");
+            }
+
+            string response = new HealthFacilityDAO().MarkSiteAsGranular(files[0].InputStream);
+
+            if (string.IsNullOrEmpty(response))
+                return Json("Successful");
+            else
+                return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult CreateHealthFacility()
         {
             var vM = new HealthFacilityViewModel();

@@ -12,6 +12,7 @@ namespace MPM.DAL
         public bool HTS { get; set; }
         public bool PMTCT { get; set; }
         public bool ART { get; set; }
+        public bool TB { get; set; }
     }
 
 
@@ -26,7 +27,7 @@ namespace MPM.DAL
            DateTime.Now.Year.ToString(),
         };
         public Dictionary<string, int> IndexPeriods { get; set; }
-        public IList<string> ImplementingPartner { get; set; }
+        public string ImplementingPartner { get; set; }
     }
 
     public class IPUploadReport
@@ -34,5 +35,6 @@ namespace MPM.DAL
         public int Id { get; set; }
         public string IPName { get; set; }
         public string ReportPeriod { get; set; }
+        public string ReportingLevelValue { get; set; }
     }
 }

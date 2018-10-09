@@ -8,6 +8,7 @@ using NHibernate.Criterion;
 using NHibernate.Linq;
 using System.Linq;
 using System;
+using NHibernate.Engine;
 
 namespace MPM.DAL.DAO
 {
@@ -41,6 +42,35 @@ namespace MPM.DAL.DAO
                     session.Insert(o);
                 }
                 foreach (var o in mt.PMTCT)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.PMTCT_EID)
+                {
+                    session.Insert(o);
+                }
+                //
+                foreach (var o in mt.TB_HIV_Treatment)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Presumptives)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Presumptives_Diagnosis)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Screened)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_TPT_Completed)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_TPT_Eligible)
                 {
                     session.Insert(o);
                 }
@@ -85,15 +115,44 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
+                foreach (var o in mt.PMTCT_EID)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_HIV_Treatment)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Presumptives)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Presumptives_Diagnosis)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Screened)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_TPT_Completed)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_TPT_Eligible)
+                {
+                    session.Insert(o);
+                }
                 tx.Commit();
             }
         }
 
-        public IList<IPUploadReport> GenerateIPUploadReports(int OrgId, string reportingPeriod)
+        public IList<IPUploadReport> GenerateIPUploadReports(int OrgId, string reportingPeriod, string reportlevelvaue, ReportLevel? reportLevel)
         {
             ICriteria criteria = BuildSession()
                 .CreateCriteria<MetaData>("pd")
                 .CreateCriteria("IP", "org", NHibernate.SqlCommand.JoinType.InnerJoin);
+
 
             if (OrgId != 0)
             {
@@ -103,8 +162,17 @@ namespace MPM.DAL.DAO
             {
                 criteria.Add(Restrictions.Eq("pd.ReportingPeriod", reportingPeriod));
             }
+            if (reportLevel.HasValue)
+            {
+                criteria.Add(Restrictions.Eq("pd.ReportLevel", reportLevel.Value));
+            }
+            if (!string.IsNullOrEmpty(reportlevelvaue))
+            {
+                criteria.Add(Restrictions.Eq("pd.ReportLevelValue", reportlevelvaue));
+            }
 
             criteria.SetProjection(
+                Projections.Alias(Projections.GroupProperty("pd.ReportLevelValue"), "ReportingLevelValue"),
                 Projections.Alias(Projections.GroupProperty("org.ShortName"), "IPName"),
                  Projections.Alias(Projections.GroupProperty("pd.ReportingPeriod"), "ReportPeriod"),
                  Projections.Alias(Projections.GroupProperty("pd.Id"), "Id")
@@ -115,12 +183,13 @@ namespace MPM.DAL.DAO
         }
 
 
-        public List<MPMFacilityListing> GetPivotTableFromFacility(string IP)
+        public List<MPMFacilityListing> GetPivotTableFromFacility(string IP, string state)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = "sp_generate_MPM_facility_list";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IP", IP);
+            cmd.Parameters.AddWithValue("@state", state);
 
             var dataTable = GetDatable(cmd);
 
@@ -129,9 +198,10 @@ namespace MPM.DAL.DAO
             {
                 list.Add(new MPMFacilityListing
                 {
-                    ART = Convert.ToBoolean(row.Field<string>("ART")),
-                    PMTCT = Convert.ToBoolean(row.Field<string>("PMTCT")),
-                    HTS = Convert.ToBoolean(row.Field<string>("HTS")),
+                    ART = row.Field<bool>("ART"),
+                    PMTCT = row.Field<bool>("PMTCT"),
+                    HTS = row.Field<bool>("HTS"),
+                    TB = row.Field<bool>("TB"),
                     DATIMCode = row.Field<string>("DatimCode"),
                     Facility = row.Field<string>("Facility"),
                     IP = row.Field<string>("IP")
@@ -140,6 +210,47 @@ namespace MPM.DAL.DAO
             return list;
         }
 
+        public DataTable GetUploadReport(string reportPeriod)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "[sp_mpm_report]";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@reportPeriod", reportPeriod);
+            var dataTable = GetDatable(cmd);
 
+            return dataTable;
+        }
+
+        public string GetLastReport(int ip_id = 0)
+        {
+            string sql = "select top 1 ReportingPeriod from [dbo].[mpm_MetaData] ";
+            if (ip_id != 0)
+            {
+                sql += "where Ip =" + ip_id;
+            }
+            sql += " order by cast('01'+'-'+ReportingPeriod as datetime) desc";
+            var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
+            var cmd = new SqlCommand(sql, conn);
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+            }
+            try
+            {
+                var result = cmd.ExecuteScalar();
+                if (result == null)
+                    return string.Empty;
+
+                return result.ToString();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                cmd.Dispose();
+            }
+        }
     }
 }

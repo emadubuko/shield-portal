@@ -73,6 +73,8 @@
                 <table class="table table-bordered table-hover" id="output" style="width:100%;font-size:10px;">
                     <thead>
                         <tr>
+                            <th>State</th>
+                            <th>LGA </th>
                             <th>Site</th>
                             <th>HTS_TST </th>
                             <th>HTC_Only</th>
@@ -91,7 +93,7 @@
                             <th>TX_TB</th>
 
                             <th>TX_Total</th>
-                            <th>Selected for DQA</th>
+                            <th>Marked for DQA</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -210,6 +212,8 @@
                 $("#output tbody").empty();
                 $.each(dataList, function (i, d) {
                     var html = "<tr> ";
+                    html += "<td>" + d.State.trim() + "</td>";
+                    html += "<td>" + d.Lga.trim() + "</td>";
                     html += "<td>" + d.FacilityName.trim() + "</td>";
                     html += "<td>" + (checkForNumber(d.HTS_TST) ? d.HTS_TST : '') + "</td>";
                     html += "<td>" + (checkForNumber(d.HTC_Only) ? d.HTC_Only : '') + "</td>";

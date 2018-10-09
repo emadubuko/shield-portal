@@ -12,7 +12,7 @@
         <div class="panel-body">
             <form id="mainform" class="form-horizontal" role="form">
                 @Html.AntiForgeryToken()
-               
+
                 <div class="form-group">
                     <label class="col-sm-4 control-label" for="OrganizationId">Organization</label>
                     <div class="col-sm-6">
@@ -33,7 +33,7 @@
                         <label class="col-sm-4 control-label" for="@field.Key.Replace(" ","")">@field.Key</label>
                         <div class="col-sm-6">
                             @if (field.Key == "Role name")
-                {
+                            {
                                 <select id="RoleName" class="form-control" required>
                                     <option value="" disabled selected>select Role</option>
                                     @foreach (var item in Model.Role)

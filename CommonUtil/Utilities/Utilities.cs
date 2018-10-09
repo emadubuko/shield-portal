@@ -11,6 +11,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -341,6 +342,77 @@ namespace CommonUtil.Utilities
                 reader.Dispose();
             }
             return iframe;
+        }
+         
+        public string ConvertDataTableToHTML(DataTable dt)
+        {
+            string html = "<table class='table table-striped table-bordered table-hover' style='font-size:12px; width: 100%'>";
+            //add header row
+            html += "<thead style='background-color: #337ab7;color: #fff;'><tr>";
+            for (int i = 0; i < dt.Columns.Count; i++)
+                if (dt.Columns[i].DataType.Name.ToString().ToLower() == "decimal")
+                {
+                    html += "<td class=' sum'>" + dt.Columns[i].ColumnName + "</td>";
+                }
+                else if ("int32,int64".Contains(dt.Columns[i].DataType.Name.ToString().ToLower()))
+                {
+                    html += "<td class=' sum'>" + dt.Columns[i].ColumnName + "</td>";
+                }
+                else
+                {
+                    html += "<td>" + dt.Columns[i].ColumnName + "</td>";
+                }
+            html += "</tr></thead>";
+
+            //add rows
+            html += "<tbody>";
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                html += "<tr>";
+                for (int j = 0; j < dt.Columns.Count; j++)
+                    if (dt.Columns[j].DataType.Name.ToString().ToLower() == "decimal")
+                    {
+                        html += "<td class=' sum'>" + string.Format("{0:N2}", dt.Rows[i][j]) + "</td>";
+                    }
+                    else if ("int32,int64".Contains(dt.Columns[j].DataType.Name.ToString().ToLower()))
+                    {
+                        html += "<td class=' sum'>" + string.Format("{0:N0}", dt.Rows[i][j]) + "</td>";
+                    }
+                    else
+                    {
+                        html += "<td>" + dt.Rows[i][j].ToString() + "</td>";
+                    }
+                html += "</tr>";
+            }
+            html += "</tbody></table>";
+            return html;
+        }
+
+
+        public async Task<List<T>> GetDateListRemotely<T>(string url)
+        {
+            var client = new HttpClient();
+
+            try
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = ((sender, certificate, chain, sslPolicyErrors) => true);
+
+                var remote_address = new Uri(url);
+                var result = await client.PostAsync(remote_address, null);
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    throw new ApplicationException(await result.Content.ReadAsStringAsync());
+                else
+                {
+                    string response = await result.Content.ReadAsStringAsync();
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<List<T>>(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+
+            return default(List<T>);
         }
 
         private class FACLGA

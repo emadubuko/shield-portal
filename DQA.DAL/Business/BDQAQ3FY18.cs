@@ -406,6 +406,8 @@ namespace DQA.DAL.Business
                     from item in selectedList
                     select new
                     {
+                        State = item.HealthFacility.lga.state.state_name,
+                        Lga = item.HealthFacility.lga.lga_name,
                         FacilityName = item.HealthFacility.Name,
                         item.HTS_TST,
                         item.HTC_Only,

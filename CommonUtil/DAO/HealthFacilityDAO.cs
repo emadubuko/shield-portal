@@ -7,6 +7,8 @@ using System;
 using System.Linq;
 using CommonUtil.Entities;
 using CommonUtil.Utilities;
+using System.IO;
+using OfficeOpenXml;
 
 namespace CommonUtil.DAO
 {
@@ -144,5 +146,76 @@ namespace CommonUtil.DAO
                 return  ex.Message;
             }           
         }
+
+        public string MarkSiteAsGranular(Stream fileStream)
+        {
+            List<string> err = new List<string>();
+            try
+            {
+                var existingFacilities = RetrieveAll().ToDictionary(x => x.FacilityCode);
+
+                List<HealthFacility> previously = new List<HealthFacility>();
+                using (ExcelPackage package = new ExcelPackage(fileStream))
+                {
+                    var mainWorksheet = package.Workbook.Worksheets.FirstOrDefault();
+
+                    int row = 2;
+                    while (true)
+                    {
+                        if (string.IsNullOrEmpty(mainWorksheet.Cells["A" + row].Text)) //if no IP, then assume end of file
+                            break;
+
+                        string datimcode = mainWorksheet.Cells["A" + row].Text;
+                        string facilityName = mainWorksheet.Cells["B" + row].Text;
+                        if (string.IsNullOrEmpty(datimcode))
+                        {
+                            err.Add("no DATIM code supplied for s/n " + mainWorksheet.Cells["A" + row].Text);
+                            row++;
+                            continue;
+                        }
+                        if (string.IsNullOrEmpty(facilityName))
+                        {
+                            err.Add("No Facility Name for s/n " + mainWorksheet.Cells["A" + row].Text);
+                            row++;
+                            continue;
+                        }
+                        if (existingFacilities.TryGetValue(datimcode, out HealthFacility facility))
+                        {
+                            facility.GranularSite = true;
+                            previously.Add(facility);
+                        }
+                        else
+                        {
+                            err.Add("Invalid Facility DATIM Code | " + datimcode);
+                        }
+                        row++;
+                    }
+                }
+                UpdateWithStateLessSession(previously);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return ex.Message;
+            }
+            err.ForEach(x => Logger.LogInfo("", x));
+
+            return string.Join("<br />", err);
+        }
+
+
+        public void UpdateWithStateLessSession(List<HealthFacility> facilities)
+        {
+            using (var session = BuildSession().SessionFactory.OpenStatelessSession())
+            using (var tx = session.BeginTransaction())
+            {
+                foreach (var fac in facilities)
+                {
+                    session.Update(fac);
+                }
+                tx.Commit();
+            }
+        }
+
     }
 }

@@ -40,8 +40,11 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            Ifunaya.MergeFiles();
-           // CopyExcelFileContent();
+
+          MosisFiles.GeneratePeadLineListing();
+
+            //Ifunaya.MergeFiles();
+            // CopyExcelFileContent();
             //LGADao dao = new LGADao();
             //var lga = dao.RetrieveAll().GroupBy(x=>x.State.state_name);
             //var states = new List<St>();
@@ -1366,10 +1369,15 @@ namespace Test
 
     public class DatimResponse
     {
-        public string coordinates { get; set; }
+        protected string coordinates { get; set; }
+        static void funny(DatimResponse a, DatimResponseIndicators b)
+        {
+            b.coordinates = "";
+            a.coordinates = "";
+        }
     }
 
-    public class DatimResponseIndicators
+    public class DatimResponseIndicators : DatimResponse
     {
         public string HTS { get; set; }
         public string PMTCT_STAT { get; set; }
@@ -1378,6 +1386,13 @@ namespace Test
         public string PMTCT_Eid { get; set; }
         public string PMTCT_Art { get; set; }
 
+        static void funny(DatimResponse a, DatimResponseIndicators b)
+        {
+            b.coordinates = "";
+            a.coordinates = "";
+        }
     }
+
+
 
 }
