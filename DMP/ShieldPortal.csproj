@@ -232,6 +232,7 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q3Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
+    <Compile Include="Controllers\DQIFY2018Q4Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q3Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
@@ -1481,10 +1482,12 @@
     <Content Include="Views\DQIFY2018Q3\UploadDQIResult.cshtml" />
     <Content Include="Views\Shared\dqiFY18Q3Layout.cshtml" />
     <Content Include="Views\MPM\Download.cshtml" />
-<<<<<<< HEAD
-=======
     <Content Include="Views\MPM\NDR_Statictics.cshtml" />
->>>>>>> c14ee17683b8d0dc0cb0294722b2386fcb7c2259
+    <Content Include="Views\DQIFY2018Q4\ComparsionWithQ4.cshtml" />
+    <Content Include="Views\DQIFY2018Q4\DownloadDQITool.cshtml" />
+    <Content Include="Views\DQIFY2018Q4\Index.cshtml" />
+    <Content Include="Views\DQIFY2018Q4\UploadDQIResult.cshtml" />
+    <Content Include="Views\Shared\dqiFY18Q4Layout.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

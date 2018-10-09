@@ -1,0 +1,84 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/dqiFY18Q4Layout.cshtml";
+}
+ 
+
+<div class="col-sm-9">
+
+    <div class="panel panel-default" style="border-color: darkorange;">
+        <div class="panel-heading clearfix " style="border-color: darkorange;text-align: center;">
+            Upload Report
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"> Upload:</label>
+                    <div class="col-sm-10">
+                        <input type="file" class="form-control" id="fileUpload" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-7 col-sm-push-2">
+                        <button id="upload" type="submit" class="btn btn-sm btn-default" style="background-color:darkorange;color:#fff"><i class="fa fa-upload"></i> &nbsp; Upload</button>
+                        <i style="display:none" id="loadImg" > <img  class="center" src="~/images/spinner.gif" width="36"> please wait . . .</i> 
+                    </div>
+                </div>
+            </form>
+            <hr />
+            <label id="error" style="display:none;margin-left: 18%;"></label>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+            $(document).ready(function () {
+
+                $("#upload").click(function (e, n) {
+                    $("#error").empty();
+                    $('#upload').prop("disabled",true);
+                    $("#loadImg").show();
+
+                    var data = new FormData();
+                    var file = $('form input[type=file]')[0].files[0];
+                    if (file == undefined) {
+                        alert("no file attached");
+                        return;
+                    }
+                    data.append('file', file);
+
+                    let url = '/DQIFY2018Q4/ProcessFile';
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        contentType: false,
+                        processData: false,
+                        data :data,
+                        cache: false,
+                    }).done(function (result) {
+                        $('#upload').prop("disabled", false);
+                        $("#loadImg").hide();
+                        console.log(result);
+                        $("#error").empty();
+                        if (result.split('|')[0] == "00") {
+                            $("#error").append('<span style="color:green;">' + result.split('|')[1] + '</span>');
+                        }
+                        else {
+                            $("#error").append('<span style="color:red;">' + result + '</span>');
+                        }
+                        $("#error").show();
+                    }).error(function (xhr, status, err) {
+                        $('#upload').prop("disabled", false);
+                        $("#loadImg").hide();
+                        $("#error").empty();
+                        $("#error").append(err);
+                        $("#error").show();
+                    });
+                    return false;
+                });
+            });
+    </script>
+}
