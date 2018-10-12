@@ -61,7 +61,7 @@
                         {
                             if (date)
                             {
-                                <td id="@date"><a class="btn btn-sm btn-success"><i class="icon-check"></i></a></td>
+                                <td id="@date"><a class="btn btn-sm btn-success download" id="@item.Key"><i class="icon-check"></i></a></td>
                             }
                             else
                             {
@@ -79,12 +79,36 @@
 <div class="row">
 
     <div class="col-sm-12">
+        <div style="text-transform:capitalize;margin-top: 20px;">
 
-        <div style="text-transform:capitalize;margin:15px 0px -10px 20px">
-            <h4 style="margin-left:500px;font-weight:bold"> Detailed Completion Report for @ViewBag.reportPeriod </h4>
-            <a class="btn btn-success" id="download_to_excel" style="font-size: 12px;">Download to Excel</a>
+            <div class="col-sm-2">
+                <a class="btn btn-success" id="download_to_excel" style="font-size: 12px;margin-bottom: -50px;">Download to Excel</a>
+            </div>
+
+            <div class="col-sm-offset-1 col-sm-4">
+                <h4 style="margin-bottom: -50px;font-weight:bold"> Detailed Completion Report for <span id="reportPeriod"></span></h4>
+            </div>
+
+            <div style="float: right;" class="col-sm-3">
+                <span class="col-sm-7">Change reporting period </span>
+                <select id="rpt_type" class="form-control col-sm-6">
+                    @foreach (var p in ViewBag.ReportedPeriods)
+                    {
+                        if (p == @ViewBag.reportPeriod)
+                        {
+                            <option value="@p" selected>@p</option>
+                        }
+                        else
+                        {
+                            <option value="@p">@p</option>
+                        }
+                    }
+                </select>
+            </div>
         </div>
-        
+    </div>
+
+    <div class="col-sm-12">
         <div class="table-responsive" style="font-size: 11px; padding: 15px;">
             <table class="table table-striped table-bordered" id="output" style="width:100%">
                 <thead>
@@ -117,19 +141,39 @@
 {
     <script>
         $(document).ready(function () {
+              
+            $(".download").click(function (e) {
 
-            //$('#output').DataTable({
-            //    "sPaginationType": "full_numbers",
-            //    "autoWidth": true,
-            //    "bInfo": false,
-            //    "paging": false,
-            //});
+                var ans = confirm("Download the uploaded file ?");
+                if (ans) {
+                    $("#loadImg2").show();
+                    $.ajax({
+                        url: '/MPM/DownloadPreviousReport?IPState=' + e.currentTarget.id,
+                        type: 'POST',
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).done(function (response) {
+                        if (response) {
+                            window.location = '/Report/' + response;
+                        }
+                        else {
+                            alert("file not found");
+                        }
+                        $("#loadImg2").hide();
+                    }).error(function (xhr, status, err) {
+                        console.log(xhr.responseText);
+                        $("#loadImg2").hide();
+                    });
+                }
+            })
 
             $("#download_to_excel").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
             });
 
-            let reportPeriod = "";
+            let reportPeriod = '@ViewBag.reportPeriod';
+            $("#reportPeriod").html('@ViewBag.reportPeriod');
             $.ajax({
                 url: '/MPM/ReportDetails?reportPeriod=' + reportPeriod,
                 type: 'POST',
@@ -143,6 +187,26 @@
                 console.log(xhr.responseText);
                 $("#loadImg2").hide();
             });
+
+            $('#rpt_type').on('change', function () {
+
+                $("#reportPeriod").html(this.value);
+
+                $.ajax({
+                    url: '/MPM/ReportDetails?reportPeriod=' + this.value,
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (response) {
+                    buildTable(response); 
+                    $("#loadImg2").hide();
+                }).error(function (xhr, status, err) {
+                    console.log(xhr.responseText);
+                    $("#loadImg2").hide();
+                }); 
+            });
+
 
             function buildTable(dataList) {
                 $("#output tbody").empty();

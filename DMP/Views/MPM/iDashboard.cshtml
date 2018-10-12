@@ -1,0 +1,253 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_mpmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <style>
+        html, body {
+            height: 100%
+        }
+    </style>
+
+}
+
+
+<h2>MPM Dashboard</h2>
+<div class="col-sm-8">
+    <div class="row">
+
+        <div class="tabs-container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a aria-expanded="true" href="#ist90" data-toggle="tab">First 90</a></li>
+                <li class=""><a aria-expanded="false" href="#2nd90" data-toggle="tab">Second 90</a></li>
+                <li class=""><a aria-expanded="false" href="#3rd90" data-toggle="tab">Third 90</a></li>
+                <li class=""><a aria-expanded="false" href="#pmtct_cascade" data-toggle="tab">PMTCT Cascade</a></li>
+                <li class=""><a aria-expanded="false" href="#tb_cascade" data-toggle="tab">TB HIV Cascade</a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                <div class="tab-pane active" id="ist90">
+                    <div class="row">
+                        <div id="HTSindextesting" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div id="HTSotherPITC" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="2nd90">
+                    <div class="row">
+                        <div id="LinkagebyState" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>                   
+
+                    <hr />
+                    <div class="row">
+                        <div id="TX_RET" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="tab-pane" id="3rd90">
+                    <div class="row">
+                        <div id="Tx_VLA" style='width: 1000px; height: 827px;'>
+                        </div>
+                    </div> 
+
+                    <hr />
+                    <div class="row">
+                        <div id="PMTCTVIRALLOAD" style='width: 1000px; height: 827px;'>
+                        </div>
+                    </div>                   
+                </div>
+
+                <div class="tab-pane" id="pmtct_cascade">
+                    <div class="row">
+                        <div id="PMTCTCascade_uptake" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="PMTCTCascade_maternal_clinical" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="PMTCTCascade_linkage" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="tb_cascade">
+                    <div class="row">
+                        <div id="TB_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div id="TB_treatment" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div> 
+                    </div>
+                    <div class="row">
+                        <div id="TB_tpt" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/no-data-to-display.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/data.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
+    <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+    @*<script src="~/Scripts/highchart-utilities.js"></script>*@
+    <script src="~/Scripts/highchart-utilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#dqibtn").click(function (e) {
+                $(".spinner").show();
+            });
+
+            let bubble_pointFormat = '<tr><th colspan="2"><h3>{point.name}</h3></th></tr>' +
+                '<tr><th>POS:</th><td>{point.x}</td></tr>' +
+                '<tr><th>Total Tested:</th><td>{point.z}</td></tr>' +
+                '<tr><th>Percentage Yield:</th><td>{point.y}%</td></tr>';
+
+            $.ajax({
+                url: "/MPM/RetriveData",
+                method: "Post",
+                contentType: "application/json",
+            }).done(function (response) {
+                try {
+                    var dt = JSON.parse(response)._data;
+                    BuildBubbleChart('HTSindextesting', 'Testing yield of HTS Index Client',
+                        'No. of Identified Positives', 'Percentage Yield', bubble_pointFormat,
+                        dt.hts_index_testing);
+
+                    //hts other pitc
+                    build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',
+                        'No. of client tested', '% Testing Yield', dt.hts_other_pitc.SDPs,
+                        dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
+                        'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
+
+                    //TX_RET
+                    build_bar_chart_dual_axis('TX_RET', 'Retained in care 12 months after ART initiation',
+                        'No. of client', '% Retention', dt.ART.State_ret,
+                        dt.ART.den_ret, 'Tx_RET(den)', dt.ART.num_ret,
+                        'Tx_Ret(num)', dt.ART.percnt_ret, '% retention', false);
+
+                    //Tx_VLA
+                    build_bar_chart_dual_axis('Tx_VLA', 'Viral Load Access',
+                        'No. of client', '% Viral load access', dt.ART.State_vl,
+                        dt.ART.den_ret, 'Sample collected', dt.ART.num_vl,
+                        'Total eligible patients', dt.ART.percnt_vl, '% Viral load access', false);
+
+                    //LinkagebyState
+                    build_bar_chart_dual_axis('LinkagebyState', 'New on ART vs Identified Positives',
+                        'No. of client', '% linkage', dt.Linkage.State,
+                        dt.Linkage.POS, 'POS', dt.Linkage.Tx_New,
+                        'Tx_New', dt.Linkage.Linkage, '% Linkage', false);
+
+                    //PMTCTVIRALLOAD
+                    build_stacked_bar('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression',
+                        "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.result);
+
+                    //PMTCTCascade_uptake
+                    build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
+                        'No. of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
+                    //build_Column_chart('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
+                    //    'No. of Client', dt.PMTCT.State, dt.PMTCT.maternal_uptake);
+
+                    //PMTCTCascade_maternal_clinical
+                    build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
+                        'No. of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
+                    //build_Column_chart('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
+                    //    'No. of Client', dt.PMTCT.State, dt.PMTCT.maternal_clinical_cascade);
+
+                    //PMTCTCascade_linkage
+                    build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
+                        'No. of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
+                    //build_Column_chart('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
+                    //    'No. of Client', dt.PMTCT.State, dt.PMTCT.infant_linkage);
+
+                    //TB_stat
+                    build_Column_chart('TB_stat', 'TB HIV',
+                        'No. of Client', dt.Tb_Stat.State, dt.Tb_Stat.tb_stat);
+
+                    //TB_treatment
+                    build_bar_chart_dual_axis('TB_treatment', 'Percentage of patients started on TB Treatment',
+                        'No. of client', '% TX_TB', dt.TB_treatment.State,
+                        dt.TB_treatment.NewCases, 'New TB Cases', dt.TB_treatment.Tx_TB,
+                        'Tx_TB', dt.TB_treatment.TB_TX_percnt, '% TX_TB', false);
+
+                    //TB_tpt
+                    build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
+                        'No. of client', '% TPT', dt.tb_tpt.State,
+                        dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
+                        'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
+
+                }
+                catch (e) {
+                    alert("A system error has occurred. Kindly re-try again shortly");
+                    console.log(e);
+                }
+            }).error(function (xhr, status, err) {
+                alert("error occured");
+            });
+
+
+
+
+            $('#resizer').resizable({
+                resize: function () {
+                    var $this = this;
+                    $.each([htc_chart, pmtct_stat_chart, pmtct_art_chart, pmtct_eid_chart, tx_new_chart, tx_curr_chart, pmtct_hei_pos_chart], function (i, a_chart) {
+                        a_chart.setSize(
+                            $this.offsetWidth - 20,
+                            $this.offsetHeight - 20,
+                            false
+                        );
+                    });
+                }
+            });
+
+            $('#resizer_intv').resizable({
+                resize: function () {
+                    var $this = this;
+                    $.each([htc_chart_intv, pmtct_stat_chart_intv, pmtct_art_chart_intv, pmtct_eid_chart_intv, tx_new_chart_intv, tx_curr_chart_intv, pmtct_hei_pos_chart_intv], function (i, a_chart) {
+                        a_chart.setSize(
+                            $this.offsetWidth - 20,
+                            $this.offsetHeight - 20,
+                            false
+                        );
+                    });
+                }
+            });
+
+            $(".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se")
+                .css("background-color", "red");
+
+
+            function roundToTwo(num) {
+                return +(Math.round(num + "e+2") + "e-2");
+            }
+        });
+    </script>
+}

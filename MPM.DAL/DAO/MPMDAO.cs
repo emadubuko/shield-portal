@@ -50,7 +50,7 @@ namespace MPM.DAL.DAO
                     session.Insert(o);
                 }
                 //
-                foreach (var o in mt.TB_HIV_Treatment)
+                foreach (var o in mt.TB_Treatment_Started)
                 {
                     session.Insert(o);
                 }
@@ -58,7 +58,7 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
-                foreach (var o in mt.TB_Presumptives_Diagnosis)
+                foreach (var o in mt.TB_Bacteriology_Diagnosis)
                 {
                     session.Insert(o);
                 }
@@ -66,11 +66,27 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
-                foreach (var o in mt.TB_TPT_Completed)
+                foreach (var o in mt.TB_Diagnosed)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_Relapsed)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_New_Relapsed_Known_Pos)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_New_Relapsed_Known_Status)
                 {
                     session.Insert(o);
                 }
                 foreach (var o in mt.TB_TPT_Eligible)
+                {
+                    session.Insert(o);
+                }
+                foreach (var o in mt.TB_ART)
                 {
                     session.Insert(o);
                 }
@@ -119,7 +135,7 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
-                foreach (var o in mt.TB_HIV_Treatment)
+                foreach (var o in mt.TB_Treatment_Started)
                 {
                     session.Insert(o);
                 }
@@ -127,7 +143,7 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
-                foreach (var o in mt.TB_Presumptives_Diagnosis)
+                foreach (var o in mt.TB_Bacteriology_Diagnosis)
                 {
                     session.Insert(o);
                 }
@@ -135,7 +151,7 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
-                foreach (var o in mt.TB_TPT_Completed)
+                foreach (var o in mt.TB_Relapsed)
                 {
                     session.Insert(o);
                 }
@@ -175,7 +191,8 @@ namespace MPM.DAL.DAO
                 Projections.Alias(Projections.GroupProperty("pd.ReportLevelValue"), "ReportingLevelValue"),
                 Projections.Alias(Projections.GroupProperty("org.ShortName"), "IPName"),
                  Projections.Alias(Projections.GroupProperty("pd.ReportingPeriod"), "ReportPeriod"),
-                 Projections.Alias(Projections.GroupProperty("pd.Id"), "Id")
+                 Projections.Alias(Projections.GroupProperty("pd.Id"), "Id"),
+                 Projections.Alias(Projections.GroupProperty("pd.FilePath"), "FilePath")
                 );
 
             IList<IPUploadReport> reports = criteria.SetResultTransformer(new NHibernate.Transform.AliasToBeanResultTransformer(typeof(IPUploadReport))).List<IPUploadReport>();
@@ -251,6 +268,21 @@ namespace MPM.DAL.DAO
             {
                 cmd.Dispose();
             }
+        }
+
+
+        public DataTable RetriveDataAsDataTables(string stored_procedure, string IPfilter="")
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = stored_procedure;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 100;
+
+            if (!string.IsNullOrEmpty(IPfilter))
+                cmd.Parameters.AddWithValue("IP", IPfilter);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
         }
     }
 }

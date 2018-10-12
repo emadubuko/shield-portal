@@ -15,6 +15,7 @@ namespace MPM.DAL.DTO
             Map(x => x.DateUploaded);
             Map(x => x.ReportLevel);
             Map(x => x.ReportLevelValue);
+            Map(x => x.FilePath).Length(int.MaxValue);
             References(x => x.IP).Column("IP");
             References(x => x.UploadedBy).Column("UserId");
             HasMany(x => x.HTS_Index).Inverse()
@@ -32,15 +33,15 @@ namespace MPM.DAL.DTO
             HasMany(x => x.PMTCT_EID).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             //
-            HasMany(x => x.TB_HIV_Treatment).Inverse()
+            HasMany(x => x.TB_Treatment_Started).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.TB_Presumptives).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
-            HasMany(x => x.TB_Presumptives_Diagnosis).Inverse()
+            HasMany(x => x.TB_Bacteriology_Diagnosis).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.TB_Screened).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
-            HasMany(x => x.TB_TPT_Completed).Inverse()
+            HasMany(x => x.TB_Relapsed).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.TB_TPT_Eligible).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
@@ -143,7 +144,7 @@ namespace MPM.DAL.DTO
             References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.NewClient);
-            Map(x => x.NewlyTested);
+            Map(x => x.KnownStatus);
             Map(x => x.NewHIVPos);
             Map(x => x.NewOnART);
             Map(x => x.KnownHIVPos);
@@ -177,8 +178,6 @@ namespace MPM.DAL.DTO
         }
     }
 
-    //,,,,,
-
     public class TB_ScreenedMap : ClassMap<TB_Screened>
     {
         public TB_ScreenedMap()
@@ -196,6 +195,7 @@ namespace MPM.DAL.DTO
             References(x => x.MetaData).Column("MetaDataId");
         }
     }
+
     public class TB_PresumptiveMap : ClassMap<TB_Presumptive>
     {
         public TB_PresumptiveMap()
@@ -213,11 +213,12 @@ namespace MPM.DAL.DTO
             References(x => x.MetaData).Column("MetaDataId");
         }
     }
-    public class TB_Presumptive_DiagnosedMap : ClassMap<TB_Presumptive_Diagnosed>
+
+    public class TB_Bacteriology_DiagnosisMap : ClassMap<TB_Bacteriology_Diagnosis>
     {
-        public TB_Presumptive_DiagnosedMap()
+        public TB_Bacteriology_DiagnosisMap()
         {
-            Table("mpm_TB_Presumptive_Diagnosed");
+            Table("mpm_TB_Bacteriology_Diagnosis");
 
             Id(x => x.Id);
             References(x => x.Site).Column("SiteId");
@@ -228,11 +229,28 @@ namespace MPM.DAL.DTO
             References(x => x.MetaData).Column("MetaDataId");
         }
     }
-    public class TB_TPT_CompletedMap : ClassMap<TB_TPT_Completed>
+
+    public class TB_DiagnosedMap : ClassMap<TB_Diagnosed>
     {
-        public TB_TPT_CompletedMap()
+        public TB_DiagnosedMap()
         {
-            Table("mpm_TB_TPT_Completed");
+            Table("mpm_TB_Diagnosed");
+
+            Id(x => x.Id);
+            References(x => x.Site).Column("SiteId");
+            Map(x => x.AgeGroup);
+            Map(x => x.Sex);
+            Map(x => x.Number);
+            Map(x => x.Description);
+            References(x => x.MetaData).Column("MetaDataId");
+        }
+    }
+    
+    public class TB_New_RelapsedMap : ClassMap<TB_New_Relapsed>
+    {
+        public TB_New_RelapsedMap()
+        {
+            Table("mpm_TB_New_Relapsed");
 
             Id(x => x.Id);
             References(x => x.Site).Column("SiteId");
@@ -245,6 +263,56 @@ namespace MPM.DAL.DTO
             References(x => x.MetaData).Column("MetaDataId");
         }
     }
+    
+    public class TB_New_Relapsed_Known_StatusMap : ClassMap<TB_New_Relapsed_Known_Status>
+    {
+        public TB_New_Relapsed_Known_StatusMap()
+        {
+            Table("mpm_TB_New_Relapsed_Known_Status");
+
+            Id(x => x.Id);
+            References(x => x.Site).Column("SiteId");
+            Map(x => x.AgeGroup);
+            Map(x => x.Sex);
+            Map(x => x.Number);
+            Map(x => x.Description);
+            References(x => x.MetaData).Column("MetaDataId");
+        }
+    }
+
+    public class TB_New_Relapsed_Known_PosMap : ClassMap<TB_New_Relapsed_Known_Pos>
+    {
+        public TB_New_Relapsed_Known_PosMap()
+        {
+            Table("mpm_TB_New_Relapsed_Known_Pos");
+
+            Id(x => x.Id);
+            References(x => x.Site).Column("SiteId");
+            Map(x => x.AgeGroup);
+            Map(x => x.Sex);
+            Map(x => x.Known_Pos);
+            Map(x => x.New_Pos);
+            Map(x => x.Description);
+            References(x => x.MetaData).Column("MetaDataId");
+        }
+    }
+
+    public class TB_ARTMap : ClassMap<TB_ART>
+    {
+        public TB_ARTMap()
+        {
+            Table("mpm_TB_ART");
+
+            Id(x => x.Id);
+            References(x => x.Site).Column("SiteId");
+            Map(x => x.AgeGroup);
+            Map(x => x.Sex);
+            Map(x => x.Number);
+            Map(x => x.Description);
+            References(x => x.MetaData).Column("MetaDataId");
+        }
+    }
+    
     public class TB_TPT_EligibleMap : ClassMap<TB_TPT_Eligible>
     {
         public TB_TPT_EligibleMap()
@@ -263,18 +331,18 @@ namespace MPM.DAL.DTO
         }
     }
 
-    public class TB_HIV_TreatmentMap : ClassMap<TB_HIV_Treatment>
+    public class TB_Treatment_StartedMap : ClassMap<TB_Treatment_Started>
     {
-        public TB_HIV_TreatmentMap()
+        public TB_Treatment_StartedMap()
         {
-            Table("mpm_TB_HIV_Treatment");
+            Table("mpm_TB_Treatment_Started");
 
             Id(x => x.Id);
             References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
 
             Map(x => x.Description);
-            Map(x => x.New_TB_Cases);
+            Map(x => x.Number);
             Map(x => x.Sex);
             Map(x => x.Tx_TB);
             References(x => x.MetaData).Column("MetaDataId");

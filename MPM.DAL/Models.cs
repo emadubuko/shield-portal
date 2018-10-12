@@ -36,5 +36,6 @@ namespace MPM.DAL
         public string IPName { get; set; }
         public string ReportPeriod { get; set; }
         public string ReportingLevelValue { get; set; }
+        public string FilePath { get; set; }
     }
 }

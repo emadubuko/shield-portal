@@ -1,0 +1,337 @@
+﻿
+@{
+    ViewBag.Title = "RadetValidation";
+    Layout = "~/Views/Shared/_dqaFY18Q4layout.cshtml";
+}
+
+@section AddToHead{
+    <link href="~/plugins/select2/css/select2.css" rel="stylesheet" />
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
+        {
+            var ipscount= @Html.Raw(ViewBag.IPCount);
+            var model_data = @Html.Raw(ViewBag.selectModel);
+
+        }
+    </script>
+
+    <style>
+        .no-change-concurrency {
+            background-color: limegreen;
+            color: #fff;
+            text-align: center;
+        }
+
+        .changed-concurrency {
+            background-color: red;
+            color: #fff;
+            text-align: center;
+        }
+
+        .change-difference {
+            background-color: coral;
+            color: #fff;
+            text-align: center;
+        }
+
+        .dataTables_wrapper .dataTables_processing {
+            position: absolute;
+            top: 1%;
+            left: 50%;
+            width: 100%;
+            height: 50px;
+            margin-left: -50%;
+            margin-top: -25px;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 25px;
+            background: linear-gradient(to right, #f9f9f9 0%, #ccc 25%, #ccc 75%, #f9f9f9 100%);
+        }
+    </style>
+}
+
+
+<div class="col-md-9">
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">RADET validation</h5>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+
+                <form class="form-horizontal" style="margin-left: 50px;">
+                    <div class="form-group">
+                        <div class="col-sm-push-1 col-sm-3">
+                            <h5 style="text-decoration:underline;">Search Criteria</h5>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" for="sltIP">IP</label>
+                        <div class="col-sm-4">
+                            <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple></select>
+                        </div>
+
+                        <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
+                        <div class="col-sm-4">
+                            <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" for="sltstate">State</label>
+                        <div class="col-sm-4">
+                            <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple></select>
+                        </div>
+
+                        <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
+                        <div class="col-sm-4">
+                            <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-push-1 col-sm-2">
+                            <a class="btn btn-sm btn-info" id="btnSearch">Search</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <hr />
+
+            <span id="lding">Loading...Please wait</span>
+            <div class="progress active" id="progress">
+                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+
+                </div>
+            </div>
+
+            <a id="save_download" style="text-transform:capitalize;text-decoration:underline;color:blue;cursor:pointer">Download</a>
+            <div class="table-responsive" style="overflow-x:initial">
+                <table id="validation_tbl" class="table table-bordered table-hover" style="width:100%; font-size:10px">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>State</th>
+                            <th>LGA</th>
+                            <th>Facility</th>
+                            <th>GSM</th>
+                            <th style="border-left-width:medium;border-left-color:black;">Tx_Curr (RADET)</th>
+                            <th>Tx_Curr (NDR)</th>
+                            <th>Difference</th>
+                            <th>% Difference</th>
+                            <th style="border-left-width:medium;border-left-color:black;">Tx_New (RADET)</th>
+                            <th>Tx_New (NDR)</th>
+                            <th>Difference</th>
+                            <th>% Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script>
+        $(document).ready(function () {
+
+            populate_all_controls();
+
+            var dataTable = {
+                table: null,
+                initialiazeDataTable: function () {
+                    var $tabela = $("#validation_tbl");
+
+                    var model = {};
+                    let selectedIP = [];
+                    $("#sltIP option:selected").each(function () {
+                        selectedIP.push($("#sltIP")[0].selectedOptions[0].value);
+                    });
+                    model.IPs = selectedIP;
+
+                    dataTable.table = $tabela.DataTable({
+                        processing: true,
+                        serverSide: true,
+                        sEcho: 3,
+                        paging: false,
+                        "oLanguage": { "sProcessing": "Loading... Please wait" },
+                        // "aLengthMenu": [[50, 100, 200], [50, 100, 200]],
+                        ajax:
+                            {
+                                url: "/DQAFY2018Q4/RadetValidationData",
+                                type: "POST",
+                            },
+                        "oSearch": { "sSearch": JSON.stringify(model) },
+                        "aoColumnDefs": [{
+                            "aTargets": [7],
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                if (parseInt(cellData) != 0) {
+                                    $(td).addClass('change-difference');
+                                }
+                            },
+                        },
+                        {
+                            "aTargets": [8],
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                if (parseInt(cellData) > 10) {
+                                    $(td).addClass('changed-concurrency');
+                                }
+                                else {
+                                    $(td).addClass('no-change-concurrency');
+                                }
+                            }
+                        },
+                        {
+                            "aTargets": [11],
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                if (parseInt(cellData) != 0) {
+                                    $(td).addClass('change-difference');
+                                }
+                            }
+                        },
+                        {
+                            "aTargets": [12],
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                if (parseInt(cellData) > 10) {
+                                    $(td).addClass('changed-concurrency');
+                                }
+                                else {
+                                    $(td).addClass('no-change-concurrency');
+                                }
+                            }
+                        },
+                        ],
+                        "aoColumns": [
+                            { "mData": "ShortName" },
+                            { "mData": "State" },
+                            { "mData": "LGA" },
+                            { "mData": "Facility" },
+                            { "mData": "GSM" },
+                            { "mData": "Tx_Curr" },
+                            { "mData": "p_Tx_Curr" },
+                            { "mData": "Tx_Curr_difference" },
+                            { "mData": "Tx_Curr_concurrency" },
+                            { "mData": "Tx_New" },
+                            { "mData": "p_Tx_New" },
+                            { "mData": "Tx_New_difference" },
+                            { "mData": "Tx_New_concurrency" },
+                        ],
+                        "pagingType": "full_numbers"
+                    });
+                },
+                getData: function () {
+                    if (dataTable.table == null)
+                        dataTable.initialiazeDataTable();
+                    else {
+                        dataTable.table.ajax.reload();
+                    }
+                }
+            }
+
+            dataTable.getData();
+
+            $('input.form-control.input-sm[type=search]').unbind();
+            $('#validation_tbl_filter.dataTables_filter').css("visibility", 'hidden');
+            $("#validation_tbl_length.dataTables_length").parent().removeClass("col-sm-6").addClass('col-sm-push-10 col-sm-3');
+
+            $("#sltIP").prop("disabled", false);
+
+            $('#btnSearch').click(function (e) {
+                //supply the variables here
+                var model = {};
+                model.RadetPeriod = $("#sltReportPeriod option:selected").val();
+
+                let selectedIP = [];
+                $("#sltIP option:selected").each(function () {
+                    selectedIP.push($(this).val());
+                });
+                let selectedStates = [];
+                $("#sltstate option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedStates.push(val);
+                    }
+                });
+                let selectedLGA = [];
+                $("#sltLGA option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedLGA.push(val);
+                    }
+                });
+                let selectedFacilitties = [];
+                $("#sltFacility option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedFacilitties.push(val);
+                    }
+                });
+                model.IPs = selectedIP;
+                model.state_codes = selectedStates;
+                model.lga_codes = selectedLGA;
+                model.facilities = selectedFacilitties;
+                dataTable.table.search(JSON.stringify(model)).draw(false);
+
+            });
+
+            function buildTable(dataList) {
+                $("#validation_tbl tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var html = "<tr>";
+                    html += "<td>" + d.ShortName + "</td>";
+                    html += "<td>" + d.Facility + "</td>";
+                    html += "<td>" + d.Tx_Curr + "</td>";
+                    html += "<td>" + d.p_Tx_Curr + "</td>";
+                    if (parseInt(d.Tx_Curr_difference) != 0) { //difference
+                        html += "<td style='background-color:coral;color:#fff;text-align: center;'>" + d.Tx_Curr_difference + "</td>";
+                    } else {
+                        html += "<td>" + d.Tx_Curr_difference + "</td>";
+                    }
+
+                    if (Math.abs(parseInt(d.Tx_Curr_concurrency)) < 10) { //concurrency
+                        html += "<td style='background-color:limegreen;color:#fff;text-align: center;'>" + Math.abs(parseInt(d.Tx_Curr_concurrency)) + "%</td>";
+                    }
+                    else {
+                        html += "<td style='background-color:red;color:#fff;text-align: center;'>" + Math.abs(parseInt(d.Tx_Curr_concurrency)) + "%</td>";
+                    }
+                    //tx_new
+                    html += "<td>" + d.Tx_New + "</td>";
+                    html += "<td>" + d.p_Tx_New + "</td>";
+
+                    if (parseInt(d.Tx_New_difference) != 0) { // difference
+                        html += "<td style='background-color:coral;color:#fff;text-align: center;'>" + d.Tx_New_difference + "</td>";
+                    }
+                    else {
+                        html += "<td>" + d.Tx_New_difference + "</td>";
+                    }
+
+                    if (Math.abs(parseInt(d.Tx_New_concurrency)) < 10) { // concurrency
+                        html += "<td style='background-color:limegreen;color:#fff;text-align: center;'>" + Math.abs(parseInt(d.Tx_New_concurrency)) + "%</td>";
+                    }
+                    else {
+                        html += "<td style='background-color:red;color:#fff;text-align: center;'>" + Math.abs(parseInt(d.Tx_New_concurrency)) + "%</td>";
+                    }
+                    html += "</tr>";
+                    $("#validation_tbl tbody").append(html);
+
+                });
+                $("#progress").hide();
+                $("#lding").hide();
+            }
+
+            $(document).on("click", "#save_download", function (e) {
+                exportTableToCSV.apply(this, [$('#validation_tbl'), 'Validation.csv']);
+            });
+
+            $("#progress").hide();
+            $("#lding").hide();
+        });
+    </script>
+}

@@ -14,4 +14,18 @@ namespace CommonUtil.Entities
         public virtual DateTime CachedDatetime { get; set; }
     }
 
+
+    public class NDR_Facilities
+    {
+        public virtual int Id { get; set; }
+        public virtual string IP { get; set; }
+        public virtual string State { get; set; }
+        public virtual string LGA { get; set; }
+        public virtual string LGA_Code { get; set; }
+        public virtual string AlternativeLGA { get; set; }
+        public virtual string Facility { get; set; }
+        public virtual string DATIMCode { get; set; }
+        public virtual bool GSM { get; set; }
+    }
+
 }

@@ -66,6 +66,12 @@ namespace ShieldPortal.Services
                 var tx_pvls = !string.IsNullOrEmpty(dr.Field<string>("TX_PLVS")) ?  ComputeConcurrence(dr.Field<string>("TX_PLVS"), dr.Field<string>("Validate_TX_PLVS")) : new ConcurrenceData(); //(dr[35], dr[36]);
                 List<object> tx_pvls_siteData = new List<object> { dr.Field<string>("Facility"), tx_pvls.concurrence };
 
+
+                //PMTCT_HEI_POS
+                var pmtct_hei_pos = !string.IsNullOrEmpty(dr.Field<string>("PMTCT_HEI_POS")) ? ComputeConcurrence(dr.Field<string>("PMTCT_HEI_POS"), dr.Field<string>("Validate_PMTCT_HEI_POS")) : new ConcurrenceData(); //(dr[35], dr[36]);
+                List<object> pmtct_hei_pos_siteData = new List<object> { dr.Field<string>("Facility"), pmtct_hei_pos.concurrence };
+
+
                 var temp = new TempFacilityData();
                 temp.IP = dr[0].ToString();
 
@@ -151,6 +157,13 @@ namespace ShieldPortal.Services
                     temp.DATIM_TX_PVLS = tx_pvls.datim;
                     temp.Validated_TX_PVLS = tx_pvls.validated;
                     temp.tx_pvls_Data = tx_pvls_siteData;
+                }
+
+                if (pmtct_hei_pos.datim != 0 && pmtct_hei_pos.validated != 0)
+                {
+                    temp.DATIM_PMTCT_HEI_POS = pmtct_hei_pos.datim;
+                    temp.Validated_PMTCT_HEI_POS = pmtct_hei_pos.validated;
+                    temp.pmtct_hei_pos_Data = pmtct_hei_pos_siteData;
                 }
                 //};
                 tempData.Add(temp);

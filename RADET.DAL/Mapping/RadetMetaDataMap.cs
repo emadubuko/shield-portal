@@ -15,6 +15,7 @@ namespace RADET.DAL.Mapping
             References(x => x.FY12_17_IP).Column("FY12_17_IP");
             Map(x => x.RadetPeriod);
             Map(x => x.Facility);
+            Map(x => x.FacilityDatimCode);
             References(x => x.LGA).Column("LGA");
             Map(x => x.Supplementary);
             HasMany(x => x.PatientLineListing)

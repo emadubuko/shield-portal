@@ -93,8 +93,8 @@ namespace RADET.DAL.Services
             return newTable;
         }
 
-
-        public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, Dictionary<string, List<string>> validFacilities, out RadetMetaData metadata, out List<ErrorDetails> error)
+        //public bool ReadRadetFile(Stream RadetFile, string fileName, CommonUtil.Entities.Organizations IP, IList<CommonUtil.Entities.LGA> LGAs, Dictionary<string, List<string>> validFacilities, out RadetMetaData metadata, out List<ErrorDetails> error)
+        public bool ReadRadetFile(Stream RadetFile, string fileName, Organizations IP, IList<LGA> LGAs, IList<NDR_Facilities> validFacilities, out RadetMetaData metadata, out List<ErrorDetails> error)
         {
             metadata = new RadetMetaData();
             List<RadetPatientLineListing> lineItems = new List<RadetPatientLineListing>();
@@ -113,7 +113,7 @@ namespace RADET.DAL.Services
             DateTime radetPeriodDate;
             //var validFacilities = GetARTSite();
 
-            CommonUtil.Entities.LGA _lga = null;
+            LGA _lga = null;
 
             using (ExcelPackage package = new ExcelPackage(RadetFile))
             {
@@ -257,10 +257,13 @@ namespace RADET.DAL.Services
                     });
                 }
 
-                List<string> facilities = new List<string>();
-                validFacilities.TryGetValue(lga, out facilities);
+                //List<string> facilities = new List<string>();
+                //validFacilities.TryGetValue(lga, out facilities);
 
-                if (ValidateFacilityName(facilityName, facilities) == false)
+               var validFacility = validFacilities.FirstOrDefault(x => x.Facility.ToLower().Trim() == facilityName.ToLower().Trim()
+                 && x.LGA_Code.ToLower().Trim() == _lga.lga_code.ToLower().Trim());
+
+                if (validFacility == null) //(ValidateFacilityName(facilityName, facilities) == false)
                 {
                     error.Add(new ErrorDetails
                     {
@@ -400,7 +403,8 @@ namespace RADET.DAL.Services
                     LGA = _lga,
                     PatientLineListing = lineItems,
                     RadetPeriod = selectedRadetPeriod,
-                    Supplementary = lineItems.Select(x => x.RadetYear).Distinct().Count() == 1 && fileName.ToLower().Contains("supplementary") ? true : false
+                    Supplementary = lineItems.Select(x => x.RadetYear).Distinct().Count() == 1 && fileName.ToLower().Contains("supplementary") ? true : false,
+                    FacilityDatimCode = validFacility.DATIMCode
                 };
             }
             return error.Count == 0;

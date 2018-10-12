@@ -19,4 +19,22 @@ namespace CommonUtil.Mapping
         }
     }
 
+    public class NDR_FacilityMap : ClassMap<NDR_Facilities>
+    {
+        public NDR_FacilityMap()
+        {
+            Table("temp_NDR_Facility");
+
+            Id(i => i.Id);
+            Map(x => x.IP);
+            Map(x => x.State);
+            Map(x => x.LGA);
+            Map(x => x.LGA_Code);
+            Map(x => x.AlternativeLGA);
+            Map(x => x.Facility);
+            Map(x => x.DATIMCode);
+            Map(x => x.GSM);
+        }
+    }
+
 }

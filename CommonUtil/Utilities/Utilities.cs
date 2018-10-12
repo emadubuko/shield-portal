@@ -111,7 +111,7 @@ namespace CommonUtil.Utilities
             }
             return artSites;
         }
-
+        
         public async Task ZipFolder(string filepath)
         {
             string[] filenames = Directory.GetFiles(filepath);

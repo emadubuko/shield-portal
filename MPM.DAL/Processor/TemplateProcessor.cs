@@ -17,7 +17,7 @@ namespace MPM.DAL.Processor
     public class TemplateProcessor
     {
         //TB HIV
-        public void ReadFile(Stream file, Profile loggedInProfile)
+        public void ReadFile(Stream file, Profile loggedInProfile, string savedFilePath)
         {
             var sites = new HealthFacilityDAO().RetrieveAll().ToDictionary(x => x.FacilityCode);
 
@@ -35,14 +35,17 @@ namespace MPM.DAL.Processor
                 var period = ExcelHelper.ReadCellText(mainWorksheet, 17, 12);
                 if (string.IsNullOrEmpty(period) || string.IsNullOrEmpty(period.Trim()))
                 {
-                    period = "Jul-18";
+                    throw new ApplicationException("Report period not specified");
                 }
-                string ReportLevelValue = ExcelHelper.ReadCellText(mainWorksheet, 17, 8);
+                string ReportLevelValue = mainWorksheet.Cells["H17"].Value.ToString();
                 string ReportLevel = ExcelHelper.ReadCellText(mainWorksheet, 17, 7);
 
-                var ip = mainWorksheet.Cells["E17"].Value.ToString();
-                var state = mainWorksheet.Cells["H17"].Value.ToString();
-
+                var ip = mainWorksheet.Cells["E17"].Value.ToString();                  
+                if(string.IsNullOrEmpty(ip) || loggedInProfile.Organization.ShortName.ToUpper() != ip.ToUpper())
+                {
+                    throw new ApplicationException("Wrong IP selected");
+                }
+                
                 var dao = new MPMDAO();
                 var mt = new MetaData();
                 var previously = dao.GenerateIPUploadReports(loggedInProfile.Organization.Id, period, ReportLevelValue, DTO.ReportLevel.State);
@@ -56,7 +59,8 @@ namespace MPM.DAL.Processor
                         ReportingPeriod = period,
                         UploadedBy = loggedInProfile,
                         ReportLevel = DTO.ReportLevel.State,
-                        ReportLevelValue = ReportLevelValue
+                        ReportLevelValue = ReportLevelValue,
+                        FilePath = savedFilePath,
                     };
                 }
                 else
@@ -77,42 +81,19 @@ namespace MPM.DAL.Processor
                     List<ART> art_list = RetrieveART_data(art_sheet, mt, sites);
                     List<PMTCT_Viral_Load> pmtct_viral_load_list = RetrievePMTCTViralLoad_data(pmtct_viral_load_sheet, mt, sites);
                     List<HTS_Other_PITC> pitc_list = RetrievePITC_data(pitc_sheet, mt, sites);
-
-                    List<PMTCT_EID> eid_list = null;
-                    List<PMTCT> pmtct_list = RetrievePMTCT_data(pmtct_sheet, mt, sites, out eid_list);
-
-                    var tb_eligible_list = new List<TB_TPT_Eligible>();
-                    var tB_Screened = new List<TB_Screened>();
-                    var tB_presumptive = new List<TB_Presumptive>();
-                    var tb_diagnosed = new List<TB_Presumptive_Diagnosed>();
-                    var tB_completed = new List<TB_TPT_Completed>();
-                    List<TB_HIV_Treatment> tB_HIV_Treatments = RetrieveTB_HIV_data(tb_hiv_sheet, mt, sites, out tb_eligible_list, out tB_Screened, out tB_presumptive, out tb_diagnosed, out tB_completed);
+                     
+                    RetrievePMTCT_data(pmtct_sheet, sites, ref mt);// out eid_list);
+                     
+                    RetrieveTB_HIV_data(tb_hiv_sheet, sites, ref mt); // out tb_eligible_list, out tB_Screened, out tB_presumptive, out tb_bact_diagnosis,out tb_diagnosed, out tB_completed);
 
                     mt.HTS_Index = hTS_Index_list;
                     mt.LinkageToTreatment = linkage_list;
                     mt.ART = art_list;
-                    mt.PITC = pitc_list;
-                    mt.PMTCT = pmtct_list;
-                    mt.Pmtct_Viral_Load = pmtct_viral_load_list;
-                    mt.PMTCT_EID = eid_list;
-
-                    //start from here 
-                    mt.TB_Screened = tB_Screened;
-                    mt.TB_HIV_Treatment = tB_HIV_Treatments;
-                    mt.TB_Presumptives = tB_presumptive;
-                    mt.TB_Presumptives_Diagnosis = tb_diagnosed;
-                    mt.TB_TPT_Completed = tB_completed;
-                    mt.TB_TPT_Eligible = tb_eligible_list;
-
+                    mt.PITC = pitc_list; 
+                    mt.Pmtct_Viral_Load = pmtct_viral_load_list; 
+                     
                     dao.BulkInsertWithStatelessSession(mt);
-                    //if (previously == null || previously.Count == 0)
-                    //{
-                        
-                    //}
-                    //else
-                    //{
-                    //    dao.UpdateRecord(mt);
-                    //}
+                    
                 }
                 catch (Exception ex)
                 {
@@ -121,14 +102,18 @@ namespace MPM.DAL.Processor
             }
         }
 
-        List<TB_HIV_Treatment> RetrieveTB_HIV_data(ExcelWorksheet tb_sheet, MetaData mt, Dictionary<string, HealthFacility> sites, out List<TB_TPT_Eligible> tb_eligible_list, out List<TB_Screened> tB_Screened, out List<TB_Presumptive> tB_presumptive, out List<TB_Presumptive_Diagnosed> tb_diagnosed, out List<TB_TPT_Completed> tB_completed)
+        void RetrieveTB_HIV_data(ExcelWorksheet tb_sheet, Dictionary<string, HealthFacility> sites, ref MetaData mt) //out List<TB_TPT_Eligible> tb_eligible_list, out List<TB_Screened> tB_Screened, out List<TB_Presumptive> tB_presumptive, out List<TB_Bacteriology_Diagnosis> tb_bact_diagnosis, out List<TB_Diagnosed> tb_diagnosed, out List<TB_New_Relapsed> tB_new_relapse)
         {
-            List<TB_HIV_Treatment> tb_tx_list = new List<TB_HIV_Treatment>();
-            tb_eligible_list = new List<TB_TPT_Eligible>();
-            tB_Screened = new List<TB_Screened>();
-            tB_presumptive = new List<TB_Presumptive>();
-            tb_diagnosed = new List<TB_Presumptive_Diagnosed>();
-            tB_completed = new List<TB_TPT_Completed>();
+            mt.TB_Treatment_Started = new List<TB_Treatment_Started>();
+            mt.TB_TPT_Eligible = new List<TB_TPT_Eligible>();
+            mt.TB_Screened = new List<TB_Screened>();
+            mt.TB_Presumptives = new List<TB_Presumptive>();
+            mt.TB_Bacteriology_Diagnosis = new List<TB_Bacteriology_Diagnosis>();
+            mt.TB_Relapsed = new List<TB_New_Relapsed>();
+            mt.TB_Diagnosed = new List<TB_Diagnosed>();
+            mt.TB_New_Relapsed_Known_Status = new List<TB_New_Relapsed_Known_Status>();
+            mt.TB_New_Relapsed_Known_Pos = new List<TB_New_Relapsed_Known_Pos>();
+            mt.TB_ART = new List<TB_ART>();
 
             int row = 4;
             while (true)
@@ -154,7 +139,7 @@ namespace MPM.DAL.Processor
                         var Description = tb_sheet.Cells["E2"].Value.ToString();
                         if (female_count != null)
                         {
-                            tB_Screened.Add(new TB_Screened
+                            mt.TB_Screened.Add(new TB_Screened
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -166,7 +151,7 @@ namespace MPM.DAL.Processor
                         }
                         if (male_count != null)
                         {
-                            tB_Screened.Add(new TB_Screened
+                            mt.TB_Screened.Add(new TB_Screened
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -188,7 +173,7 @@ namespace MPM.DAL.Processor
                         var Description = tb_sheet.Cells["R2"].Value.ToString();
                         if (female_count != null)
                         {
-                            tB_presumptive.Add(new TB_Presumptive
+                            mt.TB_Presumptives.Add(new TB_Presumptive
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -200,7 +185,7 @@ namespace MPM.DAL.Processor
                         }
                         if (male_count != null)
                         {
-                            tB_presumptive.Add(new TB_Presumptive
+                            mt.TB_Presumptives.Add(new TB_Presumptive
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -213,7 +198,7 @@ namespace MPM.DAL.Processor
                     }
 
 
-                    //TB_Presumptive_Diagnosed
+                    //Number of ART patients who had a bacteriologic diagnosis of active TB disease
                     for (int column = 31; column <= 42; column += 1)
                     {
                         var female_count = tb_sheet.Cells[row, column].Value;
@@ -222,7 +207,7 @@ namespace MPM.DAL.Processor
                         var Description = tb_sheet.Cells["AE2"].Value.ToString();
                         if (female_count != null)
                         {
-                            tb_diagnosed.Add(new TB_Presumptive_Diagnosed
+                            mt.TB_Bacteriology_Diagnosis.Add(new TB_Bacteriology_Diagnosis
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -234,7 +219,7 @@ namespace MPM.DAL.Processor
                         }
                         if (male_count != null)
                         {
-                            tb_diagnosed.Add(new TB_Presumptive_Diagnosed
+                            mt.TB_Bacteriology_Diagnosis.Add(new TB_Bacteriology_Diagnosis
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -246,16 +231,16 @@ namespace MPM.DAL.Processor
                         }
                     }
 
-                    //TB_TPT_Completed
-                    for (int column = 83; column <= 94; column += 1)
+                    //Number of ART patients diagnosed with active TB disease
+                    for (int column = 44; column <= 55; column += 1)
                     {
                         var female_count = tb_sheet.Cells[row, column].Value;
                         var male_count = tb_sheet.Cells[row + 1, column].Value;
                         var AgeGroup = tb_sheet.Cells[3, column].Value.ToString();
-                        var Description = tb_sheet.Cells["CE2"].Value.ToString();
+                        var Description = tb_sheet.Cells["AR2"].Value.ToString();
                         if (female_count != null)
                         {
-                            tB_completed.Add(new TB_TPT_Completed
+                            mt.TB_Diagnosed.Add(new TB_Diagnosed
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -267,7 +252,7 @@ namespace MPM.DAL.Processor
                         }
                         if (male_count != null)
                         {
-                            tB_completed.Add(new TB_TPT_Completed
+                            mt.TB_Diagnosed.Add(new TB_Diagnosed
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -279,11 +264,51 @@ namespace MPM.DAL.Processor
                         }
                     }
 
-                    //TB_TPT_Eligible
-                    for (int column = 44; column <= 77; column += 3)
+                    //TB_Treatment_Started
+                    for (int column = 57; column <= 80; column += 2)
+                    {
+                        var Description = tb_sheet.Cells["BE2"].Value.ToString();
+                        var AgeGroup = tb_sheet.Cells[3, column].Value.ToString();
+
+                        var no_tb_female = tb_sheet.Cells[row, column].Value;
+                        var tx_tb_female = tb_sheet.Cells[row, column + 1].Value;
+
+                        var no_tb_male = tb_sheet.Cells[row + 1, column].Value;
+                        var tx_tb_male = tb_sheet.Cells[row + 1, column + 1].Value;
+
+                        if (no_tb_female != null || tx_tb_female != null)
+                        {
+                            mt.TB_Treatment_Started.Add(new TB_Treatment_Started
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.F,
+                                Description = Description,
+                                Number = no_tb_female.ToInt(),
+                                Tx_TB = tx_tb_female.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                        if (no_tb_male != null || tx_tb_male != null && tx_tb_male != "")
+                        {
+                            mt.TB_Treatment_Started.Add(new TB_Treatment_Started
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.M,
+                                Description = Description,
+                                Tx_TB = tx_tb_male.ToInt(),
+                                Number = no_tb_male.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                    }
+
+                    //Percentage of eligible PLHIV started on TPT
+                    for (int column = 84; column <= 118; column += 3)
                     {
                         var AgeGroup = tb_sheet.Cells[2, column].Value.ToString();
-                        var Description = tb_sheet.Cells["AR1"].Value.ToString();
+                        var Description = tb_sheet.Cells["CF1"].Value.ToString();
 
                         var plhiv_eligible_female = tb_sheet.Cells[row, column].Value;
                         var started_tpt_female = tb_sheet.Cells[row, column + 1].Value;
@@ -293,7 +318,7 @@ namespace MPM.DAL.Processor
 
                         if (plhiv_eligible_female != null || started_tpt_female != null)
                         {
-                            tb_eligible_list.Add(new TB_TPT_Eligible
+                            mt.TB_TPT_Eligible.Add(new TB_TPT_Eligible
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -306,7 +331,7 @@ namespace MPM.DAL.Processor
                         }
                         if (plhiv_eligible_male != null || started_tpt_male != null)
                         {
-                            tb_eligible_list.Add(new TB_TPT_Eligible
+                            mt.TB_TPT_Eligible.Add(new TB_TPT_Eligible
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -319,58 +344,156 @@ namespace MPM.DAL.Processor
                         }
                     }
 
-
-                    //TB_HIV_Treatment
-                    for (int column = 96; column <= 129; column += 3)
+                    //Number of new and relapsed TB cases during the reporting period
+                    for (int column = 124; column <= 135; column += 1)
                     {
-                        var AgeGroup = tb_sheet.Cells[2, column].Value.ToString();
-                        var Description = tb_sheet.Cells["CR1"].Value.ToString();
-
-                        var new_tb_female = tb_sheet.Cells[row, column].Value;
-                        var tx_tb_female = tb_sheet.Cells[row, column + 1].Value;
-
-                        var new_tb_male = tb_sheet.Cells[row + 1, column].Value;
-                        var tx_tb_male = tb_sheet.Cells[row + 1, column + 1].Value;
-
-                        if (new_tb_female != null || tx_tb_female != null)
+                        var female_count = tb_sheet.Cells[row, column].Value;
+                        var male_count = tb_sheet.Cells[row + 1, column].Value;
+                        var AgeGroup = tb_sheet.Cells[3, column].Value.ToString();
+                        var Description = tb_sheet.Cells["DT2"].Value.ToString();
+                        if (female_count != null)
                         {
-                            tb_tx_list.Add(new TB_HIV_Treatment
+                            mt.TB_Relapsed.Add(new TB_New_Relapsed
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.F,
                                 Description = Description,
-                                New_TB_Cases = new_tb_female.ToInt(),
-                                Tx_TB = tx_tb_female.ToInt(),
+                                Number = female_count.ToInt(),
                                 MetaData = mt
                             });
                         }
-                        if (new_tb_male != null || tx_tb_male != null)
+                        if (male_count != null)
                         {
-                            tb_tx_list.Add(new TB_HIV_Treatment
+                            mt.TB_Relapsed.Add(new TB_New_Relapsed
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
                                 Sex = Sex.M,
                                 Description = Description,
-                                Tx_TB = tx_tb_male.ToInt(),
-                                New_TB_Cases = new_tb_male.ToInt(),
+                                Number = male_count.ToInt(),
                                 MetaData = mt
                             });
                         }
                     }
 
+
+                    //Number of new and relapsed TB cases with documented HIV status
+                    for (int column = 137; column <= 148; column += 1)
+                    {
+                        var female_count = tb_sheet.Cells[row, column].Value;
+                        var male_count = tb_sheet.Cells[row + 1, column].Value;
+                        var AgeGroup = tb_sheet.Cells[3, column].Value.ToString();
+                        var Description = tb_sheet.Cells["EG2"].Value.ToString();
+                        if (female_count != null)
+                        {
+                            mt.TB_New_Relapsed_Known_Status.Add(new TB_New_Relapsed_Known_Status
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.F,
+                                Description = Description,
+                                Number = female_count.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                        if (male_count != null)
+                        {
+                            mt.TB_New_Relapsed_Known_Status.Add(new TB_New_Relapsed_Known_Status
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.M,
+                                Description = Description,
+                                Number = male_count.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                    }
+
+                    //Number of new and relapsed TB cases with known HIV positive status
+                    for (int column = 151; column <= 174; column += 2)
+                    {
+                        var AgeGroup = tb_sheet.Cells[2, column].Value.ToString();
+                        var Description = tb_sheet.Cells["EU1"].Value.ToString();
+
+                        var female_known_Pos = tb_sheet.Cells[row, column].Value;
+                        var male_known_Pos = tb_sheet.Cells[row + 1, column].Value;
+
+                        var femal_new_Pos = tb_sheet.Cells[row, column + 1].Value;
+                        var male_new_Pos = tb_sheet.Cells[row + 1, column + 1].Value;
+                        
+                        if (female_known_Pos != null)
+                        {
+                            mt.TB_New_Relapsed_Known_Pos.Add(new TB_New_Relapsed_Known_Pos
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.F,
+                                Description = Description,
+                                Known_Pos = female_known_Pos.ToInt(),
+                                New_Pos = femal_new_Pos.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                        if (male_known_Pos != null)
+                        {
+                            mt.TB_New_Relapsed_Known_Pos.Add(new TB_New_Relapsed_Known_Pos
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.M,
+                                Description = Description,
+                                Known_Pos = male_known_Pos.ToInt(),
+                                New_Pos = male_new_Pos.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                    }
+
+
+                    //Number of TB cases with documented HIV-positive status who start or continue ART
+                    for (int column = 178; column <= 189; column += 1)
+                    {
+                        var female_count = tb_sheet.Cells[row, column].Value;
+                        var male_count = tb_sheet.Cells[row + 1, column].Value;
+                        var AgeGroup = tb_sheet.Cells[3, column].Value.ToString();
+                        var Description = tb_sheet.Cells["FV2"].Value.ToString();
+                        if (female_count != null)
+                        {
+                            mt.TB_ART.Add(new TB_ART
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.F,
+                                Description = Description,
+                                Number = female_count.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                        if (male_count != null)
+                        {
+                            mt.TB_ART.Add(new TB_ART
+                            {
+                                Site = site,
+                                AgeGroup = AgeGroup,
+                                Sex = Sex.M,
+                                Description = Description,
+                                Number = male_count.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                    }
                 }
                 //Loop: row += 3;
                 row++;
             }
-            return tb_tx_list;
         }
 
-        List<PMTCT> RetrievePMTCT_data(ExcelWorksheet pmtct_sheet, MetaData mt, Dictionary<string, HealthFacility> sites, out List<PMTCT_EID> eid_list)
+        void RetrievePMTCT_data(ExcelWorksheet pmtct_sheet, Dictionary<string, HealthFacility> sites, ref MetaData mt) //out List<PMTCT_EID> eid_list)
         {
-            List<PMTCT> pmtct_list = new List<PMTCT>();
-            eid_list = new List<PMTCT_EID>();
+            mt.PMTCT = new List<PMTCT>();
+            mt.PMTCT_EID = new List<PMTCT_EID>();
             int row = 5;
             while (true)
             {
@@ -389,7 +512,7 @@ namespace MPM.DAL.Processor
                     for (int column = 4; column <= 23; column += 2)
                     {
                         var new_ANC_client = pmtct_sheet.Cells[row, column].Value;
-                        var newly_tested = pmtct_sheet.Cells[row, column + 1].Value;
+                        var known_status = pmtct_sheet.Cells[row, column + 1].Value;
 
                         var KnownHIVPos = pmtct_sheet.Cells[row, column + 23].Value;
                         var NewHIVPos = pmtct_sheet.Cells[row, column + 24].Value;
@@ -397,16 +520,16 @@ namespace MPM.DAL.Processor
                         var NewOnART = pmtct_sheet.Cells[row, column + 26].Value;
 
                         var AgeGroup = pmtct_sheet.Cells[3, column].Value.ToString();
-                        if (new_ANC_client != null || newly_tested != null
+                        if (new_ANC_client != null || known_status != null
                             || KnownHIVPos != null || NewHIVPos != null
                             || AlreadyOnART != null || NewOnART != null) //ignore if both values are empty
                         {
-                            pmtct_list.Add(new PMTCT
+                            mt.PMTCT.Add(new PMTCT
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
                                 NewClient = new_ANC_client.ToInt(),
-                                NewlyTested = newly_tested.ToInt(),
+                                KnownStatus = known_status.ToInt(),
                                 KnownHIVPos = KnownHIVPos.ToInt(),
                                 NewHIVPos = NewHIVPos.ToInt(),
                                 AlreadyOnART = AlreadyOnART.ToInt(),
@@ -426,7 +549,7 @@ namespace MPM.DAL.Processor
 
                         if (sample_collected != null || pos != null || artInitiation != null) //ignore if both values are empty
                         {
-                            eid_list.Add(new PMTCT_EID
+                            mt.PMTCT_EID.Add(new PMTCT_EID
                             {
                                 Site = site,
                                 AgeGroup = AgeGroup,
@@ -441,7 +564,6 @@ namespace MPM.DAL.Processor
                 //Loop: row += 3;
                 row++;
             }
-            return pmtct_list;
         }
 
 
@@ -687,8 +809,8 @@ namespace MPM.DAL.Processor
                                 Site = site,
                                 AgeGroup = pmtct_viral_load_sheet.Cells[3, column].Value.ToString(),
                                 Category = PMTCT_Category.Newly_Identified,
-                                _less_than_1000 = less_than_1000.ToInt(), 
-                                _greater_than_1000 = _greater_than_1000.ToInt(), 
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
                                 MetaData = mt
                             });
                         }

@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_dqaFY18Q4layout.cshtml";
+}
+
+
+<div class="col-md-9">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="panel panel-default minimal secondary-bg">
+                <div class="panel-body">
+                    <h2 class="no-margins"><strong id="facilities">0</strong></h2>
+                    <p>Total Facilities</p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="panel panel-default minimal primary-bg">
+                <div class="panel-body">
+                    <h2 class="no-margins"><strong id="submitted">0</strong></h2>
+                    <p>Facilities submitted</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="panel panel-default minimal teal-bg">
+                <div class="panel-body">
+                    <h2 class="no-margins"><strong id="lgas">0</strong></h2>
+                    <p>LGAs</p>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="panel panel-default minimal" style="background-color:darkorange;border-color:darkorange;color: #fff;">
+                <div class="panel-body" style="width:100%">
+                    <h2 class="no-margins"><strong id="states">0</strong></h2>
+                    <p>States</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-success">
+            <div class="panel-heading clearfix">
+                <h4 class="panel-title">National Summary</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12" id="state_summary">
+                        <center>
+                            <img src="~/images/Loading_icon.gif" alt="loading" />
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/api/DQAAPI/GetDashboardStatistic?period=Q4 Fy18',
+                type: 'GET',
+                cache: false,
+                contentType: "application/json",
+            }).done(function (response) {
+                buildDashboard(response);
+            }).error(function (xhr, status, err) {
+                alert(err);
+                console.log(err);
+            });
+
+            function buildDashboard (data) {
+                //load state summary
+                $("#state_summary").empty();
+                var all_data = $.parseJSON(data);
+                var state_data = all_data.IPSummary;
+
+                if (state_data.length == 0) {
+
+                    $("#state_summary").append("<span class='col-sm-push-2 col-sm-5' style='color: red;'>No pivot table uploaded yet </span>");
+                    return;
+                }
+
+                for (var i = 0; i < state_data.length; i++) {
+
+                    var dt = state_data[i];
+                    var pending = "";
+                    if (dt.Submitted == null || dt.Submitted !== dt.Total) {
+                        if (dt.Submitted == null)
+                            var submited_actually = 0;
+                        else
+                            submited_actually = dt.Submitted;
+                        pending = (dt.Total - submited_actually) + " are yet to submit";
+                    }
+                    else if (dt.Submitted != null && dt.Submitted == dt.Total) {
+                        pending = "All facilites in the state have submitted"
+                    }
+                    var percentage = 0;
+                    if (dt.Total > 0) {
+                        percentage = ((dt.Submitted / dt.Total) * 100).toFixed(2);
+                        if (percentage > 100) {
+                            percentage = 100;
+                        }
+                    }
+                    var submitted = 0;
+                    if (dt.Submitted != null) {
+                        submitted = dt.Submitted;
+                    }
+                    var value = '<div class="col-lg-4"><div class="panel panel-default"><div class="panel-body"><div class="media"><div class="media-left"><div class="knob-outer"><input type="text" readonly class="knob" data-width="82" data-height="82" data-fgColor="#29B6F6" value="' + percentage + '"></div></div><div class="media-body"><h4 class="media-heading">' + submitted + ' facilities submitted</h4><p>' + pending + '</p><button class="btn btn-sm btn-success">' + dt.Name + '</button></div></div></div></div></div>';
+                    $("#state_summary").append(value);
+                }
+
+                $(".knob").knob();
+
+                if (all_data.cardData != "") {
+                    $("#facilities").text(all_data.cardData[0]);
+                    $("#submitted").text(all_data.cardData[1]);
+                    $("#lgas").text(all_data.cardData[2]);
+                    $("#states").text(all_data.cardData[3]);
+                }
+            }
+        });
+    </script>
+}

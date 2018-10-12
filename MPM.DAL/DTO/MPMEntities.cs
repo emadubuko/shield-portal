@@ -13,6 +13,9 @@ namespace MPM.DAL.DTO
         public virtual Organizations IP { get; set; }
         public virtual ReportLevel ReportLevel { get; set; }
         public virtual string ReportLevelValue { get; set; }
+
+        public virtual string FilePath { get; set; }
+
         public virtual IList<HTS_Index> HTS_Index { get; set; }
         public virtual IList<LinkageToTreatment> LinkageToTreatment { get; set; }
         public virtual IList<ART> ART { get; set; }
@@ -24,10 +27,15 @@ namespace MPM.DAL.DTO
         public virtual IList<TB_TPT_Eligible> TB_TPT_Eligible { get; set; }
         public virtual IList<TB_Screened> TB_Screened { get; set; }
         public virtual IList<TB_Presumptive> TB_Presumptives { get; set; }
-        public virtual IList<TB_Presumptive_Diagnosed> TB_Presumptives_Diagnosis { get; set; }
-        public virtual IList<TB_TPT_Completed> TB_TPT_Completed { get; set; }
-        public virtual IList<TB_HIV_Treatment> TB_HIV_Treatment { get; set; }
+        public virtual IList<TB_Bacteriology_Diagnosis> TB_Bacteriology_Diagnosis { get; set; }
+        public virtual IList<TB_Diagnosed> TB_Diagnosed { get; set; }
+         
+        public virtual IList<TB_Treatment_Started> TB_Treatment_Started { get; set; }
 
+        public virtual IList<TB_New_Relapsed> TB_Relapsed { get; set; }
+        public virtual IList<TB_New_Relapsed_Known_Status> TB_New_Relapsed_Known_Status { get; set; }
+        public virtual IList<TB_New_Relapsed_Known_Pos> TB_New_Relapsed_Known_Pos { get; set; }
+        public virtual IList<TB_ART> TB_ART { get; set; }
     }
 
     public class UploadError
@@ -86,10 +94,14 @@ namespace MPM.DAL.DTO
         public virtual HealthFacility Site { get; set; }
         public virtual string AgeGroup { get; set; }
         public virtual string Description { get; set; }
-        public virtual int? NewHIVPos { get; set; }
-        public virtual int? NewOnART { get; set; }
+        public virtual int? NewClient { get; set; }
+        public virtual int? KnownStatus { get; set; }
+        //public virtual int? NewlyTested { get; set; }
         public virtual int? KnownHIVPos { get; set; }
+        public virtual int? NewHIVPos { get; set; }
         public virtual int? AlreadyOnART { get; set; }
+        public virtual int? NewOnART { get; set; }      
+       
 
         //public virtual int? SampleCollected_between_0_to_2 { get; set; }
         //public virtual int? Pos_between_0_to_2 { get; set; }
@@ -99,8 +111,7 @@ namespace MPM.DAL.DTO
         //public virtual int? ARTInitiation_between_2_to_12 { get; set; }
 
         public virtual MetaData MetaData { get; set; }
-        public virtual int? NewClient { get; set; }
-        public virtual int? NewlyTested { get; set; }
+       
     }
 
     public class PMTCT_EID
@@ -128,19 +139,27 @@ namespace MPM.DAL.DTO
         public virtual MetaData MetaData { get; set; }
     }
 
-    public class TB_Presumptive_Diagnosed : BaseT
+    public class TB_Bacteriology_Diagnosis : BaseT
     {
         public virtual int? Number { get; set; }
         public virtual string Description { get; set; }
         public virtual MetaData MetaData { get; set; }
     }
 
-    public class TB_TPT_Completed : BaseT
+    public class TB_Diagnosed : BaseT
     {
         public virtual int? Number { get; set; }
         public virtual string Description { get; set; }
         public virtual MetaData MetaData { get; set; }
     }
+
+    public class TB_Treatment_Started : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual int? Tx_TB { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }     
 
     public class TB_TPT_Eligible : BaseT
     {
@@ -150,13 +169,42 @@ namespace MPM.DAL.DTO
         public virtual MetaData MetaData { get; set; }
     }
 
-    public class TB_HIV_Treatment : BaseT
+    public class TB_New_Relapsed : BaseT
     {
-        public virtual int? New_TB_Cases { get; set; }
-        public virtual int? Tx_TB { get; set; }
+        public virtual int? Number { get; set; }
         public virtual string Description { get; set; }
         public virtual MetaData MetaData { get; set; }
     }
+
+    public class TB_New_Relapsed_Known_Status : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_New_Relapsed_Known_Pos : BaseT
+    {
+        public virtual int? Known_Pos { get; set; }
+        public virtual int? New_Pos { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    public class TB_ART : BaseT
+    {
+        public virtual int? Number { get; set; }
+        public virtual string Description { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
+    //public class TB_Treatment_Started : BaseT
+    //{
+    //    public virtual int? New_TB_Cases { get; set; }
+    //    public virtual int? Tx_TB { get; set; }
+    //    public virtual string Description { get; set; }
+    //    public virtual MetaData MetaData { get; set; }
+    //}
 
     public abstract class BaseT
     {

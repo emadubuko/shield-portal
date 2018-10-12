@@ -1,0 +1,295 @@
+﻿@model List<DQA.DAL.Model.UploadList>
+@{
+    Layout = "~/Views/Shared/_dqaFY18Q4layout.cshtml";
+}
+
+@section AddToHead{
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
+        {
+            var previousUpload = @Html.Raw(Json.Encode(Model));
+        }
+    </script>
+    <style>
+        .form-control {
+            color: #029b17;
+        }
+
+        form {
+            color: #029b17;
+        }
+
+        .table > thead > tr > th {
+            text-transform: uppercase;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .gotoTool {
+            text-transform: capitalize;
+            text-decoration: underline;
+            color: blue;
+            cursor: pointer;
+            pointer-events: all;
+        }
+    </style>
+}
+
+<div class="col-md-9">
+    <p style="color: red;font-weight: bold;">
+        Download pivot table template.
+        Using the pivot table template downloaded, complete it with information reported on DATIM for Q4 FY18.
+        After populating the template, upload back on the portal and this information will give you a list of all the sites for which DQAs should be done for Q4 FY18.
+    </p>
+
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">UPLOAD DATIM PIVOT TABLE</h5>
+        </div>
+        <div class="panel-body">
+            <div class="progress active" id="progress">
+                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    <span class="sr-only">Loading...Please wait</span>
+                </div>
+            </div>
+            <form class="form-horizontal" id="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">File</label>
+                    <div class="col-sm-5">
+                        <input type="file" id="field-file" name="upFile" class="form-control" required>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" id="selected_quarter" required disabled>
+                            <option value="Q4 FY18" selected>Q4 FY18</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-push-1 col-sm-1">
+                    <a class="btn btn-success btn-sm" id="btnSubmit">Upload</a>
+                </div>
+            </form>
+            <br /><br />
+            <div class="line-dashed"></div>
+            <div class="table-responsive" style="overflow-x:initial" id="pivotTable">
+                <div class="col-lg-12">
+                    <a class="gotoTool">Go to DQA Tool download page</a>
+                    <a id="save_download" style="float:right;text-transform:capitalize;text-decoration:underline;color:blue;cursor:pointer">Download Selected Sites</a>
+                </div>
+                <table class="table table-bordered table-hover" id="output" style="width:100%;font-size:10px;">
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>LGA </th>
+                            <th>Site</th>
+                            <th>HTS_TST </th>
+                            <th>HTC_Only</th>
+                            <th>HTC_Only_POS</th>
+                            <th>PMTCT_STAT (Known result)</th>
+                            <th>PMTCT_STAT (Newly identified)</th>
+                            <th>PMTCT_STAT (Known at entry)</th>
+                            <th>PMTCT_ART</th>
+                            <th>PMTCT_EID</th>
+                            <th>PMTCT_HEI_POS</th>
+                            <th>PMTCT_FO</th>
+                            <th>TX_NEW</th>
+                            <th>TX_CURR</th>
+                            <th>TX_RET</th>
+                            <th>TX_PVLS</th>
+                             
+                            <th>TB_STAT</th>
+                            <th>TB_ART</th>
+                            <th>TX_TB</th>
+
+                            <th>TX_Total</th>
+                            <th>Marked for DQA</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 20%">
+            <h5 class="panel-title">Previous uploads</h5>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" style="overflow-x:initial">
+                <table class="table table-bordered table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Period</th>
+                            <th>Date Uploaded</th>
+                            <th>Uploaded By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td> @item.IP </td>
+                                <td>@item.Period</td>
+                                <td>@item.DateUploaded</td>
+                                <td>@item.UploadedBy</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success downloadsite" id="@item.id" style="text-transform:capitalize">View Entries</a>
+                                    <a class="btn btn-sm btn-danger btndelete" id="@item.id" style="text-transform: capitalize">Delete Upload</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#progress").hide();
+            $("#pivotTable").hide();
+
+            $(".btndelete").click(function (e) {
+
+                var ans = confirm("You are about to delete this upload. Are you sure ?");
+                if (ans) {
+                    $(".btndelete").prop("disabled", true);
+                    var id = e.currentTarget.id;
+                    $.ajax({
+                        url: '/api/DQAapi/DeletePivotTable?id=' + id,
+                        type: 'POST',
+                        cache: false,
+                    }).done(function (data) {
+                        location.reload();
+
+                    }).error(function (xhr, status, err) {
+                        alert("An error occured");
+                        console.log($.parseJSON(xhr.responseText).Message);
+                    });
+                }
+                return false;
+            });
+
+
+            $("#btnSubmit").click(function () {
+                $("#output tbody").empty();
+                $("#progress").show();
+
+                var data = new FormData();
+                var file = $('form input[type=file]')[0].files[0];
+                data.append('file', file);
+
+                var selectedQuarter = $("#selected_quarter").val();
+                $("#btnSubmit").prop("disabled", true);
+
+                $.ajax({
+                    url: '/DQAFY2018Q4/ProcesssPivotTable?reportPeriod=' + selectedQuarter,
+                    type: 'POST',
+                    data: data,
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function (data) {
+                    $("#pivotTable").show();
+                    $("#btnSubmit").prop("disabled", false);
+                    $("#progress").hide();
+                    var resp ;
+                    try{
+                        resp = $.parseJSON(data);
+                        buildPivotTable(resp);
+                    }catch(ex){
+                        alert(data);
+                    }
+                }).error(function (xhr, status, err) {
+                    alert("An error occured");
+                    $("#progress").hide();
+                    $("#btnSubmit").prop("disabled", false);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+
+            function buildPivotTable(dataList) {
+                $("#output tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var html = "<tr> ";
+                    html += "<td>" + d.State.trim() + "</td>";
+                    html += "<td>" + d.Lga.trim() + "</td>";
+                    html += "<td>" + d.FacilityName.trim() + "</td>";
+                    html += "<td>" + (checkForNumber(d.HTS_TST) ? d.HTS_TST : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.HTC_Only) ? d.HTC_Only : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.HTC_Only_POS) ? d.HTC_Only_POS : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_STAT) ? d.PMTCT_STAT : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_STAT_NEW) ? d.PMTCT_STAT_NEW : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_STAT_PREV) ? d.PMTCT_STAT_PREV : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_ART)? d.PMTCT_ART : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_EID) ? d.PMTCT_EID : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_HEI_POS) ? d.PMTCT_HEI_POS : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.PMTCT_FO) ? d.PMTCT_FO : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.TX_NEW) ? d.TX_NEW : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.TX_CURR) ? d.TX_CURR : '') + "</td>";
+
+                    html += "<td>" + (checkForNumber(d.TX_RET) ? d.TX_RET : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.TX_PVLS) ? d.TX_PVLS : '') + "</td>";
+
+                    html += "<td>" + (checkForNumber(d.TB_STAT) ? d.TB_STAT : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.TB_ART) ? d.TB_ART : '') + "</td>";
+                    html += "<td>" + (checkForNumber(d.TX_TB) ? d.TX_TB : '') + "</td>";
+
+                    html += "<td>" + (d.PMTCT_ART + d.TX_CURR) + "</td>";
+                    if (d.SelectedForDQA) {
+                        html += "<td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>";
+                    }
+                    else {
+                        html += "<td>-</td>";
+                    }
+                    html += "</tr>";
+                    $("#output tbody").append(html);
+                });
+            }
+
+            function checkForNumber(number){
+                if(number == 0 || number === 0){
+                    return false;
+                }
+                else if(isNaN(parseInt(number))){
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            }
+
+            // This must be a hyperlink
+            $("#save_download").on('click', function (event) {
+                exportTableToCSV.apply(this, [$('#output'), 'selectedsites.csv', '-', 20, 20]);
+            });
+
+            var selected_ip;
+            $(".downloadsite").click(function (e) {
+                var id = e.currentTarget.id;
+                for (var z = 0; z < previousUpload.length; z++) {
+                    if(previousUpload[z].id == id){
+                        var sites = previousUpload[z].Tables;
+                        buildPivotTable(sites);
+                        $("#pivotTable").show();
+                        selected_ip =parseInt(sites[0].IP);
+                        break;
+                    }
+                }
+            });
+
+            $(".gotoTool").click(function(e){
+                location.href ="/DQAFY2018Q4/DownloadDQATool?ip="+selected_ip;
+            });
+
+        });
+    </script>
+}

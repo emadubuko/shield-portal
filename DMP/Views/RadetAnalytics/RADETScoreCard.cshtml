@@ -8,102 +8,144 @@
         .iplabel {
             background-color: #5cb85c;
             color: #fff;
-            padding: 10px; 
+            padding: 10px;
             border-radius: 50px;
         }
     </style>
 }
 
 
-    <div class="col-sm-10"><h4> RADET Submission score card</h4> </div>
+<div class="col-sm-10"><h4> RADET Submission score card</h4> </div>
 
-    <div class="col-sm-11">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h4 class="panel-title" style="margin-left: 20%;"> <i style="color: yellow;font-size: 15px;">Q3 FY18</i></h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-12" id="Q3_summary">
-                        <center>
-                            <img src="~/images/Loading_icon.gif" alt="loading" />
-                        </center>
-                    </div>
+<div class="col-sm-11">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-left: 20%;"> <i style="color: yellow;font-size: 15px;">Q4 FY18</i></h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12" id="Q4_summary">
+                    <center>
+                        <img src="~/images/Loading_icon.gif" alt="loading" />
+                    </center>
                 </div>
-                <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
             </div>
+            <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
         </div>
     </div>
+</div>
 
-    <div class="col-sm-11">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h4 class="panel-title" style="margin-left: 20%;"> <i style="color: yellow;font-size: 15px;">Q2 FY18</i></h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-12" id="Q2_summary">
-                        <center>
-                            <img src="~/images/Loading_icon.gif" alt="loading" />
-                        </center>
-                    </div>
+<div class="col-sm-11">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-left: 20%;"> <i style="color: yellow;font-size: 15px;">Q3 FY18</i></h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12" id="Q3_summary">
+                    <center>
+                        <img src="~/images/Loading_icon.gif" alt="loading" />
+                    </center>
                 </div>
-                <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
             </div>
+            <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
         </div>
     </div>
+</div>
 
-    <div class="col-sm-11">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h4 class="panel-title" style="margin-left: 20%;"><i style="color: yellow;font-size: 15px;">Q1 FY18</i></h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-12" id="Q1_summary">
-                        <center>
-                            <img src="~/images/Loading_icon.gif" alt="loading" />
-                        </center>
-                    </div>
+<div class="col-sm-11">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-left: 20%;"> <i style="color: yellow;font-size: 15px;">Q2 FY18</i></h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12" id="Q2_summary">
+                    <center>
+                        <img src="~/images/Loading_icon.gif" alt="loading" />
+                    </center>
                 </div>
-                <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
             </div>
+            <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
         </div>
     </div>
+</div>
 
-    @section Scripts
+<div class="col-sm-11">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-left: 20%;"><i style="color: yellow;font-size: 15px;">Q1 FY18</i></h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12" id="Q1_summary">
+                    <center>
+                        <img src="~/images/Loading_icon.gif" alt="loading" />
+                    </center>
+                </div>
+            </div>
+            <label style="padding-left:35%;margin-top:5%;font-style:italic">@DateTime.Now.AddHours(1).ToString("dd MMM yyyy hh:mm:ss tt")</label>
+        </div>
+    </div>
+</div>
+
+@section Scripts
 {
-        <script src="~/plugins/knob/js/jquery.knob.min.js"></script>
-        <script>
-            $(document).ready(function () {
+    <script src="~/plugins/knob/js/jquery.knob.min.js"></script>
+    <script>
+        $(document).ready(function () {
 
-                $.ajax({
-                    url: "/RadetAnalytics/RADETScoreCardData",
-                    method: "Post",
-                    contentType: "application/json",
-                    success: function (data) {
-                        var jsonHtmlTable = buildTable(JSON.parse(data))
+            $.ajax({
+                url: "/RadetAnalytics/RADETScoreCardData",
+                method: "Post",
+                contentType: "application/json",
+                success: function (data) {
+                    var jsonHtmlTable = buildTable(JSON.parse(data))
+                }
+            });
+
+
+            function buildTable(dataList) {
+                $("#Q1_summary").empty();
+                $("#Q2_summary").empty();
+                $("#Q3_summary").empty();
+                $("#Q4_summary").empty();
+
+                $("#scorecard tbody").empty();
+                $.each(dataList, function (i, d) {
+                    var totalSites = 0;
+                    if (d.ShortName === "APIN") {
+                        totalSites = 332;
+                    } else if (d.ShortName === "CCFN") {
+                        totalSites = 92;
+                    } else if (d.ShortName === "CIHP") {
+                        totalSites = 90;
+                    } else if (d.ShortName === "IHVN") {
+                        totalSites = 315;
                     }
-                });
+                    var percentage = ((parseInt(d.FacilityCount) / parseInt(totalSites)) * 100).toFixed(2);
+                    if (percentage > 100) {
+                        percentage = 100;
+                    }
+                    var pending = "";
+                    if ((totalSites - d.FacilityCount) > 1) {
+                        pending = Math.abs(totalSites - d.FacilityCount) + " facilities are yet to be uploaded."
+                    }
+                    else {
+                        pending = "All facilities have been uploaded";
+                    }
 
+                    var value = '<div class="col-lg-3"><div class="media"><div class="media-top"><div class="knob-outer"><input type="text" readonly class="knob" data-width="82" data-height="82" data-fgColor="#29B6F6" value="' + percentage + '"></div></div><div class="media-body"><h4 class="media-heading">' + d.FacilityCount + ' facilities uploaded</h4><p>' + pending + '</p><a class="iplabel">' + d.ShortName + '</a></div></div></div>';
 
-                function buildTable(dataList) {
-                    $("#Q1_summary").empty();
-                    $("#Q2_summary").empty();
-                    $("#Q3_summary").empty();
-                    $("#Q4_summary").empty();
-
-                    $("#scorecard tbody").empty();
-                    $.each(dataList, function (i, d) {
-                        var totalSites = 0;
+                    if (d.RadetPeriod == "Q4 FY18") {
                         if (d.ShortName === "APIN") {
-                            totalSites = 332;
+                            totalSites = 624;
                         } else if (d.ShortName === "CCFN") {
-                            totalSites = 92;
+                            totalSites = 261;
                         } else if (d.ShortName === "CIHP") {
-                            totalSites = 90;
+                            totalSites = 94;
                         } else if (d.ShortName === "IHVN") {
-                            totalSites = 315;
+                            totalSites = 364;
                         }
                         var percentage = ((parseInt(d.FacilityCount) / parseInt(totalSites)) * 100).toFixed(2);
                         if (percentage > 100) {
@@ -116,27 +158,25 @@
                         else {
                             pending = "All facilities have been uploaded";
                         }
-
                         var value = '<div class="col-lg-3"><div class="media"><div class="media-top"><div class="knob-outer"><input type="text" readonly class="knob" data-width="82" data-height="82" data-fgColor="#29B6F6" value="' + percentage + '"></div></div><div class="media-body"><h4 class="media-heading">' + d.FacilityCount + ' facilities uploaded</h4><p>' + pending + '</p><a class="iplabel">' + d.ShortName + '</a></div></div></div>';
+                        $("#Q4_summary").append(value);
 
-                        if (d.RadetPeriod == "Q4 FY18") {
-                            $("#Q4_summary").append(value);
-                        }
-                        else if (d.RadetPeriod == "Q3 FY18") {
-                            $("#Q3_summary").append(value);
-                        }
-                        else if (d.RadetPeriod == "Q2 FY18") {
-                            $("#Q2_summary").append(value);
-                        }
-                        else if (d.RadetPeriod == "Q1 FY18") {
-                            $("#Q1_summary").append(value);
-                        }
-                    });
+                    }
+                    else if (d.RadetPeriod == "Q3 FY18") {
+                        $("#Q3_summary").append(value);
+                    }
+                    else if (d.RadetPeriod == "Q2 FY18") {
+                        $("#Q2_summary").append(value);
+                    }
+                    else if (d.RadetPeriod == "Q1 FY18") {
+                        $("#Q1_summary").append(value);
+                    }
+                });
 
-                    $(".knob").knob();
-                }
+                $(".knob").knob();
+            }
 
 
-            });
-        </script>
-    }
+        });
+    </script>
+}

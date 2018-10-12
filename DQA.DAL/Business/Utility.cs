@@ -516,7 +516,7 @@ namespace DQA.DAL.Business
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex); 
+                    Logger.LogError(ex);
                 }
             }
             var artSites = Utilities.GetARTSiteWithDATIMCode();
@@ -533,7 +533,7 @@ namespace DQA.DAL.Business
                 {
                     radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, radetSite);
                 }
-                if(radet == null || radet.Count == 0)
+                if (radet == null || radet.Count == 0)
                 {
                     radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, site.FacilityName);
                 }
@@ -713,6 +713,64 @@ namespace DQA.DAL.Business
                         p_Tx_Curr = item.TX_CURR,
                         Tx_Curr_difference = Math.Abs((int)r_data.Tx_Curr - item.TX_CURR),
                         Tx_Curr_concurrency = 100 * Math.Abs((int)r_data.Tx_Curr - item.TX_CURR) / (int)r_data.Tx_Curr,
+                    });
+                }
+            }
+            return mydata2;
+        }
+
+
+        public List<dynamic> RadetValidationWithNDR(RadetMetaDataSearchModel searchModel, string ip, string period, string startDate, string endDate)
+        {
+            var radet_data = Utility.GetRADETNumbers(ip, startDate, endDate, period);
+            var pivot_data = new NDR_StatisticsDAO().RetrievePivotTablesForComparison(new List<string> { ip }, period, searchModel.state_codes, searchModel.lga_codes, searchModel.facilities);
+
+            List<dynamic> mydata = new List<dynamic>();
+            List<dynamic> mydata2 = new List<dynamic>();
+
+            foreach (DataRow dr in radet_data.Rows)
+            {
+                mydata.Add(new
+                {
+                    ShortName = dr.Field<string>("IP"),
+                    Facility = dr.Field<string>("Facility"),
+                    Tx_New = dr.Field<int?>("TX_New"),
+                    Tx_Curr = dr.Field<int?>("TX_CURR"),
+                    FacilityDatimCode = dr.Field<string>("FacilityDatimCode")
+                });
+            }
+
+            if (mydata.Count == 0)
+                return mydata2;
+
+            foreach (var item in pivot_data.GroupBy(x=>x.Facility))
+            {
+                var r_data = mydata.FirstOrDefault(x => x.ShortName == item.Key.Organization.ShortName
+                && x.FacilityDatimCode == item.Key.FacilityCode);
+
+                if (r_data != null)
+                {
+                    int r_tx_new = r_data.Tx_New == null ? 0 : (int)r_data.Tx_New;
+                    int r_tx_curr = r_data.Tx_Curr == null ? 0 : (int)r_data.Tx_Curr;
+
+                    int ndr_tx_new = item.Sum(x => x.NDR_TX_NEW);
+                    int ndr_tx_curr = item.Last().NDR_TX_CURR;
+                    mydata2.Add(new
+                    {
+                        item.Key.Organization.ShortName,
+                        State = item.Key.LGA.State.state_name,
+                        LGA = item.Key.LGA.lga_name,
+                        Facility = item.Key.Name,
+                        GSM = item.Key.GranularSite? "Yes" : "No",
+                        Tx_New = r_tx_new,
+                        p_Tx_New = ndr_tx_new,
+                        Tx_New_difference = Math.Abs(r_tx_new - ndr_tx_new),
+                        Tx_New_concurrency = r_tx_new > 0 ? (100 * Math.Abs(r_tx_new - ndr_tx_new) / r_tx_new) : 0,
+
+                        Tx_Curr =  r_tx_curr,
+                        p_Tx_Curr = ndr_tx_curr,
+                        Tx_Curr_difference = Math.Abs(r_tx_curr - ndr_tx_curr),
+                        Tx_Curr_concurrency = r_tx_curr > 0 ? (100 * Math.Abs(r_tx_curr - ndr_tx_curr) / r_tx_curr) : 0,
                     });
                 }
             }

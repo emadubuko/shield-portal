@@ -1,4 +1,5 @@
-﻿using CommonUtil.Entities;
+﻿using CommonUtil.DAO;
+using CommonUtil.Entities;
 using CommonUtil.Utilities;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
@@ -41,17 +42,17 @@ namespace ShieldPortal.Controllers
         List<string> GetCurrentFY()
         {
             List<string> periodsInFY = new List<string>();
-            if (DateTime.Now.Month >= 10 && DateTime.Now.Month <= 12)
-            { 
-                periodsInFY.Add($"Q1 FY{DateTime.Now.AddYears(1).ToString("yy")}");
-            }
-            else
-            {
-                periodsInFY.Add($"Q1 FY{DateTime.Now.ToString("yy")}");
-                periodsInFY.Add($"Q2 FY{DateTime.Now.ToString("yy")}");
-                periodsInFY.Add($"Q3 FY{DateTime.Now.ToString("yy")}");
-                periodsInFY.Add($"Q4 FY{DateTime.Now.ToString("yy")}");
-            }
+            //if (DateTime.Now.Month >= 10 && DateTime.Now.Month <= 12)
+            //{ 
+            //    periodsInFY.Add($"Q1 FY{DateTime.Now.AddYears(1).ToString("yy")}");
+            //}
+            //else
+            //{
+            periodsInFY.Add($"Q1 FY{DateTime.Now.ToString("yy")}");
+            periodsInFY.Add($"Q2 FY{DateTime.Now.ToString("yy")}");
+            periodsInFY.Add($"Q3 FY{DateTime.Now.ToString("yy")}");
+            periodsInFY.Add($"Q4 FY{DateTime.Now.ToString("yy")}");
+            //}
             return periodsInFY;
         }
 
@@ -60,7 +61,7 @@ namespace ShieldPortal.Controllers
         public string RADETScoreCardData()
         {
             List<string> period = GetCurrentFY(); //System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-             
+
             var data = new RadetMetaDataDAO().GetScoreCard(period);
 
             List<dynamic> mydata = new List<dynamic>();
@@ -427,7 +428,7 @@ namespace ShieldPortal.Controllers
                 stopwatch.Start();
 
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-                var IP = new CommonUtil.DAO.OrganizationDAO().Retrieve(ip);
+                var IP = new OrganizationDAO().Retrieve(ip);
                 if (IP == null)
                 {
                     msg = new HttpResponseMessage(HttpStatusCode.InternalServerError);
@@ -477,7 +478,7 @@ namespace ShieldPortal.Controllers
                 //System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/RADET/" + IP.ShortName + "_" + Request.Files[0].FileName);
                 Request.Files[0].SaveAs(filePath);
 
-                var validFacilities = Utilities.GetQ4ARTSites(IP.ShortName);
+                var validFacilities = new NDR_StatisticsDAO().FacilitiesForRADET().Result; //Utilities.GetQ4ARTSites(IP.ShortName);
 
                 if (Path.GetExtension(Request.Files[0].FileName).Substring(1).ToUpper() == "ZIP")
                 {

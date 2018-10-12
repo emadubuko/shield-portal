@@ -8,6 +8,7 @@ namespace RADET.DAL.Entities
         public virtual int Id { get; set; }
         public virtual string RadetPeriod { get; set; }
         public virtual string Facility { get; set; }
+        public virtual string FacilityDatimCode { get; set; }
         public virtual LGA LGA { get; set; }
         public virtual Organizations IP { get; set; }
 

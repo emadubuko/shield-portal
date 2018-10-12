@@ -371,6 +371,10 @@ namespace CommonUtil.DBSessionManager
                 SqlDataAdapter da = new SqlDataAdapter(command); 
                 da.Fill(dataTable);
             }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
             finally
             {
                 command.Dispose();
