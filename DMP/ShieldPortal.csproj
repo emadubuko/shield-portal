@@ -233,6 +233,7 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q4Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
+    <Compile Include="Controllers\DQIFY2018Q4Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q3Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
@@ -1486,16 +1487,6 @@
     <Content Include="Views\Shared\dqiFY18Q3Layout.cshtml" />
     <Content Include="Views\MPM\Download.cshtml" />
     <Content Include="Views\MPM\NDR_Statictics.cshtml" />
-    <Content Include="Views\MPM\iDashboard.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\Dashboard.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\UploadPivotTable.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\DownloadDQATool.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\Analytics.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\DQAAnalysisReport.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\DQAResult.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\UMB_Partner_Report.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\RadetValidation.cshtml" />
-    <Content Include="Views\DQAFY2018Q4\UploadDQA.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

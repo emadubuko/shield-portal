@@ -1015,7 +1015,9 @@ namespace ShieldPortal.Controllers
             return JsonConvert.SerializeObject(rows);
         }
 
+
         public Dictionary<string, int> IndexPeriods
+
         {
             get
             {
