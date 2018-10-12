@@ -1384,13 +1384,7 @@ namespace Test
         public string TX_NEW { get; set; }
         public string TX_Curr { get; set; }
         public string PMTCT_Eid { get; set; }
-        public string PMTCT_Art { get; set; }
-
-        static void funny(DatimResponse a, DatimResponseIndicators b)
-        {
-            b.coordinates = "";
-            a.coordinates = "";
-        }
+        public string PMTCT_Art { get; set; }         
     }
 
 
