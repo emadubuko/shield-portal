@@ -1348,6 +1348,12 @@
     <Content Include="Report\Template\DQA FY2018 Q3\FY18_Q3_Data Quality Assessment tool_v7.xlsm" />
     <Content Include="Report\Template\MPM\GSM_Template.xlsm" />
     <Content Include="Report\Template\DQA FY2018 Q4\DATIM PIVOT TABLE FOR Q4 FY18.xlsx" />
+    <Content Include="Report\Template\DQA FY2018 Q4\FY18_Q4_Data Quality Assessment tool_v8.xlsm" />
+    <Content Include="Resources\protocols\Mapping and Size Estimation of Key Populations in Nigeria.pdf" />
+    <Content Include="Resources\protocols\Nigeria CoART outcome evaluation protocol.pdf" />
+    <Content Include="Resources\protocols\protocol_outcome evaluation of children and adolescents on ART.pdf" />
+    <Content Include="Resources\protocols\VLS and HIV DR Survey Protocol.pdf" />
+    <Content Include="Resources\protocols\Protocol version 1.4_revised Test and Start.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
@@ -1501,6 +1507,7 @@
     <Content Include="Views\DQAFY2018Q4\UMB_Partner_Report.cshtml" />
     <Content Include="Views\DQAFY2018Q4\UploadDQA.cshtml" />
     <Content Include="Views\DQAFY2018Q4\UploadPivotTable.cshtml" />
+    <Content Include="Views\Shared\dqiFY18Q4Layout.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

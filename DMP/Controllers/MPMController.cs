@@ -59,14 +59,14 @@ namespace ShieldPortal.Controllers
                 }
             }
             ViewBag.reportPeriod = mpmDAO.GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
-            ViewBag.ReportedPeriods = submissions.Select(x=>x.ReportPeriod).Distinct();
+            ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
             return View(vm);
         }
 
         [HttpPost]
         public string DownloadPreviousReport(string IPState)
         {
-            
+
             string IP = IPState.Split('|')[1];
             string State = IPState.Split('|')[0];
             var ip = new OrganizationDAO().SearchByShortName(IP);
@@ -74,7 +74,7 @@ namespace ShieldPortal.Controllers
             var dao = new MPMDAO();
             var previously = dao.GenerateIPUploadReports(ip.Id, period, State, MPM.DAL.DTO.ReportLevel.State);
 
-            if(previously !=null && previously.FirstOrDefault() != null)
+            if (previously != null && previously.FirstOrDefault() != null)
             {
                 return previously.FirstOrDefault().FilePath.Split(new string[] { "\\Report\\" }, StringSplitOptions.RemoveEmptyEntries)[1];
             }
@@ -433,13 +433,13 @@ namespace ShieldPortal.Controllers
             var hiv_pos_infant_at_2mnth_state = new List<dynamic>();
             var hiv_pos_infant_at_12mnth_state = new List<dynamic>();
             var eid_art_initiation_state = new List<dynamic>();
-            
+
             List<dynamic> lga_maternal_clinical_cascade = new List<dynamic>();
 
             var lga_infant_linkage = new List<dynamic>();
 
             foreach (var state in groupedData)
-            {                
+            {
                 _newClient_State.Add(new
                 {
                     name = state.Key,
@@ -478,7 +478,7 @@ namespace ShieldPortal.Controllers
                     name = state.Key,
                     drilldown = state.Key + "   "
                 });
-                
+
                 //infant_linkage
                 eid_art_initiation_state.Add(new
                 {
@@ -668,7 +668,7 @@ namespace ShieldPortal.Controllers
                     data = _knownStatus_State
                 }
             };
-            
+
 
             List<dynamic> state_maternal_clinical_cascade = new List<dynamic>
             {
@@ -693,7 +693,7 @@ namespace ShieldPortal.Controllers
                     data = hiv_exposed_tested_at_12mnth_state
                 }
             };
-            
+
             List<dynamic> state_infant_linkage = new List<dynamic>
             {
                 new
@@ -712,7 +712,7 @@ namespace ShieldPortal.Controllers
                     data = eid_art_initiation_state
                 }
             };
-            
+
             return new
             {
                 state_data_maternal_uptake,
@@ -731,67 +731,179 @@ namespace ShieldPortal.Controllers
 
             var groupedData = lst.GroupBy(x => x.State);
 
-            var _data = new List<dynamic>();
+            List<dynamic> already_pos_suppressed_state = new List<dynamic>();
+            List<dynamic> already_pos_unsuppressed_state = new List<dynamic>();
+            List<dynamic> new_pos_suppressed_state = new List<dynamic>();
+            List<dynamic> new_pos_unsuppressed_state = new List<dynamic>();
+
+            List<dynamic> lga_drill_down_already_pos_suppressed = new List<dynamic>();
+            List<dynamic> lga_drill_down_already_pos_unsuppressed = new List<dynamic>();
+
+            List<dynamic> lga_drilldown_new_pos_suppressed = new List<dynamic>();
+            List<dynamic> lga_drilldown_new_pos_unsuppressed = new List<dynamic>();
+
+            var drilldown_series_known_status = new List<dynamic>();
+            var drilldown_series_new_pos = new List<dynamic>();
+
             foreach (var state in groupedData)
             {
-                var kn_suppressed = state.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Suppressed")
-                    .Sum(x => x.Result);
-                var kn_unsuppressed = state.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Not Suppressed")
-                    .Sum(x => x.Result);
-
-                var new_suppressed = state.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Suppressed")
-                    .Sum(x => x.Result);
-                var new_unsuppressed = state.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Not Suppressed")
-                    .Sum(x => x.Result);
-
-                _data.Add(new
+                already_pos_suppressed_state.Add(new
                 {
-                    kn_suppressed,
-                    kn_unsuppressed,
-                    new_suppressed,
-                    new_unsuppressed,
-                    State = state.Key
+                    name = state.Key,
+                    y = state.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Suppressed")
+                    .Sum(x => x.Result),
+                    drilldown = state.Key + "_suppressed"
                 });
+                already_pos_unsuppressed_state.Add(new
+                {
+                    name = state.Key,
+                    y = state.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Not Suppressed")
+                    .Sum(x => x.Result),
+                    drilldown = state.Key + "_unsuppressed"
+                });
+
+                new_pos_suppressed_state.Add(new
+                {
+                    name = state.Key,
+                    y = state.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Suppressed")
+                    .Sum(x => x.Result),
+                    drilldown = state.Key + "_suppressed"
+                });
+                new_pos_unsuppressed_state.Add(new
+                {
+                    name = state.Key,
+                    y = state.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Not Suppressed")
+                        .Sum(x => x.Result),
+                    drilldown = state.Key + "_unsuppressed"
+                });
+
+                List<dynamic> lga_data_already_pos_suppressed = new List<dynamic>();
+                List<dynamic> lga_data_already_pos_unsuppressed = new List<dynamic>();
+                List<dynamic> lga_data_new_pos_supressed = new List<dynamic>();
+                List<dynamic> lga_data_new_pos_unsupressed = new List<dynamic>();
+
+                foreach (var lga in state.GroupBy(x => x.LGA))
+                {
+                    lga_data_already_pos_suppressed.Add(new
+                    {
+                        name = lga.Key,
+                        y = lga.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Suppressed")
+                    .Sum(x => x.Result),
+                        drilldown = lga.Key + "_suppressed"
+                    });
+                    lga_data_already_pos_unsuppressed.Add(new
+                    {
+                        name = lga.Key,
+                        y = lga.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Not Suppressed")
+                    .Sum(x => x.Result),
+                        drilldown = lga.Key + "_unsuppressed"
+                    });
+                    lga_data_new_pos_supressed.Add(new
+                    {
+                        name = lga.Key,
+                        y = lga.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Suppressed")
+                    .Sum(x => x.Result),
+                        drilldown = lga.Key + "_suppressed"
+                    });
+                    lga_data_new_pos_unsupressed.Add(new
+                    {
+                        name = lga.Key,
+                        y = lga.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Not Suppressed")
+                        .Sum(x => x.Result),
+                        drilldown = lga.Key + "_unsuppressed"
+                    });
+
+                    List<dynamic> facility_data_new_pos_supressed = new List<dynamic>();
+                    List<dynamic> facility_data_new_pos_unsupressed = new List<dynamic>();
+                    List<dynamic> facility_data_already_pos_suppressed = new List<dynamic>();
+                    List<dynamic> facility_data_already_pos_unsuppressed = new List<dynamic>();
+
+                    foreach (var fty in lga.GroupBy(x => x.Facility))
+                    {
+                        facility_data_already_pos_suppressed.Add(new List<dynamic>
+                        {
+                            fty.Key,
+                            fty.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Suppressed")
+                            .Sum(x => x.Result),
+                        });
+                        facility_data_already_pos_unsuppressed.Add(new List<dynamic>
+                        {
+                            fty.Key,
+                            fty.Where(x => x.Category == "Already HIV Positive" && x.ResultGroup == "Not Suppressed")
+                            .Sum(x => x.Result),
+                        });
+                        facility_data_new_pos_supressed.Add(new List<dynamic>
+                        {
+                            fty.Key,
+                            fty.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Suppressed")
+                                .Sum(x => x.Result),
+                        });
+                        facility_data_new_pos_unsupressed.Add(new List<dynamic>
+                        {
+                            fty.Key,
+                            fty.Where(x => x.Category == "Newly Identified" && x.ResultGroup == "Not Suppressed")
+                                .Sum(x => x.Result),
+                        });
+                    }
+                    drilldown_series_known_status.Add(new { name = "Suppressed", id = lga.Key + "_suppressed", data = facility_data_already_pos_suppressed });
+                    drilldown_series_known_status.Add(new { name = "Not Suppressed", id = lga.Key + "_unsuppressed", data = facility_data_already_pos_unsuppressed });
+
+                    drilldown_series_new_pos.Add(new { name = "Suppressed", id = lga.Key + "_suppressed", data = facility_data_new_pos_supressed });
+                    drilldown_series_new_pos.Add(new { name = "Not Suppressed", id = lga.Key + "_unsuppressed", data = facility_data_new_pos_unsupressed });
+                }
+                drilldown_series_known_status.Add(new { name = "Suppressed", id = state.Key + "_suppressed", data = lga_data_already_pos_suppressed });
+                drilldown_series_known_status.Add(new { name = "Not Suppressed", id = state.Key + "_unsuppressed", data = lga_data_already_pos_unsuppressed});
+                 
+                drilldown_series_new_pos.Add(new { name = "Suppressed", id = state.Key + "_suppressed", data = lga_data_new_pos_supressed });
+                drilldown_series_new_pos.Add(new { name = "Not Suppressed", id = state.Key + "_unsuppressed", data = lga_data_new_pos_unsupressed });
             }
 
             var known_suppressed = new
             {
                 name = "Suppressed",
-                data = _data.Select(x => x.kn_suppressed),
+                data = already_pos_suppressed_state,
                 stack = "Already HIV Positive"
-            };
+            }; 
 
             var known_unsuppressed = new
             {
                 name = "Not Suppressed",
-                data = _data.Select(x => x.kn_unsuppressed),
+                data = already_pos_unsuppressed_state,
                 stack = "Already HIV Positive"
             };
 
             var newly_suppressed = new
             {
                 name = "Suppressed",
-                data = _data.Select(x => x.new_suppressed),
+                data = new_pos_suppressed_state,
                 stack = "Newly Identified"
             };
             var newly_unsuppressed = new
             {
                 name = "Not Suppressed",
-                data = _data.Select(x => x.new_suppressed),
+                data = new_pos_unsuppressed_state,
                 stack = "Newly Identified"
             };
-
-            List<dynamic> result = new List<dynamic>
+            
+            var known_status = new List<dynamic>
             {
-                known_suppressed,
                 known_unsuppressed,
-                newly_suppressed,
-                newly_unsuppressed
+                known_suppressed,
             };
+
+            var newly_known = new List<dynamic>
+            {
+                newly_unsuppressed,
+                newly_suppressed,
+            };
+
+            //drilldown_series_known_status.AddRange(drilldown_series_new_pos),
             return new
             {
-                result,
-                State = _data.Select(x => x.State)
+                known_status,
+                drilldown_series_known_status,
+                newly_known,
+                drilldown_series_new_pos
             };
         }
 

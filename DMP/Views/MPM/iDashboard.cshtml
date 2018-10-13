@@ -65,9 +65,13 @@
 
                     <hr />
                     <div class="row">
-                        <div id="PMTCTVIRALLOAD" style='width: 1000px; height: 827px;'>
+                        <div id="PMTCTVIRALLOAD" style='width: 1000px; height: 500px;'>
                         </div>
-                    </div>                   
+                    </div> 
+                    <div class="row">
+                        <div id="PMTCTVIRALLOAD_new" style='width: 1000px; height: 500px;'>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="tab-pane" id="pmtct_cascade">
@@ -166,8 +170,14 @@
                         'Tx_New', dt.Linkage.Linkage, '% Linkage', false);
 
                     //PMTCTVIRALLOAD
-                    build_stacked_bar('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression',
-                        "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.result);
+                    build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression','Previously Known HIV Positive',
+                        "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
+
+                    //PMTCTVIRALLOAD_new
+                    build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
+                        "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
+
+
 
                     //PMTCTCascade_uptake
                     build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',

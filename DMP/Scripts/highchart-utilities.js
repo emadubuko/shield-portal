@@ -42,7 +42,9 @@ var pieColors = (function () {
 function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
 
     Highcharts.chart(id, {
-
+        credits: {
+            enabled: false
+        },
         chart: {
             type: 'bubble',
             plotBorderWidth: 1,
@@ -117,6 +119,9 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
 function BuildDonut(id, title, data_array) {
 
     var chart = new Highcharts.Chart({
+        credits: {
+            enabled: false
+        },
         chart: {
             renderTo: id,
             type: 'pie'
@@ -212,6 +217,9 @@ function Build_Pos_Neg_Chart(id, title, categories, series_data, max) {
         chart: {
             type: 'bar'
         },
+        credits: {
+            enabled: false
+        },
         title: {
             text: title,
             style: {
@@ -269,7 +277,9 @@ function build_drilldown_bar_chart(id, title, yaxistitle, principal_data, drill_
 
     var colors = get_color_shades(2);
     Highcharts.chart(id, {
-
+        credits: {
+            enabled: false
+        },
         chart: {
             type: 'column'
         },
@@ -327,6 +337,9 @@ function build_Column_chart(id, title, yaxistitle, xaxisCategory, series_data, a
     Highcharts.chart(id, {
         chart: {
             type: 'column',
+        },
+        credits: {
+            enabled: false
         },
         title: {
             text: title,
@@ -386,6 +399,9 @@ function build_bar_chart_dual_axis(container_id, title, y1_title, y2_title, xaxi
             zoomType: 'xy',
             height: height
         },
+        credits: {
+            enabled: false
+        },
         title: {
             text: title,
             style: {
@@ -403,7 +419,7 @@ function build_bar_chart_dual_axis(container_id, title, y1_title, y2_title, xaxi
                     rotation: 270,
                 },
                 labels: {
-                    format: '{value}',
+                    format: '{value:,.0f}',
                 },
                 max: Math.max.apply(Math, parent_data),
                 min: 0
@@ -531,6 +547,9 @@ function build_side_by_side_column_chart(container_id, title, yAxistitle, xaxisC
     Highcharts.chart(container_id, {
         chart: {
             type: 'column'
+        },
+        credits: {
+            enabled: false
         },
         title: {
             text: title
@@ -730,6 +749,9 @@ function build_stacked_bar_with_percent(container_id, title, xaxis_categories, y
         chart: {
             type: 'column'
         },
+        credits: {
+            enabled: false
+        },
         title: {
             text: title
         },
@@ -794,19 +816,24 @@ function build_stacked_bar_with_percent(container_id, title, xaxis_categories, y
     });
 }
 
-function build_stacked_bar(container_id, title, yaxis_title, xaxis_categories, series_data) {
+function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
     Highcharts.chart(container_id, {
-
+        credits: {
+            enabled: false
+        },
         chart: {
             type: 'column'
         },
-
+        subtitle: {
+            text: subtitle ,
+        },
         title: {
             text: title
         },
 
         xAxis: {
-            categories: xaxis_categories
+            type: 'category'
+            //categories: xaxis_categories
         },
 
         yAxis: {
@@ -825,12 +852,28 @@ function build_stacked_bar(container_id, title, yaxis_title, xaxis_categories, s
         },
 
         plotOptions: {
-            column: {
-                stacking: 'percent'
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        color: 'white',
+                        textShadow: '0 0 2px black, 0 0 2px black'
+                    }
+                },
+                stacking: 'normal'
             }
         },
+        colors: ['red','green'],
 
-        series: series_data
+        series: parent_series_data,
+        drilldown: {
+            activeDataLabelStyle: {
+                color: 'white',
+                textShadow: '0 0 2px black, 0 0 2px black'
+            },
+            series: child_series_data
+        }
     });
 }
 
@@ -871,7 +914,7 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
                     text: y1_title,
                 },
                 labels: {
-                    format: '{value}',
+                    format: '{value:,.0f}',
                 },
                 //max: Math.max.apply(Math, parent_data),
                 min: 0
