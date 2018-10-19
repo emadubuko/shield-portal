@@ -1,10 +1,13 @@
 ﻿using CommonUtil.DAO;
 using CommonUtil.Entities;
+using ShieldPortal.Models;
 using ShieldPortal.ViewModel.BWR;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
@@ -47,6 +50,33 @@ namespace ShieldPortal.Controllers
             var facilityDetail = new HealthFacilityDAO().Retrieve(facilityId);
             return View(facilityDetail);
         }
+
+
+        [Compress]
+        public async Task<ActionResult> DownloadNDRFacilities()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("IP, State, LGA, LGA_Code, Alternative LGA Name, Facility, DATIMCode, GSM");
+
+            Action<NDR_Facilities> _action = (NDR_Facilities pt) =>
+            {
+                sb.AppendLine(string.Format("{0},{1},\"{2}\",{3},\"{4}\",\"{5}\",{6},{7}",
+                                  pt.IP, pt.State, pt.LGA, pt.LGA_Code, pt.AlternativeLGA, pt.Facility, pt.DATIMCode, pt.GSM));
+            };
+
+           var validFacilities = await new NDR_StatisticsDAO().FacilitiesForRADET() as List<NDR_Facilities>;
+            
+            validFacilities.ForEach(_action);
+
+            byte[] fileBytes = Encoding.ASCII.GetBytes(sb.ToString());
+
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "ndr_facilities.csv");
+
+            //var dt = Json(sb.ToString());
+            //dt.MaxJsonLength = int.MaxValue;
+            //return dt;
+        }
+
 
 
         public ActionResult HealthFacilityEdit(int facilityId)

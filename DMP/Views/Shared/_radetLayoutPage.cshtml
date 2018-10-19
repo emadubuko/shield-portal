@@ -35,12 +35,12 @@
         <div class="col-md-3">
             <div class="page-sidebar">
                 <div class="sidebar">
-                    <ul id="side-nav" class="main-menu navbar-collapse collapse"  style="color:deepskyblue;font-weight:bolder;">
+                    <ul id="side-nav" class="main-menu navbar-collapse collapse" style="color:deepskyblue;font-weight:bolder;">
                         <li>
                             <a href=@Url.Action("index", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
                                 <i class="fa fa-area-chart"></i><span class="title">&nbsp;Dashboard</span>
                             </a>
-                        </li> 
+                        </li>
                         <li>
                             <a href=@Url.Action("RADETScoreCard", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
                                 <i class="icon-pencil"></i><span class="title">Submission Score card</span>
@@ -56,9 +56,16 @@
                                 <i class="fa fa-file-excel-o"></i><span class="title">&nbsp;View Uploads</span>
                             </a>
                         </li>
-                        <li>@*data-toggle="popover" title="" data-placement="bottom" data-content="Upload of RADET file is closed"*@
-                            <a href=@Url.Action("UploadPage", "RadetAnalytics")  style="color:deepskyblue;font-weight:bolder;">
+                        <li>
+                            @*data-toggle="popover" title="" data-placement="bottom" data-content="Upload of RADET file is closed"*@
+                            <a href=@Url.Action("UploadPage", "RadetAnalytics") style="color:deepskyblue;font-weight:bolder;">
                                 <i class="fa fa-upload"></i><span class="title">&nbsp;Upload RADET</span>
+                            </a>
+                        </li>
+                        <li class="navigation-header">Downloads</li>
+                        <li>
+                            <a href=@Url.Action("DownloadNDRFacilities", "HealthFacility" ) style="text-transform: capitalize;color: #ec407a">
+                                <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;Download Faciliting on NDR</span>
                             </a>
                         </li>
                     </ul>
