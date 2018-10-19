@@ -39,6 +39,26 @@ var pieColors = (function () {
 }());
 
 
+function get_color_shades(start) {
+    var colors = [],
+        base = Highcharts.getOptions().colors[start],
+        i;
+
+    for (i = 0; i < 100; i += 1) {
+        colors.push(Highcharts.Color(base).brighten((i) / 100).get());
+    }
+    return colors;
+}
+
+function countUnique(one_dimensional_array_item) {
+    return new Set(one_dimensional_array_item).size;
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
 function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
 
     Highcharts.chart(id, {
@@ -60,7 +80,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
         },
 
         subtitle: {
-            text: 'Source documents: <a href="#">this should be a link</a>'
+            text: 'click the bubbles to drill down'
         },
 
         xAxis: {
@@ -436,6 +456,8 @@ function build_bar_chart_dual_axis(container_id, title, y1_title, y2_title, xaxi
                 min: 0
             }],
         tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: ' +
+                '{point.y}<br/>',
             shared: true
         },
         colors: ['steelblue', 'red', 'sandybrown'],
@@ -459,14 +481,19 @@ function build_bar_chart_dual_axis(container_id, title, y1_title, y2_title, xaxi
             yAxis: 1,
             tooltip: {
                 useHTML: true,
-                headerFormat: '<table>',
-                pointFormat: '<tr><th colspan="2"><h3>{point.x}</h3></th></tr>' +
-                    '<tr><th>POS:</th><td>{point.x}</td></tr>' +
-                    '<tr><th>Total Tested:</th><td>{point.y1}</td></tr>' +
-                    '<tr><th>Percentage Yield:</th><td>{point.y2}%</td></tr>',
-                footerFormat: '</table>',
-                followPointer: true
-            }
+                pointFormat: '{point.y:.0f} %<br/>',
+            },
+
+            //tooltip: {
+            //    useHTML: true,
+            //    headerFormat: '<table>',
+            //    pointFormat: '<h3>{point.name}</h3>' +
+            //        '<tr><th>Total Tested:</th><td>{point.y0}</td></tr>' +
+            //        '<tr><th>POS:</th><td>{point.x}</td></tr>' +                    
+            //        '<tr><th>Percentage Yield:</th><td>{point.y1}%</td></tr>',
+            //    footerFormat: '</table>',
+            //    followPointer: true
+            //}
             //tooltip: {
             //    pointFormat: '<b>{point.y:.1f}%</b>',
             //    //valueSuffix: ' %'
@@ -474,7 +501,7 @@ function build_bar_chart_dual_axis(container_id, title, y1_title, y2_title, xaxi
         }]
     });
 }
-
+//
 
 function build_trend_chart(container_id, title, yAxistitle, xaxisCategory, series_data) {
     //var colors = get_color_shades(2); 
@@ -582,27 +609,6 @@ function build_side_by_side_column_chart(container_id, title, yAxistitle, xaxisC
         series: series_data
     });
 }
-
-
-function get_color_shades(start) {
-    var colors = [],
-        base = Highcharts.getOptions().colors[start],
-        i;
-
-    for (i = 0; i < 100; i += 1) {
-        colors.push(Highcharts.Color(base).brighten((i) / 100).get());
-    }
-    return colors;
-}
-
-function countUnique(one_dimensional_array_item) {
-    return new Set(one_dimensional_array_item).size;
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 
 function plotMapAdvanced(container_id, main_title, state_chart_container_id, xaxisCategories, statedata, state_detail_title, show_subtitle = true) {
 
@@ -825,7 +831,7 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
             type: 'column'
         },
         subtitle: {
-            text: subtitle ,
+            text: subtitle,
         },
         title: {
             text: title
@@ -842,7 +848,6 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
                 text: yaxis_title
             }
         },
-
         tooltip: {
             formatter: function () {
                 return '<b>' + this.x + '</b><br/>' +
@@ -864,7 +869,7 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
                 stacking: 'normal'
             }
         },
-        colors: ['red','green'],
+        colors: ['red', 'green'],
 
         series: parent_series_data,
         drilldown: {
@@ -889,10 +894,12 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
                 fontSize: '12px'
             }
         },
+        subtitle: {
+            text: 'click on the states bar to drill down',
+        },
         legend: {
             enabled: true,
         },
-
         tooltip: {
             shared: true
         },
@@ -927,4 +934,152 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
             series: child_data
         }
     });
+}
+
+function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title, y2_title, parent_data, drill_down_data, xaxisCategory) {
+    var main_categories = xaxisCategory;
+    var positions = ['Positives', 'Tx_New', 'Linkage (%)'];
+
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< go back to {series.name}'
+        }
+    });
+
+    Highcharts.chart(container_id, {
+        chart: {
+            zoomType: 'xy',
+            events: {
+                drilldown: function (e) {
+                    setChart(e.target.renderTo.id, e.seriesOptions);
+                },
+                drillUp: function (e) {
+                    console.log(e);
+                    //if (chart1.drilldownLevels.length > 0) {
+                    //    chart1.drillUp();
+                    //}
+                }
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        xAxis: [{
+            categories: main_categories,
+            crosshair: true
+        }],
+        yAxis: [
+            { // Secondary yAxis
+                title: {
+                    text: y1_title,
+                    rotation: 270,
+                },
+                labels: {
+                    format: '{value:,.0f}',
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            },
+            { // Primary yAxis
+                labels: {
+                    format: '{value} %',
+                },
+                title: {
+                    text: y2_title,
+                },
+                opposite: true,
+                max: 100,
+                min: 0
+            }],
+        tooltip: {
+            shared: true,
+            formatter: function () {
+                var txt = '<b>' + this.x + '</b><br/>';
+                if (this.points) {
+                    $.each(this.points, function (i, v) {
+                        txt = txt + "<b style='color:" + v.color + "'>" + v.series.name + '</b> : ' + v.y + ' <br/> ';
+                    });
+                } else {
+                    txt = txt + '<b>' + this.point.series.name + '</b> :' + this.y + '<br/>';
+                }
+                return txt;
+            }
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                }
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        legend: {
+            enabled: true,
+        },
+        series: parent_data,
+        drilldown: {
+            drillUpButton: {
+                relativeTo: 'spacingBox',
+                position: {
+                    y: 0,
+                    x: 0
+                },
+                theme: {
+                    fill: 'white',
+                    'stroke-width': 1,
+                    stroke: 'silver',
+                    r: 0,
+                    states: {
+                        hover: {
+                            fill: '#a4edba'
+                        },
+                        select: {
+                            stroke: '#039',
+                            fill: '#a4edba'
+                        }
+                    }
+                }
+
+            },
+            series: drill_down_data
+        }
+    });
+}
+
+var drilledDownChart;
+function setChart(chartId, series_data) {
+    var chart = $("#" + chartId).highcharts();
+
+    drilledDownChart = chart;
+    //var point = chart.series[0].data[0];
+    //chart.addSingleSeriesAsDrilldown(point, series_data);
+    //point.doDrilldown();
+    //chart.applyDrilldown();
+
+    //var point = chart.series[0].data[0];
+    //point.doDrilldown();
+    //chart.applyDrilldown();
+
+
+    chart.series[0].remove();
+    chart.xAxis[0].setCategories(series_data.categories, false);
+    chart.addSeries(series_data, false);
+    chart.redraw();    
+
+    //if (series_data.name.indexOf('%') != -1) {
+    //    $("#" + chartId).append("<a class='btn btn-sm btn-primary btn-outline' style='cursor: pointer;border-color: gray;'>◁ Drill Up</a>");
+    //        //append("<a href='#'> Drill up </a>");
+    //}    
+}
+
+function drillup() {
+
+
 }

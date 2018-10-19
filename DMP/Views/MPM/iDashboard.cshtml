@@ -151,24 +151,23 @@
                         dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
                         'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
 
+                    //LinkagebyState
+                    build_bar_chart_dual_axis_with_drill_down('LinkagebyState', 'New on ART vs Identified Positives',
+                        'No. of client', '% linkage', dt.Linkage.state_data, dt.Linkage.lga_drill_down,
+                        dt.Linkage.states);
+                     
+
                     //TX_RET
-                    build_bar_chart_dual_axis('TX_RET', 'Retained in care 12 months after ART initiation',
-                        'No. of client', '% Retention', dt.ART.State_ret,
-                        dt.ART.den_ret, 'Tx_RET(den)', dt.ART.num_ret,
-                        'Tx_Ret(num)', dt.ART.percnt_ret, '% retention', false);
+                    build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
+                        'No. of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
+                        dt.ART.states);
+                     
 
                     //Tx_VLA
-                    build_bar_chart_dual_axis('Tx_VLA', 'Viral Load Access',
-                        'No. of client', '% Viral load access', dt.ART.State_vl,
-                        dt.ART.den_ret, 'Sample collected', dt.ART.num_vl,
-                        'Total eligible patients', dt.ART.percnt_vl, '% Viral load access', false);
-
-                    //LinkagebyState
-                    build_bar_chart_dual_axis('LinkagebyState', 'New on ART vs Identified Positives',
-                        'No. of client', '% linkage', dt.Linkage.State,
-                        dt.Linkage.POS, 'POS', dt.Linkage.Tx_New,
-                        'Tx_New', dt.Linkage.Linkage, '% Linkage', false);
-
+                    build_bar_chart_dual_axis_with_drill_down('Tx_VLA', 'Viral Load Access',
+                        'No. of client', '% Viral load access', dt.ART.state_data_vl,
+                        dt.ART.lga_drill_down_vl, dt.ART.states);
+                      
                     //PMTCTVIRALLOAD
                     build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression','Previously Known HIV Positive',
                         "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
@@ -176,42 +175,36 @@
                     //PMTCTVIRALLOAD_new
                     build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
                         "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
-
-
-
+                    
                     //PMTCTCascade_uptake
                     build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
                         'No. of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
-                    //build_Column_chart('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
-                    //    'No. of Client', dt.PMTCT.State, dt.PMTCT.maternal_uptake);
 
                     //PMTCTCascade_maternal_clinical
                     build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
                         'No. of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
-                    //build_Column_chart('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
-                    //    'No. of Client', dt.PMTCT.State, dt.PMTCT.maternal_clinical_cascade);
-
+                    
                     //PMTCTCascade_linkage
                     build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
                         'No. of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
-                    //build_Column_chart('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
-                    //    'No. of Client', dt.PMTCT.State, dt.PMTCT.infant_linkage);
-
+                   
                     //TB_stat
-                    build_Column_chart('TB_stat', 'TB HIV',
-                        'No. of Client', dt.Tb_Stat.State, dt.Tb_Stat.tb_stat);
+                    build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
+                        dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
 
                     //TB_treatment
-                    build_bar_chart_dual_axis('TB_treatment', 'Percentage of patients started on TB Treatment',
-                        'No. of client', '% TX_TB', dt.TB_treatment.State,
-                        dt.TB_treatment.NewCases, 'New TB Cases', dt.TB_treatment.Tx_TB,
-                        'Tx_TB', dt.TB_treatment.TB_TX_percnt, '% TX_TB', false);
-
+                    build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
+                        'No. of client', '% TX_TB', dt.TB_treatment.state_data,
+                        dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
+                    
                     //TB_tpt
-                    build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                        'No. of client', '% TPT', dt.tb_tpt.State,
-                        dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
-                        'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
+                    build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
+                        'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
+
+                    //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
+                    //    'No. of client', '% TPT', dt.tb_tpt.State,
+                    //    dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
+                    //    'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
 
                 }
                 catch (e) {

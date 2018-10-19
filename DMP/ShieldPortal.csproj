@@ -1354,6 +1354,7 @@
     <Content Include="Resources\protocols\protocol_outcome evaluation of children and adolescents on ART.pdf" />
     <Content Include="Resources\protocols\VLS and HIV DR Survey Protocol.pdf" />
     <Content Include="Resources\protocols\Protocol version 1.4_revised Test and Start.pdf" />
+    <Content Include="Report\Template\DQA FY2018 Q4\Summary Sheet FY18 Q4 DQA.pdf" />
     <None Include="Scripts\_old\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.js" />
     <Content Include="Scripts\_old\jquery-1.10.2.min.js" />
