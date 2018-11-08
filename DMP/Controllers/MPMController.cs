@@ -66,11 +66,10 @@ namespace ShieldPortal.Controllers
         [HttpPost]
         public string DownloadPreviousReport(string IPState)
         {
-
             string IP = IPState.Split('|')[1];
             string State = IPState.Split('|')[0];
             var ip = new OrganizationDAO().SearchByShortName(IP);
-            string period = "Jul-18";
+            string period = "";// "Jul-18";
             var dao = new MPMDAO();
             var previously = dao.GenerateIPUploadReports(ip.Id, period, State, MPM.DAL.DTO.ReportLevel.State);
 
@@ -211,17 +210,74 @@ namespace ShieldPortal.Controllers
             //} 
         }
 
-        public ActionResult Dashboard(string q = "")
+        public ActionResult Dashboard(string lastreportedPeriod = "")
         {
-            if (string.IsNullOrEmpty(q))
-                return View("iDashboard");
-            else
-                return View();
+            var IPLocation = new List<IPLGAFacility>();
+            IList<HealthFacility> facilities;
+            IList<IPUploadReport> submissions;
+
+            var mpmDAO = new MPMDAO();
+            DataTable reports = null;
+
+            try
+            {
+                submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "", "", null);
+                ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+
+
+                if (User.IsInRole("ip"))
+                {
+                    submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.Organization.Id, "", "", null);
+                    facilities = new HealthFacilityDAO().RetrievebyIP(loggedinProfile.Organization.Id);
+                }
+                else
+                {
+                    submissions = mpmDAO.GenerateIPUploadReports(0, "", "", null);
+                    facilities = new HealthFacilityDAO().RetrieveAll();
+                }
+
+                if (string.IsNullOrEmpty(lastreportedPeriod))
+                    lastreportedPeriod = new MPMDAO().GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
+
+
+                reports = mpmDAO.GetUploadReport(lastreportedPeriod);
+                List<dynamic> reportView = new List<dynamic>();
+
+                foreach (DataRow dr in reports.Rows)
+                {
+                    Int64 facilityId = dr.Field<Int64>("facilityId");
+                    var hf = facilities.FirstOrDefault(x => x.Id == facilityId);
+
+                    if (hf != null)
+                    {
+                        IPLocation.Add(
+                        new IPLGAFacility
+                        {
+                            FacilityName = hf.Name,
+                            IP = hf.Organization.ShortName,
+                            LGA = hf.LGA,
+                        });
+                    }
+                }
+
+                ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+                ViewBag.LastReportedPeriod = lastreportedPeriod;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                throw ex;
+            }
+
+            return View("iDashboard", IPLocation);
+
+
+            // return View();
         }
 
-        [AllowAnonymous]
+        
         [HttpPost]
-        public dynamic RetriveData()
+        public dynamic RetriveData(MPMDataSearchModel searchModel = null)
         {
             Dictionary<string, string> storedProcedures = new Dictionary<string, string>
             {
@@ -242,12 +298,15 @@ namespace ShieldPortal.Controllers
             {
                 var profile = new Services.Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
+
+                //make sure it is still the IP
+                searchModel.IPs = new List<string> { ip };
             }
 
             Dictionary<string, dynamic> _data = new Dictionary<string, dynamic>();
             foreach (var sp in storedProcedures)
             {
-                var data = dao.RetriveDataAsDataTables(sp.Value, ip);
+                var data = dao.RetriveDataAsDataTables(sp.Value, searchModel);
                 if (sp.Key == "hts_index_testing")
                 {
                     _data.Add(sp.Key, DrillDownBubbleData(data));
@@ -295,7 +354,7 @@ namespace ShieldPortal.Controllers
         //tb_tpt
         public dynamic GenerateTB_TPT(DataTable dt)
         {
-            List<TB_TPT_ViewModel> lst = ConvertToList<TB_TPT_ViewModel>(dt);
+            List<TB_TPT_ViewModel> lst = Utilities.ConvertToList<TB_TPT_ViewModel>(dt);
             var groupedData = lst.GroupBy(x => x.State);
 
             var state_eligible = new List<dynamic>();
@@ -307,7 +366,7 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
                 var eligible = state.Sum(x => x.PLHIV_eligible_for_TPT);
-                var started = state.Sum(x => x.Started_on_TPT);                
+                var started = state.Sum(x => x.Started_on_TPT);
                 double _percnt = 0;
                 if (eligible != 0)
                     _percnt = Math.Round(100 * 1.0 * started / eligible, 0);
@@ -475,7 +534,7 @@ namespace ShieldPortal.Controllers
         //tb_treatment
         public dynamic GenerateTB_Treatment(DataTable dt)
         {
-            List<TB_Treatment_ViewModel> lst = ConvertToList<TB_Treatment_ViewModel>(dt);
+            List<TB_Treatment_ViewModel> lst = Utilities.ConvertToList<TB_Treatment_ViewModel>(dt);
 
             var groupedData = lst.OrderByDescending(t => t.New_Cases)
                 .GroupBy(x => x.State);
@@ -547,7 +606,7 @@ namespace ShieldPortal.Controllers
                         drilldown = lga.Key + "  "
                     });
 
-                    
+
                     var facility_newCases = new List<dynamic>();
                     var facility_tx_tb = new List<dynamic>();
                     var facility_tx_tb_percnt = new List<dynamic>();
@@ -573,7 +632,7 @@ namespace ShieldPortal.Controllers
                         {
                             fty.Key,
                             tx_tb_f
-                        });                        
+                        });
                         facility_tx_tb_percnt.Add(new List<dynamic>
                         {
                             fty.Key,
@@ -657,7 +716,7 @@ namespace ShieldPortal.Controllers
         //tb_stat
         public dynamic GenerateTB_STAT(DataTable dt)
         {
-            List<TB_STAT_ViewModel> lst = ConvertToList<TB_STAT_ViewModel>(dt);
+            List<TB_STAT_ViewModel> lst = Utilities.ConvertToList<TB_STAT_ViewModel>(dt);
 
             var groupedData = lst.OrderBy(x => x.State).GroupBy(x => x.State);
 
@@ -804,7 +863,7 @@ namespace ShieldPortal.Controllers
         //PMTCT_Cascade_ViewModel
         public dynamic GeneratePMTCT_Cascade(DataTable dt)
         {
-            List<PMTCT_Cascade_ViewModel> _dt = ConvertToList<PMTCT_Cascade_ViewModel>(dt);
+            List<PMTCT_Cascade_ViewModel> _dt = Utilities.ConvertToList<PMTCT_Cascade_ViewModel>(dt);
 
             var groupedData = _dt.OrderBy(x => x.State).GroupBy(x => x.State);
             //var _data = new List<dynamic>();
@@ -1116,7 +1175,7 @@ namespace ShieldPortal.Controllers
 
         public dynamic GeneratePMTCT_VL(DataTable dt)
         {
-            List<PMTCT_VL_ViewModel> lst = ConvertToList<PMTCT_VL_ViewModel>(dt);
+            List<PMTCT_VL_ViewModel> lst = Utilities.ConvertToList<PMTCT_VL_ViewModel>(dt);
 
             var groupedData = lst.GroupBy(x => x.State);
 
@@ -1299,7 +1358,7 @@ namespace ShieldPortal.Controllers
 
         public dynamic GenerateLinkageData(DataTable dt)
         {
-            List<LinkageViewModel> lst = ConvertToList<LinkageViewModel>(dt);
+            List<LinkageViewModel> lst = Utilities.ConvertToList<LinkageViewModel>(dt);
             var groupedData = lst.GroupBy(x => x.State);
 
             var pos_state = new List<dynamic>();
@@ -1339,7 +1398,7 @@ namespace ShieldPortal.Controllers
                 var lga_tx_new = new List<dynamic>();
                 var lga_linkage = new List<dynamic>();
 
-                var lgas = new List<string> ();
+                var lgas = new List<string>();
                 foreach (var lga in state.GroupBy(x => x.LGA))
                 {
                     lgas.Add(lga.Key);
@@ -1354,14 +1413,14 @@ namespace ShieldPortal.Controllers
                     {
                         y = pos_l,
                         name = lga.Key,
-                        drilldown = lga.Key 
+                        drilldown = lga.Key
                     });
                     lga_tx_new.Add(new
                     {
                         y = tx_new_l,
                         name = lga.Key,
-                        drilldown = lga.Key+ " "
-                    });                    
+                        drilldown = lga.Key + " "
+                    });
                     lga_linkage.Add(new
                     {
                         y = linkage_l,
@@ -1441,12 +1500,12 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
                 states = groupedData.Select(x => x.Key)
             };
-          
+
         }
 
         public dynamic GenerateTx_Ret_And_Viral_Load(DataTable dt)
         {
-            List<TX_RET> lst = ConvertToList<TX_RET>(dt);
+            List<TX_RET> lst = Utilities.ConvertToList<TX_RET>(dt);
             var groupedData = lst.GroupBy(x => x.State);
 
             var state_ret_den = new List<dynamic>();
@@ -1470,7 +1529,7 @@ namespace ShieldPortal.Controllers
                 double percnt_ret = 0;
                 if ((num_ret + den_ret) != 0)
                     percnt_ret = Math.Round(100 * 1.0 * num_ret / (den_ret), 2);
-                
+
                 state_ret_den.Add(new
                 {
                     y = den_ret,
@@ -1538,7 +1597,7 @@ namespace ShieldPortal.Controllers
                     double percnt_ret_l = 0;
                     if ((num_ret_l + den_ret_l) != 0)
                         percnt_ret_l = Math.Round(100 * 1.0 * num_ret_l / (den_ret_l), 0);
-                    
+
                     lga_den_ret.Add(new
                     {
                         y = den_ret_l,
@@ -1605,7 +1664,7 @@ namespace ShieldPortal.Controllers
                             .Sum(x => x.Numerator);
                         double percnt_ret_f = 0;
                         if ((num_ret_f + den_ret_f) != 0)
-                            percnt_ret_f = Math.Round(100 * 1.0 * num_ret_f / ( den_ret_f), 0);
+                            percnt_ret_f = Math.Round(100 * 1.0 * num_ret_f / (den_ret_f), 0);
 
                         facility_den_ret.Add(new List<dynamic>
                         {
@@ -1629,7 +1688,7 @@ namespace ShieldPortal.Controllers
                         double percnt_vl_f = 0;
                         if ((num_vl_f + den_vl_f) != 0)
                             percnt_vl_f = Math.Round(100 * 1.0 * num_vl_f / (den_vl_f), 0);
-                       
+
 
                         facility_den_vl.Add(new List<dynamic>
                         {
@@ -1657,7 +1716,7 @@ namespace ShieldPortal.Controllers
                     lga_drill_down_vl.Add(new { name = "VLA (den)", id = lga.Key, data = facility_den_vl, type = "column", categories = facilities });
                     lga_drill_down_vl.Add(new { name = "VLA (num)", id = lga.Key + " ", data = facility_num_vl, type = "column", categories = facilities });
                     lga_drill_down_vl.Add(new { name = "VLA Uptake (%)", yAxis = 1, type = "scatter", id = lga.Key + "  ", data = facility_percet_vl, categories = facilities });
-                     
+
                 }
                 //add lga ret
                 lga_drill_down_ret.Add(new { name = "RET (den)", id = state.Key, data = lga_den_ret, categories = lgas, type = "column" });
@@ -1729,7 +1788,7 @@ namespace ShieldPortal.Controllers
 
         public dynamic GenerateHTSOtherPITC(DataTable dt)
         {
-            List<HTSOtherPITCModel> lst = ConvertToList<HTSOtherPITCModel>(dt);
+            List<HTSOtherPITCModel> lst = Utilities.ConvertToList<HTSOtherPITCModel>(dt);
             var groupedData = lst.GroupBy(x => x.SDP);
 
             var _data_all = new List<dynamic>();
@@ -1738,7 +1797,10 @@ namespace ShieldPortal.Controllers
             {
                 var pos = sdp.Sum(x => x.POS);
                 var neg = sdp.Sum(x => x.NEG);
-                var yd = Math.Round(100 * 1.0 * pos / (pos + neg), 2);
+                double yd = 0;
+
+                if ((pos + neg) > 0)
+                    yd = Math.Round(100 * 1.0 * pos / (pos + neg), 2);
 
                 _data_all.Add(new
                 {
@@ -1760,7 +1822,7 @@ namespace ShieldPortal.Controllers
 
         public dynamic DrillDownBubbleData(DataTable dt)
         {
-            List<HTSIndexViewDataModel> lst = ConvertToList<HTSIndexViewDataModel>(dt);
+            List<HTSIndexViewDataModel> lst = Utilities.ConvertToList<HTSIndexViewDataModel>(dt);
 
             List<dynamic> state_data = new List<dynamic>();
             List<dynamic> lga_drill_down_data = new List<dynamic>();
@@ -1768,13 +1830,15 @@ namespace ShieldPortal.Controllers
             foreach (var gp in lst.GroupBy(x => x.State))
             {
                 var total_tested = gp.Sum(p => p.POS) + gp.Sum(p => p.NEG);
-                var yield = Math.Round((100 * 1.0 * gp.Sum(s => s.POS) / total_tested), 0);
+                double yield = 0;
+                if (total_tested > 0)
+                    yield = Math.Round((100 * 1.0 * gp.Sum(s => s.POS) / total_tested), 0);
 
                 state_data.Add(new
                 {
                     name = gp.Key,
-                    x = gp.Sum(s => s.POS),
-                    z = total_tested,
+                    x = total_tested,
+                    z = gp.Sum(s => s.POS),
                     y = yield,
                     drilldown = gp.Key
                 });
@@ -1784,14 +1848,16 @@ namespace ShieldPortal.Controllers
                 foreach (var lgp in gp.ToList().GroupBy(x => x.LGA))
                 {
                     var total_tested_lga = lgp.Sum(p => p.POS) + lgp.Sum(p => p.NEG);
-                    var yield_lga = Math.Round((100 * 1.0 * lgp.Sum(s => s.POS) / total_tested_lga), 0);
+                    double yield_lga = 0;
+                    if (total_tested_lga > 0)
+                        yield_lga = Math.Round((100 * 1.0 * lgp.Sum(s => s.POS) / total_tested_lga), 0);
 
                     lga_data.Add(new
                     {
                         name = lgp.Key,
                         drilldown = lgp.Key,
-                        x = lgp.Sum(s => s.POS),
-                        z = total_tested_lga,
+                        x = total_tested_lga,
+                        z = lgp.Sum(s => s.POS),
                         y = yield_lga,
                     });
 
@@ -1800,13 +1866,15 @@ namespace ShieldPortal.Controllers
                     foreach (var fty in lgp.ToList().GroupBy(x => x.Facility))
                     {
                         var total_tested_facility = fty.Sum(p => p.POS) + fty.Sum(p => p.NEG);
-                        var yield_facility = Math.Round((100 * 1.0 * fty.Sum(s => s.POS) / total_tested_facility), 0);
+                        double yield_facility = 0;
+                        if (total_tested_facility > 0)
+                            yield_facility = Math.Round((100 * 1.0 * fty.Sum(s => s.POS) / total_tested_facility), 0);
 
                         facility_data.Add(new
                         {
                             name = fty.Key,
-                            x = fty.Sum(s => s.POS),
-                            z = total_tested_facility,
+                            x = total_tested_facility,
+                            z = fty.Sum(s => s.POS),
                             y = yield_facility,
                         });
                     }
@@ -1818,26 +1886,7 @@ namespace ShieldPortal.Controllers
             return new { state_data, lga_drill_down_data };
         }
 
-        public List<T> ConvertToList<T>(DataTable dt)
-        {
-            var columnNames = dt.Columns.Cast<DataColumn>()
-                    .Select(c => c.ColumnName)
-                    .ToList();
-            var properties = typeof(T).GetProperties();
-            return dt.AsEnumerable().Select(row =>
-            {
-                var objT = Activator.CreateInstance<T>();
-                foreach (var pro in properties)
-                {
-                    if (columnNames.Contains(pro.Name))
-                    {
-                        PropertyInfo pI = objT.GetType().GetProperty(pro.Name);
-                        pro.SetValue(objT, row[pro.Name] == DBNull.Value ? null : Convert.ChangeType(row[pro.Name], pI.PropertyType));
-                    }
-                }
-                return objT;
-            }).ToList();
-        }
+        
 
         public string ConvertDataTabletoString(DataTable dt)
         {
@@ -1857,7 +1906,6 @@ namespace ShieldPortal.Controllers
 
 
         public Dictionary<string, int> IndexPeriods
-
         {
             get
             {
@@ -1878,6 +1926,76 @@ namespace ShieldPortal.Controllers
                 };
             }
         }
+
+        /**
+         *
+         * public dynamic DrillDownBubbleData(DataTable dt)
+        {
+            List<HTSIndexViewDataModel> lst = Utilities.ConvertToList<HTSIndexViewDataModel>(dt);
+
+            List<dynamic> state_data = new List<dynamic>();
+            List<dynamic> lga_drill_down_data = new List<dynamic>();
+
+            foreach (var gp in lst.GroupBy(x => x.State))
+            {
+                var total_tested = gp.Sum(p => p.POS) + gp.Sum(p => p.NEG);
+                double yield = 0;
+                if (total_tested > 0)
+                    yield = Math.Round((100 * 1.0 * gp.Sum(s => s.POS) / total_tested), 0);
+
+                state_data.Add(new
+                {
+                    name = gp.Key,
+                    x = gp.Sum(s => s.POS),
+                    z = total_tested,
+                    y = yield,
+                    drilldown = gp.Key
+                });
+                List<dynamic> lga_data = new List<dynamic>();
+
+
+                foreach (var lgp in gp.ToList().GroupBy(x => x.LGA))
+                {
+                    var total_tested_lga = lgp.Sum(p => p.POS) + lgp.Sum(p => p.NEG);
+                    double yield_lga = 0;
+                    if (total_tested_lga > 0)
+                        yield_lga = Math.Round((100 * 1.0 * lgp.Sum(s => s.POS) / total_tested_lga), 0);
+
+                    lga_data.Add(new
+                    {
+                        name = lgp.Key,
+                        drilldown = lgp.Key,
+                        x = lgp.Sum(s => s.POS),
+                        z = total_tested_lga,
+                        y = yield_lga,
+                    });
+
+                    List<dynamic> facility_data = new List<dynamic>();
+
+                    foreach (var fty in lgp.ToList().GroupBy(x => x.Facility))
+                    {
+                        var total_tested_facility = fty.Sum(p => p.POS) + fty.Sum(p => p.NEG);
+                        double yield_facility = 0;
+                        if (total_tested_facility > 0)
+                            yield_facility = Math.Round((100 * 1.0 * fty.Sum(s => s.POS) / total_tested_facility), 0);
+
+                        facility_data.Add(new
+                        {
+                            name = fty.Key,
+                            x = fty.Sum(s => s.POS),
+                            z = total_tested_facility,
+                            y = yield_facility,
+                        });
+                    }
+                    lga_drill_down_data.Add(new { id = lgp.Key, data = facility_data });
+                }
+                lga_drill_down_data.Add(new { name = gp.Key, id = gp.Key, data = lga_data });
+            }
+
+            return new { state_data, lga_drill_down_data };
+        }
+         * 
+         */
     }
 
 

@@ -725,7 +725,7 @@ namespace MPM.DAL.Processor
                         goto Loop; ; // throw new ApplicationException("Invalid facility uploaded");
 
 
-                    for (int column = 5; column <= 73;)
+                    for (int column = 5; column < 73;)
                     {
                         ART_Indicator_Type indicatorType = column < 36 ? ART_Indicator_Type.Tx_RET : ART_Indicator_Type.Tx_VLA;
 

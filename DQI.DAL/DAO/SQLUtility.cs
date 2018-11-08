@@ -15,7 +15,7 @@ namespace DQI.DAL.DAO
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@period", period);
             cmd.Parameters.AddWithValue("@IP", IP);
-            
+            cmd.CommandTimeout = 180; //3mins
             var dataTable = GetDatable(cmd);
 
             return dataTable;

@@ -951,9 +951,11 @@ function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title
             zoomType: 'xy',
             events: {
                 drilldown: function (e) {
+                    var chart = this;
                     setChart(e.target.renderTo.id, e.seriesOptions);
+                    chart.applyDrilldown();
                 },
-                drillUp: function (e) {
+                drillup: function (e) {
                     console.log(e);
                     //if (chart1.drilldownLevels.length > 0) {
                     //    chart1.drillUp();
@@ -1071,15 +1073,18 @@ function setChart(chartId, series_data) {
     chart.series[0].remove();
     chart.xAxis[0].setCategories(series_data.categories, false);
     chart.addSeries(series_data, false);
-    chart.redraw();    
+    chart.redraw();
 
-    //if (series_data.name.indexOf('%') != -1) {
-    //    $("#" + chartId).append("<a class='btn btn-sm btn-primary btn-outline' style='cursor: pointer;border-color: gray;'>◁ Drill Up</a>");
-    //        //append("<a href='#'> Drill up </a>");
-    //}    
+    if (series_data.name.indexOf('%') != -1) {
+        $("#" + chartId).append("<a class='btn btn-sm btn-primary btn-outline drillup' style='cursor: pointer;border-color: gray;'>◁ Drill Up</a>");
+            //append("<a href='#'> Drill up </a>");
+        //drilledDownChart.applyDrilldown();
+    }    
 }
 
-function drillup() {
-
-
-}
+$(document).on('click', '.drillup', function () {
+    console.log(this);
+    if (drilledDownChart.drilldownLevels.length > 0) {
+        drilledDownChart.drillUp();
+    }
+});

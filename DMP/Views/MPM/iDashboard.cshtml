@@ -1,22 +1,35 @@
-﻿
+﻿@model List<ShieldPortal.ViewModel.IPLGAFacility>
 @{
 
     Layout = "~/Views/Shared/_mpmlayout.cshtml";
 }
 
 @section AddToHead{
-
+    <link href="~/plugins/select2/css/select2.css" rel="stylesheet" />
     <style>
         html, body {
             height: 100%
         }
     </style>
+    <script type="text/javascript">
+        {
+            var ipscount = '@Model.Select(x=>x.IP).Distinct().Count()';
+            var model_data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model, Newtonsoft.Json.Formatting.None,
+                       new Newtonsoft.Json.JsonSerializerSettings()
+            {
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                           ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
+            }));
 
+            function reloadPage(e) {
+                window.location.replace('/MPM/Dashboard?lastreportedPeriod=' + e.value);
+            }
+        }
+    </script>
 }
 
-
-<h2>MPM Dashboard</h2>
-<div class="col-sm-8">
+<h2>GSM Dashboard</h2>
+<div class="col-sm-7">
     <div class="row">
 
         <div class="tabs-container">
@@ -31,6 +44,7 @@
             <div class="tab-content">
 
                 <div class="tab-pane active" id="ist90">
+                    <img src="~/images/spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
                     <div class="row">
                         <div id="HTSindextesting" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
                         </div>
@@ -47,7 +61,7 @@
                     <div class="row">
                         <div id="LinkagebyState" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
                         </div>
-                    </div>                   
+                    </div>
 
                     <hr />
                     <div class="row">
@@ -61,13 +75,13 @@
                     <div class="row">
                         <div id="Tx_VLA" style='width: 1000px; height: 827px;'>
                         </div>
-                    </div> 
+                    </div>
 
                     <hr />
                     <div class="row">
                         <div id="PMTCTVIRALLOAD" style='width: 1000px; height: 500px;'>
                         </div>
-                    </div> 
+                    </div>
                     <div class="row">
                         <div id="PMTCTVIRALLOAD_new" style='width: 1000px; height: 500px;'>
                         </div>
@@ -92,11 +106,11 @@
                 <div class="tab-pane" id="tb_cascade">
                     <div class="row">
                         <div id="TB_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>  
+                        </div>
                     </div>
                     <div class="row">
                         <div id="TB_treatment" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div> 
+                        </div>
                     </div>
                     <div class="row">
                         <div id="TB_tpt" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
@@ -109,7 +123,135 @@
     </div>
 </div>
 
+<div class="col-sm-2">
 
+    <form class="form-horizontal" style="margin-left: 50px;">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <h5 style="text-decoration:underline;">Filter</h5>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltReportPeriod" class="form-control" onchange="reloadPage(this)">
+                    @foreach (var p in ViewBag.ReportedPeriods)
+                    {
+                        if (p == ViewBag.LastReportedPeriod)
+                        {
+                            <option value="@p" selected>@p</option>
+                        }
+                        else
+                        {
+                            <option value="@p">@p</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
+                    <option value="">IP</option>
+                    @if (Model.Select(x => x.IP).Distinct().Count() > 1)
+                    {
+                        foreach (var ip in Model.Select(x => x.IP).Distinct())
+                        {
+                            <option value="@ip">@ip</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="@Model.Select(x => x.IP).FirstOrDefault()" selected>@Model.Select(x => x.IP).FirstOrDefault()</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltstate" class="select2 form-control" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple>
+                    <option value="">State</option>
+                    @foreach (var st in Model.Select(x => x.LGA.State).Distinct())
+                    {
+                        <option value="@st.state_code">@st.state_name</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltLGA" class="select2 form-control" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
+                    <option value="">LGA</option>
+                    @foreach (var lga in Model.Select(x => x.LGA).Distinct())
+                    {
+                        <option value="@lga.lga_code">@lga.DisplayName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltFacility" class="select2 form-control" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
+                    <option value="">Facility</option>
+                    @foreach (var f in Model.Select(x => x.FacilityName).Distinct())
+                    {
+                        <option value="@f">@f</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltsex" class="form-control">
+                    <option value="" selected>Sex</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <select id="sltagegroup" class="form-control">
+                    <option value="" selected>Age Group</option>
+                    <option value="<1"> &lt;1</option>
+                    <option value="1-4">1-4</option>
+                    <option value="5-9">5-9</option>
+                    <option value="10-14">10-14</option>
+                    <option value="15-19">15-19</option>
+                    <option value="20-24">20-24</option>
+                    <option value="25-29">25-29</option>
+                    <option value="30-34">30-34</option>
+                    <option value="35-39">35-39</option>
+                    <option value="40-44">40-44</option>
+                    <option value="45-49">45-49</option>
+                    <option value="50+">50+</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" style="display:none">
+            <div class="col-sm-12">
+                <select id="sltpopulationgroup" class="form-control">
+                    <option value="" selected>population group</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Adolescent">Adolescent</option>
+                    <option value="Adult">Adult</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <a class="btn btn-sm btn-info" id="btnSearch">Refresh</a>
+            </div>
+        </div>
+    </form>
+</div>
 
 @section Scripts
 {
@@ -119,93 +261,97 @@
     <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
     <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
     <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
-    @*<script src="~/Scripts/highchart-utilities.js"></script>*@
-    <script src="~/Scripts/highchart-utilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    @*<script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>*@
+
+    <script src="~/Scripts/highchart-utilities.js"></script>
+    @*<script src="~/Scripts/highchart-utilities.js?v=@DateTime.Now.Ticks.ToString()"></script>*@
+
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/Scripts/randmonizer_utility.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
+             
+            $('#btnSearch').click(function (e) {
+                $("#a-spinner").show();
+                //supply the variables here
+                var model = {};
+                model.ReportPeriod = $("#sltReportPeriod option:selected").val();
+                model.PopulationGroup = $("#sltpopulationgroup option:selected").val();
+                model.Sex = $("#sltsex option:selected").val();
+                model.Agegroup = $("#sltagegroup option:selected").val();
 
-            $("#dqibtn").click(function (e) {
-                $(".spinner").show();
+                let selectedIP = [];
+                $("#sltIP option:selected").each(function () {
+                    selectedIP.push($(this).val());
+                });
+                let selectedStates = [];
+                $("#sltstate option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedStates.push(val);
+                    }
+                });
+                let selectedLGA = [];
+                $("#sltLGA option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedLGA.push(val);
+                    }
+                });
+                let selectedFacilitties = [];
+                $("#sltFacility option:selected").each(function () {
+                    var val = $(this).val();
+                    if (val != '') {
+                        selectedFacilitties.push(val);
+                    }
+                });
+                model.IPs = selectedIP;
+                model.state_codes = selectedStates;
+                model.lga_codes = selectedLGA;
+                model.facilities = selectedFacilitties;
+
+                $.ajax({
+                    url: "/MPM/RetriveData",
+                    method: "Post",
+                    data: JSON.stringify(model),
+                    contentType: "application/json",
+                }).done(function (response) {
+                    $("#a-spinner").hide();
+                    try {
+                        var dt = JSON.parse(response)._data;
+                        buildallchart(dt);
+                    }
+                    catch (e) {
+                        alert("A system error has occurred. Kindly re-try again shortly");
+                        console.log(e);
+                    }
+                }).error(function (xhr, status, err) {
+                    alert("error occured");
+                    $("#a-spinner").hide();
+                });
             });
 
+
             let bubble_pointFormat = '<tr><th colspan="2"><h3>{point.name}</h3></th></tr>' +
-                '<tr><th>POS:</th><td>{point.x}</td></tr>' +
-                '<tr><th>Total Tested:</th><td>{point.z}</td></tr>' +
+                '<tr><th>POS:</th><td>{point.z}</td></tr>' +
+                '<tr><th>Total Tested:</th><td>{point.x}</td></tr>' +
                 '<tr><th>Percentage Yield:</th><td>{point.y}%</td></tr>';
+
+            var _model = {};
+            _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
 
             $.ajax({
                 url: "/MPM/RetriveData",
                 method: "Post",
+                data: JSON.stringify(_model),
                 contentType: "application/json",
             }).done(function (response) {
+                $("#a-spinner").hide();
                 try {
                     var dt = JSON.parse(response)._data;
-                    BuildBubbleChart('HTSindextesting', 'Testing yield of HTS Index Client',
-                        'No. of Identified Positives', 'Percentage Yield', bubble_pointFormat,
-                        dt.hts_index_testing);
-
-                    //hts other pitc
-                    build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',
-                        'No. of client tested', '% Testing Yield', dt.hts_other_pitc.SDPs,
-                        dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
-                        'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
-
-                    //LinkagebyState
-                    build_bar_chart_dual_axis_with_drill_down('LinkagebyState', 'New on ART vs Identified Positives',
-                        'No. of client', '% linkage', dt.Linkage.state_data, dt.Linkage.lga_drill_down,
-                        dt.Linkage.states);
+                    buildallchart(dt);
                      
-
-                    //TX_RET
-                    build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
-                        'No. of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
-                        dt.ART.states);
-                     
-
-                    //Tx_VLA
-                    build_bar_chart_dual_axis_with_drill_down('Tx_VLA', 'Viral Load Access',
-                        'No. of client', '% Viral load access', dt.ART.state_data_vl,
-                        dt.ART.lga_drill_down_vl, dt.ART.states);
-                      
-                    //PMTCTVIRALLOAD
-                    build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression','Previously Known HIV Positive',
-                        "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
-
-                    //PMTCTVIRALLOAD_new
-                    build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
-                        "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
-                    
-                    //PMTCTCascade_uptake
-                    build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
-                        'No. of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
-
-                    //PMTCTCascade_maternal_clinical
-                    build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
-                        'No. of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
-                    
-                    //PMTCTCascade_linkage
-                    build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
-                        'No. of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
-                   
-                    //TB_stat
-                    build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
-                        dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
-
-                    //TB_treatment
-                    build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
-                        'No. of client', '% TX_TB', dt.TB_treatment.state_data,
-                        dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
-                    
-                    //TB_tpt
-                    build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                        'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
-
-                    //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                    //    'No. of client', '% TPT', dt.tb_tpt.State,
-                    //    dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
-                    //    'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
-
                 }
                 catch (e) {
                     alert("A system error has occurred. Kindly re-try again shortly");
@@ -213,9 +359,77 @@
                 }
             }).error(function (xhr, status, err) {
                 alert("error occured");
+                $("#a-spinner").hide();
             });
 
 
+            function buildallchart(dt) {
+
+                BuildBubbleChart('HTSindextesting', 'Testing yield of HTS Index Client',
+                    'Total Tested', 'Percentage Yield', bubble_pointFormat,
+                    dt.hts_index_testing);
+
+                //hts other pitc
+                build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',
+                    'No. of client tested', '% Testing Yield', dt.hts_other_pitc.SDPs,
+                    dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
+                    'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
+
+                //LinkagebyState
+                build_bar_chart_dual_axis_with_drill_down('LinkagebyState', 'New on ART vs Identified Positives',
+                    'No. of client', '% linkage', dt.Linkage.state_data, dt.Linkage.lga_drill_down,
+                    dt.Linkage.states);
+
+
+                //TX_RET
+                build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
+                    'No. of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
+                    dt.ART.states);
+
+
+                //Tx_VLA
+                build_bar_chart_dual_axis_with_drill_down('Tx_VLA', 'Viral Load Access',
+                    'No. of client', '% Viral load access', dt.ART.state_data_vl,
+                    dt.ART.lga_drill_down_vl, dt.ART.states);
+
+                //PMTCTVIRALLOAD
+                build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression', 'Previously Known HIV Positive',
+                    "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
+
+                //PMTCTVIRALLOAD_new
+                build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
+                    "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
+
+                //PMTCTCascade_uptake
+                build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
+                    'No. of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
+
+                //PMTCTCascade_maternal_clinical
+                build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
+                    'No. of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
+
+                //PMTCTCascade_linkage
+                build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
+                    'No. of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
+
+                //TB_stat
+                build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
+                    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
+
+                //TB_treatment
+                build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
+                    'No. of client', '% TX_TB', dt.TB_treatment.state_data,
+                    dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
+
+                //TB_tpt
+                build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
+                    'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
+
+                 //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
+                    //    'No. of client', '% TPT', dt.tb_tpt.State,
+                    //    dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
+                    //    'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
+            }
 
 
             $('#resizer').resizable({
