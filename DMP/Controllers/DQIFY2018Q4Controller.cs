@@ -49,6 +49,7 @@ namespace ShieldPortal.Controllers
 
             return View(convertedResult);
         }
+         
 
         [HttpPost]
         public JsonResult RetriveDetails(int id)
@@ -152,4 +153,7 @@ namespace ShieldPortal.Controllers
             return messages;
         }
     }
+
+
+  
 }

@@ -119,7 +119,7 @@
                         foreach (DQAFailCountComparisonModel dr in Model)
                         {
                             string improvement;
-                            if (dr.Q1_FAIL_COUNT == 0 && dr.Q2_FAIL_COUNT == 0)
+                            if ((dr.Q1_FAIL_COUNT == 0 && dr.Q2_FAIL_COUNT == 0))
                             {
                                 improvement = " - ";
                             }
@@ -128,9 +128,13 @@
                             {
                                 improvement = "-100%";
                             }
-                            else
+                            else if (dr.Q1_FAIL_COUNT.HasValue && dr.Q2_FAIL_COUNT.HasValue)
                             {
                                 improvement = (100 * (double)(dr.Q1_FAIL_COUNT - dr.Q2_FAIL_COUNT) / (double)dr.Q1_FAIL_COUNT).ToString("N0");
+                            }
+                            else
+                            {
+                                improvement = " - ";
                             }
 
                             <tr>

@@ -27,6 +27,9 @@ using OfficeOpenXml.DataValidation;
 using System.Globalization;
 using System.Xml.Linq;
 using DQI.DAL.Model;
+using RADET.DAL.DAO;
+using DQA.DAL.Business;
+using DQA.DAL.Model;
 
 namespace Test
 {
@@ -40,8 +43,26 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            //Organizations org = new Organizations
+            //{
+            //    ShortName = "IHVN",
+            //    Id = 1016,
+            //};
+            //var d = new PivotTableModel
+            //{
+            //    FacilityName = "Asokoro District Hospital",
+            //    FacilityCode = "wp753KYAdno",
+            //    IP = "IHVN"
+            //};
+            //string fileName = "DQA_Q4_" + org.ShortName + ".zip";
+            //string directory = ""; // System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q4/DQA_Q4_" + org.ShortName);
+            //string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q4/FY18_Q4_Data Quality Assessment tool_v8.xlsm");
+            //string file = new BDQAQ4FY18().GenerateDQA(new List<PivotTableModel> { d}, org, fileName, directory, template, "Q4 FY18").Result;
 
-          MosisFiles.GeneratePeadLineListing();
+
+//            var radet = new RadetMetaDataDAO().RetrieveRadetLineListingForRetebtion("Q4 FY18", new DateTime(2016, 10, 1), new DateTime(2017, 9, 30), "IHVN", "Asokoro District Hospital");
+
+            //MosisFiles.GeneratePeadLineListing();
 
             //Ifunaya.MergeFiles();
             // CopyExcelFileContent();

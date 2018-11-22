@@ -171,6 +171,7 @@
 
             // Client side method for receiving  notifications from the server
             myhub.client.UpdatePages = function (Id, fileName, errorMessagedata) {
+                fileName = fileName.replace("'", "");
                 if (Id === myconnectionId) {
                     var bag = { fileName, errorMessagedata };
                     errorBag.push(bag);

@@ -74,6 +74,29 @@ namespace ShieldPortal.Controllers.DQACntrollers
             return result;
         }
 
+        public ActionResult AllYearResult(string report_type = "partners")
+        {
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+            }
+            var cmd = new SqlCommand("[sp_ALL_YEAR_DQA_RESULT]")
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            cmd.Parameters.AddWithValue("@year", "18");
+            cmd.Parameters.AddWithValue("@ip", ip);
+            cmd.Parameters.AddWithValue("@get_partner_report", report_type.ToLower().Contains("partners"));
+            var data = Utility.GetDatable(cmd);
+
+            List<AllYearConcurrenceResultComparison> result = Utilities.ConvertToList<AllYearConcurrenceResultComparison>(data);
+
+            ViewBag.IPLocation = new Utils().GetDashBoardFilter(ip);
+
+            return View(result);
+        }
 
         public ActionResult DQAResult()
         {

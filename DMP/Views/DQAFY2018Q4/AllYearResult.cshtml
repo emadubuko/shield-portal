@@ -1,0 +1,270 @@
+﻿@using ShieldPortal.ViewModel;
+@using Newtonsoft.Json;
+@model List<AllYearConcurrenceResultComparison>
+
+@{
+    Layout = "~/Views/Shared/_dqaFY18Q4layout.cshtml";
+}
+
+
+@section AddToHead{
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <style>
+        .table-header {
+            font-weight: bold;
+            padding: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+
+             var ipscount =  @Html.Raw((ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.IP).Distinct().Count());
+            var model_data = @Html.Raw(JsonConvert.SerializeObject((ViewBag.IPLocation as List<IPLGAFacility>), Formatting.None, new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                            ContractResolver = new CommonUtil.Utilities.NHibernateContractResolver()
+                        }));
+
+
+        function reloadPage(e) {
+            window.location.replace('/DQAFY2018Q4/AllYearResult?report_type=' + e.value);
+        }
+    </script>
+}
+
+<div class="col-sm-9">
+    <div class="panel panel-success">
+        <div class="panel-heading clearfix" style="padding:8px 30%">
+            <h5 class="panel-title">DQA Result over the year</h5>
+        </div>
+        <div class="panel-body">
+
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="sltIP">IP</label>
+                    <div class="col-sm-3">
+                        <select id="sltIP" class="select2 form-control custom_filter" data-id="0" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
+                            @if ((ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.IP).Distinct().Count() > 1)
+                            {
+                                foreach (var ip in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.IP).Distinct())
+                                {
+                                    <option value="@ip">@ip</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="@((ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.IP).FirstOrDefault())" selected>@((ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.IP).FirstOrDefault())</option>
+                            }
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="sltLGA">LGA</label>
+                    <div class="col-sm-4">
+                        <select id="sltLGA" class="select2 form-control custom_filter" data-id="2" data-placeholder="Select LGA" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var l in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.LGA).Distinct().OrderBy(x => x.lga_name))
+                            {
+                                <option value="@l.lga_code">@l.lga_name</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="sltstate">State</label>
+                    <div class="col-sm-3">
+                        <select id="sltstate" class="select2 form-control custom_filter" data-id="1" data-placeholder="Select State" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var st in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.LGA.State).Distinct().OrderBy(x => x.state_name))
+                            {
+                                <option value="@st.state_code">@st.state_name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <label class="col-sm-1 control-label" for="sltFacility">Facility</label>
+                    <div class="col-sm-4">
+                        <select id="sltFacility" class="select2 form-control custom_filter" data-id="3" data-placeholder="Select facility" tabindex="-1" aria-hidden="true" multiple>
+                            @foreach (var f in (ViewBag.IPLocation as List<IPLGAFacility>).Select(x => x.FacilityName).OrderBy(x => x))
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Report Type</label>
+                    <div class="col-sm-3">
+                        <select id="rpt_type" onchange="reloadPage(this)" class="form-control">
+                            <option value="Partners">Partner's Report</option>
+                            <option value="UMB">UMB's Report</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <a class='btn btn-sm btn-info' id='export'><i class='fa fa-download'></i> &nbsp; &nbsp; Export data</a> <i style='display:none' id='loadImg'><img class='center' src='/images/spinner.gif' width='40'> please wait ...</i>
+            <div class="table-responsive" style="overflow-x:scroll;font-size: 10px;width:100%">
+                <table class="table table-striped table-bordered table-hover" id="main-table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="table-header" rowspan="2" colspan="1">IP</th>
+                            <th class="table-header" rowspan="2" colspan="1">State</th>
+                            <th class="table-header" rowspan="2" colspan="1">LGA</th>
+                            <th class="table-header" rowspan="2" colspan="1">Facility</th>
+                            <th class="table-header" rowspan="1" colspan="4">HTS</th>
+                            <th class="table-header" rowspan="1" colspan="4">PMTCT_STAT</th>
+                            <th class="table-header" rowspan="1" colspan="4">PMTCT_ART</th>
+                            <th class="table-header" rowspan="1" colspan="4">PMTCT_EID</th>
+                            <th class="table-header" rowspan="1" colspan="4">TX_NEW</th>
+                            <th class="table-header" rowspan="1" colspan="4">TX_CURR</th>
+                            <th class="table-header" rowspan="2" colspan="1">Fail Count</th>
+                        </tr>
+                        <tr>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            @*<th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dr in Model.GroupBy(x => x.FacilityId))
+                        {
+                            var record = dr.FirstOrDefault();
+
+                            if (record != null)
+                            {
+                                var q1_result = dr.FirstOrDefault(x => x.ReportPeriod.Contains("Q1"));
+                                var q2_result = dr.FirstOrDefault(x => x.ReportPeriod.Contains("Q2"));
+                                var q3_result = dr.FirstOrDefault(x => x.ReportPeriod.Contains("Q3"));
+                                var q4_result = dr.FirstOrDefault(x => x.ReportPeriod.Contains("Q4"));
+
+
+                                var failCount = dr.Count(x => x.HTS_TST > 0 && (x.HTS_TST < 95 || x.HTS_TST > 105));
+                                failCount += dr.Count(x => x.PMTCT_STAT < 95 || x.PMTCT_STAT > 105);
+                                failCount += dr.Count(x => x.PMTCT_ART < 95 || x.PMTCT_ART > 105);
+                                failCount += dr.Count(x => x.PMTCT_EID < 95 || x.PMTCT_EID > 105);
+                                failCount += dr.Count(x => x.TX_NEW < 95 || x.TX_NEW > 105);
+                                failCount += dr.Count(x => x.TX_Curr < 95 || x.TX_Curr > 105);
+
+                                <tr>
+                                    <td>@record.IP</td>
+                                    <td>@record.State</td>
+                                    <td>@record.LGA</td>
+                                    <td>@record.Facility</td>
+                                    <td>@(q1_result != null ? q1_result.HTS_TST.ToString("N2") : "")</td>
+                                    <td>@(q2_result != null ? q2_result.HTS_TST.ToString("N2") : "")</td>
+                                    <td>@(q3_result != null ? q3_result.HTS_TST.ToString("N2") : "")</td>
+                                    <td>@(q4_result != null ? q4_result.HTS_TST.ToString("N2") : "")</td>
+
+                                    <td>@(q1_result != null ? q1_result.PMTCT_STAT.ToString("N2") : "")</td>
+                                    <td>@(q2_result != null ? q2_result.PMTCT_STAT.ToString("N2") : "")</td>
+                                    <td>@(q3_result != null ? q3_result.PMTCT_STAT.ToString("N2") : "")</td>
+                                    <td>@(q4_result != null ? q4_result.PMTCT_STAT.ToString("N2") : "")</td>
+
+                                    <td>@(q1_result != null ? q1_result.PMTCT_ART.ToString("N2") : "")</td>
+                                    <td>@(q2_result != null ? q2_result.PMTCT_ART.ToString("N2") : "")</td>
+                                    <td>@(q3_result != null ? q3_result.PMTCT_ART.ToString("N2") : "")</td>
+                                    <td>@(q4_result != null ? q4_result.PMTCT_ART.ToString("N2") : "")</td>
+
+                                    <td>@(q1_result != null ? q1_result.PMTCT_EID.ToString("N2") : "") </td>
+                                    <td>@(q2_result != null ? q2_result.PMTCT_EID.ToString("N2") : "") </td>
+                                    <td>@(q3_result != null ? q3_result.PMTCT_EID.ToString("N2") : "") </td>
+                                    <td>@(q4_result != null ? q4_result.PMTCT_EID.ToString("N2") : "") </td>
+
+                                    <td>@(q1_result != null ? q1_result.TX_NEW.ToString("N2") : "")</td>
+                                    <td>@(q2_result != null ? q2_result.TX_NEW.ToString("N2") : "")</td>
+                                    <td>@(q3_result != null ? q3_result.TX_NEW.ToString("N2") : "")</td>
+                                    <td>@(q4_result != null ? q4_result.TX_NEW.ToString("N2") : "")</td>
+
+                                    <td>@(q1_result != null ? q1_result.TX_Curr.ToString("N2") : "")</td>
+                                    <td>@(q2_result != null ? q2_result.TX_Curr.ToString("N2") : "")</td>
+                                    <td>@(q3_result != null ? q3_result.TX_Curr.ToString("N2") : "")</td>
+                                    <td>@(q4_result != null ? q4_result.TX_Curr.ToString("N2") : "")</td>
+
+                                    <td>@failCount</td>
+                                </tr>
+                            }
+
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+
+    <script src="~/Scripts/randmonizer_utility.js?v=@DateTime.Now.Ticks.ToString()"></script>
+
+    <script>
+        $(document).ready(function () {
+            var dataTable = $('.table').DataTable({
+                "iDisplayLength": 10,
+                dom: 'Bfrtip',
+                "aLengthMenu": [[10, 20, 50, 100, 200], [10, 20, 50, 100, 200]],
+                "pagingType": "full_numbers",
+                buttons: [
+                    //{
+                    //    text: 'Export to Excel',
+                    //    extend: 'excelHtml5',
+                    //    exportOptions: {
+                    //        columns: ':hidden'
+                    //    }
+                    //}
+                ]
+            });
+
+            function filerData(controlId) {
+                let column = $("#" + controlId).attr('data-id');
+                let filter = "";
+                $("#" + controlId + " option:selected").each(function () {
+                    filter += filter !== "" ? "|" + $(this).text() : $(this).text();
+                });
+                dataTable
+                    .columns(column)
+                    .search(filter, true, false)
+                    .draw();
+            }
+
+            $('.custom_filter').change(function (e) {
+                filerData(e.currentTarget.id);
+            });
+            $("#main-table_filter").remove();
+            $("#main-table_length.dataTables_length").removeClass("dataTables_length").addClass('dataTables_filter');
+            $('input.form-control.input-sm[type=search]').unbind();
+
+
+            var report_type = window.location.href.split('?report_type=')[1];
+            $("#rpt_type").val(report_type);
+
+            $("#export").on('click', function (event) {
+                exportTableToCSV.apply(this, [$("#main-table"), 'report.csv']);
+            });
+
+
+        });
+    </script>
+}

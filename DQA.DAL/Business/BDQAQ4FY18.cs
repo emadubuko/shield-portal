@@ -56,7 +56,7 @@ namespace DQA.DAL.Business
                     metadata.ImplementingPartner = facility.ImplementingPartnerId.Value;
                     metadata.LgaId = facility.LGAId;
                     metadata.LgaLevel = 2;
-                    metadata.ReportPeriod = "Q3 FY18"; //worksheet.Cells["Y2"].Value.ToString();
+                    metadata.ReportPeriod = "Q4 FY18"; //worksheet.Cells["Y2"].Value.ToString();
                     metadata.SiteId = Convert.ToInt32(facility.Id);
                     metadata.StateId = facility.lga.state.state_code; // state.state_code;
 
@@ -83,7 +83,7 @@ namespace DQA.DAL.Business
                     //get all the indicators in the system
                     var indicators = entity.dqa_indicator.Where(x => x.DQAPeriod == metadata.ReportPeriod);
 
-                    for (var i = 7; i < 59; i++)
+                    for (var i = 7; i < 70; i++)
                     {
                         if (worksheet.Cells[i, 2].Value == null)
                             continue;
@@ -149,7 +149,7 @@ namespace DQA.DAL.Business
                                 ve.ErrorMessage));
                         }
                     }
-                    Logger.LogInfo("BDQAQ3FY18.ReadWorkbook", sb.ToString());
+                    Logger.LogInfo("BDQAQ4FY18.ReadWorkbook", sb.ToString());
                     return "<tr><td class='text-center'><i class='icon-cancel icon-larger red-color'></i></td><td>System error has occurred while processing the file " + new FileInfo(filename).Name + "</td></tr>";
                 }
                 catch (Exception ex)
@@ -183,6 +183,11 @@ namespace DQA.DAL.Business
             reported_data.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 13].Value.ToString()));
             reported_data.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 14].Value.ToString()));
             reported_data.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 15].Value.ToString()));
+            reported_data.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 16].Value.ToString()));
+
+            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J12"].Value.ToString()));
+            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P12"].Value.ToString()));
+            
             summaries.Add(reported_data);
 
             i = 7;
@@ -203,6 +208,11 @@ namespace DQA.DAL.Business
             validation.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 13].Value.ToString()));
             validation.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 14].Value.ToString()));
             validation.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 15].Value.ToString()));
+            validation.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 16].Value.ToString()));
+
+            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J13"].Value.ToString()));
+            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P13"].Value.ToString()));
+
             summaries.Add(validation);
 
             i = 8;
@@ -223,6 +233,11 @@ namespace DQA.DAL.Business
             concurrency_rate.Add(new XElement("TB_STAT", summaryworksheet.Cells[i, 13].Value.ToString()));
             concurrency_rate.Add(new XElement("TB_ART", summaryworksheet.Cells[i, 14].Value.ToString()));
             concurrency_rate.Add(new XElement("TX_TB", summaryworksheet.Cells[i, 15].Value.ToString()));
+            concurrency_rate.Add(new XElement("PMTCT_FO", summaryworksheet.Cells[i, 16].Value.ToString()));
+
+            reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J14"].Value.ToString()));
+            reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P14"].Value.ToString()));
+
             summaries.Add(concurrency_rate);
 
             var summary_value = new dqa_summary_value();
@@ -278,6 +293,7 @@ namespace DQA.DAL.Business
                 if (radet == null || radet.Count == 0)
                 {
                     radet = new RadetMetaDataDAO().RetrieveRadetLineListingForDQA(reportingPeriod, site.IP, site.FacilityName);
+                    radetSite = site.FacilityName;
                 }
 
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))

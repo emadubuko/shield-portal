@@ -63,4 +63,32 @@ namespace ShieldPortal.ViewModel
         public int? Q1_FAIL_COUNT { get; set; }
 
     }
+
+
+
+    public class AllYearConcurrenceResultComparison
+    {
+        public string IP { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public string Facility { get; set; }
+        public int FacilityId { get; set; }
+        public string Role { get; set; }
+        public string CreatedBy { get; set; }
+        public string ReportPeriod { get; set; }
+
+        public double HTS_TST { get; set; }
+        public double PMTCT_STAT { get; set; }
+        public double PMTCT_ART { get; set; }
+        public double PMTCT_EID { get; set; }
+        public double PMTCT_FO { get; set; }
+        public double PMTCT_HEI_POS { get; set; }
+        public double TX_NEW { get; set; }
+        public double TX_Curr { get; set; }
+        public double TX_RET { get; set; }
+        public double TX_PLVS { get; set; }
+        public double TB_STAT { get; set; }
+        public double TB_ART { get; set; }
+        public double TX_TB { get; set; }
+    }
 }
