@@ -187,7 +187,7 @@ namespace DQA.DAL.Business
 
             reported_data.Add(new XElement("TX_RET", summaryworksheet.Cells["J12"].Value.ToString()));
             reported_data.Add(new XElement("TX_PLVS", summaryworksheet.Cells["P12"].Value.ToString()));
-            
+
             summaries.Add(reported_data);
 
             i = 7;
@@ -284,7 +284,7 @@ namespace DQA.DAL.Business
                 // artSites.TryGetValue(site.FacilityCode, out string radetSite);
                 string radetSite = "";
                 var artSite = artSites.FirstOrDefault(x => x.DATIMCode == site.FacilityCode);
-                radetSite = artSite != null ? artSite.Facility : "";
+                radetSite = artSite != null ? artSite.Facility.Trim() : "";
 
                 if (!string.IsNullOrEmpty(radetSite))
                 {

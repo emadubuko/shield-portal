@@ -9,6 +9,7 @@ namespace ShieldPortal.ViewModel
     {
         public string IP { get; set; }
         public string Facility { get; set; }
+        public string DatimCode { get; set; }
         public string HTC { get; set; }
         public string Validate_HTC { get; set; }
         public string Concurrence_rate_HTC { get; set; }
@@ -90,5 +91,16 @@ namespace ShieldPortal.ViewModel
         public double TB_STAT { get; set; }
         public double TB_ART { get; set; }
         public double TX_TB { get; set; }
+    }
+
+    public class Tx_PVLS_Model
+    {
+        public string IP { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public string Facility { get; set; }
+        public string DatimCode { get; set; }
+        public string TX_PVLS_Den { get; set; }
+        public string TX_PVLS_Num { get; set; }
     }
 }

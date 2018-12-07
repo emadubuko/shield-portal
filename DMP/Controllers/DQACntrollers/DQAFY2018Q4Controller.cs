@@ -339,6 +339,36 @@ namespace ShieldPortal.Controllers.DQACntrollers
             JSONresult = JsonConvert.SerializeObject(data);
             var convertedResult = JsonConvert.DeserializeObject<List<DQAAnalysisModel>>(JSONresult);
 
+            cmd = new SqlCommand("sp_radet_pvls_data");
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@radetperiod", "Q4 FY18");
+            cmd.Parameters.AddWithValue("@yearstartdate", "2017-10-01");
+            cmd.Parameters.AddWithValue("@enddate", "2018-09-30");
+            var data_2 = Utility.GetDatable(cmd);
+            string data_JSON = JsonConvert.SerializeObject(data_2);
+            var convertedResult_1 = JsonConvert.DeserializeObject<List<Tx_PVLS_Model>>(data_JSON)
+                .ToDictionary(x => x.DatimCode);
+
+
+
+            foreach(var item in convertedResult)
+            {
+                Tx_PVLS_Model pvls_item;
+                convertedResult_1.TryGetValue(item.DatimCode, out pvls_item);
+                if(pvls_item != null)
+                {
+                    item.TX_PLVS =  pvls_item.TX_PVLS_Den;
+                    item.Validate_TX_PLVS = pvls_item.TX_PVLS_Num;
+                    double den, num;
+                    if (double.TryParse(item.TX_PLVS, out den) && double.TryParse(item.Validate_TX_PLVS, out num))
+                    {
+                        item.Concurrence_rate_TX_PLVS = den > 0 ? (100 * (num / den)).ToString() : "0";
+                    }                    
+                }
+            }
+
+
+
             return View(convertedResult);
         }
 
