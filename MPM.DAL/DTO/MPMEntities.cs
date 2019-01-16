@@ -16,11 +16,16 @@ namespace MPM.DAL.DTO
 
         public virtual string FilePath { get; set; }
 
+        public virtual ReportType ReportType { get; set; }
+
         public virtual IList<HTS_Index> HTS_Index { get; set; }
         public virtual IList<LinkageToTreatment> LinkageToTreatment { get; set; }
         public virtual IList<ART> ART { get; set; }
         public virtual IList<PMTCT_Viral_Load> Pmtct_Viral_Load { get; set; }
+        public virtual IList<Viral_Load> Viral_Load { get; set; }
         public virtual IList<HTS_Other_PITC> PITC { get; set; }
+        public virtual IList<HTS_TST> HTS_TST { get; set; }
+
         public virtual IList<PMTCT> PMTCT { get; set; }
         public virtual IList<PMTCT_EID> PMTCT_EID { get; set; }
 
@@ -69,12 +74,21 @@ namespace MPM.DAL.DTO
         public virtual string SDP { get; set; }
     }
 
+    public class HTS_TST : BaseT
+    {
+        public virtual MetaData MetaData { get; set; }
+        public virtual int? POS { get; set; }
+        public virtual int? NEG { get; set; }
+        public virtual string SDP { get; set; }
+    }
+
     public class ART : BaseT
     {
         public virtual MetaData MetaData { get; set; }
         public virtual int? Denominator { get; set; }
         public virtual int? Numerator { get; set; }
         public virtual ART_Indicator_Type IndicatorType { get; set; }
+        public virtual string VLA_type { get; set; }
     }
 
     public class PMTCT_Viral_Load
@@ -87,6 +101,16 @@ namespace MPM.DAL.DTO
         public virtual PMTCT_Category Category { get; set; }
         public virtual MetaData MetaData { get; set; }
     }
+
+
+    public class Viral_Load : BaseT
+    { 
+        public virtual int? _less_than_1000 { get; set; }
+        public virtual int? _greater_than_1000 { get; set; }
+        public virtual Viral_Laod_Category Category { get; set; }
+        public virtual MetaData MetaData { get; set; }
+    }
+
 
     public class PMTCT
     {
@@ -231,8 +255,21 @@ namespace MPM.DAL.DTO
         Already_HIV_Positive = 2
     }
 
+    public enum Viral_Laod_Category
+    {
+        Routine,
+        Targeted,
+        Not_Documented,
+
+    }
+
     public enum ReportLevel
     {
         State, LGA, Facility, IP
+    }
+
+    public enum ReportType
+    {
+        IMS, GSM
     }
 }

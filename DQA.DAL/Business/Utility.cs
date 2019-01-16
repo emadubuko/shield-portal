@@ -181,17 +181,23 @@ namespace DQA.DAL.Business
         public static DataSet GetDataSet(SqlCommand cmd)
         {
             var conn = (SqlConnection)entity.Database.Connection;
-            SqlDataAdapter da = new SqlDataAdapter();
-            cmd.Connection = conn;
-            da.SelectCommand = cmd;
             DataSet ds = new DataSet();
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter();
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                
 
-            if (conn.State == ConnectionState.Closed)
-                conn.Open();
+                if (conn.State == ConnectionState.Closed)
+                    conn.Open();
 
-            da.Fill(ds);
-            conn.Close();
-
+                da.Fill(ds);
+            }
+            finally
+            {
+                conn.Close();
+            }
             return ds;
         }
 

@@ -9,13 +9,10 @@ using ShieldPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
@@ -33,51 +30,217 @@ namespace ShieldPortal.Controllers
         // GET: MPM
         public ActionResult Index()
         {
-            var vm = new UploadViewModel();
-            vm.IPReports = new Dictionary<string, List<bool>>();
+            IndexPeriods = new Dictionary<string, int>();
+            for (int i = -6; i < 6; i++)
+            {
+                IndexPeriods.Add(DateTime.Now.AddMonths(i).ToString("MMM-yyyy"), i + 6);
+            }
+
+            var ims = new UploadViewModel
+            {
+                IPReports = new Dictionary<string, List<string>>()
+            };
+
+            var gsm = new UploadViewModel
+            {
+                IPReports = new Dictionary<string, List<string>>()
+            };
+
             var mpmDAO = new MPMDAO();
 
-            var submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "", "", null);
+            var submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "", "", MPM.DAL.DTO.ReportLevel.State);
 
             var reports = submissions.GroupBy(x => x.IPName);
 
             foreach (var iplevel in reports)
             {
-                vm.ImplementingPartner = iplevel.Key;
+                ims.ImplementingPartner = iplevel.Key;
                 foreach (var state in iplevel.GroupBy(x => x.ReportingLevelValue))
                 {
                     var entries = state.ToList().Select(x => x.ReportPeriod).ToList();
-                    List<bool> uploaded = new List<bool>(12);
-                    foreach (var index in IndexPeriods.Keys)
+                    List<string> uploaded = new List<string>(12);
+
+                    foreach (var index in IndexPeriods)
                     {
-                        if (entries.Any(x => x.Contains(index)))
-                            uploaded.Add(true);
+                        if (entries.Any(x => x.Contains(index.Key)))
+                        {
+                            int id = submissions.FirstOrDefault(c => c.IPName == iplevel.Key
+                           && c.ReportingLevelValue == state.Key &&
+                           c.ReportPeriod.Contains(index.Key)).Id;
+
+                            uploaded.Add(true + "|" + id);
+                        }
                         else
-                            uploaded.Add(false);
+                            uploaded.Add(false + "|");
                     }
-                    vm.IPReports.Add(state.Key + "|" + iplevel.Key, uploaded);
+                    ims.IPReports.Add(state.Key + "|" + iplevel.Key, uploaded);
                 }
             }
             ViewBag.reportPeriod = mpmDAO.GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
             ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
-            return View(vm);
+            return View(ims);
         }
 
-        [HttpPost]
-        public string DownloadPreviousReport(string IPState)
+        public ActionResult GSMUploadTracker()
         {
-            string IP = IPState.Split('|')[1];
-            string State = IPState.Split('|')[0];
-            var ip = new OrganizationDAO().SearchByShortName(IP);
-            string period = "";// "Jul-18";
-            var dao = new MPMDAO();
-            var previously = dao.GenerateIPUploadReports(ip.Id, period, State, MPM.DAL.DTO.ReportLevel.State);
-
-            if (previously != null && previously.FirstOrDefault() != null)
+            var ims = new UploadViewModel
             {
-                return previously.FirstOrDefault().FilePath.Split(new string[] { "\\Report\\" }, StringSplitOptions.RemoveEmptyEntries)[1];
+                IPReports = new Dictionary<string, List<string>>()
+            };
+
+            var gsm = new UploadViewModel
+            {
+                IPReports = new Dictionary<string, List<string>>()
+            };
+
+            var mpmDAO = new MPMDAO();
+
+            var submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "", "",  MPM.DAL.DTO.ReportLevel.IP);
+
+            var reports = submissions.GroupBy(x => x.IPName);
+
+            foreach (var iplevel in reports)
+            {
+                ims.ImplementingPartner = iplevel.Key;
+                foreach (var state in iplevel.GroupBy(x => x.ReportingLevelValue))
+                {
+                    var entries = state.ToList().Select(x => x.ReportPeriod).ToList();
+                    List<string> uploaded = new List<string>(12);
+
+                    foreach (var index in GSMIndexPeriods)
+                    {
+                        if (entries.Any(x => x.Contains(index.Key)))
+                        {
+                            int id = submissions.FirstOrDefault(c => c.IPName == iplevel.Key
+                           && c.ReportingLevelValue == state.Key &&
+                           c.ReportPeriod.Contains(index.Key)).Id;
+
+                            uploaded.Add(true + "|" + id);
+                        }
+                        else
+                            uploaded.Add(false + "|");
+                    }
+                    ims.IPReports.Add(state.Key + "|" + iplevel.Key, uploaded);
+                }
             }
-            return "";
+            ViewBag.reportPeriod = mpmDAO.GetGSMLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
+            ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+            return View(ims);
+        }
+
+        public ActionResult CompletenessReport()
+        {
+            var cmd = new SqlCommand
+            {
+                CommandText = "sp_mpm_completeness_report",
+                CommandType = CommandType.StoredProcedure
+            };
+            var dt = new MPMDAO().GetDatable(cmd);
+            var report = Utilities.ConvertToList<CompletenessReport>(dt);
+            return View();
+        }
+
+        public JsonResult CompletenessReportData()
+        {
+            var cmd = new SqlCommand
+            {
+                CommandText = "sp_mpm_completeness_report",
+                CommandType = CommandType.StoredProcedure
+            };
+            var dt = new MPMDAO().GetDatable(cmd);
+            var report = Utilities.ConvertToList<CompletenessReport>(dt);
+
+            List<dynamic> gsm = new List<dynamic>();
+            List<dynamic> ims = new List<dynamic>();
+            foreach (var item in report.Where(x => x.GSM_2).GroupBy(x => x.ReportingPeriod))
+            {
+                gsm.Add(new
+                {
+                    ReportingPeriod = item.Key,
+                    percent = Math.Round(100 * 1.0 * item.Count() / 20, 0)
+                });
+            }
+            foreach (var item in report.Where(x => x.GranularSite && !x.GSM_2).GroupBy(x => x.ReportingPeriod))
+            {
+                ims.Add(new
+                {
+                    ReportingPeriod = item.Key,
+                    percent = Math.Round(100 * 1.0 * item.Count() / 155, 0)
+                });
+            }
+
+            List<dynamic> ims_fac_ind_comp = new List<dynamic>();
+            foreach (var item in report.Where(x => x.GranularSite && !x.GSM_2).GroupBy(x => x.ReportingPeriod))
+            {
+                //14 indicators
+                int no_of_facilities = item.DistinctBy(x => x.FacilityId).DistinctBy(x => x.Indicator).Count();
+                ims_fac_ind_comp.Add(new
+                {
+                    ReportingPeriod = item.Key,
+                    percent = Math.Round(100 * 1.0 * no_of_facilities / 155, 0)
+                });
+            }
+
+            List<dynamic> gsm_fac_ind_comp = new List<dynamic>();
+            foreach (var item in report.Where(x => x.GSM_2).GroupBy(x => x.ReportingPeriod))
+            {
+                //14 indicators
+                int no_of_facilities = item.DistinctBy(x => x.FacilityId).DistinctBy(x => x.Indicator).Count();
+                gsm_fac_ind_comp.Add(new
+                {
+                    ReportingPeriod = item.Key,
+                    percent = Math.Round(100 * 1.0 * no_of_facilities / 20, 0)
+                });
+            }
+
+
+            ////last report period
+            //string reportPeriod = new MPMDAO().GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
+            //List<dynamic> gsm_timeliness = new List<dynamic>();
+            //foreach (var item in report.Where(x => x.GSM_2).GroupBy(x => x.ReportingPeriod))
+            //{
+            //    //14 indicators
+            //    int no_of_facilities = item.DistinctBy(x => x.FacilityId).DistinctBy(x => x.Indicator).Count();
+            //    gsm_timeliness.Add(new
+            //    {
+            //        ReportingPeriod = item.Key,
+            //        percent = Math.Round(100 * 1.0 * no_of_facilities / 155, 0)
+            //    });
+            //}
+
+            return Json(new
+            {
+                gsm,
+                ims,
+                ims_fac_ind_comp,
+                gsm_fac_ind_comp
+            });
+        }
+
+
+        [HttpPost]
+        public string DownloadPreviousReport(int Id)//(string IPState)
+        {
+            var dao = new MPMDAO();
+            var previously = dao.Retrieve(Id);
+            if (previously != null)
+            {
+                return previously.FilePath.Split(new string[] { "\\Report\\" }, StringSplitOptions.RemoveEmptyEntries)[1];
+            }
+            else
+                return "";
+            //string IP = IPState.Split('|')[1];
+            //string State = IPState.Split('|')[0];
+            //var ip = new OrganizationDAO().SearchByShortName(IP);
+            //string period = "";// "Jul-18";
+            //var dao = new MPMDAO();
+            //var previously = dao.GenerateIPUploadReports(ip.Id, period, State, MPM.DAL.DTO.ReportLevel.State);
+
+            //if (previously != null && previously.FirstOrDefault() != null)
+            //{
+            //    return previously.FirstOrDefault().FilePath.Split(new string[] { "\\Report\\" }, StringSplitOptions.RemoveEmptyEntries)[1];
+            //}
+            //return "";
         }
 
         public JsonResult ReportDetails(string reportPeriod)
@@ -126,11 +289,13 @@ namespace ShieldPortal.Controllers
                     HTS_PITC = dr.Field<string>("HTS_PITC"),
                     LinkageToTx = dr.Field<string>("Linkage_To_Treatment"),
                     PMTCT_Viral_Load = dr.Field<string>("PMTCT_Viral_Load"),
-                    TB_hiv_tx = dr.Field<string>("TB_HIV_Treatment"),
+                    TB_Screening = dr.Field<string>("TB_Screening"),
                     TB_Presumptive = dr.Field<string>("TB_Presumptive"),
-                    TB_Presumptive_Diagnosed = dr.Field<string>("TB_Presumptive_Diagnosed"),
-                    TPT_Completed = dr.Field<string>("TPT_Completed"),
+                    TB_Bacteriology_Diagnosis = dr.Field<string>("TB_Bacteriology_Diagnosis"),
+                    TB_Diagnosed = dr.Field<string>("TB_Diagnosed"),
+                    TB_Treatment = dr.Field<string>("TB_Treatment"),
                     TPT_Eligible = dr.Field<string>("TPT_Eligible"),
+                    TB_ART = dr.Field<string>("TB_ART"),
                 });
             }
             //ViewBag.CompletionReport = reportView;
@@ -187,6 +352,7 @@ namespace ShieldPortal.Controllers
             }
         }
 
+        //download for IMS monthly template
         public ActionResult Download()
         {
             var facilities = new HealthFacilityDAO().RetrievebyIP(loggedinProfile.Organization.Id);
@@ -197,6 +363,19 @@ namespace ShieldPortal.Controllers
             return View(states);
         }
 
+        //download for GSM bi-weekly template
+        public async Task<ActionResult> DownloadTemplateForGSM()
+        {
+            var file = new TemplateProcessor().PopulateGSMTemplate(loggedinProfile);
+            using (var stream = System.IO.File.Open(file.FullName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            {
+                byte[] fileBytes = new byte[stream.Length];
+                await stream.ReadAsync(fileBytes, 0, fileBytes.Length);
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, file.Name);
+            }
+        }
+
+        //download for IMS monthly template
         [HttpPost]
         public JsonResult DownloadTemplate(string state)
         {
@@ -275,7 +454,7 @@ namespace ShieldPortal.Controllers
             // return View();
         }
 
-        
+
         [HttpPost]
         public dynamic RetriveData(MPMDataSearchModel searchModel = null)
         {
@@ -1886,7 +2065,7 @@ namespace ShieldPortal.Controllers
             return new { state_data, lga_drill_down_data };
         }
 
-        
+
 
         public string ConvertDataTabletoString(DataTable dt)
         {
@@ -1905,97 +2084,31 @@ namespace ShieldPortal.Controllers
         }
 
 
-        public Dictionary<string, int> IndexPeriods
+        public Dictionary<string, int> IndexPeriods { get; set; }
+
+        public Dictionary<string, int> GSMIndexPeriods
         {
             get
             {
                 return new Dictionary<string, int>
                 {
-                    { "Jan",1 },
-                    { "Feb",2 },
-                    { "Mar",3 },
-                    { "Apr",4 },
-                    { "May",5 },
-                    { "Jun",6 },
-                    { "Jul",7 },
-                    { "Aug",8 },
-                    { "Sep",9 },
-                    { "Oct",10 },
-                    { "Nov",11},
-                    { "Dec",12 }
+                    { "28-Dec-2018",1 },
+                    { "14-Jan-2019",2 },
+                    { "28-Jan-2019",3 },
+                    { "14-Feb-2019",4 },
+                    { "28-Feb-2019",5 },
+                    { "14-Mar-2019",6 },
+                    { "28-Mar-2019",7 },
+                    { "14-Apr-2019",8 },
+                    { "28-Apr-2019",9 },
+                    { "14-May-2019",10 },
+                    { "28-May-2019",11},
+                    { "14-Jun-2019",12 },
+                    { "28-Jun-2019",13 }
                 };
             }
         }
 
-        /**
-         *
-         * public dynamic DrillDownBubbleData(DataTable dt)
-        {
-            List<HTSIndexViewDataModel> lst = Utilities.ConvertToList<HTSIndexViewDataModel>(dt);
-
-            List<dynamic> state_data = new List<dynamic>();
-            List<dynamic> lga_drill_down_data = new List<dynamic>();
-
-            foreach (var gp in lst.GroupBy(x => x.State))
-            {
-                var total_tested = gp.Sum(p => p.POS) + gp.Sum(p => p.NEG);
-                double yield = 0;
-                if (total_tested > 0)
-                    yield = Math.Round((100 * 1.0 * gp.Sum(s => s.POS) / total_tested), 0);
-
-                state_data.Add(new
-                {
-                    name = gp.Key,
-                    x = gp.Sum(s => s.POS),
-                    z = total_tested,
-                    y = yield,
-                    drilldown = gp.Key
-                });
-                List<dynamic> lga_data = new List<dynamic>();
-
-
-                foreach (var lgp in gp.ToList().GroupBy(x => x.LGA))
-                {
-                    var total_tested_lga = lgp.Sum(p => p.POS) + lgp.Sum(p => p.NEG);
-                    double yield_lga = 0;
-                    if (total_tested_lga > 0)
-                        yield_lga = Math.Round((100 * 1.0 * lgp.Sum(s => s.POS) / total_tested_lga), 0);
-
-                    lga_data.Add(new
-                    {
-                        name = lgp.Key,
-                        drilldown = lgp.Key,
-                        x = lgp.Sum(s => s.POS),
-                        z = total_tested_lga,
-                        y = yield_lga,
-                    });
-
-                    List<dynamic> facility_data = new List<dynamic>();
-
-                    foreach (var fty in lgp.ToList().GroupBy(x => x.Facility))
-                    {
-                        var total_tested_facility = fty.Sum(p => p.POS) + fty.Sum(p => p.NEG);
-                        double yield_facility = 0;
-                        if (total_tested_facility > 0)
-                            yield_facility = Math.Round((100 * 1.0 * fty.Sum(s => s.POS) / total_tested_facility), 0);
-
-                        facility_data.Add(new
-                        {
-                            name = fty.Key,
-                            x = fty.Sum(s => s.POS),
-                            z = total_tested_facility,
-                            y = yield_facility,
-                        });
-                    }
-                    lga_drill_down_data.Add(new { id = lgp.Key, data = facility_data });
-                }
-                lga_drill_down_data.Add(new { name = gp.Key, id = gp.Key, data = lga_data });
-            }
-
-            return new { state_data, lga_drill_down_data };
-        }
-         * 
-         */
     }
 
 

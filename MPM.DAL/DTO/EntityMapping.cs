@@ -16,6 +16,7 @@ namespace MPM.DAL.DTO
             Map(x => x.ReportLevel);
             Map(x => x.ReportLevelValue);
             Map(x => x.FilePath).Length(int.MaxValue);
+            Map(x => x.ReportType);
             References(x => x.IP).Column("IP");
             References(x => x.UploadedBy).Column("UserId");
             HasMany(x => x.HTS_Index).Inverse()
@@ -26,10 +27,17 @@ namespace MPM.DAL.DTO
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.PITC).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
+            HasMany(x => x.HTS_TST).Inverse()
+              .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
+
             HasMany(x => x.PMTCT).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             HasMany(x => x.Pmtct_Viral_Load).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
+
+            HasMany(x => x.Viral_Load).Inverse()
+                .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
+
             HasMany(x => x.PMTCT_EID).Inverse()
                 .KeyColumn("MetaDataId").Cascade.None().ExtraLazyLoad();
             //
@@ -100,6 +108,23 @@ namespace MPM.DAL.DTO
         }
     }
 
+    public class HTS_TSTMap : ClassMap<HTS_TST>
+    {
+        public HTS_TSTMap()
+        {
+            Table("mpm_HTS_tst");
+
+            Id(x => x.Id);
+            References(x => x.Site).Column("SiteId");
+            Map(x => x.AgeGroup);
+            Map(x => x.Sex);
+            Map(x => x.POS);
+            Map(x => x.NEG);
+            Map(x => x.SDP);
+            References(x => x.MetaData).Column("MetaDataId");
+        }
+    }
+
 
     public class ARTMap : ClassMap<ART>
     {
@@ -113,6 +138,7 @@ namespace MPM.DAL.DTO
             Map(x => x.Denominator);
             Map(x => x.Numerator);
             Map(x => x.IndicatorType);
+            Map(x => x.VLA_type);
             References(x => x.MetaData).Column("MetaDataId");
         }
     }
@@ -128,6 +154,23 @@ namespace MPM.DAL.DTO
             References(x => x.Site).Column("SiteId");
             Map(x => x.AgeGroup);
             Map(x => x.Category); 
+            Map(x => x._less_than_1000);
+            Map(x => x._greater_than_1000);
+            References(x => x.MetaData).Column("MetaDataId");
+        }
+    }
+
+    public class Viral_LoadMap : ClassMap<Viral_Load>
+    {
+        public Viral_LoadMap()
+        {
+            Table("mpm_Viral_Load");
+
+            Id(x => x.Id);
+            References(x => x.Site).Column("SiteId");
+            Map(x => x.AgeGroup);
+            Map(x => x.Sex);
+            Map(x => x.Category);
             Map(x => x._less_than_1000);
             Map(x => x._greater_than_1000);
             References(x => x.MetaData).Column("MetaDataId");

@@ -957,6 +957,7 @@
     <Content Include="plugins\wizard\js\jquery.bootstrap.wizard.min.js" />
     <Content Include="plugins\wizard\js\wizard-script.js" />
     <Content Include="plugins\wizard\MIT-LICENSE.txt" />
+    <Content Include="script.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dashboard.js" />
@@ -1101,6 +1102,7 @@
     <Content Include="Scripts\Highcharts\code\modules\boost.src.js" />
     <Content Include="Scripts\Highcharts\code\modules\broken-axis.js" />
     <Content Include="Scripts\Highcharts\code\modules\broken-axis.src.js" />
+    <Content Include="Scripts\Highcharts\code\modules\bullet.js" />
     <Content Include="Scripts\Highcharts\code\modules\data.js" />
     <Content Include="Scripts\Highcharts\code\modules\data.src.js" />
     <Content Include="Scripts\Highcharts\code\modules\drilldown.js" />
@@ -1510,6 +1512,8 @@
     <Content Include="Views\DQAFY2018Q4\UploadPivotTable.cshtml" />
     <Content Include="Views\Shared\dqiFY18Q4Layout.cshtml" />
     <Content Include="Views\DQAFY2018Q4\AllYearResult.cshtml" />
+    <Content Include="Views\MPM\CompletenessReport.cshtml" />
+    <Content Include="Views\MPM\GSMUploadTracker.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

@@ -95,6 +95,7 @@ namespace ShieldPortal.Services
             if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
             {
                 profile = dao.GetProfileByUsername(user.Identity.Name);
+                HttpContext.Current.Session[".:LoggedInProfile:."] = profile;
             }
             if (profile == null)
             {
@@ -109,29 +110,40 @@ namespace ShieldPortal.Services
         {
             get
             {
-                Profile profile = null;
-                if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
-                {
-                    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
-                }
-                else
-                {
-                    ProfileDAO dao = new ProfileDAO();
-                    var user = HttpContext.Current.User;
-                    if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
-                    {
-                        profile = dao.GetProfileByUsername(user.Identity.Name);
-                    }
-                }
+                var profile = new Utils().GetloggedInProfile();
                 if (profile != null && profile.RoleName == "ip")
                 {
                     return string.Format("{0} - Implementing partner ({1})", profile.FullName, profile.Organization.ShortName);
                 }
-                else
+                else if (profile != null)
                 {
                     return string.Format("{0}", profile.FullName);
                 }
-                 
+                return "";
+
+                //Profile profile = null;
+                //if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
+                //{
+                //    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
+                //}
+                //else
+                //{
+                //    ProfileDAO dao = new ProfileDAO();
+                //    var user = HttpContext.Current.User;
+                //    if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
+                //    {
+                //        profile = dao.GetProfileByUsername(user.Identity.Name);
+                //    }
+                //}
+                //if (profile != null && profile.RoleName == "ip")
+                //{
+                //    return string.Format("{0} - Implementing partner ({1})", profile.FullName, profile.Organization.ShortName);
+                //}
+                //else
+                //{
+                //    return string.Format("{0}", profile.FullName);
+                //}
+
             }
         }
 
@@ -139,49 +151,62 @@ namespace ShieldPortal.Services
         {
             get
             {
-                Profile profile = null;
-                if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
+                var profile = new Utils().GetloggedInProfile();
+                if (profile != null)
                 {
-                    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
-                    return profile.FullName;
-                }
-
-                ProfileDAO dao = new ProfileDAO(); 
-                var user = HttpContext.Current.User;
-                if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
-                {
-                    profile = dao.GetProfileByUsername(user.Identity.Name);
-                    return profile.FullName;
+                    return string.Format("{0}", profile.FullName);
                 }
                 else
                 {
-                    //TODO: redirect to login
-                    return "";
-                }               
+                    return null;
+                }
+
+                //Profile profile = null;
+                //if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
+                //{
+                //    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
+                //    return profile.FullName;
+                //}
+
+                //ProfileDAO dao = new ProfileDAO();
+                //var user = HttpContext.Current.User;
+                //if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
+                //{
+                //    profile = dao.GetProfileByUsername(user.Identity.Name);
+                //    return profile.FullName;
+                //}
+                //else
+                //{
+                //    //TODO: redirect to login
+                //    return "";
+                //}
             }
         }
+
         public static Guid LoggedinProfileID
         {
             get
             {
-                Profile profile = null;
-                if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
-                {
-                    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
-                }
+                var profile = new Utils().GetloggedInProfile();
+                return profile !=null ? profile.Id : Guid.Empty;
+                //Profile profile = null;
+                //if (HttpContext.Current.Session[".:LoggedInProfile:."] != null)
+                //{
+                //    profile = HttpContext.Current.Session[".:LoggedInProfile:."] as Profile;
+                //}
 
-                ProfileDAO dao = new ProfileDAO();
-                var user = HttpContext.Current.User;
-                if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
-                {
-                    profile = dao.GetProfileByUsername(user.Identity.Name);
-                    HttpContext.Current.Session[".:LoggedInProfile:."] = profile;
-                    return profile.Id;
-                }
-                else
-                {
-                    return Guid.Empty;
-                }
+                //ProfileDAO dao = new ProfileDAO();
+                //var user = HttpContext.Current.User;
+                //if (user != null && user.Identity != null && !string.IsNullOrEmpty(user.Identity.Name))
+                //{
+                //    profile = dao.GetProfileByUsername(user.Identity.Name);
+                //    HttpContext.Current.Session[".:LoggedInProfile:."] = profile;
+                //    return profile.Id;
+                //}
+                //else
+                //{
+                //    return Guid.Empty;
+                //}
             }
         }
     }

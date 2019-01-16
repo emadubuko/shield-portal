@@ -24,5 +24,6 @@ namespace CommonUtil.Entities
 
         public virtual bool GranularSite { get; set; }
 
+        public virtual bool GSM_2 { get; set; }
     }
 }

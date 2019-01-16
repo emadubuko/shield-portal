@@ -18,7 +18,7 @@ namespace MPM.DAL
 
     public class UploadViewModel
     {
-        public Dictionary<string, List<bool>> IPReports { get; set; }
+        public Dictionary<string, List<string>> IPReports { get; set; }
 
         //public string SelectedYear { get; set; }
 

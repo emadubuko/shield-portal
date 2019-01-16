@@ -22,6 +22,7 @@ using ShieldPortal.ViewModel;
 
 namespace ShieldPortal.Controllers.DQACntrollers
 {
+    //[SessionManagement]
     public class DQAFY2018Q4Controller : Controller
     {
         public ActionResult Index()

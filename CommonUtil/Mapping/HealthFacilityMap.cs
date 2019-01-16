@@ -18,6 +18,7 @@ namespace CommonUtil.Mapping
             References(x => x.Previous_IP).Column("Previous_IP");
             Map(x => x.LinkCode);
             Map(x => x.GranularSite);
+            Map(x => x.GSM_2);
         }
     }
 }

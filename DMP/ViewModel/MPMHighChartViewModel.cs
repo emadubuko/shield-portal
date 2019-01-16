@@ -17,12 +17,12 @@ namespace ShieldPortal.ViewModel
     }
 
     public class HTSIndexViewDataModel : BaseModel
-    {        
+    {
         public string Age_Grouping { get; set; }
         public int POS { get; set; }
         public int NEG { get; set; }
         public decimal Yield { get; set; }
-      
+
         public string TestingType { get; set; }
     }
 
@@ -61,7 +61,7 @@ namespace ShieldPortal.ViewModel
     public class PMTCT_Cascade_ViewModel : BaseModel
     {
         public int NewClient { get; set; }
-        public int NewlyTested { get; set; }        
+        public int NewlyTested { get; set; }
         public int NewHIVPos { get; set; }
         public int NewOnART { get; set; }
         public int KnownHIVPos { get; set; }
@@ -79,18 +79,31 @@ namespace ShieldPortal.ViewModel
         public int TB_Presumptive_Diagnosed { get; set; }
         public int TB_Bacteriology_Diagnosis { get; set; }
         public int TB_Diagnosed { get; set; }
-        
+
     }
 
     public class TB_Treatment_ViewModel : BaseModel
     {
         public int New_Cases { get; set; }
-        public int TX_TB { get; set; } 
+        public int TX_TB { get; set; }
     }
 
     public class TB_TPT_ViewModel : BaseModel
     {
         public int Started_on_TPT { get; set; }
         public int PLHIV_eligible_for_TPT { get; set; }
+    }
+
+    public class CompletenessReport
+    {
+        public string IP { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public string Facility { get; set; }
+        public int FacilityId { get; set; }
+        public string Indicator { get; set; }
+        public string ReportingPeriod { get; set; }
+        public bool GranularSite { get; set; }
+        public bool GSM_2 { get; set; }
     }
 }

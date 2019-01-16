@@ -2,6 +2,7 @@
 using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Cfg;
+using NHibernate.Context;
 using NHibernate.Tool.hbm2ddl;
 using System;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace CommonUtil.DBSessionManager
     public class NhibernateSessionManager
     {
         private const string SESSION_KEY = "::_SESSION_KEY_::";
-        private ISessionFactory sessionFactory;
+        public ISessionFactory sessionFactory;
 
         public NhibernateSessionManager()
         {
@@ -28,9 +29,10 @@ namespace CommonUtil.DBSessionManager
             }
         }
 
+        
         public void RollbackSession()
         {
-            ISession contextSession = this.ContextSession;
+            ISession contextSession = ContextSession;
             if (contextSession != null)
             {
                 if (contextSession.Transaction != null && contextSession.Transaction.IsActive)
@@ -42,7 +44,12 @@ namespace CommonUtil.DBSessionManager
 
         public void CloseSession()
         {
-            ISession contextSession = this.ContextSession;
+            ISession currentSession = CurrentSessionContext.Unbind(sessionFactory);
+
+            currentSession.Close();
+            currentSession.Dispose();
+
+            ISession contextSession = ContextSession;
             if ((contextSession != null) && contextSession.IsOpen)
             {
                 try
@@ -65,21 +72,35 @@ namespace CommonUtil.DBSessionManager
                     contextSession.Close();
                 }
             }
-            this.ContextSession = null;
+            ContextSession = null;
         }
 
 
         public ISession GetSession()
         {
-            ISession contextSession = ContextSession;
+            if(sessionFactory == null)
+            {
+                InitSessionFactory();
+            }
+            ISession contextSession = null;
+            if (CurrentSessionContext.HasBind(sessionFactory))
+            {
+                contextSession = sessionFactory.GetCurrentSession();
+            }
+            else //this is just for completeness sake
+            {
+                contextSession = ContextSession;
+            }
             if (contextSession == null || contextSession.IsOpen == false)
             {
-                contextSession = this.sessionFactory.OpenSession();
+                contextSession = sessionFactory.OpenSession();
+                CurrentSessionContext.Bind(contextSession);
                 if (contextSession.Transaction == null || !contextSession.Transaction.IsActive)
                 {
                     contextSession.BeginTransaction();
                 }
                 ContextSession = contextSession;
+                
             }
 
             return contextSession;
@@ -90,7 +111,7 @@ namespace CommonUtil.DBSessionManager
             Configuration cfg = new Configuration().Configure();
             FluentConfiguration fluentCfg = Fluently.Configure(cfg);
 
-            NHibernate.Cfg.ConfigurationSchema.HibernateConfiguration hc 
+            NHibernate.Cfg.ConfigurationSchema.HibernateConfiguration hc
                 = System.Configuration.ConfigurationManager.GetSection(NHibernate.Cfg.ConfigurationSchema.CfgXmlHelper.CfgSectionName) as NHibernate.Cfg.ConfigurationSchema.HibernateConfiguration;
             if (hc == null) throw new HibernateConfigException("Cannot process Hibernate Section in config file");
             if (hc.SessionFactory != null)
@@ -99,9 +120,11 @@ namespace CommonUtil.DBSessionManager
                 {
                     fluentCfg.Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load(mappingAssemblyCfg.Assembly)));
                 }
-            } 
+            }
 
-            Configuration conf = fluentCfg.BuildConfiguration(); 
+            //fluentCfg.CurrentSessionContext<CallSessionContext>();
+
+            Configuration conf = fluentCfg.BuildConfiguration();
             new SchemaUpdate(conf).Execute(false, true);
             sessionFactory = conf.BuildSessionFactory();
         }
@@ -117,7 +140,7 @@ namespace CommonUtil.DBSessionManager
         //    {
         //        connectionString = ConfigurationManager.ConnectionStrings["DMPLocalDataStore"].ConnectionString;
         //    }
-            
+
         //    sessionFactory = Fluently.Configure()
         //   .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString))
         //   .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DMPDocument>())
@@ -126,16 +149,16 @@ namespace CommonUtil.DBSessionManager
         //       .BuildSessionFactory();
         //}
 
-        private bool IsInWebContext()
+        private static bool IsInWebContext()
         {
             return (HttpContext.Current != null);
         }
 
-        private ISession ContextSession
+        private static ISession ContextSession
         {
             get
             {
-                if (this.IsInWebContext())
+                if (IsInWebContext())
                 {
                     return (ISession)HttpContext.Current.Items["::_SESSION_KEY_::"];
                 }
@@ -143,7 +166,7 @@ namespace CommonUtil.DBSessionManager
             }
             set
             {
-                if (this.IsInWebContext())
+                if (IsInWebContext())
                 {
                     HttpContext.Current.Items["::_SESSION_KEY_::"] = value;
                 }
@@ -169,4 +192,33 @@ namespace CommonUtil.DBSessionManager
 
 
     }
+
+    //public class NhSessionManagementAttribute : ActionFilterAttribute
+    //{
+    //    public NhSessionManagementAttribute()
+    //    {
+    //        SessionFactory = WebApiApplication.SessionFactory;
+    //    }
+
+    //    private ISessionFactory SessionFactory { get; set; }
+
+    //    public override void OnActionExecuting(HttpActionContext actionContext)
+    //    {
+    //        var session = SessionFactory.OpenSession();
+    //        CurrentSessionContext.Bind(session);
+    //        session.BeginTransaction();
+    //    }
+
+    //    public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
+    //    {
+    //        var session = SessionFactory.GetCurrentSession();
+    //        var transaction = session.Transaction;
+    //        if (transaction != null && transaction.IsActive)
+    //        {
+    //            transaction.Commit();
+    //        }
+    //        session = CurrentSessionContext.Unbind(SessionFactory);
+    //        session.Close();
+    //    }
+    //}
 }

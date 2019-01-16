@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Engine;
+using NHibernate.Linq;
 using NHibernate.Persister.Entity;
 using System;
 using System.Collections;
@@ -89,6 +90,20 @@ namespace CommonUtil.DBSessionManager
             return result;
         }
 
+        public IQueryable<T> RetrieveAllLazily()
+        {
+            IQueryable<T> results = null;
+            ISession session = BuildSession();
+            try
+            {
+                results = session.Query<T>();
+            }
+            catch
+            {
+                throw;
+            }
+            return results;
+        }
 
         public IList<T> RetrieveAll()
         {

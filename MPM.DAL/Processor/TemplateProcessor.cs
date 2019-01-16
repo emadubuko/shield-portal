@@ -24,31 +24,87 @@ namespace MPM.DAL.Processor
             using (ExcelPackage package = new ExcelPackage(file))
             {
                 var hts_index_sheet = package.Workbook.Worksheets["HTS_Index"];
-                var linkage_sheet = package.Workbook.Worksheets["LInkage to Treatment"];
+                //var linkage_sheet = package.Workbook.Worksheets["LInkage to Treatment"];
                 var pitc_sheet = package.Workbook.Worksheets["HTS_Other PITC"];
+                var hts_tst_sheet = package.Workbook.Worksheets["HTS_TST"];
+                var viral_load_sheet = package.Workbook.Worksheets["Viral Load"];
                 var pmtct_sheet = package.Workbook.Worksheets["PMTCT"];
-                var art_sheet = package.Workbook.Worksheets["ART"];
+                //var art_sheet = package.Workbook.Worksheets["ART"];
                 var pmtct_viral_load_sheet = package.Workbook.Worksheets["PMTCT_Viral Load"];
                 var tb_hiv_sheet = package.Workbook.Worksheets["TB_HIV Cascade"];
+                
                 var mainWorksheet = package.Workbook.Worksheets["Home"];
 
-                var period = ExcelHelper.ReadCellText(mainWorksheet, 17, 12);
-                if (string.IsNullOrEmpty(period) || string.IsNullOrEmpty(period.Trim()))
-                {
-                    throw new ApplicationException("Report period not specified");
-                }
-                string ReportLevelValue = mainWorksheet.Cells["H17"].Value.ToString();
-                string ReportLevel = ExcelHelper.ReadCellText(mainWorksheet, 17, 7);
-
-                var ip = mainWorksheet.Cells["E17"].Value.ToString();                  
-                if(string.IsNullOrEmpty(ip) || loggedInProfile.Organization.ShortName.ToUpper() != ip.ToUpper())
+                string period = "";
+                                
+                var ip = mainWorksheet.Cells["E17"].Value.ToString();
+                if (string.IsNullOrEmpty(ip) || loggedInProfile.Organization.ShortName.ToUpper() != ip.ToUpper())
                 {
                     throw new ApplicationException("Wrong IP selected");
                 }
-                
+
+                var documentType = mainWorksheet.Cells["A1"].Value;
+                if (documentType == null || (!documentType.ToString().Contains("GSM") && !documentType.ToString().Contains("IMS")))
+                {
+                    throw new ApplicationException("Wrong template uploaded. Please re-download the template");
+                }
+                string ReportLevelValue = "";
+                if (documentType.ToString().Contains("GSM"))
+                {
+                    ReportLevelValue = "IP";
+
+                    //var gsm_period = ExcelHelper.ReadCellText(mainWorksheet, 17, 10);
+                    var gsm_period = mainWorksheet.Cells["J17"].Value;
+                    if (gsm_period == null || string.IsNullOrEmpty(gsm_period.ToString().Trim()))
+                    {
+                        throw new ApplicationException("Report period not specified");
+                    }
+                    else
+                    {
+                        DateTime date_period;
+                        if(DateTime.TryParse(gsm_period.ToString(), out date_period))
+                        {
+                            period = date_period.ToString("dd-MMM-yyyy");
+                        }
+                        else
+                        {
+                            throw new ApplicationException("invalid report period not specified");
+                        }
+                    }
+                }
+                //then assume ims
+                else if (mainWorksheet.Cells["H17"].Value != null)
+                {
+                    ReportLevelValue = mainWorksheet.Cells["H17"].Value.ToString();
+
+                    var ims_period = ExcelHelper.ReadCellText(mainWorksheet, 17, 12);
+                    if (string.IsNullOrEmpty(ims_period) || string.IsNullOrEmpty(ims_period.Trim()))
+                    {
+                        throw new ApplicationException("Report period not specified");
+                    }
+                    else
+                    {
+                        period = ims_period;
+                    }
+                }
+                else
+                {
+                    throw new ApplicationException("No state selected.");
+                }
+
+
                 var dao = new MPMDAO();
                 var mt = new MetaData();
-                var previously = dao.GenerateIPUploadReports(loggedInProfile.Organization.Id, period, ReportLevelValue, DTO.ReportLevel.State);
+                IList<IPUploadReport> previously = null;
+
+                if (documentType.ToString().Contains("GSM"))
+                {
+                    previously = dao.GenerateIPUploadReports(loggedInProfile.Organization.Id, period, ReportLevelValue, DTO.ReportLevel.IP);
+                }
+                else
+                {
+                    previously = dao.GenerateIPUploadReports(loggedInProfile.Organization.Id, period, ReportLevelValue, DTO.ReportLevel.State);
+                }
 
                 if (previously == null || previously.Count == 0)
                 {
@@ -58,42 +114,43 @@ namespace MPM.DAL.Processor
                         IP = loggedInProfile.Organization,
                         ReportingPeriod = period,
                         UploadedBy = loggedInProfile,
-                        ReportLevel = DTO.ReportLevel.State,
+                        ReportLevel = documentType.ToString().Contains("GSM") ? DTO.ReportLevel.IP : DTO.ReportLevel.State,
                         ReportLevelValue = ReportLevelValue,
                         FilePath = savedFilePath,
+                        ReportType = documentType.ToString().Contains("GSM") ? ReportType.GSM : ReportType.IMS,
                     };
                 }
                 else
                 {
                     throw new ApplicationException("Report already exist");
-                    //mt = dao.Retrieve(previously.FirstOrDefault().Id);
-                    //mt.DateUploaded = DateTime.Now;
-                    //mt.UploadedBy = loggedInProfile;
-                    //mt.ReportLevel = DTO.ReportLevel.State;
-                    //mt.ReportLevelValue = ReportLevelValue;
                 }
-
-
+                
                 try
                 {
                     List<HTS_Index> hTS_Index_list = RetrieveHTS_data(hts_index_sheet, mt, sites);
-                    List<LinkageToTreatment> linkage_list = RetrieveLinkageToTx_data(linkage_sheet, mt, sites);
-                    List<ART> art_list = RetrieveART_data(art_sheet, mt, sites);
                     List<PMTCT_Viral_Load> pmtct_viral_load_list = RetrievePMTCTViralLoad_data(pmtct_viral_load_sheet, mt, sites);
                     List<HTS_Other_PITC> pitc_list = RetrievePITC_data(pitc_sheet, mt, sites);
-                     
                     RetrievePMTCT_data(pmtct_sheet, sites, ref mt);// out eid_list);
-                     
                     RetrieveTB_HIV_data(tb_hiv_sheet, sites, ref mt); // out tb_eligible_list, out tB_Screened, out tB_presumptive, out tb_bact_diagnosis,out tb_diagnosed, out tB_completed);
 
-                    mt.HTS_Index = hTS_Index_list;
-                    mt.LinkageToTreatment = linkage_list;
-                    mt.ART = art_list;
-                    mt.PITC = pitc_list; 
-                    mt.Pmtct_Viral_Load = pmtct_viral_load_list; 
-                     
-                    dao.BulkInsertWithStatelessSession(mt);
+
+                    List<HTS_TST> hts_tst_data = Retrieve_HTS_TST_data(hts_tst_sheet, mt, sites);                  
+                    List<ART> art_viral_Load_List = RetrieveViralLoad_data(viral_load_sheet, mt, sites);
+
+                    //List<LinkageToTreatment> linkage_list = RetrieveLinkageToTx_data(linkage_sheet, mt, sites);
+                   // List<ART> art_list = RetrieveART_data(art_sheet, mt, sites);
                     
+
+                    mt.HTS_Index = hTS_Index_list;
+                    mt.PITC = pitc_list;
+                    mt.Pmtct_Viral_Load = pmtct_viral_load_list;
+                    mt.ART = art_viral_Load_List;
+                    mt.HTS_TST = hts_tst_data;
+
+                    //mt.LinkageToTreatment = linkage_list;
+                    //mt.ART = art_list;
+                    
+                    dao.BulkInsertWithStatelessSession(mt);
                 }
                 catch (Exception ex)
                 {
@@ -422,7 +479,7 @@ namespace MPM.DAL.Processor
 
                         var femal_new_Pos = tb_sheet.Cells[row, column + 1].Value;
                         var male_new_Pos = tb_sheet.Cells[row + 1, column + 1].Value;
-                        
+
                         if (female_known_Pos != null)
                         {
                             mt.TB_New_Relapsed_Known_Pos.Add(new TB_New_Relapsed_Known_Pos
@@ -486,7 +543,8 @@ namespace MPM.DAL.Processor
                     }
                 }
                 //Loop: row += 3;
-                row++;
+                //row++;
+                row += 3;
             }
         }
 
@@ -631,6 +689,104 @@ namespace MPM.DAL.Processor
             return _list;
         }
         */
+
+        private List<HTS_TST> Retrieve_HTS_TST_data(ExcelWorksheet hts_tst_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
+        {
+            List<HTS_TST> _list = new List<HTS_TST>();
+            int row = 5;
+            while (true)
+            {
+                var facCell = hts_tst_sheet.Cells["C" + row];
+                if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
+                {
+                    break;
+                }
+                else
+                {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; //throw new ApplicationException("Invalid facility uploaded");
+
+
+                    int counter = 8;
+                    for (int column = 8; column <=129;)
+                    {
+                        string _sdp = Convert.ToString(hts_tst_sheet.Cells[2, counter].Value);
+                        if (string.IsNullOrEmpty(_sdp))
+                            break;
+
+                        var pos = Convert.ToString(hts_tst_sheet.Cells[row, column].Value);
+                        var neg = Convert.ToString(hts_tst_sheet.Cells[row, column + 1].Value);
+
+                        if (!string.IsNullOrEmpty(pos) && !string.IsNullOrEmpty(neg)) //ignore if both values are empty
+                        {
+                            //female
+                            _list.Add(new HTS_TST
+                            {
+                                Site = site,
+                                AgeGroup = hts_tst_sheet.Cells[3, column].Value.ToString(),
+                                Sex = Sex.F,
+                                SDP = _sdp,
+                                POS = !string.IsNullOrEmpty(pos) ? Convert.ToInt32(pos) : (int?)null,
+                                NEG = !string.IsNullOrEmpty(neg) ? Convert.ToInt32(neg) : (int?)null,
+                                MetaData = mt
+                            });
+                        }
+                        //male
+                        pos = Convert.ToString(hts_tst_sheet.Cells[row + 1, column].Value);
+                        neg = Convert.ToString(hts_tst_sheet.Cells[row + 1, column + 1].Value);
+
+                        if (!string.IsNullOrEmpty(pos) && !string.IsNullOrEmpty(neg)) //ignore if both values are empty
+                        {
+                            _list.Add(new HTS_TST
+                            {
+                                Site = site,
+                                AgeGroup = hts_tst_sheet.Cells[3, column].Value.ToString(),
+                                Sex = Sex.M,
+                                SDP = _sdp,
+                                POS = !string.IsNullOrEmpty(pos) ? Convert.ToInt32(pos) : (int?)null,
+                                NEG = !string.IsNullOrEmpty(neg) ? Convert.ToInt32(neg) : (int?)null,
+                                MetaData = mt
+                            });
+                        }
+
+
+                        column += 2;
+                        if (column == 27)
+                        {
+                            counter = 28;
+                        }
+                        else if(column == 47)
+                        {
+                            counter = 48;
+                        }
+                        else if(column == 49)
+                        {
+                            counter = 50;
+                        }
+                        else if(column == 51)
+                        {
+                            counter = 52;
+                        }
+                        else if(column == 71)
+                        {
+                            counter = 72;
+                        }
+                        else if(column == 91)
+                        {
+                            counter = 92;
+                        }
+                        else if(column == 111)
+                        {
+                            counter = 112;
+                        }
+                    }
+                }
+                Loop: row += 3;
+            }
+            return _list;
+        }
 
         private List<HTS_Other_PITC> RetrievePITC_data(ExcelWorksheet pitc_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
@@ -779,6 +935,219 @@ namespace MPM.DAL.Processor
             return art_list;
         }
 
+        private List<ART> RetrieveViralLoad_data(ExcelWorksheet art_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
+        {
+            List<ART> art_list = new List<ART>();
+            int row = 5;
+            while (true)
+            {
+                var facCell = art_sheet.Cells["C" + row];
+                if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
+                {
+                    break;
+                }
+                else
+                {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; ; // throw new ApplicationException("Invalid facility uploaded");
+
+
+                    for (int column = 5; column < 73;)
+                    {
+                        // ART_Indicator_Type indicatorType = column < 36 ? ART_Indicator_Type.Tx_RET : ART_Indicator_Type.Tx_VLA;
+                        string ViralLoadType = column < 36 ? "VLA (new patients)" : "VLA (returning patients)";
+
+                        var f_den = art_sheet.Cells[row, column].Value;
+                        var f_num = art_sheet.Cells[row, column + 1].Value;
+
+                        if (f_den != null || f_num != null) //ignore if both values are empty
+                        {
+                            //female
+                            art_list.Add(new ART
+                            {
+                                Site = site,
+                                AgeGroup = art_sheet.Cells[3, column].Value.ToString(),
+                                Sex = Sex.F,
+                                IndicatorType =  ART_Indicator_Type.Tx_VLA,
+                                Denominator = f_den.ToInt(),
+                                Numerator = f_num.ToInt(),
+                                MetaData = mt,
+                                VLA_type = ViralLoadType,
+                            });
+                        }
+
+
+                        //male
+                        var m_den = art_sheet.Cells[row + 1, column].Value;
+                        var m_num = art_sheet.Cells[row + 1, column + 1].Value;
+
+                        if (m_den != null || m_num != null) //ignore if both values are empty
+                        {
+                            art_list.Add(new ART
+                            {
+                                Site = site,
+                                AgeGroup = art_sheet.Cells[3, column].Value.ToString(),
+                                Sex = Sex.M,
+                                IndicatorType = ART_Indicator_Type.Tx_VLA,
+                                Denominator = m_den.ToInt(),
+                                Numerator = m_num.ToInt(),
+                                MetaData = mt,
+                                VLA_type = ViralLoadType,
+                            });
+                        }
+
+
+                        column += 3;
+                        if (column == 38)
+                        {
+                            column += 3;
+                        }
+                    }
+                }
+                Loop: row += 3;
+            }
+            return art_list;
+        }
+
+
+        #region viral_load_akpan_template
+        /*
+        List<Viral_Load> RetrieveViralLoad_data(ExcelWorksheet viral_load_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
+        {
+            List<Viral_Load> _list = new List<Viral_Load>();
+            int row = 4;
+            while (true)
+            {
+                var facCell = viral_load_sheet.Cells["A" + (row + 1)];
+                if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
+                {
+                    break;
+                }
+                else
+                {
+                    sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
+
+                    if (site == null)
+                        goto Loop; // throw new ApplicationException("Invalid facility uploaded");
+
+                    for (int column = 5; column <= 26;)
+                    {
+                        var less_than_1000 = viral_load_sheet.Cells[row, column].Value;
+                        var _greater_than_1000 = viral_load_sheet.Cells[row, column + 1].Value;
+
+                        if (less_than_1000 != null && _greater_than_1000 != null) //ignore if both values are empty
+                        {
+                            _list.Add(new Viral_Load
+                            {
+                                Site = site,
+                                AgeGroup = viral_load_sheet.Cells[2, column].Value.ToString(),
+                                Category = Viral_Laod_Category.Routine,
+                                Sex = Sex.F,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+
+                        less_than_1000 = viral_load_sheet.Cells[row + 1, column].Value;
+                        _greater_than_1000 = viral_load_sheet.Cells[row + 1, column + 1].Value;
+
+                        if (less_than_1000 != null && _greater_than_1000 != null) //ignore if both values are empty
+                        {
+                            _list.Add(new Viral_Load
+                            {
+                                Site = site,
+                                AgeGroup = viral_load_sheet.Cells[2, column].Value.ToString(),
+                                Category = Viral_Laod_Category.Targeted,
+                                Sex = Sex.F,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+
+                        less_than_1000 = viral_load_sheet.Cells[row + 1, column].Value;
+                        _greater_than_1000 = viral_load_sheet.Cells[row + 1, column + 1].Value;
+
+                        if (less_than_1000 != null && _greater_than_1000 != null)
+                        {
+                            _list.Add(new Viral_Load
+                            {
+                                Site = site,
+                                AgeGroup = viral_load_sheet.Cells[2, column].Value.ToString(),
+                                Category = Viral_Laod_Category.Not_Documented,
+                                Sex = Sex.F,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+                        //=========male=============
+
+                        less_than_1000 = viral_load_sheet.Cells[row, column].Value;
+                        _greater_than_1000 = viral_load_sheet.Cells[row, column + 1].Value;
+
+                        if (less_than_1000 != null && _greater_than_1000 != null) //ignore if both values are empty
+                        {
+                            _list.Add(new Viral_Load
+                            {
+                                Site = site,
+                                AgeGroup = viral_load_sheet.Cells[2, column].Value.ToString(),
+                                Category = Viral_Laod_Category.Routine,
+                                Sex = Sex.M,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+
+                        less_than_1000 = viral_load_sheet.Cells[row + 1, column].Value;
+                        _greater_than_1000 = viral_load_sheet.Cells[row + 1, column + 1].Value;
+
+                        if (less_than_1000 != null && _greater_than_1000 != null) //ignore if both values are empty
+                        {
+                            _list.Add(new Viral_Load
+                            {
+                                Site = site,
+                                AgeGroup = viral_load_sheet.Cells[2, column].Value.ToString(),
+                                Category = Viral_Laod_Category.Targeted,
+                                Sex = Sex.M,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+
+                        less_than_1000 = viral_load_sheet.Cells[row + 1, column].Value;
+                        _greater_than_1000 = viral_load_sheet.Cells[row + 1, column + 1].Value;
+
+                        if (less_than_1000 != null && _greater_than_1000 != null)
+                        {
+                            _list.Add(new Viral_Load
+                            {
+                                Site = site,
+                                AgeGroup = viral_load_sheet.Cells[2, column].Value.ToString(),
+                                Category = Viral_Laod_Category.Not_Documented,
+                                Sex = Sex.M,
+                                _less_than_1000 = less_than_1000.ToInt(),
+                                _greater_than_1000 = _greater_than_1000.ToInt(),
+                                MetaData = mt
+                            });
+                        }
+
+
+                        column += 2;
+                    }
+                }
+                Loop: row += 3;
+            }
+            return _list;
+        }
+        */
+        #endregion
+
         List<PMTCT_Viral_Load> RetrievePMTCTViralLoad_data(ExcelWorksheet pmtct_viral_load_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<PMTCT_Viral_Load> _list = new List<PMTCT_Viral_Load>();
@@ -842,10 +1211,14 @@ namespace MPM.DAL.Processor
         List<LinkageToTreatment> RetrieveLinkageToTx_data(ExcelWorksheet linkage_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<LinkageToTreatment> _list = new List<LinkageToTreatment>();
-            int row = 5;
+            int row = 4;
             while (true)
             {
                 var facCell = linkage_sheet.Cells["C" + row];
+                if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
+                {
+                    facCell = linkage_sheet.Cells["C" + (row + 1)];  //the facility code was erroneously placed on the 5 row.
+                }
                 if (facCell.Value == null || string.IsNullOrEmpty(facCell.Value.ToString()))
                 {
                     break;
@@ -879,7 +1252,7 @@ namespace MPM.DAL.Processor
 
                         //male
                         var m_POS = Convert.ToString(linkage_sheet.Cells[row + 1, column].Value); // !string.IsNullOrEmpty() ? Convert.ToInt32(hts_index_sheet.Cells[row + 1, column].Value) : (int?)null;
-                        //var m_TX_NEW = Convert.ToString(linkage_sheet.Cells[row + 1, column + 1].Value); // !string.IsNullOrEmpty() ? Convert.ToInt32(hts_index_sheet.Cells[row + 1, column + 1].Value) : (int?)null;
+                                                                                                  //var m_TX_NEW = Convert.ToString(linkage_sheet.Cells[row + 1, column + 1].Value); // !string.IsNullOrEmpty() ? Convert.ToInt32(hts_index_sheet.Cells[row + 1, column + 1].Value) : (int?)null;
 
                         if (!string.IsNullOrEmpty(m_POS))// && !string.IsNullOrEmpty(m_TX_NEW)) //ignore if both values are empty
                         {
@@ -897,12 +1270,13 @@ namespace MPM.DAL.Processor
                         //column += 2;
                     }
                 }
+
+
                 row += 3;
             }
             return _list;
         }
-
-
+        
         List<HTS_Index> RetrieveHTS_data(ExcelWorksheet hts_index_sheet, MetaData mt, Dictionary<string, HealthFacility> sites)
         {
             List<HTS_Index> hTS_Index_list = new List<HTS_Index>();
@@ -923,7 +1297,7 @@ namespace MPM.DAL.Processor
 
                     for (int column = 8; column <= 32;)
                     {
-                        string testingtype = column < 17 ? hts_index_sheet.Cells[3, 8].Value.ToString() : hts_index_sheet.Cells[3, 17].Value.ToString();
+                        string testingtype = column < 15 ? hts_index_sheet.Cells[3, 8].Value.ToString() : hts_index_sheet.Cells[3, 15].Value.ToString();
 
                         var f_POS = Convert.ToString(hts_index_sheet.Cells[row, column].Value);
                         var f_NEG = Convert.ToString(hts_index_sheet.Cells[row, column + 1].Value);
@@ -964,7 +1338,7 @@ namespace MPM.DAL.Processor
 
 
                         column += 2;
-                        if (column == 14)
+                        if (column == 12)
                         {
                             column += 3;
                         }
@@ -975,13 +1349,15 @@ namespace MPM.DAL.Processor
             return hTS_Index_list;
         }
 
+        //ims template download
         public string PopulateTemplate(Profile loggedinProfile, string state)
         {
             var facilities = new MPMDAO().GetPivotTableFromFacility(loggedinProfile.Organization.ShortName, state);
             string directory = "~/Report/Template/MPM/";
-            string fileName = "CDC MPM Tool_" + loggedinProfile.Organization.ShortName + "_" + state + ".xlsm";
+            string fileName = "CDC IMS Tool_" + loggedinProfile.Organization.ShortName + "_" + state + ".xlsm";
 
-            string template = System.Web.Hosting.HostingEnvironment.MapPath(directory + "GSM_Template.xlsm");
+            string template = System.Web.Hosting.HostingEnvironment
+                .MapPath(directory + "IMS_Monthly_Template.xlsm");
 
 
             using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
@@ -991,28 +1367,32 @@ namespace MPM.DAL.Processor
                 homesheet.Cells["H17"].Value = state;
 
                 var hts_index_sheet = package.Workbook.Worksheets["HTS_Index"];
-                var linkage_sheet = package.Workbook.Worksheets["LInkage to Treatment"];
+                var hts_tst_sheet = package.Workbook.Worksheets["HTS_TST"];
                 var pitc_sheet = package.Workbook.Worksheets["HTS_Other PITC"];
+                var Viral_Load_sheet = package.Workbook.Worksheets["Viral Load"];
                 var pmtct_sheet = package.Workbook.Worksheets["PMTCT"];
-                var art_sheet = package.Workbook.Worksheets["ART"];
                 var pmtct_viral_load_sheet = package.Workbook.Worksheets["PMTCT_Viral Load"];
                 var TB_HIV_sheet = package.Workbook.Worksheets["TB_HIV Cascade"];
 
                 int row = 6;
-                int p_row = 5;
+                int p_row = 5; 
+
                 foreach (var f in facilities.Where(x => x.HTS))
                 {
                     hts_index_sheet.Cells["B" + row].Value = f.Facility;
                     hts_index_sheet.Cells["C" + row].Value = f.DATIMCode;
 
-                    linkage_sheet.Cells["B" + p_row].Value = f.Facility;
-                    linkage_sheet.Cells["C" + p_row].Value = f.DATIMCode;
+                    hts_tst_sheet.Cells["B" + p_row].Value = f.Facility;
+                    hts_tst_sheet.Cells["C" + p_row].Value = f.DATIMCode;
 
                     pitc_sheet.Cells["B" + p_row].Value = f.Facility;
                     pitc_sheet.Cells["C" + p_row].Value = f.DATIMCode;
 
+                    Viral_Load_sheet.Cells["B" + p_row].Value = f.Facility;
+                    Viral_Load_sheet.Cells["C" + p_row].Value = f.DATIMCode;
+                                     
                     row += 3;
-                    p_row += 3;
+                    p_row += 3;                   
                 }
 
                 row = 5;
@@ -1028,14 +1408,7 @@ namespace MPM.DAL.Processor
                     row += 1;
                     pmtct_row += 3;
                 }
-
-                row = 5;
-                foreach (var f in facilities.Where(x => x.ART))
-                {
-                    art_sheet.Cells["B" + row].Value = f.Facility;
-                    art_sheet.Cells["C" + row].Value = f.DATIMCode;
-                    row += 3;
-                }
+                 
 
                 //if it has any of hts or art, then assume for TB too
                 row = 4;
@@ -1052,7 +1425,94 @@ namespace MPM.DAL.Processor
         }
 
 
+        public FileInfo PopulateGSMTemplate(Profile loggedinProfile)
+        {
+            var facilities = (from item in new HealthFacilityDAO().RetrieveAllLazily()
+                              where item.Organization.Id == loggedinProfile.Organization.Id
+                              && item.GSM_2
+                              select new HealthFacility
+                              {
+                                  Id = item.Id,
+                                  FacilityCode = item.FacilityCode,
+                                  LGA = item.LGA,
+                                  Organization = item.Organization,
+                                  Name = item.Name,
+                              }).ToList();  // new MPMDAO().GetPivotTableFromFacility(loggedinProfile.Organization.ShortName, state);
+            string directory = "~/Report/Template/MPM/";
+            string fileName = "CDC GSM Tool_" + loggedinProfile.Organization.ShortName + "_" + ".xlsm";
 
+            string template = System.Web.Hosting.HostingEnvironment.MapPath(directory + "GSM_Bi-Weekly_Template.xlsm");
+
+            FileInfo fileInfo = new FileInfo(System.Web.Hosting.HostingEnvironment.MapPath(directory + fileName));
+
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(template)))
+            {
+                var homesheet = package.Workbook.Worksheets["Home"];
+                homesheet.Cells["E17"].Value = loggedinProfile.Organization.ShortName;
+
+                var hts_index_sheet = package.Workbook.Worksheets["HTS_Index"];
+                var hts_tst_sheet = package.Workbook.Worksheets["HTS_TST"];
+                var pitc_sheet = package.Workbook.Worksheets["HTS_Other PITC"];
+                var Viral_Load_sheet = package.Workbook.Worksheets["Viral Load"];
+                var pmtct_sheet = package.Workbook.Worksheets["PMTCT"];
+                var pmtct_viral_load_sheet = package.Workbook.Worksheets["PMTCT_Viral Load"];
+                var TB_HIV_sheet = package.Workbook.Worksheets["TB_HIV Cascade"];
+
+                //var linkage_sheet = package.Workbook.Worksheets["LInkage to Treatment"];
+                //var pitc_sheet = package.Workbook.Worksheets["HTS"];                
+                //var art_sheet = package.Workbook.Worksheets["ART"];
+
+
+                int row = 6;
+                int p_row = 5;
+                int l_row = 4;
+                int vl_row = 4;
+                foreach (var f in facilities)
+                {
+                    hts_index_sheet.Cells["B" + row].Value = f.Name;
+                    hts_index_sheet.Cells["C" + row].Value = f.FacilityCode;
+
+                    hts_tst_sheet.Cells["B" + p_row].Value = f.Name;
+                    hts_tst_sheet.Cells["C" + p_row].Value = f.FacilityCode;
+
+                    pitc_sheet.Cells["B" + p_row].Value = f.Name;
+                    pitc_sheet.Cells["C" + p_row].Value = f.FacilityCode;
+
+                    Viral_Load_sheet.Cells["B" + p_row].Value = f.Name;
+                    Viral_Load_sheet.Cells["C" + p_row].Value = f.FacilityCode;
+
+                    pmtct_viral_load_sheet.Cells["B" + p_row].Value = f.Name;
+                    pmtct_viral_load_sheet.Cells["C" + p_row].Value = f.FacilityCode;
+
+                    vl_row += 6;
+                    row += 3;
+                    p_row += 3;
+                    l_row += 3;
+                }
+
+                row = 5;
+                foreach (var f in facilities)
+                {
+                    pmtct_sheet.Cells["B" + row].Value = f.Name;
+                    pmtct_sheet.Cells["C" + row].Value = f.FacilityCode;
+
+                    row += 1;
+                }
+
+
+                //if it has any of hts or art, then assume for TB too
+                row = 4;
+                foreach (var f in facilities)
+                {
+                    TB_HIV_sheet.Cells["B" + row].Value = f.Name;
+                    TB_HIV_sheet.Cells["C" + row].Value = f.FacilityCode;
+                    row += 3;
+                }
+                package.SaveAs(fileInfo);
+            }
+
+            return fileInfo;
+        }
 
     }
 

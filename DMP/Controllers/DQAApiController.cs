@@ -24,6 +24,7 @@ using System.Web.Http;
 namespace ShieldPortal.Controllers
 {
 
+   // [SessionManagement]
     public class DQAApiController : ApiController
     {
         readonly MetaDataService metadataService = new MetaDataService();

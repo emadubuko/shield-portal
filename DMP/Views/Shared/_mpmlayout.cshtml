@@ -23,9 +23,20 @@
             <div class="page-sidebar">
                 <div class="sidebar">
                     <ul id="side-nav" class="main-menu navbar-collapse collapse">
+                        
+                        <li>
+                            <a href=@Url.Action("GSMUploadTracker", "MPM") style="color:darkturquoise;">
+                                <i class="fa fa-home"></i><span class="title">&nbsp; GSM Upload Tracker</span>
+                            </a>
+                        </li>
                         <li>
                             <a href=@Url.Action("index", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; Home</span>
+                                <i class="fa fa-home"></i><span class="title">&nbsp; IMS Upload Tracker</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("CompletenessReport", "MPM") style="color:darkturquoise;">
+                                <i class="fa fa-home"></i><span class="title">&nbsp; Completeness Report</span>
                             </a>
                         </li>
                         <li>
@@ -46,10 +57,14 @@
                         <li class="navigation-header">Downloads</li>
                         <li>
                             <a href="~/MPM/Download" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; Download Template</span>
+                                <i class="fa fa-download"></i><span class="title">&nbsp; Download IMS Template</span>
                             </a>
                         </li>
-
+                        <li>
+                            <a href="~/MPM/DownloadTemplateForGSM" style="color:deeppink;">
+                                <i class="fa fa-download"></i><span class="title">&nbsp; Download GSM Template</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

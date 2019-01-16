@@ -99,7 +99,7 @@ namespace ShieldPortal.Controllers
             //string fullfilename = System.Web.Hosting.HostingEnvironment.MapPath("~/Uploads/_" + fileName);
 
             Stream fileContent = files[0].InputStream;
-            string loggedInUser = Services.Utils.LoggedinProfileName;
+            string loggedInUser = new Services.Utils().GetloggedInProfile().FullName;
 
             int startColumnIndex = IndexPeriods[reportingPeriod];
 

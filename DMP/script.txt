@@ -1,0 +1,7 @@
+﻿=====update script for GSM_2=============
+Update HealthFacility set GSM_2=1 where FacilityCode in ('tCLZNcfcMy3',
+'Rf1yYN2IDWc','EA0gMmZjNn6','bTwuESPkfSO','QQLKjN6lqf7','pwlvjbtM5oM',
+'yfLNltOE3ES','SGlwI0BB3NM','JKUabrYA2oL','Lf5dipBTT0Z','PawBgipJAZe',
+'nlLwNEPKFnR','t0ulFJivm9P','UAO4dzZ5mBJ','XLx2UT9cWWv','Nq0hQeEYCAk',
+'KA9udHas5Nt','TJ3gInbwDXs','mfodk1V16v0','AARV8rqn3By');
+

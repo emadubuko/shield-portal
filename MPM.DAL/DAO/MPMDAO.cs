@@ -25,14 +25,18 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(a);
                 }
+                foreach(var h in mt.HTS_TST)
+                {
+                    session.Insert(h);
+                }
                 foreach (var o in mt.HTS_Index)
                 {
                     session.Insert(o);
                 }
-                foreach (var o in mt.LinkageToTreatment)
-                {
-                    session.Insert(o);
-                }
+                //foreach (var o in mt.LinkageToTreatment)
+                //{
+                //    session.Insert(o);
+                //}
                 foreach (var o in mt.PITC)
                 {
                     session.Insert(o);
@@ -41,6 +45,11 @@ namespace MPM.DAL.DAO
                 {
                     session.Insert(o);
                 }
+                //foreach (var o in mt.Viral_Load)
+                //{
+                //    session.Insert(o);
+                //}
+
                 foreach (var o in mt.PMTCT)
                 {
                     session.Insert(o);
@@ -240,12 +249,13 @@ namespace MPM.DAL.DAO
 
         public string GetLastReport(int ip_id = 0)
         {
-            string sql = "select top 1 ReportingPeriod from [dbo].[mpm_MetaData] ";
+            //return DateTime.Now.ToString("MMM yy");
+            string sql = "select top 1 ReportingPeriod from (select top 1 ReportingPeriod from [dbo].[mpm_MetaData] where ReportLevel != 'IP' ";
             if (ip_id != 0)
             {
-                sql += "where Ip =" + ip_id;
+                sql += "and Ip =" + ip_id;
             }
-            sql += " order by cast('01'+'-'+ReportingPeriod as datetime) desc";
+            sql += ") as dt order by cast('01'+'-'+ReportingPeriod as datetime) desc";
             var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
             var cmd = new SqlCommand(sql, conn);
             if (conn.State != ConnectionState.Open)
@@ -260,7 +270,7 @@ namespace MPM.DAL.DAO
 
                 return result.ToString();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -270,6 +280,38 @@ namespace MPM.DAL.DAO
             }
         }
 
+
+        public string GetGSMLastReport(int ip_id = 0)
+        {
+             string sql = "select top 1 ReportingPeriod from (select top 1 ReportingPeriod from [dbo].[mpm_MetaData] where ReportLevel = 'IP' ";
+            if (ip_id != 0)
+            {
+                sql += "and Ip =" + ip_id;
+            }
+            sql += ") as dt order by cast(ReportingPeriod as datetime) desc";
+            var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
+            var cmd = new SqlCommand(sql, conn);
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+            }
+            try
+            {
+                var result = cmd.ExecuteScalar();
+                if (result == null)
+                    return string.Empty;
+
+                return result.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                cmd.Dispose();
+            }
+        }
 
         public DataTable RetriveDataAsDataTables(string stored_procedure, MPMDataSearchModel searchModel)//, string IPfilter="")
         {

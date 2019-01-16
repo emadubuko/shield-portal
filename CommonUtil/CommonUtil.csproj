@@ -108,7 +108,7 @@
     <Compile Include="Utilities\ExcelHelper.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\NHibernateContractResolver.cs" />
-    <Compile Include="Utilities\RandomShuffle.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="Utilities\XmlType.cs" />
     <Compile Include="Utilities\XMLUtil.cs" />
