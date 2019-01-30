@@ -62,11 +62,18 @@
                             bool uploaded = Convert.ToBoolean(d[0]);
                             if (uploaded)
                             {
-                                <td id="@uploaded"><a class="btn btn-sm btn-success download" id="@d[1]"><i class="icon-check"></i></a></td>
+                        <td id="@uploaded" align="center">
+                            <a class="btn btn-sm btn-success download" id="@d[1]"><i class="icon-check"></i></a>&nbsp;&nbsp;&nbsp;
+                            @if (ViewBag.userRole == "sys_admin")
+                            {
+                                <a class="btn btn-sm btn-danger delete" id="@d[1]"><i class="icon-erase"></i></a>
+                            }
+
+                        </td>
                             }
                             else
                             {
-                                <td><a class="btn btn-sm btn-danger"><i class="icon-cancel"></i></a></td>
+                                <td  align="center"><a class="btn btn-sm btn-danger"><i class="icon-cancel"></i></a></td>
                             }
                         }
                     </tr>
@@ -164,6 +171,33 @@
                         else {
                             alert("file not found");
                         }
+                        $("#loadImg2").hide();
+                    }).error(function (xhr, status, err) {
+                        console.log(xhr.responseText);
+                        $("#loadImg2").hide();
+                    });
+                }
+            })
+
+            $(".delete").click(function (e) {
+
+                var ans = confirm("Delete the uploaded file ?");
+                if (ans) {
+                    $("#loadImg2").show();
+                    $.ajax({
+                        url: '/MPM/deleteMPMUpload?Id=' + e.currentTarget.id,
+                        type: 'POST',
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).done(function (response) {
+                        window.location.href = response.Url
+                        //if (response) {
+                        //    window.location = '/Report/' + response;
+                        //}
+                        //else {
+                        //    alert("file not found");
+                        //}
                         $("#loadImg2").hide();
                     }).error(function (xhr, status, err) {
                         console.log(xhr.responseText);

@@ -397,5 +397,33 @@ namespace CommonUtil.DBSessionManager
             return dataTable;
         }
 
+        public int executeDeleteMPM(SqlCommand command)
+        {
+            int i = 0;
+            var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
+            command.Connection = conn;
+            var dataTable = new DataTable();
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                }
+                //SqlDataAdapter da = new SqlDataAdapter(command);
+                //da.Fill(dataTable);
+                 i = command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                command.Dispose();
+            }
+           return i;
+        }
+
     }
 }
