@@ -3,7 +3,7 @@
 @model List<DQAAnalysisModel>
 
 @{
-    Layout = "~/Views/Shared/_dqaFY18Q3layout.cshtml";
+    Layout = "~/Views/Shared/_dqaFY19Q1layout.cshtml";
 }
 
 
@@ -46,12 +46,12 @@
     </style>
     <script type="text/javascript">
         function reloadPage(e) {
-            window.location.replace('/DQAFY2018Q3/DQAAnalysisReport?type=' + e.value);
+            window.location.replace('/DQAFY2019Q1/DQAAnalysisReport?type=' + e.value);
         }
     </script>
 }
 
-<h4 style="text-align: center;color: cornflowerblue;text-decoration: underline;"> FY 2018 Q3 DQA Analysis </h4>
+<h4 style="text-align: center;color: cornflowerblue;text-decoration: underline;"> FY 2019 Q1 DQA Analysis </h4>
 
 <div class="col-sm-9">
     <div class="row">
@@ -374,7 +374,7 @@
                         extend: 'print',
                         text: 'Zoom Table',
                         autoPrint: false,
-                        title: "FY 2018 Q3 DQA Report"
+                        title: "FY 2019 Q1 DQA Report"
                     },
                     {
                         text: 'Export to Excel',

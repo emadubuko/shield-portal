@@ -1,6 +1,6 @@
 ﻿@model List<DQA.DAL.Model.UploadList>
 @{
-    Layout = "~/Views/Shared/_dqaFY18Q3layout.cshtml";
+    Layout = "~/Views/Shared/_dqaFY19Q1layout.cshtml";
 }
 @section AddToHead{
 <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
@@ -34,8 +34,8 @@
 
 <div class="col-md-9">
     <p style="color: red;font-weight: bold;">Download pivot table template. 
-    Using the pivot table template downloaded, complete it with information reported on DATIM for Q3 FY18. 
-    After populating the template, upload back on the portal and this information will give you a list of all the sites for which DQAs should be done for Q3 FY18. </p>
+    Using the pivot table template downloaded, complete it with information reported on DATIM for Q1 FY19. 
+    After populating the template, upload back on the portal and this information will give you a list of all the sites for which DQAs should be done for Q1 FY19. </p>
 
     <div class="panel panel-success">
         <div class="panel-heading clearfix" style="padding:8px 20%">
@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-sm-3">
                         <select class="form-control" id="selected_quarter"  required disabled> 
-                            <option value="Q3 FY18" selected>Q3 FY18</option>
+                            <option value="Q1 FY19" selected>Q1 FY19</option>
                         </select>
                     </div> 
                 </div>
@@ -181,7 +181,7 @@
                 $("#btnSubmit").prop("disabled", true);
 
                 $.ajax({
-                    url: '/DQAFY2018Q3/ProcesssPivotTable?reportPeriod=' + selectedQuarter,
+                    url: '/DQAFY2019Q1/ProcesssPivotTable?reportPeriod=' + selectedQuarter,
                     type: 'POST',
                     data: data,
                     async: true,
@@ -276,7 +276,7 @@
             });
 
             $(".gotoTool").click(function(e){
-                location.href ="/DQAFY2018Q3/DownloadDQATool?ip="+selected_ip;
+                location.href ="/DQAFY2019Q1/DownloadDQATool?ip="+selected_ip;
             });
 
         });

@@ -1,7 +1,7 @@
 ﻿@model List<DQA.DAL.Model.PivotTableModel>
 
 @{
-    Layout = "~/Views/Shared/_dqaFY18Q3layout.cshtml";
+    Layout = "~/Views/Shared/_dqaFY19Q1layout.cshtml";
 }
 
 @section AddToHead{
@@ -82,7 +82,7 @@
                 "bAutoWidth": false,
                 "language": {
                     "lengthMenu": " ",
-                    "zeroRecords": "No pivot table has been uploaded for FY2018 Q3.",
+                    "zeroRecords": "No pivot table has been uploaded for FY2019 Q1.",
                     "infoEmpty": " "
                 }
             });
@@ -120,13 +120,13 @@
                 
                 $("#loadImg").show()
                 $.ajax({
-                    url: '/DQAFY2018Q3/DownloadDQATool',
+                    url: '/DQAFY2019Q1/DownloadDQATool',
                     type: 'POST',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(selectedSites),
                     cache: false,
                 }).done(function (file) {
-                    window.location = '/Report/Template/DQA FY2018 Q3/'+ file;
+                    window.location = '/Report/Template/DQA FY2019 Q1/'+ file;
                     $("#loadImg").hide()
                     selectedSites = [];
                 }).error(function (xhr, status, err) {
@@ -145,13 +145,13 @@
                 }
                 $("#loadImg").show()
                 $.ajax({
-                    url: '/DQAFY2018Q3/DownloadDQATool',
+                    url: '/DQAFY2019Q1/DownloadDQATool',
                     type: 'POST',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(selectedSites),
                     cache: false,
                 }).done(function (file) {
-                    window.location = '/Report/Template/DQA FY2018 Q3/'+ file;
+                    window.location = '/Report/Template/DQA FY2019 Q1/'+ file;
                     $("#loadImg").hide()
                 }).error(function (xhr, status, err) {
                     alert("an error occurred");
