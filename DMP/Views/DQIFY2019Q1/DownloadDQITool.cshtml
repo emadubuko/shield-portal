@@ -1,0 +1,193 @@
+﻿@model DQI.DAL.Model.DQIModel
+
+@{
+    Layout = "~/Views/Shared/dqiFY18Q1Layout.cshtml";
+}
+
+
+@section AddToHead{
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+    <script type="text/javascript">
+        {
+            @*var previousUpload = @Html.Raw(Json.Encode(Model));*@
+        }
+    </script>
+    <style>
+        th {
+            text-align: center
+        }
+    </style>
+}
+
+
+
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix" style="padding:8px 30%">
+            <h5 class="panel-title">Sites with Data Quality Issues</h5>
+            <div style="float:right">
+                @*<a class="btn btn-sm btn-white downloadforSite"><i class="fa fa-download"></i>&nbsp;Download Facility Level DQI Tools</a>*@
+                <i style="display:none" id="loadImg"><img class="center" src="~/images/spinner.gif" width="40"> please wait ...</i>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive" style="overflow: initial;font-size: 12px;">
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>#Sites with Poor DQA Results</th>
+                            <th>Worst Performing indicator</th>
+                            <th>#Sites affected</th>
+                            <th>Average Concurrence for Affected sites</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.IPLevel)
+                        {
+                            <tr style="text-align: CENTER;">
+                                <td>@item.IP</td>
+                                <td>@item.TotalSites</td>
+                                <td>@item.WorstPerformingIndicator</td>
+                                <td>@item.NoOfSitesAffected </td>
+                                <td>@item.AverageConcurrence</td>
+                                <td>
+                                    <a class="btn btn-sm btn-success downloadforIP" id="@item.IP" style="text-transform:capitalize">
+                                        <i class="fa fa-download"></i>&nbsp;&nbsp;&nbsp;Download DQI Tool
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <br />
+
+
+                <table class="table table-striped table-bordered table-hover" id="detailsTbl">
+                    <thead>
+                        <tr style="text-align: CENTER;">
+                            <th>IP</th>
+                            <th>Facility</th>
+                            <th>Org Unit</th>
+                            <th>Worst Performing  indicator</th>
+                            <th>Reported</th>
+                            <th>Validated</th>
+                            <th>Concurrence</th>
+                            <th>Deviation from 100%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DQISites)
+                        {
+                            <tr style="text-align: CENTER;">
+                                <td>@item.IP</td>
+                                <td>@item.Facilty.Name </td>
+                                <td>@string.Format("{0} {1}", item.Facilty.LGA.State.state_name.Substring(0,2).ToLower(), item.Facilty.LGA.lga_name)</td>
+                                <td>@item.Indicator</td>
+                                <td>@item.DATIM</td>
+                                <td>@item.Validated</td>
+                                <td>@item.indicatorConcurrence</td>
+                                <td>@item.IndicatorDeviation</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/plugins/datatables/js/jszip.min.js"></script>
+    <script src="~/plugins/datatables/js/pdfmake.min.js"></script>
+    <script src="~/plugins/datatables/js/vfs_fonts.js"></script>
+    <script src="~/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#detailsTbl').DataTable({
+                "iDisplayLength": 50,
+                "bAutoWidth": false,
+                buttons: [
+                    {
+                        extend: 'print',
+                        text: 'Zoom Table',
+                        autoPrint: false,
+                        title: "FY 2019 Q1 DQA Report"
+                    },
+                    {
+                        text: 'Export to Excel',
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ],
+                dom: 'Bfrtip',
+            });
+
+
+
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.IPLevel));
+            var selectedIP = {};
+
+            $(".downloadforIP").click(function (e) {
+                $("#loadImg").show()
+                selectedIP = {};
+                $.each(data, function (i, d) {
+                    if (d.IP == e.currentTarget.id) {
+                        selectedIP = d;
+                    }
+                });
+
+                $.ajax({
+                    url: '/DQIFY2019Q1/DownloadIPDQITool',
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(selectedIP),
+                    cache: false,
+                }).done(function (file) {
+                    window.location = '/Report/Template/DQI/Q1 FY19/' + file;
+                    $("#loadImg").hide()
+                    selectedSites = {};
+                }).error(function (xhr, status, err) {
+                    alert('an system error occurred');
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+
+
+            $(".downloadforSite").click(function (e) {
+
+                $("#loadImg").show();
+                var ip = 1;
+                $.ajax({
+                    url: '/DQIFY2019Q1/DownloadDQATool?type=facility&ip=' + ip,
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(selectedSites),
+                    cache: false,
+                }).done(function (file) {
+                    window.location = '/Report/DQI/FY2019 Q1/' + file;
+                    $("#loadImg").hide()
+                }).error(function (xhr, status, err) {
+                    alert($.parseJSON(xhr.responseText).Message);
+                    console.log($.parseJSON(xhr.responseText).Message);
+                });
+                return false;
+            });
+        });
+    </script>
+}
