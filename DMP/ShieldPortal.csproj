@@ -231,6 +231,7 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q2Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q3Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q4Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2019Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q4Controller.cs" />
@@ -1228,16 +1229,11 @@
     <Content Include="plugins\summernote\font\summernote.ttf" />
     <Content Include="plugins\summernote\font\summernote.woff" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Content Include="Resources\IHVN_sample.xlsx" />
-    <Content Include="Resources\APIN_sample.xlsx" />
-    <Content Include="Resources\CCFN_sample.xlsx" />
-    <Content Include="Resources\CIHP_sample.xlsx" />
     <Content Include="Resources\DQA resourse files\Data Quality Assessment Tool.Q1R.xlsm" />
     <Content Include="Resources\DQA resourse files\DQA Summary Report.Q1R.pdf" />
     <Content Include="Resources\DQA resourse files\DQA_user_guide_18Feb2017.docx" />
     <Content Include="Resources\DQA resourse files\GUIDE TO USING THE DATA QUALITY ASSESSMENT %28DQA%29 TOOL.Q1R.pdf" />
     <Content Include="Resources\DQA resourse files\Random Number Table.pdf" />
-    <Content Include="Resources\Implementing Partner ME Staff Structure_modified.xlsx" />
     <Content Include="Report\Template\DatimSource.csv" />
     <Content Include="Report\Template\DQA Summary Report.Q1R.pdf" />
     <Content Include="Report\Template\DQA_user_guide_18Feb2017.docx" />
@@ -1344,11 +1340,11 @@
     <Content Include="Report\Template\DQI\Q1 FY18\DQI TOOL_unlocked.xlsm" />
     <Content Include="Report\Template\DQA FY2018 Q2\DATIM PIVOT TABLE Q2 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q2\Summary Sheet FY18 Q2 DQA.pdf" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Report\Template\DQA FY2018 Q3\DATIM PIVOT TABLE FOR Q3 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q3\Summary Sheet FY18 Q3 DQA.pdf" />
     <Content Include="Report\Template\DQA FY2018 Q3\FY18_Q3_Data Quality Assessment tool_v7.xlsm" />
-    <Content Include="Report\Template\MPM\GSM_Template.xlsm" />
     <Content Include="Report\Template\DQA FY2018 Q4\DATIM PIVOT TABLE FOR Q4 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q4\FY18_Q4_Data Quality Assessment tool_v8.xlsm" />
     <Content Include="Resources\protocols\Mapping and Size Estimation of Key Populations in Nigeria.pdf" />
@@ -1514,6 +1510,15 @@
     <Content Include="Views\DQAFY2018Q4\AllYearResult.cshtml" />
     <Content Include="Views\MPM\CompletenessReport.cshtml" />
     <Content Include="Views\MPM\GSMUploadTracker.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\Analytics.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\dashboard.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\UMB_Partner_Report.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2019Q1\UploadPivotTable.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1560,6 +1565,7 @@
     <Content Include="Views\Shared\_dqaFY18Q2layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY18Q3layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY18Q4layout.cshtml" />
+    <Content Include="Views\Shared\_dqaFY19Q1layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1569,6 +1575,7 @@
     <Folder Include="plugins\datatables\extensions\RowReorder\js\" />
     <Folder Include="Report\Downloads\DQAResult\" />
     <Folder Include="Report\Template\DQA FY2018 Q1\" />
+    <Folder Include="Report\Template\MPM\" />
     <Folder Include="Report\Uploads\DQA Q1 FY18\" />
     <Folder Include="Report\Uploads\DQA Q3 FY16\" />
     <Folder Include="Report\Uploads\DQA Q4 FY17\" />
