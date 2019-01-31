@@ -192,12 +192,7 @@
                         processData: false
                     }).done(function (response) {
                         window.location.href = response.Url
-                        //if (response) {
-                        //    window.location = '/Report/' + response;
-                        //}
-                        //else {
-                        //    alert("file not found");
-                        //}
+                      
                         $("#loadImg2").hide();
                     }).error(function (xhr, status, err) {
                         console.log(xhr.responseText);

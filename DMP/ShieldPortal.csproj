@@ -1454,7 +1454,6 @@
     <Content Include="Views\DQIFY2018Q1\Index.cshtml" />
     <Content Include="Views\DQIFY2018Q1\DownloadDQITool.cshtml" />
     <Content Include="Views\DQIFY2018Q1\UploadDQIResult.cshtml" />
-    <Content Include="Views\MPM\Index.cshtml" />
     <Content Include="Views\MPM\Upload.cshtml" />
     <Content Include="Views\MPM\Dashboard.cshtml" />
     <Content Include="Views\DQAFY2018Q1\UMB_Partner_Report.cshtml" />
@@ -1524,6 +1523,7 @@
     <Content Include="Views\DQIFY2019Q1\Index.cshtml" />
     <Content Include="Views\DQIFY2019Q1\UploadDQIResult.cshtml" />
     <Content Include="Views\Shared\dqiFY19Q1Layout.cshtml" />
+    <Content Include="Views\MPM\Index.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

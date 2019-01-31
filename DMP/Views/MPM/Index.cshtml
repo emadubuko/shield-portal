@@ -61,23 +61,30 @@
                     if (item.Key.Split('|')[0] != "IP")
                     {
                         string state = item.Key.Split('|')[0] == "IP" ? "GSM" : item.Key.Split('|')[0];
-                        <tr>
-                            <td>@item.Key.Split('|')[1]</td>
-                            <td>@state</td>
-                            @foreach (var date in item.Value)
-                            {
-                                string[] d = date.Split('|');
-                                bool uploaded = Convert.ToBoolean(d[0]);
-                                if (uploaded)
+                <tr>
+                    <td>@item.Key.Split('|')[1]</td>
+                    <td>@state</td>
+                    @foreach (var date in item.Value)
+                    {
+                        string[] d = date.Split('|');
+                        bool uploaded = Convert.ToBoolean(d[0]);
+                        if (uploaded)
+                        {
+                            <td id="@uploaded" align="center">
+                                <a class="btn btn-sm btn-success download" id="@d[1]"><i class="icon-check"></i></a>&nbsp;&nbsp;&nbsp;
+                                @if (ViewBag.userRole == "sys_admin")
                                 {
-                                    <td id="@uploaded"><a class="btn btn-sm btn-success download" id="@d[1]"><i class="icon-check"></i></a></td>
+                                    <a class="btn btn-sm btn-danger delete" id="@d[1]"><i class="icon-erase"></i></a>
                                 }
-                                else
-                                {
-                                    <td><a class="btn btn-sm btn-danger"><i class="icon-cancel"></i></a></td>
-                                }
-                            }
-                        </tr>
+
+                            </td>
+                        }
+                        else
+                        {
+                            <td align="center"><a class="btn btn-sm btn-danger"><i class="icon-cancel"></i></a></td>
+                        }
+                    }
+                </tr>
                     }
                 }
             </tbody>

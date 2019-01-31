@@ -89,7 +89,7 @@ namespace ShieldPortal.Controllers
             var messages = "";
             try
             {
-                Logger.LogInfo("DQIQ1 FY2018,ProcessFile", "processing dqi upload");
+                Logger.LogInfo("DQIQ1 FY2019,ProcessFile", "processing dqi upload");
 
                 var userUploading = new Services.Utils().GetloggedInProfile();
 
