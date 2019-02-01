@@ -188,6 +188,28 @@
                 }
             })
 
+            $(".delete").click(function (e) {
+
+                var ans = confirm("Delete the uploaded file ?");
+                if (ans) {
+                    $("#loadImg2").show();
+                    $.ajax({
+                        url: '/MPM/deleteMPMUpload?Id=' + e.currentTarget.id,
+                        type: 'POST',
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).done(function (response) {
+                        window.location.href = response.Url
+
+                        $("#loadImg2").hide();
+                    }).error(function (xhr, status, err) {
+                        console.log(xhr.responseText);
+                        $("#loadImg2").hide();
+                    });
+                }
+            })
+
             $("#download_to_excel").on('click', function (event) {
                 exportTableToCSV.apply(this, [$("#output"), 'report.csv', '-', 0, 0]);
             });

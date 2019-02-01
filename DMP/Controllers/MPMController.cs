@@ -33,7 +33,7 @@ namespace ShieldPortal.Controllers
             IndexPeriods = new Dictionary<string, int>();
             for (int i = -6; i < 6; i++)
             {
-                IndexPeriods.Add(DateTime.Now.AddMonths(i).ToString("MMM-yyyy"), i + 6);
+                IndexPeriods.Add(DateTime.Now.AddMonths(i).ToString("MMM-yy"), i + 6);
             }
 
             var ims = new UploadViewModel
@@ -62,6 +62,7 @@ namespace ShieldPortal.Controllers
 
                     foreach (var index in IndexPeriods)
                     {
+                       
                         if (entries.Any(x => x.Contains(index.Key)))
                         {
                             int id = submissions.FirstOrDefault(c => c.IPName == iplevel.Key
@@ -78,8 +79,11 @@ namespace ShieldPortal.Controllers
             }
             ViewBag.reportPeriod = mpmDAO.GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
             ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+            ViewBag.userRole = loggedinProfile.RoleName;
             return View(ims);
         }
+
+
 
         public ActionResult GSMUploadTracker()
         {
@@ -125,7 +129,33 @@ namespace ShieldPortal.Controllers
             }
             ViewBag.reportPeriod = mpmDAO.GetGSMLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
             ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+            ViewBag.userRole = loggedinProfile.RoleName;
             return View(ims);
+        }
+
+        public ActionResult deleteMPMUpload(int Id)
+        {
+
+            var dao = new MPMDAO();
+            var previously = dao.Retrieve(Id);
+            if (previously != null)
+            {
+                FileInfo myfileinf = new FileInfo(previously.FilePath);
+                myfileinf.Delete();
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "sp_delete_MPM_Upload";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@metadata_id", Id);
+
+                new MPMDAO().executeDeleteMPM(command);
+                //  return previously.FilePath.Split(new string[] { "\\Report\\" }, StringSplitOptions.RemoveEmptyEntries)[1];
+
+            }
+
+            var redirectUrl = new UrlHelper(Request.RequestContext).Action("GSMUploadTracker");
+            return Json(new { Url = redirectUrl });
+            // return View(GSMUploadTracker());
         }
 
         public ActionResult CompletenessReport()
@@ -327,6 +357,7 @@ namespace ShieldPortal.Controllers
             return View(data);
         }
 
+
         public JsonResult ProcessFile()
         {
             string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/MPM/" + loggedinProfile.Organization.ShortName) + "\\";
@@ -335,16 +366,26 @@ namespace ShieldPortal.Controllers
                 Directory.CreateDirectory(directory);
             }
 
-            if (Request.Files.Count == 0)
-                return Json("<span style='color: red;'> no file uploaded</span>");
 
-            var filePath = directory + DateTime.Now.ToString("dd MMM yyyy") + "_" + Request.Files[0].FileName;
-            Request.Files[0].SaveAs(filePath);
+            if (Request.Files.Count == 0)
+                return Json("<span style='color: red;'> No File Uploaded</span>");
+
+            var filePath = directory + DateTime.Now.ToString("dd MMM yyyy") + "_" + Path.GetFileName(Request.Files[0].FileName);
+
+            try
+            {
+                Request.Files[0].SaveAs(filePath);
+            }
+            catch (Exception e)
+            {
+
+            }
+
 
             try
             {
                 new TemplateProcessor().ReadFile(Request.Files[0].InputStream, loggedinProfile, filePath);
-                return Json("Uploaded succesfully");
+                return Json("Uploaded Succesfully");
             }
             catch (Exception ex)
             {
