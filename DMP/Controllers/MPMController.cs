@@ -158,6 +158,31 @@ namespace ShieldPortal.Controllers
             // return View(GSMUploadTracker());
         }
 
+        public ActionResult deleteMPMUpload_IMS(int Id)
+        {
+
+            var dao = new MPMDAO();
+            var previously = dao.Retrieve(Id);
+            if (previously != null)
+            {
+                FileInfo myfileinf = new FileInfo(previously.FilePath);
+                myfileinf.Delete();
+                SqlCommand command = new SqlCommand();
+                command.CommandText = "sp_delete_MPM_Upload";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@metadata_id", Id);
+
+                new MPMDAO().executeDeleteMPM(command);
+                //  return previously.FilePath.Split(new string[] { "\\Report\\" }, StringSplitOptions.RemoveEmptyEntries)[1];
+
+            }
+
+            var redirectUrl = new UrlHelper(Request.RequestContext).Action("Index");
+            return Json(new { Url = redirectUrl });
+            // return View(GSMUploadTracker());
+        }
+
         public ActionResult CompletenessReport()
         {
             var cmd = new SqlCommand
@@ -169,6 +194,8 @@ namespace ShieldPortal.Controllers
             var report = Utilities.ConvertToList<CompletenessReport>(dt);
             return View();
         }
+
+       
 
         public JsonResult CompletenessReportData()
         {
@@ -184,10 +211,15 @@ namespace ShieldPortal.Controllers
             List<dynamic> ims = new List<dynamic>();
             foreach (var item in report.Where(x => x.GSM_2).GroupBy(x => x.ReportingPeriod))
             {
+                string key = item.Key;
+                int number = item.Count();
+                double perc = Math.Round(100 * 1.0 * item.Count() / 20, 2);
+                double per2 = Math.Round(100 * 1.0 * (item.Count() / 20), 2);
                 gsm.Add(new
                 {
                     ReportingPeriod = item.Key,
-                    percent = Math.Round(100 * 1.0 * item.Count() / 20, 0)
+                    percent = Math.Round(100 * 1.0 * item.Count() / 300, 0)
+                 //   percent = Math.Round(100 * 1.0 * item.Count() / 20, 0)
                 });
             }
             foreach (var item in report.Where(x => x.GranularSite && !x.GSM_2).GroupBy(x => x.ReportingPeriod))
@@ -203,7 +235,7 @@ namespace ShieldPortal.Controllers
             foreach (var item in report.Where(x => x.GranularSite && !x.GSM_2).GroupBy(x => x.ReportingPeriod))
             {
                 //14 indicators
-                int no_of_facilities = item.DistinctBy(x => x.FacilityId).DistinctBy(x => x.Indicator).Count();
+                int no_of_facilities = item.DistinctBy(x => x.facilityId).DistinctBy(x => x.indicator).Count();
                 ims_fac_ind_comp.Add(new
                 {
                     ReportingPeriod = item.Key,
@@ -215,7 +247,7 @@ namespace ShieldPortal.Controllers
             foreach (var item in report.Where(x => x.GSM_2).GroupBy(x => x.ReportingPeriod))
             {
                 //14 indicators
-                int no_of_facilities = item.DistinctBy(x => x.FacilityId).DistinctBy(x => x.Indicator).Count();
+                int no_of_facilities = item.DistinctBy(x => x.facilityId).DistinctBy(x => x.indicator).Count();
                 gsm_fac_ind_comp.Add(new
                 {
                     ReportingPeriod = item.Key,
@@ -496,6 +528,72 @@ namespace ShieldPortal.Controllers
         }
 
 
+        public ActionResult CompletenessReports(string lastreportedPeriod = "")
+        {
+            var IPLocation = new List<IPLGAFacility>();
+            IList<HealthFacility> facilities;
+            IList<IPUploadReport> submissions;
+
+            var mpmDAO = new MPMDAO();
+            DataTable reports = null;
+
+            try
+            {
+                submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0, "", "", null);
+                ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+
+
+                if (User.IsInRole("ip"))
+                {
+                    submissions = mpmDAO.GenerateIPUploadReports(loggedinProfile.Organization.Id, "", "", null);
+                    facilities = new HealthFacilityDAO().RetrievebyIP(loggedinProfile.Organization.Id);
+                }
+                else
+                {
+                    submissions = mpmDAO.GenerateIPUploadReports(0, "", "", null);
+                    facilities = new HealthFacilityDAO().RetrieveAll();
+                }
+
+                if (string.IsNullOrEmpty(lastreportedPeriod))
+                    lastreportedPeriod = new MPMDAO().GetLastReport(loggedinProfile.RoleName == "ip" ? loggedinProfile.Organization.Id : 0);
+
+
+                reports = mpmDAO.GetUploadReport(lastreportedPeriod);
+                List<dynamic> reportView = new List<dynamic>();
+
+                foreach (DataRow dr in reports.Rows)
+                {
+                    Int64 facilityId = dr.Field<Int64>("facilityId");
+                    var hf = facilities.FirstOrDefault(x => x.Id == facilityId);
+
+                    if (hf != null)
+                    {
+                        IPLocation.Add(
+                        new IPLGAFacility
+                        {
+                            FacilityName = hf.Name,
+                            IP = hf.Organization.ShortName,
+                            LGA = hf.LGA,
+                        });
+                    }
+                }
+
+                ViewBag.ReportedPeriods = submissions.Select(x => x.ReportPeriod).Distinct();
+                ViewBag.LastReportedPeriod = lastreportedPeriod;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                throw ex;
+            }
+
+            return View("iCompletenessReports", IPLocation);
+
+
+            // return View();
+        }
+
+
         [HttpPost]
         public dynamic RetriveData(MPMDataSearchModel searchModel = null)
         {
@@ -563,6 +661,48 @@ namespace ShieldPortal.Controllers
                 {
                     _data.Add(sp.Key, GenerateTB_TPT(data));
                 }
+            }
+
+            return JsonConvert.SerializeObject(new
+            {
+                _data
+            });
+        }
+
+
+
+        [HttpPost]
+        public dynamic RetriveCompletenessData(MPMDataSearchModel searchModel = null)
+        {
+            Dictionary<string, string> storedProcedures = new Dictionary<string, string>
+            {
+               
+                { "Comp_Stat", "[sp_mpm_completeness_report]" }
+            };
+
+            MPMDAO dao = new MPMDAO();
+            string ip = "";
+            if (User.IsInRole("ip"))
+            {
+                var profile = new Services.Utils().GetloggedInProfile();
+                ip = profile.Organization.ShortName;
+
+                //make sure it is still the IP
+                searchModel.IPs = new List<string> { ip };
+            }
+
+            Dictionary<string, dynamic> _data = new Dictionary<string, dynamic>();
+            foreach (var sp in storedProcedures)
+            {
+                var data = dao.RetriveDataAsDataTablesCompleteness(sp.Value, searchModel);
+              
+                if (sp.Key == "Comp_Stat")
+                {
+                    _data.Add(sp.Key, GenerateCOMPLETENESS_STAT(data));
+                }//
+
+
+              
             }
 
             return JsonConvert.SerializeObject(new
@@ -1079,7 +1219,205 @@ namespace ShieldPortal.Controllers
             };
         }
 
+        public dynamic GenerateCOMPLETENESS_STAT(DataTable dt)
+        {
+            List<CompletenessReport> lst = Utilities.ConvertToList<CompletenessReport>(dt);
 
+            var groupedData = lst.GroupBy(x => x.State);
+            int total_submitted_gsm = 0;
+            int submitted_gsm = 0;
+
+            int indicators = 0;
+
+            int PMTC = 0;
+            int PMTCT_EID = 0;
+            int HTS_PITC = 0;
+            int HTS = 0;
+            int Linkage_To_Treatment = 0;
+            int ART = 0;
+            int PMTCT_VIRAL_Load = 0;
+            int TB_Screening = 0;
+            int TB_Presumptive = 0;
+            int TB_Bacteriology_Diagnosis = 0;
+            int TB_Diagnosed = 0;
+            int TB_Treatment = 0;
+            int TPT_Eligible = 0;
+            int TB_ART = 0;
+
+            var lga_drill_down = new List<dynamic>();
+
+            var state_gsm = new List<dynamic>();
+            var state_ims = new List<dynamic>();
+
+            foreach (var state in groupedData)
+            {
+                total_submitted_gsm = 0;
+
+              
+
+                //  submitted_indicators = lst.Where(x => x.GSM_2 && x.State == state.Key).GroupBy(x => x.indicator).Count();
+                
+             
+                    foreach (var item in lst.Where(x => x.GSM_2 && x.State == state.Key))
+                {
+                    if (item.indicator == "PMTCT"  /* || item.indicator == "ART" || item.indicator == "HTS" || item.indicator == "HTS_PITC" || item.indicator == "Linkage_To_Treatment" || item.indicator == "PMTCT_VIRAL_Load" || item.indicator == "TB_Screening" || item.indicator == "TB_Presumptive" || item.indicator == "TB_Bacteriology_Diagnosis" || item.indicator == "TB_Diagnosed" || item.indicator == "TB_Treatment" || item.indicator == "TPT_Eligible" || item.indicator == "TB_ART"*/)
+                    {
+                        PMTC++;
+                    }
+                    else if(item.indicator == "PMTCT_EID")
+                    {
+                        PMTCT_EID++;
+                    }
+                    else if (item.indicator == "ART")
+                    {
+                        ART++;
+                    }
+                    else if (item.indicator == "HTS")
+                    {
+                        HTS++;
+                    }
+                    else if (item.indicator == "HTS_PITC")
+                    {
+                        HTS_PITC++;
+                    }
+                    else if (item.indicator == "Linkage_To_Treatment")
+                    {
+                        Linkage_To_Treatment++;
+                    }
+                    else if (item.indicator == "PMTCT_VIRAL_Load")
+                    {
+                        PMTCT_VIRAL_Load++;
+                    }
+                    else if (item.indicator == "TB_Screening")
+                    {
+                        TB_Screening++;
+                    }
+                    else if (item.indicator == "TB_Presumptive")
+                    {
+                        TB_Presumptive++;
+                    }
+                    else if (item.indicator == "TB_Bacteriology_Diagnosis")
+                    {
+                        TB_Bacteriology_Diagnosis++;
+                    }
+                    else if (item.indicator == "TB_Diagnosed")
+                    {
+                        TB_Diagnosed++;
+                    }
+                    else if (item.indicator == "TB_Treatment")
+                    {
+                        TB_Treatment++;
+                    }
+                    else if (item.indicator == "TPT_Eligible")
+                    {
+                        TPT_Eligible++;
+                    }
+                    else if (item.indicator == "TB_Treatment")
+                    {
+                        TB_ART++;
+                    }
+                }
+
+             
+                    total_submitted_gsm = lst.Where(x => x.GSM_2 && x.State == state.Key).Count();
+                    submitted_gsm = total_submitted_gsm / 14;
+
+                    if (submitted_gsm != 0)
+                    {
+                        state_gsm.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * submitted_gsm / 20, 0),
+                            name = state.Key,
+
+                            drilldown = state.Key
+                        });
+
+                    state_ims.Add(new
+                    {
+                        y = Math.Round(100 * 1.0 * submitted_gsm / 162, 0),
+                        name = state.Key,
+
+                        drilldown = state.Key
+                    });
+                }
+                
+               
+              
+                
+                var lga_gsm = new List<dynamic>();
+                var lga_ims = new List<dynamic>();
+
+                foreach (var lga in state.GroupBy(x => x.LGA))
+                {
+                
+                    lga_gsm.Add(new
+                    {
+                        y = Math.Round(100 * 1.0 * lga.Count() / 20, 0),
+                        name = state.Key,
+                        drilldown = state.Key
+                    });
+
+                    lga_ims.Add(new
+                    {
+                        y = Math.Round(100 * 1.0 * lga.Count() / 162, 0),
+                        name = state.Key,
+                        drilldown = state.Key
+                    });
+
+                    var facility_gsm = new List<dynamic>();
+                    var facility_ims = new List<dynamic>();
+
+                    foreach (var fty in lga.GroupBy(x => x.Facility))
+                    {
+                    
+
+                        facility_gsm.Add(new
+                        {
+                            fty.Key,
+                            percent = Math.Round(100 * 1.0 * fty.Count() / 162, 0),
+                           
+                        });
+
+                        facility_ims.Add(new
+                        {
+                            fty.Key,
+                            percent = Math.Round(100 * 1.0 * fty.Count() / 162, 0),
+
+                        });
+                    }
+
+                    //add facility
+                    lga_drill_down.Add(new { name = "GSM", id = lga.Key, data = facility_gsm });
+                    lga_drill_down.Add(new { name = "IMS", id = lga.Key, data = facility_ims });
+
+                }
+                //add lga
+                lga_drill_down.Add(new { name = "GSM", id = state.Key, data = lga_gsm });
+                lga_drill_down.Add(new { name = "IMS", id = state.Key, data = lga_ims });
+
+            }
+
+            List<dynamic> Comp_Stat = new List<dynamic>
+            {
+                new
+                {
+                    name = "GSM",
+                    data = state_gsm
+                },
+                  new
+                {
+                    name = "IMS",
+                    data = state_ims
+                }
+
+            };
+          
+            return new
+            {
+                Comp_Stat,
+                lga_drill_down,
+            };
+        }
         //PMTCT_Cascade_ViewModel
         public dynamic GeneratePMTCT_Cascade(DataTable dt)
         {

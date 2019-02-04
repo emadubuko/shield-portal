@@ -1524,6 +1524,8 @@
     <Content Include="Views\DQIFY2019Q1\UploadDQIResult.cshtml" />
     <Content Include="Views\Shared\dqiFY19Q1Layout.cshtml" />
     <Content Include="Views\MPM\Index.cshtml" />
+    <Content Include="Views\MPM\CompletenessReports.cshtml" />
+    <Content Include="Views\MPM\iCompletenessReports.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

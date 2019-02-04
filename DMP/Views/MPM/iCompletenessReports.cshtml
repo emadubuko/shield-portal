@@ -22,101 +22,32 @@
             }));
 
             function reloadPage(e) {
-                window.location.replace('/MPM/Dashboard?lastreportedPeriod=' + e.value);
+                window.location.replace('/MPM/CompletenessReports?lastreportedPeriod=' + e.value);
             }
         }
     </script>
 }
 
-<h2>GSM Dashboard</h2>
+<h2>Completeness Report (Upload)</h2>
 <div class="col-sm-7">
     <div class="row">
 
         <div class="tabs-container">
             <ul class="nav nav-tabs">
-                <li class="active"><a aria-expanded="true" href="#ist90" data-toggle="tab">First 90</a></li>
-                <li class=""><a aria-expanded="false" href="#2nd90" data-toggle="tab">Second 90</a></li>
-                <li class=""><a aria-expanded="false" href="#3rd90" data-toggle="tab">Third 90</a></li>
-                <li class=""><a aria-expanded="false" href="#pmtct_cascade" data-toggle="tab">PMTCT Cascade</a></li>
-                <li class=""><a aria-expanded="false" href="#tb_cascade" data-toggle="tab">TB HIV Cascade</a></li>
+                @*<li class=""><a aria-expanded="false" href="#tb_cascade" data-toggle="tab">TB HIV Cascade</a></li>*@
+
             </ul>
 
             <div class="tab-content">
 
-                <div class="tab-pane active" id="ist90">
-                    <img src="~/images/spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
+                <div class="tab-pane active" id="tb_cascade">
                     <div class="row">
-                        <div id="HTSindextesting" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        <div id="COMP_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
-
-                    <hr />
-                    <div class="row">
-                        <div id="HTSotherPITC" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
+                   
                 </div>
 
-                <div class="tab-pane" id="2nd90">
-                    <div class="row">
-                        <div id="LinkagebyState" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="row">
-                        <div id="TX_RET" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="tab-pane" id="3rd90">
-                    <div class="row">
-                        <div id="Tx_VLA" style='width: 1000px; height: 827px;'>
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="row">
-                        <div id="PMTCTVIRALLOAD" style='width: 1000px; height: 500px;'>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="PMTCTVIRALLOAD_new" style='width: 1000px; height: 500px;'>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane" id="pmtct_cascade">
-                    <div class="row">
-                        <div id="PMTCTCascade_uptake" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="PMTCTCascade_maternal_clinical" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="PMTCTCascade_linkage" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane" id="tb_cascade">
-                    <div class="row">
-                        <div id="TB_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="TB_treatment" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="TB_tpt" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </div>
@@ -150,7 +81,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
             <div class="col-sm-12">
                 <select id="sltIP" class="select2 form-control" data-placeholder="Select Partner" tabindex="-1" aria-hidden="true" multiple>
                     <option value="">IP</option>
@@ -167,7 +98,7 @@
                     }
                 </select>
             </div>
-        </div>
+        </div>*@
 
         <div class="form-group">
             <div class="col-sm-12">
@@ -205,7 +136,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
             <div class="col-sm-12">
                 <select id="sltsex" class="form-control">
                     <option value="" selected>Sex</option>
@@ -213,8 +144,8 @@
                     <option value="F">Female</option>
                 </select>
             </div>
-        </div>
-        <div class="form-group">
+        </div>*@
+        @*<div class="form-group">
             <div class="col-sm-12">
                 <select id="sltagegroup" class="form-control">
                     <option value="" selected>Age Group</option>
@@ -232,8 +163,8 @@
                     <option value="50+">50+</option>
                 </select>
             </div>
-        </div>
-        <div class="form-group" style="display:none">
+        </div>*@
+        @*<div class="form-group" style="display:none">
             <div class="col-sm-12">
                 <select id="sltpopulationgroup" class="form-control">
                     <option value="" selected>population group</option>
@@ -242,7 +173,7 @@
                     <option value="Adult">Adult</option>
                 </select>
             </div>
-        </div>
+        </div>*@
 
 
         <div class="form-group">
@@ -271,7 +202,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-             
+
             $('#btnSearch').click(function (e) {
                 $("#a-spinner").show();
                 //supply the variables here
@@ -312,7 +243,7 @@
                 model.facilities = selectedFacilitties;
 
                 $.ajax({
-                    url: "/MPM/RetriveData",
+                    url: "/MPM/RetriveCompletenessData",
                     method: "Post",
                     data: JSON.stringify(model),
                     contentType: "application/json",
@@ -342,7 +273,7 @@
             _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
 
             $.ajax({
-                url: "/MPM/RetriveData",
+                url: "/MPM/RetriveCompletenessData",
                 method: "Post",
                 data: JSON.stringify(_model),
                 contentType: "application/json",
@@ -351,10 +282,10 @@
                 try {
                     var dt = JSON.parse(response)._data;
                     buildallchart(dt);
-                    console.log(response);
+                 //   console.log(response);
                 }
                 catch (e) {
-                    alert("A system error has occurred. Kindly re-try again shortly");
+                  //  alert("A system error has occurred. Kindly re-try again shortly == " + e);
                     console.log(e);
                 }
             }).error(function (xhr, status, err) {
@@ -365,65 +296,24 @@
 
             function buildallchart(dt) {
 
-                BuildBubbleChart('HTSindextesting', 'Testing yield of HTS Index Client',
-                    'Total Tested', 'Percentage Yield', bubble_pointFormat,
-                    dt.hts_index_testing);
-
-                //hts other pitc
-                build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',
-                    'No. of client tested', '% Testing Yield', dt.hts_other_pitc.SDPs,
-                    dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
-                    'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
-
-                //LinkagebyState
-                build_bar_chart_dual_axis_with_drill_down('LinkagebyState', 'New on ART vs Identified Positives',
-                    'No. of client', '% linkage', dt.Linkage.state_data, dt.Linkage.lga_drill_down,
-                    dt.Linkage.states);
-
-
-                //TX_RET
-                build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
-                    'No. of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
-                    dt.ART.states);
-
-
-                //Tx_VLA
-                build_bar_chart_dual_axis_with_drill_down('Tx_VLA', 'Viral Load Access',
-                    'No. of client', '% Viral load access', dt.ART.state_data_vl,
-                    dt.ART.lga_drill_down_vl, dt.ART.states);
-
-                //PMTCTVIRALLOAD
-                build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression', 'Previously Known HIV Positive',
-                    "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
-
-                //PMTCTVIRALLOAD_new
-                build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
-                    "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
-
-                //PMTCTCascade_uptake
-                build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
-                    'No. of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
-
-                //PMTCTCascade_maternal_clinical
-                build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
-                    'No. of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
-
-                //PMTCTCascade_linkage
-                build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
-                    'No. of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
+            
 
                 //TB_stat
-                build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
-                    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
+                build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'Upload Completeness', 'Percentage Completeness',
+                    dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
+                console.log("Log message " + dt.Comp_Stat.Comp_Stat);
+
+                //build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
+                //    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
 
                 //TB_treatment
-                build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
-                    'No. of client', '% TX_TB', dt.TB_treatment.state_data,
-                    dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
+                //build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
+                //    'No. of client', '% TX_TB', dt.TB_treatment.state_data,
+                //    dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
 
                 //TB_tpt
-                build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                    'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
+                //build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
+                //    'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
 
                  //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
                     //    'No. of client', '% TPT', dt.tb_tpt.State,

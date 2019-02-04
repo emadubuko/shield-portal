@@ -82,6 +82,8 @@ namespace ShieldPortal.ViewModel
 
     }
 
+
+
     public class TB_Treatment_ViewModel : BaseModel
     {
         public int New_Cases { get; set; }
@@ -100,8 +102,8 @@ namespace ShieldPortal.ViewModel
         public string State { get; set; }
         public string LGA { get; set; }
         public string Facility { get; set; }
-        public int FacilityId { get; set; }
-        public string Indicator { get; set; }
+        public int facilityId { get; set; }
+        public string indicator { get; set; }
         public string ReportingPeriod { get; set; }
         public bool GranularSite { get; set; }
         public bool GSM_2 { get; set; }
