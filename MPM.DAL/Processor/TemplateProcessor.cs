@@ -49,7 +49,7 @@ namespace MPM.DAL.Processor
                     throw new ApplicationException("Wrong template uploaded. Please re-download the template");
                 }
                 string ReportLevelValue = "";
-                if (documentType.ToString().Contains("GSM"))
+                if (documentType.ToString().Contains("GSMBiWeekly"))
                 {
                     ReportLevelValue = "IP";
 
@@ -68,7 +68,7 @@ namespace MPM.DAL.Processor
                         }
                         else
                         {
-                            throw new ApplicationException("invalid report period not specified");
+                            throw new ApplicationException("invalid report period specified");
                         }
                     }
                 }
@@ -97,7 +97,7 @@ namespace MPM.DAL.Processor
                 var mt = new MetaData();
                 IList<IPUploadReport> previously = null;
 
-                if (documentType.ToString().Contains("GSM"))
+                if (documentType.ToString().Contains("GSMBiWeekly"))
                 {
                     previously = dao.GenerateIPUploadReports(loggedInProfile.Organization.Id, period, ReportLevelValue, DTO.ReportLevel.IP);
                 }
@@ -114,10 +114,10 @@ namespace MPM.DAL.Processor
                         IP = loggedInProfile.Organization,
                         ReportingPeriod = period,
                         UploadedBy = loggedInProfile,
-                        ReportLevel = documentType.ToString().Contains("GSM") ? DTO.ReportLevel.IP : DTO.ReportLevel.State,
+                        ReportLevel = documentType.ToString().Contains("GSMBiWeekly") ? DTO.ReportLevel.IP : DTO.ReportLevel.State,
                         ReportLevelValue = ReportLevelValue,
                         FilePath = savedFilePath,
-                        ReportType = documentType.ToString().Contains("GSM") ? ReportType.GSM : ReportType.IMS,
+                        ReportType = documentType.ToString().Contains("GSMBiWeekly") ? ReportType.GSM : ReportType.IMS,
                     };
                 }
                 else

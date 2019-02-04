@@ -33,7 +33,7 @@ namespace ShieldPortal.Controllers
             IndexPeriods = new Dictionary<string, int>();
             for (int i = -6; i < 6; i++)
             {
-                IndexPeriods.Add(DateTime.Now.AddMonths(i).ToString("MMM-yyyy"), i + 6);
+                IndexPeriods.Add(DateTime.Now.AddMonths(i).ToString("MMM-yy"), i + 6);
             }
 
             var ims = new UploadViewModel
