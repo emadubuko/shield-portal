@@ -1224,12 +1224,9 @@ namespace ShieldPortal.Controllers
             List<CompletenessReport> lst = Utilities.ConvertToList<CompletenessReport>(dt);
 
             var groupedData = lst.GroupBy(x => x.State);
-            int total_submitted_gsm = 0;
             int submitted_gsm = 0;
-
-            int indicators = 0;
-
-            int PMTC = 0;
+            
+            int PMTCT = 0;
             int PMTCT_EID = 0;
             int HTS_PITC = 0;
             int HTS = 0;
@@ -1244,6 +1241,21 @@ namespace ShieldPortal.Controllers
             int TPT_Eligible = 0;
             int TB_ART = 0;
 
+            int IMS_PMTCT = 0;
+            int IMS_PMTCT_EID = 0;
+            int IMS_HTS_PITC = 0;
+            int IMS_HTS = 0;
+            int IMS_Linkage_To_Treatment = 0;
+            int IMS_ART = 0;
+            int IMS_PMTCT_VIRAL_Load = 0;
+            int IMS_TB_Screening = 0;
+            int IMS_TB_Presumptive = 0;
+            int IMS_TB_Bacteriology_Diagnosis = 0;
+            int IMS_TB_Diagnosed = 0;
+            int IMS_TB_Treatment = 0;
+            int IMS_TPT_Eligible = 0;
+            int IMS_TB_ART = 0;
+
             var lga_drill_down = new List<dynamic>();
 
             var state_gsm = new List<dynamic>();
@@ -1251,92 +1263,84 @@ namespace ShieldPortal.Controllers
 
             foreach (var state in groupedData)
             {
-                total_submitted_gsm = 0;
+                 PMTCT = 0;
+                 PMTCT_EID = 0;
+                 HTS_PITC = 0;
+                 HTS = 0;
+                 Linkage_To_Treatment = 0;
+                 ART = 0;
+                 PMTCT_VIRAL_Load = 0;
+                 TB_Screening = 0;
+                 TB_Presumptive = 0;
+                 TB_Bacteriology_Diagnosis = 0;
+                 TB_Diagnosed = 0;
+                 TB_Treatment = 0;
+                 TPT_Eligible = 0;
+                 TB_ART = 0;
 
-              
+                 IMS_PMTCT = 0;
+                 IMS_PMTCT_EID = 0;
+                 IMS_HTS_PITC = 0;
+                 IMS_HTS = 0;
+                 IMS_Linkage_To_Treatment = 0;
+                 IMS_ART = 0;
+                 IMS_PMTCT_VIRAL_Load = 0;
+                 IMS_TB_Screening = 0;
+                 IMS_TB_Presumptive = 0;
+                 IMS_TB_Bacteriology_Diagnosis = 0;
+                 IMS_TB_Diagnosed = 0;
+                 IMS_TB_Treatment = 0;
+                 IMS_TPT_Eligible = 0;
+                 IMS_TB_ART = 0;
 
-                //  submitted_indicators = lst.Where(x => x.GSM_2 && x.State == state.Key).GroupBy(x => x.indicator).Count();
-                
-             
-                    foreach (var item in lst.Where(x => x.GSM_2 && x.State == state.Key))
+
+                PMTCT = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT").Count();
+                PMTCT_EID = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_EID").Count();
+                ART = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "ART").Count();
+                HTS = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "HTS").Count();
+                HTS_PITC = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "HTS_PITC").Count();
+                Linkage_To_Treatment = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "Linkage_To_Treatment").Count();
+                PMTCT_VIRAL_Load = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_VIRAL_Load").Count();
+                TB_Screening = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Screening").Count();
+                TB_Presumptive = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Presumptive").Count();
+                TB_Bacteriology_Diagnosis = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Bacteriology_Diagnosis").Count();
+                TB_Diagnosed = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Diagnosed").Count();
+                TB_Treatment = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Treatment").Count();
+                TPT_Eligible = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TPT_Eligible").Count();
+                TB_ART = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_ART").Count();
+
+
+
+                IMS_PMTCT = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT").Count();
+                IMS_PMTCT_EID = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_EID").Count();
+                IMS_ART = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "ART").Count();
+                IMS_HTS = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "HTS").Count();
+                IMS_HTS_PITC = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "HTS_PITC").Count();
+                IMS_Linkage_To_Treatment = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "Linkage_To_Treatment").Count();
+                IMS_PMTCT_VIRAL_Load = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_VIRAL_Load").Count();
+                IMS_TB_Screening = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Screening").Count();
+                IMS_TB_Presumptive = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Presumptive").Count();
+                IMS_TB_Bacteriology_Diagnosis = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Bacteriology_Diagnosis").Count();
+                IMS_TB_Diagnosed = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Diagnosed").Count();
+                IMS_TB_Treatment = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Treatment").Count();
+                IMS_TPT_Eligible = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TPT_Eligible").Count();
+                IMS_TB_ART = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_ART").Count();
+
+
+                if (PMTCT != 0)
                 {
-                    if (item.indicator == "PMTCT"  /* || item.indicator == "ART" || item.indicator == "HTS" || item.indicator == "HTS_PITC" || item.indicator == "Linkage_To_Treatment" || item.indicator == "PMTCT_VIRAL_Load" || item.indicator == "TB_Screening" || item.indicator == "TB_Presumptive" || item.indicator == "TB_Bacteriology_Diagnosis" || item.indicator == "TB_Diagnosed" || item.indicator == "TB_Treatment" || item.indicator == "TPT_Eligible" || item.indicator == "TB_ART"*/)
+                    state_gsm.Add(new
                     {
-                        PMTC++;
-                    }
-                    else if(item.indicator == "PMTCT_EID")
-                    {
-                        PMTCT_EID++;
-                    }
-                    else if (item.indicator == "ART")
-                    {
-                        ART++;
-                    }
-                    else if (item.indicator == "HTS")
-                    {
-                        HTS++;
-                    }
-                    else if (item.indicator == "HTS_PITC")
-                    {
-                        HTS_PITC++;
-                    }
-                    else if (item.indicator == "Linkage_To_Treatment")
-                    {
-                        Linkage_To_Treatment++;
-                    }
-                    else if (item.indicator == "PMTCT_VIRAL_Load")
-                    {
-                        PMTCT_VIRAL_Load++;
-                    }
-                    else if (item.indicator == "TB_Screening")
-                    {
-                        TB_Screening++;
-                    }
-                    else if (item.indicator == "TB_Presumptive")
-                    {
-                        TB_Presumptive++;
-                    }
-                    else if (item.indicator == "TB_Bacteriology_Diagnosis")
-                    {
-                        TB_Bacteriology_Diagnosis++;
-                    }
-                    else if (item.indicator == "TB_Diagnosed")
-                    {
-                        TB_Diagnosed++;
-                    }
-                    else if (item.indicator == "TB_Treatment")
-                    {
-                        TB_Treatment++;
-                    }
-                    else if (item.indicator == "TPT_Eligible")
-                    {
-                        TPT_Eligible++;
-                    }
-                    else if (item.indicator == "TB_Treatment")
-                    {
-                        TB_ART++;
-                    }
+                        y = Math.Round(100 * 1.0 * PMTCT / 20, 0),
+                        name = state.Key,
+                        drilldown = state.Key
+                    });
                 }
-
-             
-                    total_submitted_gsm = lst.Where(x => x.GSM_2 && x.State == state.Key).Count();
-                    submitted_gsm = total_submitted_gsm / 14;
-
-                    if (submitted_gsm != 0)
-                    {
-                        state_gsm.Add(new
-                        {
-                            y = Math.Round(100 * 1.0 * submitted_gsm / 20, 0),
-                            name = state.Key,
-
-                            drilldown = state.Key
-                        });
-
+                if (IMS_PMTCT != 0) { 
                     state_ims.Add(new
                     {
-                        y = Math.Round(100 * 1.0 * submitted_gsm / 162, 0),
+                        y = Math.Round(100 * 1.0 * IMS_PMTCT / 162, 0),
                         name = state.Key,
-
                         drilldown = state.Key
                     });
                 }
@@ -1349,41 +1353,62 @@ namespace ShieldPortal.Controllers
 
                 foreach (var lga in state.GroupBy(x => x.LGA))
                 {
-                
-                    lga_gsm.Add(new
+                    PMTCT = 0;
+                    IMS_PMTCT = 0;
+
+                    PMTCT = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key).Count();
+
+                    IMS_PMTCT = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key).Count();
+                    if (PMTCT != 0)
                     {
-                        y = Math.Round(100 * 1.0 * lga.Count() / 20, 0),
+                        lga_gsm.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * PMTCT / 20, 0),
+                            name = state.Key,
+                            drilldown = state.Key
+                        });
+
+                    }
+
+                    if (IMS_PMTCT != 0) { 
+                        lga_ims.Add(new
+                    {
+                        y = Math.Round(100 * 1.0 * IMS_PMTCT / 162, 0),
                         name = state.Key,
                         drilldown = state.Key
                     });
 
-                    lga_ims.Add(new
-                    {
-                        y = Math.Round(100 * 1.0 * lga.Count() / 162, 0),
-                        name = state.Key,
-                        drilldown = state.Key
-                    });
-
+                }
                     var facility_gsm = new List<dynamic>();
                     var facility_ims = new List<dynamic>();
 
                     foreach (var fty in lga.GroupBy(x => x.Facility))
                     {
-                    
 
-                        facility_gsm.Add(new
+                        PMTCT = 0;
+                        IMS_PMTCT = 0;
+
+                        PMTCT = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+
+                        IMS_PMTCT = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                        if (PMTCT != 0)
                         {
-                            fty.Key,
-                            percent = Math.Round(100 * 1.0 * fty.Count() / 162, 0),
-                           
-                        });
+                            facility_gsm.Add(new
+                            {
+                                fty.Key,
+                                percent = Math.Round(100 * 1.0 * PMTCT / 20, 0),
 
-                        facility_ims.Add(new
+                            });
+                        }
+                        if (IMS_PMTCT != 0)
                         {
-                            fty.Key,
-                            percent = Math.Round(100 * 1.0 * fty.Count() / 162, 0),
+                            facility_ims.Add(new
+                            {
+                                fty.Key,
+                                percent = Math.Round(100 * 1.0 * IMS_PMTCT / 162, 0),
 
-                        });
+                            });
+                        }
                     }
 
                     //add facility

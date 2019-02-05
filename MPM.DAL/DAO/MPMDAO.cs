@@ -366,39 +366,41 @@ namespace MPM.DAL.DAO
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandTimeout = 180;
 
-            //if (searchModel != null)
-            //{
-            //    cmd.Parameters.AddWithValue("reportPeriod", searchModel.ReportPeriod);
+            if (searchModel != null)
+            {
+                cmd.Parameters.AddWithValue("reportPeriod", searchModel.ReportPeriod);
+            
 
-            //    if (searchModel.IPs != null && searchModel.IPs.Count > 0)
-            //    {
-            //        cmd.Parameters.AddWithValue("IP", string.Join("','", searchModel.IPs));
-            //    }
-            //    if (searchModel.state_codes != null && searchModel.state_codes.Count > 0)
-            //    {
-            //        cmd.Parameters.AddWithValue("Statecode", string.Join("','", searchModel.state_codes));
-            //    }
-            //    if (searchModel.lga_codes != null && searchModel.lga_codes.Count > 0)
-            //    {
-            //        cmd.Parameters.AddWithValue("LGA_code", string.Join("','", searchModel.lga_codes));
-            //    }
-            //    if (searchModel.facilities != null && searchModel.facilities.Count > 0)
-            //    {
-            //        cmd.Parameters.AddWithValue("facility", string.Join("','", searchModel.facilities));
-            //    }
-            //    if (!string.IsNullOrEmpty(searchModel.Sex))
-            //    {
-            //        cmd.Parameters.AddWithValue("sex", searchModel.Sex);
-            //    }
-            //    if (!string.IsNullOrEmpty(searchModel.Agegroup))
-            //    {
-            //        cmd.Parameters.AddWithValue("agegroup", searchModel.Agegroup);
-            //    }
-            //    if (!string.IsNullOrEmpty(searchModel.PopulationGroup))
-            //    {
-            //        cmd.Parameters.AddWithValue("populationgroup", searchModel.PopulationGroup);
-            //    }
-            //}
+
+                //if (searchModel.IPs != null && searchModel.IPs.Count > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("IP", string.Join("','", searchModel.IPs));
+                //}
+                //if (searchModel.state_codes != null && searchModel.state_codes.Count > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("Statecode", string.Join("','", searchModel.state_codes));
+                //}
+                //if (searchModel.lga_codes != null && searchModel.lga_codes.Count > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("LGA_code", string.Join("','", searchModel.lga_codes));
+                //}
+                //if (searchModel.facilities != null && searchModel.facilities.Count > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("facility", string.Join("','", searchModel.facilities));
+                //}
+                //if (!string.IsNullOrEmpty(searchModel.Sex))
+                //{
+                //    cmd.Parameters.AddWithValue("sex", searchModel.Sex);
+                //}
+                //if (!string.IsNullOrEmpty(searchModel.Agegroup))
+                //{
+                //    cmd.Parameters.AddWithValue("agegroup", searchModel.Agegroup);
+                //}
+                //if (!string.IsNullOrEmpty(searchModel.PopulationGroup))
+                //{
+                //    cmd.Parameters.AddWithValue("populationgroup", searchModel.PopulationGroup);
+                //}
+            }
 
             var dataTable = GetDatable(cmd);
             return dataTable;
