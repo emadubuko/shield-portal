@@ -351,7 +351,7 @@
                 try {
                     var dt = JSON.parse(response)._data;
                     buildallchart(dt);
-                    console.log(response);
+                    //console.log(response);
                 }
                 catch (e) {
                     alert("A system error has occurred. Kindly re-try again shortly");
@@ -415,6 +415,7 @@
                 //TB_stat
                 build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
                     dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
+            //    console.log("Logged Message " + dt.Tb_Stat.lga_drill_down);
 
                 //TB_treatment
                 build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',

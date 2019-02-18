@@ -87,10 +87,10 @@
                             <th>PMTCT_HEI_POS</th>
                             <th>TX_NEW</th>
                             <th>TX_CURR</th>
-
+                            <th>TX_PVLS</th>
                             <th>TB_STAT</th>
                             <th>TB_ART</th>
-                            <th>TX_TB</th>
+                           
 
                             <th>TX_Total</th>
                             <th>Marked for DQA</th>
@@ -226,10 +226,9 @@
                     html += "<td>" + (checkForNumber(d.PMTCT_HEI_POS) ? d.PMTCT_HEI_POS : '') + "</td>";
                     html += "<td>" + (checkForNumber(d.TX_NEW) ? d.TX_NEW : '') + "</td>";
                     html += "<td>" + (checkForNumber(d.TX_CURR) ? d.TX_CURR : '') + "</td>";
-
+                    html += "<td>" + (checkForNumber(d.TX_PVLS) ? d.TX_PVLS : '') + "</td>";
                     html += "<td>" + (checkForNumber(d.TB_STAT) ? d.TB_STAT : '') + "</td>";
                     html += "<td>" + (checkForNumber(d.TB_ART) ? d.TB_ART : '') + "</td>";
-                    html += "<td>" + (checkForNumber(d.TX_TB) ? d.TX_TB : '') + "</td>";
 
                     html += "<td>" + (d.PMTCT_ART + d.TX_CURR) + "</td>";
                     if (d.SelectedForDQA) {

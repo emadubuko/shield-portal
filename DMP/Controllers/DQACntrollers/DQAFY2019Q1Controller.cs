@@ -43,7 +43,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
             {
                 ip_id = profile.Organization.Id;
             }
-            List<UploadList> previousUploads = Utility.RetrievePivotTables(ip_id, "Q3 FY18");
+            List<UploadList> previousUploads = Utility.RetrievePivotTables(ip_id, "Q1 FY19");
             return View(previousUploads);
         }
 
@@ -69,7 +69,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
                 Request.Files[0].SaveAs(directory + Request.Files[0].FileName);
 
                 Stream uploadedFile = Request.Files[0].InputStream;
-                bool status = new BDQAQ3FY18().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
+                bool status = new BDQAQ1FY19().ReadPivotTable(uploadedFile, reportPeriod, loggedinProfile, out result);
             }
             return result;
         }
@@ -84,7 +84,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
                 ip = profile.Organization.ShortName;
             }
 
-            var reports = Utility.GetUploadReport("Q3 FY18", ip);
+            var reports = Utility.GetUploadReport("Q1 FY19", ip);
             List<dynamic> iplocation = new List<dynamic>();
             foreach (DataRow dr in reports.Rows)
             {
@@ -178,7 +178,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
                 var profile = new Utils().GetloggedInProfile();
                 ip = profile.Organization.ShortName;
             }
-            var datatable = Utility.GetFY18Analysis(ip, "Q3 FY18", reportType.ToLower().Contains("partners"));
+            var datatable = Utility.GetFY19Analysis(ip, "Q1 FY19", reportType.ToLower().Contains("partners"));
             var data = new HighChartDataServices().GetConcurrency(datatable, reportType, ip);
             return View(data);
         }
@@ -190,7 +190,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
             try
             {
                 Profile loggedinProfile = new Services.Utils().GetloggedInProfile();
-                Logger.LogInfo(" DQAQ3 FY2018,PostDQAFile", "processing dqa upload");
+                Logger.LogInfo(" DQAQ1 FY2019,PostDQAFile", "processing dqa upload");
 
                 HttpResponseMessage result = null;
 
@@ -205,7 +205,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
                         if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM" || ext.ToUpper() == "ZIP")
                         {
                             string directory = System.Web.Hosting.HostingEnvironment
-                                .MapPath("~/Report/Uploads/DQA Q3 FY18/"
+                                .MapPath("~/Report/Uploads/DQA Q1 FY19/"
                                 + loggedinProfile.Organization.ShortName) + "/";
                             if (Directory.Exists(directory) == false)
                             {
@@ -257,7 +257,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
                                                 {
                                                     StreamUtils.Copy(zipStream, entryStream, new byte[4096]);
                                                 }
-                                                messages += new BDQAQ3FY18().ReadWorkbook(extractedFilePath, loggedinProfile);
+                                                messages += new BDQAQ1FY19().ReadWorkbook(extractedFilePath, loggedinProfile);
                                                 countSuccess++;
                                             }
                                         }
@@ -274,7 +274,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
                             }
                             else
                             {
-                                messages += new BDQAQ3FY18().ReadWorkbook(filePath, loggedinProfile);
+                                messages += new BDQAQ1FY19().ReadWorkbook(filePath, loggedinProfile);
                             }
                         }
                         else
@@ -305,9 +305,9 @@ namespace ShieldPortal.Controllers.DQACntrollers
                 ip = profile.Organization.ShortName;
             }
             var cmd = new SqlCommand();
-            cmd.CommandText = "get_FY18_analysis_report_by_quarter";
+            cmd.CommandText = "sp_get_FY19_analysis_report_by_quarter";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@reportPeriod", "Q3 FY18");
+            cmd.Parameters.AddWithValue("@reportPeriod", "Q1 FY19");
             cmd.Parameters.AddWithValue("@ip", ip);
             cmd.Parameters.AddWithValue("@get_partner_report", type.ToLower().Contains("partners"));
             var data = Utility.GetDatable(cmd);
@@ -329,8 +329,8 @@ namespace ShieldPortal.Controllers.DQACntrollers
                 ip = profile.Organization.ShortName;
             }
 
-            var partner_datatable = Utility.GetFY18Analysis(ip, "Q3 FY18", true);
-            var umb_datatable = Utility.GetFY18Analysis(ip, "Q3 FY18", false);
+            var partner_datatable = Utility.GetFY19Analysis(ip, "Q1 FY19", true);
+            var umb_datatable = Utility.GetFY19Analysis(ip, "Q1 FY19", false);
             var Partners_data = new HighChartDataServices().GetConcurrency(partner_datatable, "Partners", ip);
             var UMB_data = new HighChartDataServices().GetConcurrency(umb_datatable, "umb", ip);
 
@@ -489,7 +489,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
         {
             var profile = new Services.Utils().GetloggedInProfile();
             List<PivotTableModel> sites = new List<PivotTableModel>();
-            string currentPeriod = "Q3 FY18";
+            string currentPeriod = "Q1 FY19";
 
             int getIP = 0;
             if (User.IsInRole("ip"))
@@ -510,10 +510,10 @@ namespace ShieldPortal.Controllers.DQACntrollers
         {
             var profile = new Utils().GetloggedInProfile();
 
-            string fileName = "DQA_Q3_" + profile.Organization.ShortName + ".zip";
-            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q3/DQA_Q3_" + profile.Organization.ShortName);
-            string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q3/FY18_Q3_Data Quality Assessment tool_v7.xlsm");
-            string file = await new Utility().GenerateDQA(data, profile.Organization, fileName, directory, template, "Q3 FY18");
+            string fileName = "DQA_Q1_" + profile.Organization.ShortName + ".zip";
+            string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2019 Q1/DQA_Q1_" + profile.Organization.ShortName);
+            string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2019 Q1/FY19_Q1_Data Quality Assessment tool_v9.xlsm");
+            string file = await new Utility().GenerateDQA(data, profile.Organization, fileName, directory, template, "Q1 FY19");
 
             return Json(file, JsonRequestBehavior.AllowGet);
         }
@@ -525,16 +525,16 @@ namespace ShieldPortal.Controllers.DQACntrollers
             switch (fileType)
             {
                 case "DQAUserGuide":
-                    filename = "Data Quality Assessment Userguide Q3 FY18.pdf";
+                    filename = "Data Quality Assessment Userguide Q1 FY19.pdf";
                     break;
                 case "PivotTable":
-                    filename = "DATIM PIVOT TABLE FOR Q3 FY18.xlsx";
+                    filename = "DATIM PIVOT TABLE FOR Q1 FY19.xlsx";
                     break;
                 case "SummarySheet":
-                    filename = "Summary Sheet FY18 Q3 DQA.pdf";
+                    filename = "Summary Sheet FY19 Q1 DQA.pdf";
                     break;
             }
-            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2018 Q3/" + filename);
+            string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2019 Q1/" + filename);
 
             using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
@@ -546,7 +546,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
 
         public ActionResult RadetValidation()
         {
-            string period = "Q3 FY18";
+            string period = "Q1 FY19";
             string ip = "";
             var profile = new Utils().GetloggedInProfile();
             if (User.IsInRole("ip"))
@@ -584,9 +584,9 @@ namespace ShieldPortal.Controllers.DQACntrollers
             var search = Request["search[value]"];
             RADET.DAL.Models.RadetMetaDataSearchModel searchModel = JsonConvert.DeserializeObject<RADET.DAL.Models.RadetMetaDataSearchModel>(search);
 
-            string period = "Q3 FY18";
-            string startDate = "2018-04-01";
-            string endDate = "2018-06-30";
+            string period = "Q1 FY19";
+            string startDate = "2019-01-01";
+            string endDate = "2019-03-31";
 
             string ip = "";
             var profile = new Utils().GetloggedInProfile();

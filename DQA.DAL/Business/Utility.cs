@@ -458,6 +458,19 @@ namespace DQA.DAL.Business
             return dataTable;
         }
 
+        public static DataTable GetFY19Analysis(string IP_id, string reportPeriod, bool get_partner_report)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_FY19_analysis_report_by_quarter";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@reportPeriod", reportPeriod);
+            cmd.Parameters.AddWithValue("@ip", IP_id);
+            cmd.Parameters.AddWithValue("@get_partner_report", get_partner_report);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
+        }
+
         public static DataSet GetDashboardStatistic(string IP, string reportPeriod)
         {
             //TODO: seperate period into year and quarter

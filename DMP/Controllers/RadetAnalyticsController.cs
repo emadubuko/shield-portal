@@ -56,11 +56,28 @@ namespace ShieldPortal.Controllers
             return periodsInFY;
         }
 
+        List<string> Get2018Quaters()
+        {
+            List<string> periodsInFY = new List<string>();
+            //if (DateTime.Now.Month >= 10 && DateTime.Now.Month <= 12)
+            //{ 
+            //    periodsInFY.Add($"Q1 FY{DateTime.Now.AddYears(1).ToString("yy")}");
+            //}
+            //else
+            //{
+            periodsInFY.Add($"Q1 FY2018");
+            periodsInFY.Add($"Q2 FY2018");
+            periodsInFY.Add($"Q3 FY2018");
+            periodsInFY.Add($"Q4 FY2018");
+            //}
+            return periodsInFY;
+        }
+
 
         [HttpPost]
         public string RADETScoreCardData()
         {
-            List<string> period = GetCurrentFY(); //System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
+            List<string> period = Get2018Quaters(); //System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
 
             var data = new RadetMetaDataDAO().GetScoreCard(period);
 

@@ -895,7 +895,7 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
             }
         },
         subtitle: {
-            text: 'click on the states bar to drill down',
+            text: 'Click the bars to drill down',
         },
         legend: {
             enabled: true,
@@ -935,6 +935,7 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
         }
     });
 }
+
 
 function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title, y2_title, parent_data, drill_down_data, xaxisCategory) {
     var main_categories = xaxisCategory;

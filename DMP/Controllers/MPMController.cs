@@ -676,8 +676,10 @@ namespace ShieldPortal.Controllers
         {
             Dictionary<string, string> storedProcedures = new Dictionary<string, string>
             {
-               
-                { "Comp_Stat", "[sp_mpm_completeness_report]" }
+
+                 { "Comp_Stat", "sp_mpm_completeness_report" },
+                { "Comp_Stat_fac", "sp_mpm_completeness_report" },
+                { "Comp_Stat_fac_ims", "sp_mpm_completeness_report" }
             };
 
             MPMDAO dao = new MPMDAO();
@@ -699,10 +701,17 @@ namespace ShieldPortal.Controllers
                 if (sp.Key == "Comp_Stat")
                 {
                     _data.Add(sp.Key, GenerateCOMPLETENESS_STAT(data));
-                }//
+                }
+                if (sp.Key == "Comp_Stat_fac")
+                {
+                 //   _data.Add(sp.Key, GenerateCOMPLETENESS_FAC(data));
+                }
 
+                if (sp.Key == "Comp_Stat_fac_ims")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESS_FAC_IMS(data));
+                }
 
-              
             }
 
             return JsonConvert.SerializeObject(new
@@ -1443,6 +1452,99 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
             };
         }
+
+        //public dynamic GenerateCOMPLETENESS_FAC(DataTable dt)
+        //{
+           
+        //    Func<CompletenessReport, bool> func = null;
+        //    IEnumerable<IGrouping<string, CompletenessReport>> list =
+        //        from x in Utilities.ConvertToList<CompletenessReport>(dt)
+        //        group x by x.indicator;
+
+        //    List<CompletenessReport> lst = Utilities.ConvertToList<CompletenessReport>(dt);
+
+        //    var groupedData = lst.GroupBy(x => x.State);
+
+        //    var fac_gsm_indicators = new List<dynamic>();
+        //    var lga_drill_down = new List<dynamic>();
+        //    int no_of_states = 0;
+        //    int no_of_lga = 0;
+        //    foreach (var strs in groupedData)
+        //    {
+        //        fac_gsm_indicators.Add(new
+        //        {
+        //            y = Math.Round(100 * (double)strs.Where<CompletenessReport>((CompletenessReport x) => {
+        //                if (!x.GSM_2)
+        //                {
+        //                    return false;
+        //                }
+        //                return x.indicator == strs.Key;
+        //            }).Count<CompletenessReport>() / 20, 0),
+        //            name = strs.Key,
+        //            drilldown = strs.Key
+        //        });
+        //       var fac_gsm_states = new List<dynamic>();
+        //        foreach (IGrouping<string, CompletenessReport> strs1 in
+        //            from x in strs
+        //            group x by x.State)
+        //        {
+        //            no_of_states = 0;
+        //            no_of_states = strs.DistinctBy<CompletenessReport, string>((CompletenessReport y) => y.State).Count<CompletenessReport>();
+        //            fac_gsm_states.Add(new
+        //            {
+        //                y = Math.Round(100 * (double)strs.Where<CompletenessReport>((CompletenessReport x) => {
+        //                    if (!x.GSM_2 || !(x.State == strs1.Key))
+        //                    {
+        //                        return false;
+        //                    }
+        //                    return x.indicator == strs.Key;
+        //                }).Count<CompletenessReport>() / (double)no_of_states, 0),
+        //                name = strs1.Key,
+        //                drilldown = strs1.Key
+        //            });
+        //            List<object> fac_gsm_lga = new List<object>();
+        //            foreach (IGrouping<string, CompletenessReport> strs2 in
+        //                from x in strs1
+        //                group x by x.LGA)
+        //            {
+        //                no_of_lga = 0;
+        //                IEnumerable<CompletenessReport> completenessReports = strs.DistinctBy<CompletenessReport, string>((CompletenessReport y) => y.LGA);
+        //                Func<CompletenessReport, bool> func1 = func;
+        //                if (func1 == null)
+        //                {
+        //                    Func<CompletenessReport, bool> state = (CompletenessReport y) => y.State == this.state.Key;
+        //                    Func<CompletenessReport, bool> func2 = state;
+        //                    func = state;
+        //                    func1 = func2;
+        //                }
+        //                no_of_lga = completenessReports.Where<CompletenessReport>(func1).Count<CompletenessReport>();
+        //                fac_gsm_lga.Add(new
+        //                {
+        //                    y = Math.Round(100 * (double)strs2.Where<CompletenessReport>((CompletenessReport x) => {
+        //                        if (!x.GSM_2 || !(x.State == strs1.Key) || !(x.indicator == strs.Key))
+        //                        {
+        //                            return false;
+        //                        }
+        //                        return x.LGA == strs2.Key;
+        //                    }).Count<CompletenessReport>() / (double)no_of_lga, 0),
+        //                    name = strs2.Key,
+        //                    drilldown = strs2.Key
+        //                });
+        //            }
+        //            lga_drill_down.Add(new { name = "GSM", id = strs1.Key, data = fac_gsm_lga });
+        //        }
+        //        lga_drill_down.Add(new { name = "GSM", id = strs.Key, data = fac_gsm_states });
+        //    }
+        //    return new
+        //    {
+        //        Comp_Stat_fac = new List<object>()
+        //    {
+        //        new { name = "GSM", data = fac_gsm_indicators }
+        //    },
+        //        lga_drill_down = lga_drill_down
+        //    };
+        //}
+
         //PMTCT_Cascade_ViewModel
         public dynamic GeneratePMTCT_Cascade(DataTable dt)
         {
