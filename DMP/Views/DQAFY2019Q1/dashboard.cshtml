@@ -104,10 +104,10 @@
                             var submited_actually = 0;
                         else
                             submited_actually = dt.Submitted;
-                        pending = (dt.Total - submited_actually) + " are yet to submit";
+                      //  pending = (dt.Total - submited_actually) + " are yet to submit";
                     }
                     else if (dt.Submitted != null && dt.Submitted == dt.Total) {
-                        pending = "All facilites in the state have submitted"
+                     //   pending = "All facilites in the state have submitted"
                     }
                     var percentage = 0;
                     if (dt.Total > 0) {

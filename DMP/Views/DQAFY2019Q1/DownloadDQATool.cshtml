@@ -39,7 +39,7 @@
                             <th>Lga</th>
                             <th>Site</th>
                             <th>Total on treatment</th>
-                            <th>Selected for DQA</th>
+                            @*<th>Selected for DQA</th>*@
                         </tr>
                     </thead>
                     <tbody>
@@ -54,14 +54,14 @@
                                     <td>@item.Lga</td>
                                     <td> @item.FacilityName </td>
                                     <td>@(item.PMTCT_ART + item.TX_CURR)</td>
-                                    @if (item.SelectedForDQA)
+                                    @*@if (item.SelectedForDQA)
                                     {
                                         <td><i class='icon-check' style='color: green;font-weight: bolder;margin-left: 30%;'></i></td>
                                     }
                                     else
                                     {
                                         <td>-</td>
-                                    }
+                                    }*@
                                 </tr>
                             }
                         }                        
