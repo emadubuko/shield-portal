@@ -17,55 +17,215 @@
             </ol>
         </div>
     </div>
+    <style>
+        html, body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
+        /* define a fixed width for the entire menu */
+        .navigation {
+            width: 230px;
+
+            /*background: #fff;
+            border-radius: 2px;
+            display: inline-block;
+            height: 300px;
+            margin: 1rem;
+            position: relative;
+
+            box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);*/
+        }
+
+        /* reset our lists to remove bullet points and padding */
+        .mainmenu, .submenu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            /* make ALL links (main and submenu) have padding and background color */
+            .mainmenu a {
+                display: block;
+                background-color: #F5F5F5;
+                text-decoration: none;
+                padding: 15px;
+                color: #000;
+            }
+
+                /* add hover behaviour */
+                .mainmenu a:hover {
+                    background-color: #EEEEEE;
+                }
+
+
+            /* when hovering over a .mainmenu item,
+  display the submenu inside it.
+  we're changing the submenu's max-height from 0 to 200px;
+*/
+
+            .mainmenu li:hover .submenu {
+                display: block;
+                max-height: 250px;
+            }
+
+            /*
+  we now overwrite the background-color for .submenu links only.
+  CSS reads down the page, so code at the bottom will overwrite the code at the top.
+*/
+
+            .submenu a {
+                background-color: #E0E0E0;
+            }
+
+                /* hover behaviour for links inside .submenu */
+                .submenu a:hover {
+                    background-color: #BDBDBD;
+                }
+
+        /* this is the initial state of all submenus.
+  we set it to max-height: 0, and hide the overflowed content.
+*/
+        .submenu {
+            overflow: hidden;
+            max-height: 0;
+            -webkit-transition: all 0.5s ease-out;
+        }
+    </style>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <br /><br />
             <div class="page-sidebar">
+
                 <div class="sidebar">
-                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
-                        
-                        <li>
-                            <a href=@Url.Action("GSMUploadTracker", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; GSM Upload Tracker</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("index", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; IMS Upload Tracker</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("CompletenessReports", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; Completeness Report</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("Dashboard", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("Upload", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("NDR_Statictics","MPM") style="color:darkturquoise;">
-                                <i class="fa fa-cloud-chart"></i><span class="title">&nbsp; NDR Statistics</span>
-                            </a>
-                        </li>
-                        <li class="navigation-header">Downloads</li>
-                        <li>
-                            <a href="~/MPM/Download" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; Download IMS Template</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="~/MPM/DownloadTemplateForGSM" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; Download GSM Template</span>
-                            </a>
-                        </li>
-                    </ul>
+
+                    <nav class="navigation">
+                        <ul class="mainmenu">
+
+                            <li>
+                                <a href=""> <i class="fa fa-calendar"></i><span class="title">&nbsp; GSM</span></a>
+                                <ul class="submenu">
+                                    <li>
+                                        <a href=@Url.Action("CompletenessReports", "MPM")>
+                                            Completeness Report
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href=@Url.Action("ReportingRate", "MPM")>
+                                            Reporting Rate
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href=@Url.Action("GSMUploadTracker", "MPM")>
+                                            Upload Tracker
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href=""> <i class="fa fa-calendar-plus-o"></i><span class="title">&nbsp; IMS</span></a>
+                                <ul class="submenu">
+                                    <li>
+                                        <a href=@Url.Action("CompletenessReports", "MPM")>
+                                            Completeness Report
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href=@Url.Action("ReportingRate", "MPM")>
+                                            Reporting Rate
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href=@Url.Action("Index", "MPM")>
+                                            Upload Tracker
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("Dashboard", "MPM")>
+                                    <i class="fa fa-dashboard"></i><span class="title">&nbsp; Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("Upload", "MPM")>
+                                    <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=@Url.Action("NDR_Statictics", "MPM")>
+                                    <i class="fa fa-bar-chart"></i><span class="title">&nbsp; NDR Statistics</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href=""> <i class="fa fa-download"></i><span class="title">&nbsp; Downloads</span></a>
+                                <ul class="submenu">
+                                    <li>
+                                        <a href="~/MPM/DownloadTemplateForGSM">
+                                            GSM Template
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="~/MPM/Download">
+                                            IMS Template
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+
+
+                    @*<ul id="side-nav" class="main-menu navbar-collapse collapse">
+
+
+                    <li class="list-item">
+                        <a href=@Url.Action("GSMUploadTracker", "MPM") style="color:darkturquoise;">
+                            <i class="fa fa-home"></i><span class="title">&nbsp; GSM Upload Tracker</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("index", "MPM") style="color:darkturquoise;">
+                            <i class="fa fa-home"></i><span class="title">&nbsp; IMS Upload Tracker</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("CompletenessReports", "MPM") style="color:darkturquoise;">
+                            <i class="fa fa-home"></i><span class="title">&nbsp; Completeness Report</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("ReportingRate", "MPM") style="color:darkturquoise;">
+                            <i class="fa fa-home"></i><span class="title">&nbsp; Reporting Rate</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("Dashboard", "MPM") style="color:darkturquoise;">
+                            <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("Upload", "MPM") style="color:darkturquoise;">
+                            <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("NDR_Statictics","MPM") style="color:darkturquoise;">
+                            <i class="fa fa-cloud-chart"></i><span class="title">&nbsp; NDR Statistics</span>
+                        </a>
+                    </li>
+                    <li class="navigation-header">Downloads</li>
+                    <li>
+                        <a href="~/MPM/Download" style="color:deeppink;">
+                            <i class="fa fa-download"></i><span class="title">&nbsp; Download IMS Template</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/MPM/DownloadTemplateForGSM" style="color:deeppink;">
+                            <i class="fa fa-download"></i><span class="title">&nbsp; Download GSM Template</span>
+                        </a>
+                    </li>
+                </ul>*@
                 </div>
             </div>
         </div>

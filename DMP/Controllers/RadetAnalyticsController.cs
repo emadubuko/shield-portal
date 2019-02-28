@@ -78,7 +78,7 @@ namespace ShieldPortal.Controllers
         public string RADETScoreCardData()
         {
             List<string> period = Get2018Quaters(); //System.Configuration.ConfigurationManager.AppSettings["ReportPeriod"];
-
+          
             var data = new RadetMetaDataDAO().GetScoreCard(period);
 
             List<dynamic> mydata = new List<dynamic>();

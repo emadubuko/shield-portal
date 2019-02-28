@@ -108,4 +108,124 @@ namespace ShieldPortal.ViewModel
         public bool GranularSite { get; set; }
         public bool GSM_2 { get; set; }
     }
+
+
+    public class GranularSites
+    {
+        public int Id { get; set; }
+        public string IP { get; set; }
+        public string Name { get; set; }
+        public string FacilityCode { get; set; }
+        public string LGAId { get; set; }
+        public int ImplementingPartnerId { get; set; }
+        public bool GranularSite { get; set; }
+        public bool GSM_2 { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+    }
+
+    public class HTS_Index_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Name { get; set; }
+        public string Sex { get; set; }
+        public string POS { get; set; }
+        public string NEG { get; set; }
+        public string TestingType { get; set; }
+        public int SiteId { get; set; }     
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class HTS_TST_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Name { get; set; }
+        public string Sex { get; set; }
+        public string POS { get; set; }
+        public string NEG { get; set; }
+        public string SDP { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class HTS_Other_PITC_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Name { get; set; }
+        public string Sex { get; set; }
+        public string POS { get; set; }
+        public string NEG { get; set; }
+        public string SDP { get; set; }
+        public string Facility { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class ART_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Sex { get; set; }
+        public string Denominator { get; set; }
+        public string Numerator { get; set; }
+        public string IndicatorType { get; set; }
+        public string Facility { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class PMTCT_Completeness_Rate
+    {
+        public string IP { get; set; }
+        public string AgeGroup { get; set; }
+        public string ReportingPeriod { get; set; }
+        public string NewClient { get; set; }
+        public string KnownStatus { get; set; }
+        public string KnownHIVPos { get; set; }
+        public string NewHIVPos { get; set; }
+        public string AlreadyOnART { get; set; }
+        public string NewOnART { get; set; }
+        public string Facility { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+
+    public class PMTCT_EID_Completeness_Rate
+    {
+        public string IP { get; set; }
+        public string AgeGroup { get; set; }
+        public string ReportingPeriod { get; set; }    
+        public string EID_Sample_Collected { get; set; }
+        public string EID_POS { get; set; }
+        public string EID_ART_Initiation { get; set; }
+        public string Facility { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class PMTCT_Viral_Load_Completeness_Rate
+    {
+        public string IP { get; set; }
+        public string AgeGroup { get; set; }
+        public string ReportingPeriod { get; set; }
+        public string Category { get; set; }
+       
+        public string Facility { get; set; }
+        public string State { get; set; }
+        public string LGA { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
 }

@@ -34,33 +34,59 @@
 
         <div class="tabs-container">
             <ul class="nav nav-tabs">
-                @*<li class=""><a aria-expanded="false" href="#tb_cascade" data-toggle="tab">TB HIV Cascade</a></li>*@
-
+                <li class="active"><a aria-expanded="false" href="#hts_cascade" data-toggle="tab">HTS</a></li>
+                <li class=""><a aria-expanded="false" href="#art" data-toggle="tab">ART</a></li>
+                <li class=""><a aria-expanded="false" href="#pmtct" data-toggle="tab">PMTCT</a></li>
             </ul>
 
             <div class="tab-content">
-                <img src="~/images/spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
-                <div class="tab-pane active" id="tb_cascade">
+                <img src="~/images/ms-spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
+                <div class="tab-pane active" id="hts_cascade">
                     <div class="row">
                         <div id="COMP_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
                     <hr />
                     <div class="row">
-                        <div id="COMP_stat_fac" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        <div id="COMP_stat_HTS_TST" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
                     <hr />
                     <div class="row">
-                        <div id="COMP_stat_fac_ims" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        <div id="Comp_Stat_HTS_Other_PITC" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="art">
+
+                    <div class="row">
+                        <div id="Comp_Stat_ART" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+                    <div class="tab-pane" id="pmtct">
+
+                        <div class="row">
+                            <div id="Comp_Stat_PMTCT" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="row">
+                            <div id="Comp_Stat_PMTCT_EID" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="row">
+                            <div id="Comp_Stat_PMTCT_Viral_Load" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                            </div>
                         </div>
                     </div>
 
+
                 </div>
-
-
             </div>
-        </div>
     </div>
 </div>
 
@@ -146,7 +172,7 @@
             </div>
         </div>
 
-        @*<div class="form-group">
+        <div class="form-group">
             <div class="col-sm-12">
                 <select id="sltsex" class="form-control">
                     <option value="" selected>Sex</option>
@@ -173,7 +199,7 @@
                     <option value="50+">50+</option>
                 </select>
             </div>
-        </div>*@
+        </div>
         <div class="form-group" style="display:none">
             <div class="col-sm-12">
                 <select id="sltpopulationgroup" class="form-control">
@@ -261,7 +287,7 @@
                     $("#a-spinner").hide();
                     try {
                         var dt = JSON.parse(response)._data;
-                      
+                       // console.log(dt);
                         buildallchart(dt);
                     }
                     catch (e) {
@@ -274,7 +300,7 @@
                 });
             });
 
-
+     
          
 
             var _model = {};
@@ -290,6 +316,7 @@
                 try {
                     var dt = JSON.parse(response)._data;
                     buildallchart(dt);
+                    console.log(response);
                    // console.log(response);
                 }
                 catch (e) {
@@ -307,16 +334,43 @@
 
             
 
-                //TB_stat
-                build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'Upload Completeness', 'Percentage Completeness',
+                //HTS_Index
+                build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'HTS_Index Completeness Report', 'Percentage Completeness',
                     dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
+                
+
+                //HTS_TST
+                build_side_by_side_bar_chart_with_DrillDown('COMP_stat_HTS_TST', 'HTS_TST Completeness Report', 'Percentage Completeness',
+                    dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down);
+                
+
+                //HTS_Other_PITC
+                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness',
+                    dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
+            
+                //ART
+                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness',
+                    dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
+
+                //PMTCT
+                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT', 'PMTCT Completeness Report', 'Percentage Completeness',
+                    dt.Comp_Stat_PMTCT.Comp_Stat_PMTCT, dt.Comp_Stat_PMTCT.lga_drill_down);
 
 
-                build_side_by_side_bar_chart_with_DrillDown('COMP_stat_fac', 'Upload Completeness By Indicator (GSM)', 'Percentage Completeness',
-                    dt.Comp_Stat_fac.Comp_Stat_fac, dt.Comp_Stat_fac.lga_drill_down);
+                //PMTCT_EID
+                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT_EID', 'PMTCT_EID Completeness Report', 'Percentage Completeness',
+                    dt.Comp_Stat_PMTCT_EID.Comp_Stat_PMTCT_EID, dt.Comp_Stat_PMTCT_EID.lga_drill_down);
 
-                build_side_by_side_bar_chart_with_DrillDown('COMP_stat_fac_ims', 'Upload Completeness By Indicator (IMS)', 'Percentage Completeness',
-                    dt.Comp_Stat_fac_ims.Comp_Stat_fac_ims, dt.Comp_Stat_fac_ims.lga_drill_down);
+                //PMTCT_Viral_Load
+                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT_Viral_Load', 'PMTCT Viral Load Completeness Report', 'Percentage Completeness',
+                    dt.Comp_Stat_PMTCT_Viral_Load.Comp_Stat_PMTCT_Viral_Load, dt.Comp_Stat_PMTCT_Viral_Load.lga_drill_down);
+                
+
+                //build_side_by_side_bar_chart_with_DrillDown('COMP_stat_fac', 'Upload Completeness By Indicator (GSM)', 'Percentage Completeness',
+                //    dt.Comp_Stat_fac.Comp_Stat_fac, dt.Comp_Stat_fac.lga_drill_down);
+
+                //build_side_by_side_bar_chart_with_DrillDown('COMP_stat_fac_ims', 'Upload Completeness By Indicator (IMS)', 'Percentage Completeness',
+                //    dt.Comp_Stat_fac_ims.Comp_Stat_fac_ims, dt.Comp_Stat_fac_ims.lga_drill_down);
           //      console.log("Log == " + dt.Comp_Stat_fac_ims);
                 
              //   console.log("Log message " + dt.Comp_Stat.Comp_Stat);
