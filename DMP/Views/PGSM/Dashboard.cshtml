@@ -79,6 +79,7 @@
             var unsuppressedViralLoadData = [];
             let unsVL;
 
+
             //unsuppressed viral load data from API
             var retAdherenceData = [];
             let retAdherence;
@@ -101,8 +102,6 @@
                         //unsuppressed Viral load data
                         unsVL = data[0].UnSuppresedVLCascade[0];
 
-                        console.log(unsVL);
-
                         unsuppressedViralLoadData.push(unsVL.AgeCohort);
                         unsuppressedViralLoadData.push(unsVL.UnSuppressedSexMale);
                         unsuppressedViralLoadData.push(unsVL.UnSuppressedSexFemale);
@@ -112,6 +111,7 @@
                         unsuppressedViralLoadData.push(unsVL.NoSwitched);
 
                         //retention adherence data
+
                         retAdherence = data[0];
 
                         retAdherenceData.push(retAdherence.EarlyMissedPatient);
@@ -125,12 +125,6 @@
                         retAdherenceData.push(retAdherence.EarlyMissedChartView);
                         retAdherenceData.push(retAdherence.EarlyMissedChartView);
                         retAdherenceData.push(retAdherence.EarlyMissedChartView);
-
-
-
-
-
-
 
                         //viral load chart
                         Highcharts.chart('viralLoadChart', {
