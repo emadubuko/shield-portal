@@ -1,0 +1,689 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_pgsmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <style>
+        html, body {
+            height: 100%
+        }
+    </style>
+
+
+}
+
+
+<h2>GSM Dashboard</h2>
+
+<div class="row">
+
+    <div class="col-sm-8">
+        <div class="row">
+
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a aria-expanded="true" href="#viralLoad" data-toggle="tab">Viral Load</a></li>
+                    <li><a aria-expanded="false" href="#unsViralLoad" data-toggle="tab">Unsuppressed Viral Load</a></li>
+                    <li><a aria-expanded="false" href="#indexTesting" data-toggle="tab">Index Testing </a></li>
+                    <li><a aria-expanded="false" href="#retentionAdherence" data-toggle="tab">Retention / Adherence </a></li>
+                    <li><a aria-expanded="false" href="#tbHiv" data-toggle="tab">TB HIV </a></li>
+                    <li><a aria-expanded="false" href="#diffModelCare" data-toggle="tab">Differentiated Model of Care </a></li>
+
+                </ul>
+
+                <div class="tab-content">
+                    @*viralload tab partial view*@
+                    @Html.Partial("~/Views/Shared/Partials/_ViralLoadTab.cshtml")
+
+                    @*Unsuppressed viralload tab partial view*@
+                    @Html.Partial("~/Views/Shared/Partials/_UnsViralLoadTab.cshtml")
+
+                    @*Index Testing tab partial view*@
+                    @Html.Partial("~/Views/Shared/Partials/_IndexTestingTab.cshtml")
+
+                    @*Retention Adherence tab partial view*@
+                    @Html.Partial("~/Views/Shared/Partials/_RetentionAdherenceTab.cshtml")
+
+                    @*TB / HIV tab partial view*@
+                    @Html.Partial("~/Views/Shared/Partials/_TbHivTab.cshtml")
+
+                    @*Differential Model of Care Partial View*@
+                    @Html.Partial("~/Views/Shared/Partials/_DiffModelCareTab.cshtml")
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+@section Scripts
+{
+    <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
+    <script src="~/Scripts/Highcharts/code/js/modules/exporting.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            //viral load data from API
+            var viralLoadData = [];
+            let vl;
+
+            //unsuppressed viral load data from API
+            var unsuppressedViralLoadData = [];
+            let unsVL;
+
+            //unsuppressed viral load data from API
+            var retAdherenceData = [];
+            let retAdherence;
+
+            function loadData() {
+                $.ajax({
+                    url: "/Content/data/data.json",
+                    type: "GET",
+                    success: function (data) {
+
+                        //Viral load data
+                        vl = data[0];
+
+                        viralLoadData.push(vl.ViralLoadCascadeTXCurr);
+                        viralLoadData.push(vl.ViralLoadCascadeEligible);
+                        viralLoadData.push(vl.ViralLoadCascadeSample);
+                        viralLoadData.push(vl.ViralLoadCascadeDoc);
+                        viralLoadData.push(vl.ViralLoadCascadeSupp);
+
+                        //unsuppressed Viral load data
+                        unsVL = data[0].UnSuppresedVLCascade[0];
+
+                        console.log(unsVL);
+
+                        unsuppressedViralLoadData.push(unsVL.AgeCohort);
+                        unsuppressedViralLoadData.push(unsVL.UnSuppressedSexMale);
+                        unsuppressedViralLoadData.push(unsVL.UnSuppressedSexFemale);
+                        unsuppressedViralLoadData.push(unsVL.NoUnSuppressedVL);
+                        unsuppressedViralLoadData.push(unsVL.NoCommencedEAC);
+                        unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
+                        unsuppressedViralLoadData.push(unsVL.NoSwitched);
+
+                        //retention adherence data
+                        retAdherence = data[0];
+
+                        retAdherenceData.push(retAdherence.EarlyMissedPatient);
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        retAdherenceData.push(retAdherence.EarlyMissedActiveTrackingPercent);
+
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+
+
+
+
+
+
+
+                        //viral load chart
+                        Highcharts.chart('viralLoadChart', {
+
+                            title: {
+                                text: 'Viral Load Performance'
+                            },
+
+                            subtitle: {
+                                text: 'Viral Load Cascade For the month in Review'
+                            },
+
+                            xAxis: {
+                                categories: ['TXCurr', '# Eligible VL', '# Samples Collected', '# with Documented VL Result', '# with Suppressed VL Result'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    colorByPoint: true
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+
+
+                            credits: false,
+
+
+                            series: [{
+                                type: 'column',
+                                colorByPoint: true,
+                                data: viralLoadData,
+                                showInLegend: false
+                            }]
+
+                        });
+
+                        //viral load table
+                        $('#viralLoadTable tr:last')
+                            .after(`<tr>
+                                                    <td>${viralLoadData[0]}</td>
+                                                    <td>${viralLoadData[1]}</td>
+                                                    <td>${viralLoadData[2]}</td>
+                                                    <td>${viralLoadData[3]}</td>
+                                                    <td>${viralLoadData[4]}</td>
+                                                    <td>${vl.ViralLoadCascadeSupPercent}</td>
+                                                    </tr >`);
+
+                        // unsuppressed viral load chart
+                        Highcharts.chart('unsViralLoadChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Unsuppressed Viral Load Performance'
+                            },
+
+                            subtitle: {
+                                text: 'Unsuppressed Viral Load Cascade For the month in Review'
+                            },
+
+                            xAxis: {
+                                title: {
+                                    text: 'Age Cohorts'
+                                },
+                                categories: ['0-29', '30-34', '35-39', '40-44'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+
+
+                            credits: false,
+
+
+                            series: [{
+                                name: ' # Male',
+                                data: [2]
+                            }, {
+                                name: '# Female',
+                                data: [3]
+                            }, {
+                                name: '# Unsuppressed VL',
+                                data: [5]
+                            }, {
+                                name: '# Commenced EAC',
+                                data: [4]
+                            }, {
+                                name: '# Repeat VL',
+                                data: [4]
+                            }, {
+                                name: '# Switched',
+                                data: [8]
+                            }]
+
+                        });
+
+                        //table
+                        $('#unsViralLoadTable tr:last')
+                            .after(`<tr>
+                                                    <td>${unsuppressedViralLoadData[0]}</td>
+                                                    <td>${unsuppressedViralLoadData[1]}</td>
+                                                    <td>${unsuppressedViralLoadData[2]}</td>
+                                                    <td>${unsuppressedViralLoadData[3]}</td>
+                                                    <td>${unsuppressedViralLoadData[4]}</td>
+                                                    <td>${unsuppressedViralLoadData[5]}</td>
+                                                    <td>${unsuppressedViralLoadData[6]}</td>
+                                                    </tr >`);
+
+                        // Index Testing Chart
+                        Highcharts.chart('indexTestingChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Unsuppressed Viral Load Performance'
+                            },
+
+                            subtitle: {
+                                text: 'Unsuppressed Viral Load Cascade For the month in Review'
+                            },
+
+                            xAxis: {
+                                title: {
+                                    text: ''
+                                },
+                                categories: ['(%) charts with partner(s) of index cases listed ', '(%) charts with ALL partners of index cases with known status', '% Partner status (POS) ', '% Partner status (NEG)', '% Partner status (UNK)', '# charts with children of index cases listed', '# charts with ALL children of index cases with known status', '% Child status (POS) ', '% Child status (NEG)', '% Child status (UNK)',],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+
+
+
+                            credits: false,
+
+
+                            series: [{
+                                type: 'column',
+                                colorByPoint: true,
+                                data: [34, 79.89, 60, 98, 38, 79, 60, 50, 34],
+                                showInLegend: false
+
+                            }
+
+
+                            ]
+
+                        });
+
+                        //table
+                        $('#indexTestingTable tr:last')
+                            .after(`<tr>
+                                                    <td>${1450}</td>
+                                                    <td>${34}</td>
+                                                    <td>${79}</td>
+                                                    <td>${89}</td>
+                                                    <td>${60}</td>
+                                                    <td>${98}</td>
+                                                    <td>${38}</td>
+                                                    <td>${79}</td>
+                                                    <td>${60}</td>
+                                                    <td>${50}</td>
+                                                    <td>${34}</td>
+
+                                                    </tr >`);
+
+
+                        // retention adherence chart
+                        Highcharts.chart('retentionAdherenceChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Retention Adherence'
+                            },
+
+                            subtitle: {
+                                text: 'Retention Adherence Chart Review'
+                            },
+
+                            xAxis: {
+                                title: {
+                                    text: 'Appointments'
+                                },
+                                categories: ['Early Missed Appointments ', 'Late Missed Appointments ', 'Unconfirmed LFTU'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+
+
+                            credits: false,
+
+
+                            series: [{
+                                name: ' # patients reported in last month',
+                                data: [2, 3, 7]
+                            }, {
+                                name: '# patient charts reviewed',
+                                data: [3, 12, 5]
+                            }, {
+                                name: '(%) patient records with documented active tracking and tracing',
+                                data: [5, 7, 30]
+                            }, {
+                                name: '(%) patient records with documented tracking and tracing outcome',
+                                data: [4, 12, 23]
+                            }
+                            ]
+
+                        });
+
+                        //table
+                        $('#retentionAdherenceTable tr:last')
+                            .after(`            <tr>
+                                                    <td>Early Missed Appointments (missed within 24hrs)</td>
+                                                    <td>${2}</td>
+                                                    <td>${3}</td>
+                                                    <td>${5}</td>
+                                                    <td>${4}</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                    <td>Late Missed Appointments (missed appointments for over a week)</td>
+                                                    <td>${3}</td>
+                                                    <td>${12}</td>
+                                                    <td>${7}</td>
+                                                    <td>${12}</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                    <td>Unconfirmed LFTU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
+                                                    <td>${7}</td>
+                                                    <td>${5}</td>
+                                                    <td>${30}</td>
+                                                    <td>${23}</td>
+                                                    </tr>
+                            `);
+
+
+                        // TB/HIV chart
+                        Highcharts.chart('tbHivChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Tuberculosis / HIV Chart'
+                            },
+
+                            subtitle: {
+                                text: 'TB/HIV Chart Review'
+                            },
+
+                            xAxis: {
+                                title: {
+                                    text: 'Patient Group'
+                                },
+                                categories: ['Adults starting ART ', 'Pregnant women starting ART', 'Patients who initiated TPT'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+
+
+                            credits: false,
+
+
+                            series: [{
+                                name: ' # of charts reviewed',
+                                data: [2, 3, 7]
+                            }, {
+                                name: '# (%) with TB screening documented at most recent visit (Patient chart)',
+                                data: [3, 12, 5]
+                            }, {
+                                name: '# (%) eligible for TPT (Patient chart)',
+                                data: [5, 7, 30]
+                            }, {
+                                name: '# (%) started on TPT (Patient chart)',
+                                data: [4, 12, 23]
+                            },
+                            {
+                                name: '# (%) started on TPT (IPT register / EMR)',
+                                data: [41, 112, 223]
+                            },
+                            {
+                                name: '# (%) that completed TPT (Patient chart)',
+                                data: [21, 92, 123]
+                            }
+                            ]
+
+                        });
+
+                        //table
+                        $('#tbHivTable tr:last')
+                            .after(`            <tr>
+                                                    <td>Adults starting ART</td>
+                                                    <td>${"Feb"}</td>
+                                                    <td>${2}</td>
+                                                    <td>${3}</td>
+                                                    <td>${5}</td>
+                                                    <td>${4}</td>
+                                                    <td>${41}</td>
+                                                    <td>${21}</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                    <td>Pregnant women starting ART</td>
+                                                    <td>${"Feb"}</td>
+                                                    <td>${3}</td>
+                                                    <td>${12}</td>
+                                                    <td>${7}</td>
+                                                    <td>${12}</td>
+                                                    <td>${112}</td>
+                                                    <td>${92}</td>                                                </tr>
+
+                                                    <tr>
+                                                    <td>Patients who initiated TPT</td>
+                                                    <td>${"Feb"}</td>
+                                                    <td>${7}</td>
+                                                    <td>${5}</td>
+                                                    <td>${30}</td>
+                                                    <td>${23}</td>
+                                                    <td>${223}</td>
+                                                    <td>${123}</td>
+                                                    </tr>
+                            `);
+
+
+
+                        //Differential Model of Care Chart
+                        Highcharts.chart('diffModelCareChart', {
+
+                            title: {
+                                text: 'Differential Model of Care Chart'
+                            },
+
+                            subtitle: {
+                                text: 'Differential Model of Care Chart'
+                            },
+
+                            xAxis: {
+                                categories: ['TXCurr', 'Total on DSD', '% Devolved ', 'Multi-month Scripting', 'Fast Track', 'Household Led', 'Adolescent Model'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    colorByPoint: true
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+
+
+                            credits: false,
+
+
+                            series: [{
+                                type: 'column',
+                                colorByPoint: true,
+                                data: [34, 45, 65, 21, 324, 456, 231],
+                                showInLegend: false
+                            }]
+
+                        });
+
+                        //diff table
+                        $('#diffModelCareTable tr:last')
+                            .after(`<tr>
+                                                    <td>${34}</td>
+                                                    <td>${45}</td>
+                                                    <td>${65}</td>
+                                                    <td>${21}</td>
+                                                    <td>${324}</td>
+                                                    <td>${456}</td>
+                                                    <td>${231}</td>
+                                                    </tr >`);
+
+
+
+                    }
+                });
+            }
+
+            loadData();
+
+        });
+
+
+    </script>
+}
