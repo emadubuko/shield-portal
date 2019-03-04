@@ -75,7 +75,7 @@ namespace ShieldPortal.Controllers
             }
             if (id.Contains("pgsm"))
             {
-                ViewBag.breadcrumb = "Granular Site Monitoring";
+                ViewBag.breadcrumb = "e-GSM";
             }
 
             ViewBag.Container = id;

@@ -6,6 +6,8 @@ using System.Web.Mvc;
 
 namespace ShieldPortal.Controllers
 {
+    [Authorize]
+
     public class PGSMController : Controller
     {
         // GET: PGSM
