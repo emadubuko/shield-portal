@@ -79,10 +79,23 @@
             var unsuppressedViralLoadData = [];
             let unsVL;
 
+            //index testing data from API
+            var indexTestingData = [];
+            let indexTesting;
 
-            //unsuppressed viral load data from API
+            //retention adherence data from API
             var retAdherenceData = [];
             let retAdherence;
+
+            //tbHiv data from API
+            var tbHivData = [];
+            let tbHiv;
+
+            //diff model of care data from API
+            var mocData = [];
+            let moc;
+
+
 
             function loadData() {
                 $.ajax({
@@ -99,6 +112,7 @@
                         viralLoadData.push(vl.ViralLoadCascadeDoc);
                         viralLoadData.push(vl.ViralLoadCascadeSupp);
 
+       
                         //unsuppressed Viral load data
                         unsVL = data[0].UnSuppresedVLCascade[0];
 
@@ -110,21 +124,75 @@
                         unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
                         unsuppressedViralLoadData.push(unsVL.NoSwitched);
 
+                        //index testing data
+                        let indTesting = data[0];
+                        let indexTestingData = [];
+
+
+                        indexTestingData.push(indTesting.ChartWithPartner);
+                        indexTestingData.push(indTesting.ChartPartnerKnownCase);
+                        indexTestingData.push(indTesting.PartnerStatusPositive);
+                        indexTestingData.push(indTesting.PartnerStatusNegative);
+                        indexTestingData.push(indTesting.PartnerStatusUnknown);
+                        indexTestingData.push(indTesting.ChildrenIndexCasesListed);
+                        indexTestingData.push(indTesting.ChildrenIndexCasesKnown);
+                        indexTestingData.push(indTesting.ChildStatusPositive);
+                        indexTestingData.push(indTesting.ChildStatusNegative);
+                        indexTestingData.push(indTesting.ChildStatusUnknown);
+
+                        let totalIndexIdentified = indTesting.ChartIndentified;
+
+                        
                         //retention adherence data
 
                         retAdherence = data[0];
 
-                        retAdherenceData.push(retAdherence.EarlyMissedPatient);
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
-                        retAdherenceData.push(retAdherence.EarlyMissedActiveTrackingPercent);
+                        //early missed data
 
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        let earlyMissedData = [];
 
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
-                        retAdherenceData.push(retAdherence.EarlyMissedChartView);
+                        earlyMissedData.push(retAdherence.EarlyMissedPatient);
+                        earlyMissedData.push(retAdherence.EarlyMissedChartView);
+                        earlyMissedData.push(retAdherence.EarlyMissedActiveTrackingPercent);
+                        earlyMissedData.push(retAdherence.EarlyMissedTrackingOutcomePercent);
+
+                        //late missed data
+
+                        let lateMissedData = [];
+
+                        lateMissedData.push(retAdherence.LateMissedPatient);
+                        lateMissedData.push(retAdherence.LateMissedChartView);
+                        lateMissedData.push(retAdherence.LateMissedActiveTrackingPercent);
+                        lateMissedData.push(retAdherence.LateMissedTrackingOutcomePercent);
+
+                        //unconfirmed  data
+
+                        let unconfirmedData = [];
+
+                        unconfirmedData.push(retAdherence.UnconfirmedPatient);
+                        unconfirmedData.push(retAdherence.UnconfirmedChartView);
+                        unconfirmedData.push(retAdherence.UnconfirmedActiveTrackingPercent);
+                        unconfirmedData.push(retAdherence.UnconfirmedTrackingOutcomePercent);
+
+
+                        //differential model of care data
+                        //index testing data
+                        let moc = data[0];
+                        let mocData = [];
+
+
+                        mocData.push(moc.MoCTXCurr);
+                        mocData.push(moc.MoCTotalDSD);
+                        mocData.push(moc.MoCPercentDevolved);
+                        mocData.push(moc.MoCMonthScript);
+                        mocData.push(moc.MoCFastTrack);
+                        mocData.push(moc.MoCHouseHold);
+                        mocData.push(moc.MoCAdolescent);
+                    
+
+
+                        
+
 
                         //viral load chart
                         Highcharts.chart('viralLoadChart', {
@@ -348,7 +416,7 @@
                             series: [{
                                 type: 'column',
                                 colorByPoint: true,
-                                data: [34, 79.89, 60, 98, 38, 79, 60, 50, 34],
+                                data: indexTestingData,
                                 showInLegend: false
 
                             }
@@ -361,17 +429,17 @@
                         //table
                         $('#indexTestingTable tr:last')
                             .after(`<tr>
-                                                    <td>${1450}</td>
-                                                    <td>${34}</td>
-                                                    <td>${79}</td>
-                                                    <td>${89}</td>
-                                                    <td>${60}</td>
-                                                    <td>${98}</td>
-                                                    <td>${38}</td>
-                                                    <td>${79}</td>
-                                                    <td>${60}</td>
-                                                    <td>${50}</td>
-                                                    <td>${34}</td>
+                                                    <td>${totalIndexIdentified}</td>
+                                                    <td>${indexTestingData[0]}</td>
+                                                    <td>${indexTestingData[1]}</td>
+                                                    <td>${indexTestingData[2]}</td>
+                                                    <td>${indexTestingData[3]}</td>
+                                                    <td>${indexTestingData[4]}</td>
+                                                    <td>${indexTestingData[5]}</td>
+                                                    <td>${indexTestingData[6]}</td>
+                                                    <td>${indexTestingData[7]}</td>
+                                                    <td>${indexTestingData[8]}</td>
+                                                    <td>${indexTestingData[9]}</td>
 
                                                     </tr >`);
 
@@ -379,7 +447,8 @@
                         // retention adherence chart
                         Highcharts.chart('retentionAdherenceChart', {
                             chart: {
-                                type: 'column'
+                                type: 'column',
+                           
                             },
                             title: {
                                 text: 'Retention Adherence'
@@ -393,7 +462,7 @@
                                 title: {
                                     text: 'Appointments'
                                 },
-                                categories: ['Early Missed Appointments ', 'Late Missed Appointments ', 'Unconfirmed LFTU'],
+                                categories: ['Early Missed Appointments ', 'Late Missed Appointments ', 'Unconfirmed LTFU'],
                                 crosshair: true,
                             },
 
@@ -421,7 +490,11 @@
                                 column: {
                                     pointPadding: 0.2,
                                     borderWidth: 0,
+                                    groupPadding: 0.1,
 
+                                },
+                                series: {
+                                    pointWidth: 40
                                 }
                             },
 
@@ -432,21 +505,20 @@
 
 
 
-                            credits: false,
-
+                            credits: false,                         
 
                             series: [{
                                 name: ' # patients reported in last month',
-                                data: [2, 3, 7]
+                                data: [earlyMissedData[0], lateMissedData[0], unconfirmedData[0]]
                             }, {
                                 name: '# patient charts reviewed',
-                                data: [3, 12, 5]
+                                    data: [earlyMissedData[1], lateMissedData[1], unconfirmedData[1]]
                             }, {
                                 name: '(%) patient records with documented active tracking and tracing',
-                                data: [5, 7, 30]
+                                    data: [earlyMissedData[2], lateMissedData[2], unconfirmedData[2]]
                             }, {
                                 name: '(%) patient records with documented tracking and tracing outcome',
-                                data: [4, 12, 23]
+                                    data: [earlyMissedData[3], lateMissedData[3], unconfirmedData[3]]
                             }
                             ]
 
@@ -456,26 +528,26 @@
                         $('#retentionAdherenceTable tr:last')
                             .after(`            <tr>
                                                     <td>Early Missed Appointments (missed within 24hrs)</td>
-                                                    <td>${2}</td>
-                                                    <td>${3}</td>
-                                                    <td>${5}</td>
-                                                    <td>${4}</td>
+                                                    <td>${earlyMissedData[0]}</td>
+                                                    <td>${earlyMissedData[1]}</td>
+                                                    <td>${earlyMissedData[2]}%</td>
+                                                    <td>${earlyMissedData[3]}%</td>
                                                     </tr>
 
                                                     <tr>
                                                     <td>Late Missed Appointments (missed appointments for over a week)</td>
-                                                    <td>${3}</td>
-                                                    <td>${12}</td>
-                                                    <td>${7}</td>
-                                                    <td>${12}</td>
+                                                    <td>${lateMissedData[0]}</td>
+                                                    <td>${lateMissedData[1]}</td>
+                                                    <td>${lateMissedData[2]}%</td>
+                                                    <td>${lateMissedData[3]}%</td>
                                                     </tr>
 
                                                     <tr>
-                                                    <td>Unconfirmed LFTU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
-                                                    <td>${7}</td>
-                                                    <td>${5}</td>
-                                                    <td>${30}</td>
-                                                    <td>${23}</td>
+                                                    <td>Unconfirmed LTFU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
+                                                    <td>${unconfirmedData[0]}</td>
+                                                    <td>${unconfirmedData[1]}</td>
+                                                    <td>${unconfirmedData[2]}</td>
+                                                    <td>${unconfirmedData[3]}</td>
                                                     </tr>
                             `);
 
@@ -525,7 +597,11 @@
                                 column: {
                                     pointPadding: 0.2,
                                     borderWidth: 0,
+                                    groupPadding: 0.1,
 
+                                },
+                                series: {
+                                    pointWidth: 35
                                 }
                             },
 
@@ -650,7 +726,7 @@
                             series: [{
                                 type: 'column',
                                 colorByPoint: true,
-                                data: [34, 45, 65, 21, 324, 456, 231],
+                                data: mocData,
                                 showInLegend: false
                             }]
 
@@ -659,13 +735,13 @@
                         //diff table
                         $('#diffModelCareTable tr:last')
                             .after(`<tr>
-                                                    <td>${34}</td>
-                                                    <td>${45}</td>
-                                                    <td>${65}</td>
-                                                    <td>${21}</td>
-                                                    <td>${324}</td>
-                                                    <td>${456}</td>
-                                                    <td>${231}</td>
+                                                    <td>${mocData[0]}</td>
+                                                    <td>${mocData[1]}</td>
+                                                    <td>${mocData[2]}</td>
+                                                    <td>${mocData[3]}</td>
+                                                    <td>${mocData[4]}</td>
+                                                    <td>${mocData[5]}</td>
+                                                    <td>${mocData[6]}</td>
                                                     </tr >`);
 
 
