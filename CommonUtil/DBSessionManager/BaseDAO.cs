@@ -374,6 +374,7 @@ namespace CommonUtil.DBSessionManager
 
         public DataTable GetDatable(SqlCommand command)
         {
+            string currentCmd = command.CommandText;
             var conn = (SqlConnection)((ISessionFactoryImplementor)BuildSession().SessionFactory).ConnectionProvider.GetConnection();
             command.Connection = conn;
             var dataTable = new DataTable();

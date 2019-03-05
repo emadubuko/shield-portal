@@ -37,6 +37,7 @@
                 <li class="active"><a aria-expanded="false" href="#hts_cascade" data-toggle="tab">HTS</a></li>
                 <li class=""><a aria-expanded="false" href="#art" data-toggle="tab">ART</a></li>
                 <li class=""><a aria-expanded="false" href="#pmtct" data-toggle="tab">PMTCT</a></li>
+                <li class=""><a aria-expanded="false" href="#hiv-tb" data-toggle="tab">HIV-TB Cascade</a></li>
             </ul>
 
             <div class="tab-content">
@@ -64,29 +65,38 @@
                         </div>
                     </div>
                 </div>
-                    <div class="tab-pane" id="pmtct">
+                <div class="tab-pane" id="pmtct">
 
-                        <div class="row">
-                            <div id="Comp_Stat_PMTCT" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                            </div>
-                        </div>
-
-                        <hr />
-                        <div class="row">
-                            <div id="Comp_Stat_PMTCT_EID" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                            </div>
-                        </div>
-
-                        <hr />
-                        <div class="row">
-                            <div id="Comp_Stat_PMTCT_Viral_Load" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                            </div>
+                    <div class="row">
+                        <div id="Comp_Stat_PMTCT" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
 
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_Stat_PMTCT_EID" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
 
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_Stat_PMTCT_Viral_Load" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="hiv-tb">
+
+                    <div class="row">
+                        <div id="Comp_TB_screened" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                   
                 </div>
             </div>
+        </div>
     </div>
 </div>
 
@@ -172,7 +182,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
             <div class="col-sm-12">
                 <select id="sltsex" class="form-control">
                     <option value="" selected>Sex</option>
@@ -199,7 +209,7 @@
                     <option value="50+">50+</option>
                 </select>
             </div>
-        </div>
+        </div>*@
         <div class="form-group" style="display:none">
             <div class="col-sm-12">
                 <select id="sltpopulationgroup" class="form-control">
@@ -228,6 +238,11 @@
     <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
     <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
     <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/offline-exporting.js"></script>
+
+
+   
     @*<script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>*@
 
     <script src="~/Scripts/highchart-utilities.js"></script>
@@ -300,8 +315,8 @@
                 });
             });
 
-     
-         
+
+
 
             var _model = {};
             _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
@@ -316,7 +331,6 @@
                 try {
                     var dt = JSON.parse(response)._data;
                     buildallchart(dt);
-                    console.log(response);
                    // console.log(response);
                 }
                 catch (e) {
@@ -332,22 +346,24 @@
 
             function buildallchart(dt) {
 
-            
 
+                build_stacked_bar_with_drilldown('COMP_stat', 'HTS Index Completeness Report', 'Percentage Completeness',
+                    'Percentage Completeness', '', dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
+
+              
+               
                 //HTS_Index
-                build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'HTS_Index Completeness Report', 'Percentage Completeness',
-                    dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
-                
-
+                //build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'HTS_Index Completeness Report', 'Percentage Completeness',
+                //    dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
+           
                 //HTS_TST
                 build_side_by_side_bar_chart_with_DrillDown('COMP_stat_HTS_TST', 'HTS_TST Completeness Report', 'Percentage Completeness',
                     dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down);
                 
-
                 //HTS_Other_PITC
                 build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness',
                     dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
-            
+
                 //ART
                 build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness',
                     dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
@@ -364,33 +380,11 @@
                 //PMTCT_Viral_Load
                 build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT_Viral_Load', 'PMTCT Viral Load Completeness Report', 'Percentage Completeness',
                     dt.Comp_Stat_PMTCT_Viral_Load.Comp_Stat_PMTCT_Viral_Load, dt.Comp_Stat_PMTCT_Viral_Load.lga_drill_down);
-                
 
-                //build_side_by_side_bar_chart_with_DrillDown('COMP_stat_fac', 'Upload Completeness By Indicator (GSM)', 'Percentage Completeness',
-                //    dt.Comp_Stat_fac.Comp_Stat_fac, dt.Comp_Stat_fac.lga_drill_down);
+                //TB_Screened
+                build_side_by_side_bar_chart_with_DrillDown('Comp_TB_screened', 'TB Screened Completeness Report', 'Percentage Completeness',
+                    dt.Comp_TB_screened.Comp_TB_screened, dt.Comp_TB_screened.lga_drill_down);
 
-                //build_side_by_side_bar_chart_with_DrillDown('COMP_stat_fac_ims', 'Upload Completeness By Indicator (IMS)', 'Percentage Completeness',
-                //    dt.Comp_Stat_fac_ims.Comp_Stat_fac_ims, dt.Comp_Stat_fac_ims.lga_drill_down);
-          //      console.log("Log == " + dt.Comp_Stat_fac_ims);
-                
-             //   console.log("Log message " + dt.Comp_Stat.Comp_Stat);
-
-                //build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
-                //    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
-
-                //TB_treatment
-                //build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
-                //    'No. of client', '% TX_TB', dt.TB_treatment.state_data,
-                //    dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
-
-                //TB_tpt
-                //build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                //    'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
-
-                 //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                    //    'No. of client', '% TPT', dt.tb_tpt.State,
-                    //    dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
-                    //    'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
             }
 
 

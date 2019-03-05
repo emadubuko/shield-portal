@@ -261,11 +261,13 @@
     <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
     <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
     <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/offline-exporting.js"></script>
 
     @*<script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>*@
+        <script src="https://code.highcharts.com/highcharts-more.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>*@
 
 
     @*<script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>*@
@@ -371,10 +373,11 @@
 
 
             function buildallchart(dt) {
-
-                BuildBubbleChart('HTSindextesting', 'Testing yield of HTS Index Client',
+  
+                BuildBubbleChart('HTSindextesting', 'HTS Index Testing Yield',
                     'Total Tested', 'Percentage Yield', bubble_pointFormat,
                     dt.hts_index_testing);
+
 
                 //hts other pitc
                 build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',

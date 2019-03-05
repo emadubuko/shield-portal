@@ -228,4 +228,146 @@ namespace ShieldPortal.ViewModel
         public bool GSM_2 { get; set; }
     }
 
+
+    public class TB_Screened_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_Presumptive_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_Bacteriology_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_Diagnosis_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+  
+    public class TB_Treatment_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Tx_TB { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_Relapsed_POS_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Known_Pos { get; set; }
+        public string New_Pos { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+    public class TB_TBT_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Started_on_TPT { get; set; }
+        public string PLHIV_eligible_for_TPT { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_Relapsed_Status_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_Relapsed_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
+
+    public class TB_ART_Completeness_Rate
+    {
+        public int Id { get; set; }
+        public string AgeGroup { get; set; }
+        public string Description { get; set; }
+        public string Sex { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
+        public string state_name { get; set; }
+        public string lga_name { get; set; }
+        public bool GSM_2 { get; set; }
+    }
 }

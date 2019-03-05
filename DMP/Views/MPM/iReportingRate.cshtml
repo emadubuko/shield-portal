@@ -45,7 +45,7 @@
                         <div id="COMP_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
-                    
+
 
                 </div>
 
@@ -193,6 +193,8 @@
     <script src="~/Scripts/Highcharts/code/modules/drilldown.js"></script>
     <script src="~/Scripts/Highcharts/code/highcharts-more.js"></script>
     <script src="~/Scripts/Highcharts/code/modules/exporting.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>
+    <script src="~/Scripts/Highcharts/code/modules/offline-exporting.js"></script>
     @*<script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>*@
 
     <script src="~/Scripts/highchart-utilities.js"></script>
@@ -281,7 +283,7 @@
                 try {
                     var dt = JSON.parse(response)._data;
                     buildallchart(dt);
-                   // console.log(response);
+                    console.log(response);
                 }
                 catch (e) {
                   //  alert("A system error has occurred. Kindly re-try again shortly == " + e);
@@ -296,34 +298,11 @@
 
             function buildallchart(dt) {
 
-
-
-                //TB_stat
-                build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'Upload Completeness', 'Percentage Completeness',
+                //HTS_Index
+                build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'Reporting Rate', 'Percentage Completeness',
                     dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
                 console.log(dt.Comp_Stat.lga_drill_down);
 
-                
-          //      console.log("Log == " + dt.Comp_Stat_fac_ims);
-
-             //   console.log("Log message " + dt.Comp_Stat.Comp_Stat);
-
-                //build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
-                //    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
-
-                //TB_treatment
-                //build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
-                //    'No. of client', '% TX_TB', dt.TB_treatment.state_data,
-                //    dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
-
-                //TB_tpt
-                //build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                //    'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
-
-                 //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                    //    'No. of client', '% TPT', dt.tb_tpt.State,
-                    //    dt.tb_tpt.eligible, 'Eligible for TPT', dt.tb_tpt.started,
-                    //    'Started on TPT', dt.tb_tpt.Percent, '% TPT', false);
             }
 
 

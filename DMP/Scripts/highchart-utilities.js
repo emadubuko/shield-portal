@@ -58,15 +58,14 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
 function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
-   
 
-  var chart = new Highcharts.chart(id, {
+
+    var chart = new Highcharts.chart(id, {
         credits: {
             enabled: true
         },
-     
+
         chart: {
             type: 'bubble',
             plotBorderWidth: 1,
@@ -84,20 +83,20 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
 
         subtitle: {
             text: 'click the bubbles to drill down'
-      },
+        },
 
-      //annotations: [{
-      //    labels: [{
-      //        point: {
-      //            xAxis: 0,
-      //            yAxis: 0,
-      //            x: 2000,
-      //            y: 80
-      //        },
-      //        x: -30,
-      //        text: 'Col de la Joux'
-      //    }]
-      //}],
+        //annotations: [{
+        //    labels: [{
+        //        point: {
+        //            xAxis: 0,
+        //            yAxis: 0,
+        //            x: 2000,
+        //            y: 80
+        //        },
+        //        x: -30,
+        //        text: 'Col de la Joux'
+        //    }]
+        //}],
 
         xAxis: {
             max: 10000,
@@ -174,14 +173,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
                 }
             }
         },
-        series: [{
-            name: 'State',
-            colorByPoint: true,
-            data: data_array.state_data
-        }],
-        drilldown: {
-            series: data_array.lga_drill_down_data
-        }
+      c
 
     });
 
@@ -200,12 +192,12 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
     chart.renderer.rect(chart.plotBox.x,
         chart.plotBox.y, width, height, 1)
         .attr({
-            fill: '#8bc34a', 
+            fill: '#8bc34a',
             zIndex: 0
         })
         .add();
 
-   
+
 
     chart.renderer.rect(chart.plotBox.x,
         chart.plotBox.y + height, width, height, 1)
@@ -222,8 +214,8 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
             zIndex: 0
         })
         .add();
-    
-   //let  labelText = 'Series 1, y:  + point1.y + , x:  + point1.x +<br/> + Series 2, y:  + point2.y + , x:  + point2'; 37+20
+
+    //let  labelText = 'Series 1, y:  + point1.y + , x:  + point1.x +<br/> + Series 2, y:  + point2.y + , x:  + point2'; 37+20
 
     chart.renderer.text('<table><tr><td>Small Testing</td></tr><tr><td>Small Positive</td></tr><tr><td>Big Yield</td></tr></table>', 100, 100, true)
         .attr({
@@ -244,6 +236,193 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
     //    .add();
 
 }
+
+
+//function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
+   
+
+//  var chart = new Highcharts.chart(id, {
+//        credits: {
+//            enabled: true
+//        },
+     
+//        chart: {
+//            type: 'bubble',
+//            plotBorderWidth: 1,
+//            zoomType: 'xy',
+
+//        },
+
+//        legend: {
+//            enabled: true
+//        },
+
+//        title: {
+//            text: title
+//        },
+
+//        subtitle: {
+//            text: 'click the bubbles to drill down'
+//      },
+
+//      //annotations: [{
+//      //    labels: [{
+//      //        point: {
+//      //            xAxis: 0,
+//      //            yAxis: 0,
+//      //            x: 2000,
+//      //            y: 80
+//      //        },
+//      //        x: -30,
+//      //        text: 'Col de la Joux'
+//      //    }]
+//      //}],
+
+//        xAxis: {
+//            max: 10000,
+//            min: 0,
+//            gridLineWidth: 1,
+//            title: {
+//                text: xaxis_title
+//            },
+//            labels: {
+//                format: '{value}'
+//            },
+//            //plotLines: [{
+//            //    color: 'red',
+//            //    dashStyle: 'dot',
+//            //    width: 2,
+//            //    value: 5000,
+//            //    label: {
+//            //        rotation: 0,
+//            //        y: 15,
+//            //        style: {
+//            //            fontStyle: 'italic',
+//            //            color: 'red',
+//            //        },
+//            //        text: 'Y Label'
+//            //    },
+//            //    zIndex: 3
+//            //},]
+//        },
+
+//        yAxis: {
+//            startOnTick: false,
+//            endOnTick: false,
+//            title: {
+//                text: yaxis_title
+//            },
+//            labels: {
+//                format: '{value} %'
+//            },
+//            max: 105,
+//            min: 0,
+//            maxPadding: 0.2,
+//            //plotLines: [{
+//            //    color: 'red',
+//            //    dashStyle: 'dot',
+//            //    width: 2,
+//            //    value: 50,
+//            //    label: {
+//            //        align: 'right',
+//            //        style: {
+//            //            fontStyle: 'italic',
+//            //            color: 'red',
+//            //        },
+//            //        text: 'Impact High',
+//            //        x: 5
+//            //    },
+//            //    zIndex: 3
+//            //}]
+//        },
+
+//        tooltip: {
+//            useHTML: true,
+//            headerFormat: '<table>',
+//            pointFormat: bubble_pointFormat,
+//            footerFormat: '</table>',
+//            followPointer: true
+//        },
+
+//        plotOptions: {
+//            series: {
+//                dataLabels: {
+//                    enabled: true,
+//                    format: '<span style="color: white>{point.name}</span>',
+
+//                }
+//            }
+//        },
+//        series: [{
+//            name: 'State',
+//            colorByPoint: true,
+//            data: data_array.state_data
+//        }],
+//        drilldown: {
+//            series: data_array.lga_drill_down_data
+//        }
+
+//    });
+
+
+//    var width = chart.plotBox.width / 2.0;
+//    var height = chart.plotBox.height / 2.0 + 1;
+
+//    chart.renderer.rect(chart.plotBox.x + width,
+//        chart.plotBox.y, width, height, 1)
+//        .attr({
+//            fill: '#4caf50',
+//            zIndex: 0
+//        })
+//        .add();
+
+//    chart.renderer.rect(chart.plotBox.x,
+//        chart.plotBox.y, width, height, 1)
+//        .attr({
+//            fill: '#8bc34a', 
+//            zIndex: 0
+//        })
+//        .add();
+
+   
+
+//    chart.renderer.rect(chart.plotBox.x,
+//        chart.plotBox.y + height, width, height, 1)
+//        .attr({
+//            fill: '#ffca28',
+//            zIndex: 0
+//        })
+//        .add();
+
+//    chart.renderer.rect(chart.plotBox.x + width,
+//        chart.plotBox.y + height, width, height, 1)
+//        .attr({
+//            fill: '#ef5350',
+//            zIndex: 0
+//        })
+//        .add();
+    
+//   //let  labelText = 'Series 1, y:  + point1.y + , x:  + point1.x +<br/> + Series 2, y:  + point2.y + , x:  + point2'; 37+20
+
+//    chart.renderer.text('<table><tr><td>Small Testing</td></tr><tr><td>Small Positive</td></tr><tr><td>Big Yield</td></tr></table>', 100, 100, true)
+//        .attr({
+//            zIndex: 5
+//        })
+//        .css({
+//            fontSize: '12px'
+//        })
+//        .add();
+
+//    //chart.renderer.text('<table><tr><td>Line 1 1 </td><td>Line 1 2 </td></tr><tr><td>Line 2 1 </td><td>Line 2 2 </td></tr></table>', 50, 80, true)
+//    //    .attr({
+//    //        zIndex: 5
+//    //    })
+//    //    .css({
+//    //        fontSize: '12px'
+//    //    })
+//    //    .add();
+
+//}
 
 function BuildDonut(id, title, data_array) {
 
@@ -971,14 +1150,14 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
                 dataLabels: {
                     enabled: true,
                     style: {
-                        color: 'white',
-                        textShadow: '0 0 2px black, 0 0 2px black'
+                        color: 'white'
+                      //  textShadow: '0 0 2px black, 0 0 2px black'
                     }
                 },
                 stacking: 'normal'
             }
         },
-        colors: ['red', 'green'],
+     //   colors: ['red', 'green', 'blue', 'black'],
 
         series: parent_series_data,
         drilldown: {
@@ -990,6 +1169,69 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
         }
     });
 }
+
+
+function build_stacked_bar_with_drilldown_completeness(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
+    Highcharts.chart(container_id, {
+        credits: {
+            enabled: false
+        },
+        chart: {
+            type: 'column'
+        },
+        subtitle: {
+            text: subtitle,
+        },
+        title: {
+            text: title
+        },
+
+        xAxis: {
+            type: 'category'
+            //categories: xaxis_categories
+        },
+
+        yAxis: {
+            min: 0,
+            title: {
+                text: yaxis_title
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.x + '</b><br/>' +
+                    this.series.name + ': ' + this.y + '<br/>' +
+                    'Total: ' + this.point.stackTotal;
+            }
+        },
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        color: 'white',
+                        textShadow: '0 0 2px black, 0 0 2px black'
+                    }
+                },
+                stacking: 'normal'
+            }
+        },
+        colors: ['red', 'green', 'blue', 'black'],
+
+        series: parent_series_data,
+        drilldown: {
+            activeDataLabelStyle: {
+                color: 'white',
+                textShadow: '0 0 2px black, 0 0 2px black'
+            },
+            series: child_series_data
+        }
+    });
+}
+
+
 
 function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat) {
 
@@ -1013,7 +1255,7 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
             shared: true
         },
 
-     
+
 
         plotOptions: {
             series: {
@@ -1103,6 +1345,7 @@ function build_side_by_side_bar_chart_with_DrillDown_Completeness_Rate(container
         }
     });
 }
+
 
 function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title, y2_title, parent_data, drill_down_data, xaxisCategory) {
     var main_categories = xaxisCategory;

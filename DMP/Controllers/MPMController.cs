@@ -747,7 +747,21 @@ namespace ShieldPortal.Controllers
                 {"Comp_Stat_ART", "sp_mpm_ART_Completeness_Rate" },
                 {"Comp_Stat_PMTCT", "sp_mpm_PMTCT_Completeness_Rate" },
                 {"Comp_Stat_PMTCT_EID", "sp_mpm_PMTCT_EID_Completeness_Rate"},
-                {"Comp_Stat_PMTCT_Viral_Load", "sp_mpm_PMTCT_Viral_Load_Completeness_Report"}
+                {"Comp_Stat_PMTCT_Viral_Load", "sp_mpm_PMTCT_Viral_Load_Completeness_Report"},
+
+                  {"Comp_TB_screened", "[sp_mpm_TB_Screened_Completeness_Rate]" },
+                  {"Comp_TB_Presumptive", "[sp_mpm_TB_Presumptive_Completeness_Rate]" },
+                  {"Comp_TB_Bacteriology", "[sp_mpm_TB_Bacteriology_Diagnosis_Completeness_Rate]" },
+                  {"Comp_TB_Diagnosis", "[sp_mpm_TB_Diagnosis_Completeness_Rate]" },
+                  {"Comp_TB_Treatment", "[sp_mpm_TB_Treatment_Started_Completeness_Rate]" },
+                  {"Comp_TB_TBT", "[sp_mpm_TB_TBT_Eligible_Completeness_Rate]" },
+                  {"Comp_TB_Relapsed_Status", "[sp_mpm_TB_New_Replapsed_Known_Status_Completeness_Rate]" },
+                  {"Comp_TB_Relapsed_POS", "[sp_mpm_TB_New_Replapsed_Known_Pos_Completeness_Rate]" },
+                  {"Comp_TB_Relapsed", "[sp_mpm_TB_New_Replapsed_Completeness_Rate]" },
+                  {"Comp_TB_ART", "[sp_mpm_TB_ART_Completeness_Rate]" }
+
+
+
             };
 
             MPMDAO dao = new MPMDAO();
@@ -772,19 +786,19 @@ namespace ShieldPortal.Controllers
                 }
                 if (sp.Key == "Comp_Stat_HTS_TST")
                 {
-                       _data.Add(sp.Key, GenerateCOMPLETENESSRATE_HTS_TST(data));
+                    _data.Add(sp.Key, GenerateCOMPLETENESSRATE_HTS_TST(data));
                 }
 
                 if (sp.Key == "Comp_Stat_HTS_Other_PITC")
                 {
-                      _data.Add(sp.Key, GenerateCOMPLETENESSRATE_HTS_Other_PITC(data));
+                    _data.Add(sp.Key, GenerateCOMPLETENESSRATE_HTS_Other_PITC(data));
                 }
 
                 if (sp.Key == "Comp_Stat_ART")
                 {
                     _data.Add(sp.Key, GenerateCOMPLETENESSRATE_ART(data));
                 }
-                
+
                 if (sp.Key == "Comp_Stat_PMTCT")
                 {
                     _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT(data));
@@ -798,8 +812,49 @@ namespace ShieldPortal.Controllers
                 {
                     _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
                 }
-                
 
+
+                if (sp.Key == "Comp_TB_screened")
+                {
+                    _data.Add(sp.Key, GenerateCOMPLETENESSRATE_TB_Screened(data));
+                }
+                if (sp.Key == "Comp_TB_Presumptive")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_Bacteriology")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_Diagnosis")
+                {
+                 //   _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_Treatment")
+                {
+                   // _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_TBT")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_Relapsed_Status")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_Relapsed_POS")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+                if (sp.Key == "Comp_TB_Relapsed")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
+
+                if (sp.Key == "Comp_TB_ART")
+                {
+                  //  _data.Add(sp.Key, GenerateCOMPLETENESSRATE_PMTCT_Viral_Load(data));
+                }
 
             }
 
@@ -816,8 +871,7 @@ namespace ShieldPortal.Controllers
             {
 
                  { "Comp_Stat", "sp_mpm_completeness_report" },
-                { "Comp_Stat_fac", "sp_mpm_completeness_report" },
-                { "Comp_Stat_fac_ims", "sp_mpm_completeness_report" }
+           
             };
 
             MPMDAO dao = new MPMDAO();
@@ -838,17 +892,9 @@ namespace ShieldPortal.Controllers
 
                 if (sp.Key == "Comp_Stat")
                 {
-                    _data.Add(sp.Key, GenerateCOMPLETENESS_FAC(data));
+                    _data.Add(sp.Key, GenerateREPORTINGRATE(data));
                 }
-                if (sp.Key == "Comp_Stat_fac")
-                {
-                    //   _data.Add(sp.Key, GenerateCOMPLETENESS_FAC(data));
-                }
-
-                if (sp.Key == "Comp_Stat_fac_ims")
-                {
-                    //  _data.Add(sp.Key, GenerateCOMPLETENESS_FAC_IMS(data));
-                }
+             
 
             }
 
@@ -1602,8 +1648,10 @@ namespace ShieldPortal.Controllers
             var groupedData = siteLst.GroupBy(x => x.state_name); 
             var lga_drill_down = new List<dynamic>();
 
-            var state_genealogy_testing = new List<dynamic>();
-            var state_partner_testing = new List<dynamic>();
+            var state_genealogy_testing_male = new List<dynamic>();
+            var state_genealogy_testing_female = new List<dynamic>();
+            var state_partner_testing_male = new List<dynamic>();
+            var state_partner_testing_female = new List<dynamic>();
 
             foreach (var state in groupedData)
             {
@@ -1611,11 +1659,406 @@ namespace ShieldPortal.Controllers
 
                 if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2).Count() > 0) { 
 
-                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.GSM_2).Count() != 0)
+                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.GSM_2 && x.Sex == "M").Count() != 0)
                     {
-                        state_genealogy_testing.Add(new
+                        state_genealogy_testing_male.Add(new
                         {
-                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.GSM_2).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key).Count(), 0),
+                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.GSM_2 && x.Sex == "M").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2).Count()), 0),
+                            name = state.Key,
+                            drilldown = state.Key+"M"
+                        });
+
+                    }
+                    else
+                    {
+                        state_genealogy_testing_male.Add(new
+                        {
+                            y = 0.0,
+                            name = state.Key,
+                            drilldown = state.Key+"M"
+                        });
+                    }
+
+                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.GSM_2 && x.Sex == "F").Count() != 0)
+                    {
+                        state_genealogy_testing_female.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.GSM_2 && x.Sex == "F").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2).Count()), 0),
+                            name = state.Key,
+                            drilldown = state.Key+"F"
+                        });
+
+                    }
+                    else
+                    {
+                        state_genealogy_testing_female.Add(new
+                        {
+                            y = 0.0,
+                            name = state.Key,
+                            drilldown = state.Key+"F"
+                        });
+                    }
+
+
+                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.GSM_2 && x.Sex == "M").Count() != 0)
+                    {
+                        state_partner_testing_male.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.GSM_2 && x.Sex == "M").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2).Count()), 0),
+                            name = state.Key,
+                            drilldown = state.Key + "M"
+                        });
+
+                    }
+                    else
+                    {
+                        state_partner_testing_male.Add(new
+                        {
+                            y = 0.0,
+                            name = state.Key,
+                            drilldown = state.Key + "M"
+                        });
+                    }
+
+                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.GSM_2 && x.Sex == "F").Count() != 0)
+                    {
+                        state_partner_testing_female.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.GSM_2 && x.Sex == "F").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2).Count()), 0),
+                            name = state.Key,
+                            drilldown = state.Key + "F"
+                        });
+
+                    }
+                    else
+                    {
+                        state_partner_testing_female.Add(new
+                        {
+                            y = 0.0,
+                            name = state.Key,
+                            drilldown = state.Key + "F"
+                        });
+                    }
+
+
+
+
+                    var lga_genealogy_testing_male = new List<dynamic>();
+                    var lga_genealogy_testing_female = new List<dynamic>();
+                    var lga_partner_testing_male = new List<dynamic>();
+                    var lga_partner_testing_female = new List<dynamic>();
+                    foreach (var lga in state.GroupBy(x => x.lga_name))
+                    {
+
+
+                        if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count() > 0)
+                        {
+
+                            if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "M").Count() != 0)
+                            {
+                                lga_genealogy_testing_male.Add(new
+                                {
+                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "M").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count()), 0),
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "M"
+                                });
+                            }
+                            else
+                            {
+                                lga_genealogy_testing_male.Add(new
+                                {
+                                    y = 0.0,
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "M"
+                                });
+                            }
+
+                            if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "F").Count() != 0)
+                            {
+                                lga_genealogy_testing_female.Add(new
+                                {
+                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "F").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count()), 0),
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "F"
+                                });
+                            }
+                            else
+                            {
+                                lga_genealogy_testing_female.Add(new
+                                {
+                                    y = 0.0,
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "F"
+                                });
+                            }
+
+
+
+
+
+                            if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "M").Count() != 0)
+                            {
+                                lga_partner_testing_male.Add(new
+                                {
+                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "M").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count()), 0),
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "M"
+                                });
+                            }
+                            else
+                            {
+                                lga_partner_testing_male.Add(new
+                                {
+                                    y = 0.0,
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "M"
+                                });
+                            }
+
+                            if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "F").Count() != 0)
+                            {
+                                lga_partner_testing_female.Add(new
+                                {
+                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Sex == "F").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count()), 0),
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "F"
+                                });
+                            }
+                            else
+                            {
+                                lga_partner_testing_female.Add(new
+                                {
+                                    y = 0.0,
+                                    name = lga.Key,
+                                    drilldown = lga.Key + "F"
+                                });
+                            }
+
+
+                            var facility_genealogy_testing_male = new List<dynamic>();
+                            var facility_genealogy_testing_female = new List<dynamic>();
+                            var facility_partner_testing_male = new List<dynamic>();
+                            var facility_partner_testing_female = new List<dynamic>();
+                            foreach (var fty in lga.GroupBy(x => x.Name))
+                            {
+
+                                if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
+                                {
+
+                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "M").Count() != 0)
+                                    {
+
+                                        facility_genealogy_testing_male.Add(new
+                                        {
+
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "M").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                        });
+                                    }
+                                    else
+                                    {
+                                        facility_genealogy_testing_male.Add(new
+                                        {
+                                            name = fty.Key,
+                                            y = 0.0,
+                                        });
+                                    }
+                             
+
+                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "F").Count() != 0)
+                                    {
+
+                                        facility_genealogy_testing_female.Add(new
+                                        {
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "F").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                        });
+                                    }
+                                    else
+                                    {
+                                        facility_genealogy_testing_female.Add(new
+                                        {
+                                            name = fty.Key,
+                                            y = 0.0,
+                                        });
+                                    }
+
+
+
+
+                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "M").Count() != 0)
+                                    {
+
+                                        facility_partner_testing_male.Add(new
+                                        {
+
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "M").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                        });
+                                    }
+                                    else
+                                    {
+                                        facility_partner_testing_male.Add(new
+                                        {
+                                            name = fty.Key,
+                                            y = 0.0,
+                                        });
+                                    }
+
+
+                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "F").Count() != 0)
+                                    {
+
+                                        facility_partner_testing_female.Add(new
+                                        {
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key && x.Sex == "F").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                        });
+                                    }
+                                    else
+                                    {
+                                        facility_partner_testing_female.Add(new
+                                        {
+                                            name = fty.Key,
+                                            y = 0.0,
+                                        });
+                                    }
+                                }
+                            }
+                            lga_drill_down.Add(new { name = "Genealogy Testing Index", id = lga.Key + "M", data = facility_genealogy_testing_male });
+                            lga_drill_down.Add(new { name = "Genealogy Testing Index", id = lga.Key + "F", data = facility_genealogy_testing_female });
+
+
+                            lga_drill_down.Add(new { name = "Partner Testing", id = lga.Key + "M", data = facility_partner_testing_male });
+                            lga_drill_down.Add(new { name = "Partner Testing", id = lga.Key + "F", data = facility_partner_testing_female });
+                        }
+
+                        lga_drill_down.Add(new { name = "Genealogy Testing Index", id = state.Key + "M", data = lga_genealogy_testing_male });
+                        lga_drill_down.Add(new { name = "Genealogy Testing Index", id = state.Key + "F", data = lga_genealogy_testing_female });
+
+                        lga_drill_down.Add(new { name = "Partner Testing", id = state.Key + "M", data = lga_partner_testing_male });
+                        lga_drill_down.Add(new { name = "Partner Testing", id = state.Key + "F", data = lga_partner_testing_female });
+                    }
+                }
+
+              
+            }
+
+            //var genealogy_male = new
+            //{
+            //    name = "Genealogy Testing Index",
+            //    data = state_genealogy_testing_male,
+            //    stack = "Male"
+            //};
+
+            //var genealogy_female = new
+            //{
+            //    name = "Genealogy Testing Index",
+            //    data = state_genealogy_testing_female,
+            //    stack = "Female"
+            //};
+
+            //var partner_male = new
+            //{
+            //    name = "Partner Testing",
+            //    data = state_partner_testing_male,
+            //    stack = "Male"
+            //};
+
+            //var partner_female = new
+            //{
+            //    name = "Partner Testing",
+            //    data = state_genealogy_testing_female,
+            //    stack = "Female"
+            //};
+
+
+
+            //var male_stack = new List<dynamic>
+            //{
+            //    genealogy_male,
+            //    partner_male,
+            //};
+
+            //var female_stack = new List<dynamic>
+            //{
+            //    genealogy_female,
+            //    partner_female,
+            //};
+
+            //var partner_testing = new List<dynamic>
+            //{
+            //    partner_male,
+            //    partner_female,
+            //};
+
+
+            List<dynamic> Comp_Stat = new List<dynamic>
+            {
+                new
+                {
+
+                name = "Genealogy Testing Male",
+                data = state_genealogy_testing_male,
+                stack = "genealogy",
+
+                },
+                new
+                {
+
+                name = "Genealogy Testing Female",
+                data = state_genealogy_testing_female,
+                stack = "genealogy"
+                },
+                new
+                {
+                name = "Partner Testing Male",
+                data = state_partner_testing_male,
+                stack = "partner"
+                },
+                new
+                {
+                   name = "Partner Testing Female",
+                data = state_partner_testing_female,
+                stack = "partner"
+                },
+
+
+
+            };
+
+            return new
+            {
+                Comp_Stat,
+                lga_drill_down,
+            };
+        }
+
+
+        public dynamic GenerateCOMPLETENESSRATE_TB_Screened(DataTable dt)
+        {
+            MPMDAO dao = new MPMDAO();
+
+            List<GranularSites> siteLst = Utilities.ConvertToList<GranularSites>(dao.exeCuteStoredProcedure("sp_mpm_granular_sites"));
+            List<TB_Screened_Completeness_Rate> lst = Utilities.ConvertToList<TB_Screened_Completeness_Rate>(dt);
+            var groupedData = siteLst.GroupBy(x => x.state_name);
+            var lga_drill_down = new List<dynamic>();
+
+            var state_data = new List<dynamic>();
+        
+
+            foreach (var state in groupedData)
+            {
+
+
+                if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2).Count() > 0)
+                {
+
+                    if (lst.Where(x => x.state_name == state.Key && x.Number !="" && x.GSM_2).Count() != 0)
+                    {
+                        state_data.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.Number != "" && x.GSM_2).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key).Count(), 0),
                             name = state.Key,
                             drilldown = state.Key
                         });
@@ -1623,7 +2066,7 @@ namespace ShieldPortal.Controllers
                     }
                     else
                     {
-                        state_genealogy_testing.Add(new
+                        state_data.Add(new
                         {
                             y = 0.0,
                             name = state.Key,
@@ -1631,46 +2074,27 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.GSM_2).Count() != 0)
-                {
-                    state_partner_testing.Add(new
-                    {
-                        y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.GSM_2).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key).Count(), 0),
-                        name = state.Key,
-                        drilldown = state.Key+" "
-                    });
-                }
-                else
-                {
-                    state_partner_testing.Add(new
-                    {
-                        y = 0.0,
-                        name = state.Key,
-                        drilldown = state.Key + " "
-                    });
-                }
-
-
-
-                var lga_genealogy_testing = new List<dynamic>();
-                var lga_partner_testing = new List<dynamic>();
+                
+                    var lga_data = new List<dynamic>();
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
 
-                        if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count() > 0) { 
 
-                            if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2).Count() != 0)
+                        if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key).Count() > 0)
+                        {
+
+                            if (lst.Where(x => x.state_name == state.Key && x.Number != "" && x.lga_name == lga.Key && x.GSM_2).Count() != 0)
                             {
-                                lga_genealogy_testing.Add(new
+                                lga_data.Add(new
                                 {
-                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key).Count(), 0),
+                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.Number != "" && x.lga_name == lga.Key && x.GSM_2).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key).Count(), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key
                                 });
                             }
                             else
                             {
-                                lga_genealogy_testing.Add(new
+                                lga_data.Add(new
                                 {
                                     y = 0.0,
                                     name = lga.Key,
@@ -1678,80 +2102,44 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-                        if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2).Count() != 0)
-                        {
-                            lga_partner_testing.Add(new
-                            {
-                                y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key).Count(), 0),
-                                name = lga.Key,
-                                drilldown = lga.Key + " "
-                            });
-                        }
-                        else
-                        {
-                            lga_partner_testing.Add(new
-                            {
-                                y = 0.0,
-                                name = lga.Key,
-                                drilldown = lga.Key + " "
-                            });
-                        }
-
-
-                        var facility_genealogy_testing = new List<dynamic>();
-                        var facility_partner_testing = new List<dynamic>();
+                          
+                            var facility_data = new List<dynamic>();
                             foreach (var fty in lga.GroupBy(x => x.Name))
                             {
-                                string test = fty.Key;
-                                if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0) { 
 
-                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() != 0)
+                                if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
+                                {
+
+                                    if (lst.Where(x => x.state_name == state.Key && x.Number != "" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() != 0)
                                     {
-                                        
-                                        facility_genealogy_testing.Add(new
+
+                                        facility_data.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.Number != "" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
-                                        facility_genealogy_testing.Add(new
+                                        facility_data.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
-                                if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name.Trim() == lga.Key && x.GSM_2 && x.Name.Trim() == fty.Key.Trim()).Count() != 0)
-                                {
-                                    facility_partner_testing.Add(new
-                                    {
-                                        fty.Key,
-                                        percent = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
-                                    });
-                                }
-                                else
-                                {
-                                    facility_partner_testing.Add(new
-                                    {
-                                        fty.Key,
-                                        percent = 0.0,
-                                    });
+                                 
                                 }
                             }
+
+
+                            lga_drill_down.Add(new { name = "Number", id = lga.Key, data = facility_data });
                         }
-
-
-                        lga_drill_down.Add(new { name = "Genealogy Testing Index", id = lga.Key, data = facility_genealogy_testing });
-                        lga_drill_down.Add(new { name = "Partner Testing", id = lga.Key + " ", data = facility_partner_testing });
                     }
-                }
 
-                lga_drill_down.Add(new { name = "Genealogy Testing Index", id = state.Key, data = lga_genealogy_testing });
-                lga_drill_down.Add(new { name = "Partner Testing", id = state.Key + " ", data = lga_partner_testing });
-            }
+                    lga_drill_down.Add(new { name = "Number", id = state.Key, data = lga_data});
+                }
 
             }
 
@@ -1759,14 +2147,8 @@ namespace ShieldPortal.Controllers
             {
                 new
                 {
-                    name = "Genealogy Testing Index",
-                    data = state_genealogy_testing
-                },
-
-                 new
-                {
-                    name = "Partner Testing",
-                    data = state_partner_testing
+                    name = "Number",
+                    data = state_data
                 }
 
             };
@@ -1905,33 +2287,33 @@ namespace ShieldPortal.Controllers
 
                                         facility_blood_bank.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_blood_bank.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA.Trim() == lga.Key && x.GSM_2 && x.Name.Trim() == fty.Key.Trim()).Count() != 0)
+                                    if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA.Trim() == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() != 0)
                                     {
                                         facility_eye_clinic.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_eye_clinic.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
                                 }
@@ -2095,16 +2477,16 @@ namespace ShieldPortal.Controllers
 
                                         facility_Tx_RET.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_Tx_RET.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
@@ -2112,16 +2494,16 @@ namespace ShieldPortal.Controllers
                                     {
                                         facility_Tx_VLA.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_Tx_VLA.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
                                 }
@@ -2297,16 +2679,16 @@ namespace ShieldPortal.Controllers
 
                                         facility_new_client.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.NewClient != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.NewClient != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_new_client.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
@@ -2314,16 +2696,16 @@ namespace ShieldPortal.Controllers
                                     {
                                         facility_known_status.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownStatus != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownStatus != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_known_status.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
                                 }
@@ -2529,16 +2911,16 @@ namespace ShieldPortal.Controllers
 
                                         facility_eid_sample_collected.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_eid_sample_collected.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
@@ -2546,16 +2928,16 @@ namespace ShieldPortal.Controllers
                                     {
                                         facility_eid_pos.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_eid_pos.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
@@ -2564,16 +2946,16 @@ namespace ShieldPortal.Controllers
                                     {
                                         facility_eid_art_initiation.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_eid_art_initiation.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
                                 }
@@ -2725,16 +3107,16 @@ namespace ShieldPortal.Controllers
 
                                         facility_emergency.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.SDP == "Emergency" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.state_name == state.Key && x.SDP == "Emergency" && x.lga_name == lga.Key && x.GSM_2 && x.Name == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_emergency.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
@@ -2945,16 +3327,16 @@ namespace ShieldPortal.Controllers
 
                                         facility_newly_identified.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_newly_identified.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
 
@@ -2962,16 +3344,16 @@ namespace ShieldPortal.Controllers
                                     {
                                         facility_already_hiv_pos.Add(new
                                         {
-                                            fty.Key,
-                                            percent = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                                            name = fty.Key,
+                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key && x.GSM_2 && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
                                         });
                                     }
                                     else
                                     {
                                         facility_already_hiv_pos.Add(new
                                         {
-                                            fty.Key,
-                                            percent = 0.0,
+                                            name = fty.Key,
+                                            y = 0.0,
                                         });
                                     }
                                 }
@@ -3011,49 +3393,83 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
             };
         }
-        public dynamic GenerateCOMPLETENESS_FAC(DataTable dt)
+        public dynamic GenerateREPORTINGRATE(DataTable dt)
         {
             MPMDAO dao = new MPMDAO();
 
             List<GranularSites> siteLst = Utilities.ConvertToList<GranularSites>(dao.exeCuteStoredProcedure("sp_mpm_granular_sites"));
             List<CompletenessReport> lst = Utilities.ConvertToList<CompletenessReport>(dt);
-            var groupedData = lst.GroupBy(x => x.State);
+            var groupedData = siteLst.GroupBy(x => x.state_name);
             var lga_drill_down = new List<dynamic>();
 
             var state_gsm = new List<dynamic>();
             foreach (var state in groupedData)
             {
 
-                if (lst.Where(x => x.GSM_2 && x.indicator == "PMTCT" && x.State == state.Key).Count() != 0)
+                if (lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART" ) && x.State == state.Key).Count() != 0)
                 {
                     state_gsm.Add(new
                     {
-                        y = Math.Round(100 * 1.0 * lst.Where(x => x.GSM_2 && x.indicator == "PMTCT" && x.State == state.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key).Count(), 0),
+                        y = Math.Round(100 * 1.0 * lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART") && x.State == state.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key).Count(), 0),
+                        name = state.Key,
+                        drilldown = state.Key
+                    });
+                }
+                else
+                {
+
+                    state_gsm.Add(new
+                    {
+                        y = 0.0,
                         name = state.Key,
                         drilldown = state.Key
                     });
                 }
 
                 var lga_gsm = new List<dynamic>();
-                foreach (var lga in state.GroupBy(x => x.LGA))
+                foreach (var lga in state.GroupBy(x => x.lga_name))
                 {
-
-                    lga_gsm.Add(new
+                    if (lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART") && x.State == state.Key && x.LGA == lga.Key).Count() != 0)
                     {
-                        y = Math.Round(100 * 1.0 * lst.Where(x => x.GSM_2 && x.indicator == "PMTCT" && x.State == state.Key && x.LGA == lga.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key).Count(), 0),
-                        name = lga.Key,
-                        //  drilldown = lga.Key
-                    });
+                        lga_gsm.Add(new
+                        {
+                            y = Math.Round(100 * 1.0 * lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART") && x.State == state.Key && x.LGA == lga.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key).Count(), 0),
+                            name = lga.Key,
+                            drilldown = lga.Key
+                        });
+                    }
+                    else
+                    {
+                        lga_gsm.Add(new
+                        {
+                            y = 0.0,
+                            name = lga.Key,
+                            drilldown = lga.Key
+                        });
+                    }
 
-                    //var facility_gsm = new List<dynamic>();
-                    //foreach (var fty in lga.GroupBy(x => x.Facility))
-                    //{
-                    //    facility_gsm.Add(new
-                    //    {                            
-                    //        fty.Key,
-                    //        percent = Math.Round(100 * 1.0 * lst.Where(x => x.GSM_2 && x.State == state.Key && x.LGA == lga.Key && x.Facility == fty.Key).Count() / 20, 0)
-                    //    });
-                    //}
+
+                    var facility_gsm = new List<dynamic>();
+                    foreach (var fty in lga.GroupBy(x => x.Name))
+                    {
+                        if (lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART") && x.State == state.Key && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                        {
+                            facility_gsm.Add(new
+                            {
+                             name = fty.Key,
+                                y = Math.Round(100 * 1.0 * lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART") &&  x.State == state.Key && x.LGA == lga.Key && x.Facility == fty.Key).Count() / siteLst.Where(x => x.GSM_2 && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 0),
+                            });
+                        }
+                        else
+                        {
+                            facility_gsm.Add(new
+                            {
+                              name =  fty.Key,
+                                y = 0.0,
+                            });
+                        }
+                    }
+                    lga_drill_down.Add(new { name = "GSM", id = lga.Key, data = facility_gsm });
                 }
 
                 lga_drill_down.Add(new { name = "GSM", id = state.Key, data = lga_gsm });
