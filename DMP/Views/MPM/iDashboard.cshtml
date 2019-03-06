@@ -41,7 +41,7 @@
                 <li class=""><a aria-expanded="false" href="#tb_cascade" data-toggle="tab">TB HIV Cascade</a></li>
             </ul>
 
-            <div class="tab-content">
+            <div class="tab-content" id="tabId">
 
                 <div class="tab-pane active" id="ist90">
                     <img src="~/images/ms-spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
@@ -123,18 +123,18 @@
     </div>
 </div>
 
-<div class="col-sm-2">
+<div class="col-sm-2 sticky-header">
 
     <form class="form-horizontal" style="margin-left: 50px;">
         <div class="form-group">
             <div class="col-sm-12">
-                <h5 style="text-decoration:underline;">Filter</h5>
+                <h5 style="text-decoration:none;">Filter Results</h5>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-sm-12">
-                <select id="sltReportPeriod" class="form-control" onchange="reloadPage(this)">
+                <select id="sltReportPeriod" class="form-control" style="width: 100%" onchange="reloadPage(this)">
                     @foreach (var p in ViewBag.ReportedPeriods)
                     {
                         if (p == ViewBag.LastReportedPeriod)
@@ -252,7 +252,11 @@
         </div>
     </form>
 </div>
-
+<div id="closeDiv" style="display: none;">
+    <button type="button" class="close ndr-data-table-close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 @section Scripts
 {
     <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
@@ -274,7 +278,7 @@
 
     <script src="~/Scripts/highchart-utilities.js"></script>
     @*<script src="~/Scripts/highchart-utilities.js?v=@DateTime.Now.Ticks.ToString()"></script>*@
-
+    <script src="~/Scripts/Ultilities.js"></script>
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
     <script src="~/Scripts/randmonizer_utility.js"></script>
 
@@ -373,17 +377,22 @@
 
 
             function buildallchart(dt) {
-  
+
                 BuildBubbleChart('HTSindextesting', 'HTS Index Testing Yield',
                     'Total Tested', 'Percentage Yield', bubble_pointFormat,
                     dt.hts_index_testing);
 
 
+
+                BuildBubbleChart_HTS_Other_PITC('HTSotherPITC', 'HTS Other PITC',
+                    'No. of client tested', '% Testing Yield', bubble_pointFormat,
+                    dt.hts_other_pitc);
+
                 //hts other pitc
-                build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',
-                    'No. of client tested', '% Testing Yield', dt.hts_other_pitc.SDPs,
-                    dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
-                    'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
+                //build_bar_chart_dual_axis('HTSotherPITC', 'HTS Other PITC',
+                //    'No. of client tested', '% Testing Yield', dt.hts_other_pitc.SDPs,
+                //    dt.hts_other_pitc.tested, 'Total Tested', dt.hts_other_pitc.positives,
+                //    'Positives', dt.hts_other_pitc.yield, '% testing yield', false);
 
                 //LinkagebyState
                 build_bar_chart_dual_axis_with_drill_down('LinkagebyState', 'New on ART vs Identified Positives',
@@ -405,6 +414,8 @@
                 //PMTCTVIRALLOAD
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression', 'Previously Known HIV Positive',
                     "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
+
+                console.log(dt.PMTCT_VL.drilldown_series_known_status);
 
                 //PMTCTVIRALLOAD_new
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
@@ -471,8 +482,8 @@
 
             $(".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se")
                 .css("background-color", "red");
-
-
+            activateSticky();
+            closeDataTableButton('tabId');
             function roundToTwo(num) {
                 return +(Math.round(num + "e+2") + "e-2");
             }

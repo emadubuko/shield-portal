@@ -40,7 +40,7 @@
                 <li class=""><a aria-expanded="false" href="#hiv-tb" data-toggle="tab">HIV-TB Cascade</a></li>
             </ul>
 
-            <div class="tab-content">
+            <div class="tab-content" id="tabId">
                 <img src="~/images/ms-spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
                 <div class="tab-pane active" id="hts_cascade">
                     <div class="row">
@@ -93,25 +93,25 @@
                     </div>
 
                     <hr />
-                   
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="col-sm-2">
+<div class="col-sm-2 sticky-header">
 
     <form class="form-horizontal" style="margin-left: 50px;">
         <div class="form-group">
             <div class="col-sm-12">
-                <h5 style="text-decoration:underline;">Filter</h5>
+                <h5 style="text-decoration:none; padding-bottom: 1px;">Filter Results</h5>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-sm-12">
-                <select id="sltReportPeriod" class="form-control" onchange="reloadPage(this)">
+                <select id="sltReportPeriod" class="form-control" style="width: 100%" onchange="reloadPage(this)">
                     @foreach (var p in ViewBag.ReportedPeriods)
                     {
                         if (p == ViewBag.LastReportedPeriod)
@@ -183,33 +183,33 @@
         </div>
 
         @*<div class="form-group">
-            <div class="col-sm-12">
-                <select id="sltsex" class="form-control">
-                    <option value="" selected>Sex</option>
-                    <option value="M">Male</option>
-                    <option value="F">Female</option>
-                </select>
+                <div class="col-sm-12">
+                    <select id="sltsex" class="form-control">
+                        <option value="" selected>Sex</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-12">
-                <select id="sltagegroup" class="form-control">
-                    <option value="" selected>Age Group</option>
-                    <option value="<1"> &lt;1</option>
-                    <option value="1-4">1-4</option>
-                    <option value="5-9">5-9</option>
-                    <option value="10-14">10-14</option>
-                    <option value="15-19">15-19</option>
-                    <option value="20-24">20-24</option>
-                    <option value="25-29">25-29</option>
-                    <option value="30-34">30-34</option>
-                    <option value="35-39">35-39</option>
-                    <option value="40-44">40-44</option>
-                    <option value="45-49">45-49</option>
-                    <option value="50+">50+</option>
-                </select>
-            </div>
-        </div>*@
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select id="sltagegroup" class="form-control">
+                        <option value="" selected>Age Group</option>
+                        <option value="<1"> &lt;1</option>
+                        <option value="1-4">1-4</option>
+                        <option value="5-9">5-9</option>
+                        <option value="10-14">10-14</option>
+                        <option value="15-19">15-19</option>
+                        <option value="20-24">20-24</option>
+                        <option value="25-29">25-29</option>
+                        <option value="30-34">30-34</option>
+                        <option value="35-39">35-39</option>
+                        <option value="40-44">40-44</option>
+                        <option value="45-49">45-49</option>
+                        <option value="50+">50+</option>
+                    </select>
+                </div>
+            </div>*@
         <div class="form-group" style="display:none">
             <div class="col-sm-12">
                 <select id="sltpopulationgroup" class="form-control">
@@ -229,6 +229,11 @@
         </div>
     </form>
 </div>
+<div id="closeDiv" style="display: none;">
+    <button type="button" class="close ndr-data-table-close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 
 @section Scripts
 {
@@ -242,10 +247,11 @@
     <script src="~/Scripts/Highcharts/code/modules/offline-exporting.js"></script>
 
 
-   
+
     @*<script src="~/Scripts/Highcharts/code/modules/export-data.js"></script>*@
 
     <script src="~/Scripts/highchart-utilities.js"></script>
+    <script src="~/Scripts/Ultilities.js"></script>
     @*<script src="~/Scripts/highchart-utilities.js?v=@DateTime.Now.Ticks.ToString()"></script>*@
 
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
@@ -346,27 +352,30 @@
 
             function buildallchart(dt) {
 
-
+                 //HTS_Index
                 build_stacked_bar_with_drilldown('COMP_stat', 'HTS Index Completeness Report', 'Percentage Completeness',
                     'Percentage Completeness', '', dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
-
-              
                
+
+
+
+
                 //HTS_Index
                 //build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'HTS_Index Completeness Report', 'Percentage Completeness',
                 //    dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
-           
+
                 //HTS_TST
                 build_side_by_side_bar_chart_with_DrillDown('COMP_stat_HTS_TST', 'HTS_TST Completeness Report', 'Percentage Completeness',
                     dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down);
-                
+
                 //HTS_Other_PITC
-                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness',
-                    dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
+                build_stacked_bar_with_drilldown('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness',
+                    'Percentage Completeness', '', dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
+                console.log(dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
 
                 //ART
-                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness',
-                    dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
+                build_stacked_bar_with_drilldown('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness',
+                     'Percentage Completeness', '', dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
 
                 //PMTCT
                 build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT', 'PMTCT Completeness Report', 'Percentage Completeness',
@@ -416,8 +425,8 @@
 
             $(".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se")
                 .css("background-color", "red");
-
-
+            closeDataTableButton('tabId');
+            activateSticky();
             function roundToTwo(num) {
                 return +(Math.round(num + "e+2") + "e-2");
             }

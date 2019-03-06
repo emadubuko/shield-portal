@@ -38,7 +38,7 @@
 
             </ul>
 
-            <div class="tab-content">
+            <div class="tab-content" id="tabId">
                 <img src="~/images/ms-spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
                 <div class="tab-pane active" id="tb_cascade">
                     <div class="row">
@@ -55,18 +55,18 @@
     </div>
 </div>
 
-<div class="col-sm-2">
+<div class="col-sm-2 sticky-header">
 
     <form class="form-horizontal" style="margin-left: 50px;">
         <div class="form-group">
             <div class="col-sm-12">
-                <h5 style="text-decoration:underline;">Filter</h5>
+                <h5 style="text-decoration:none; padding-bottom: 1px;">Filter Results</h5>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-sm-12">
-                <select id="sltReportPeriod" class="form-control" onchange="reloadPage(this)">
+                <select id="sltReportPeriod" class="form-control" style="width: 100%" onchange="reloadPage(this)">
                     @foreach (var p in ViewBag.ReportedPeriods)
                     {
                         if (p == ViewBag.LastReportedPeriod)
@@ -183,6 +183,11 @@
             </div>
         </div>
     </form>
+</div>
+<div id="closeDiv" style="display: none;">
+    <button type="button" class="close ndr-data-table-close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 @section Scripts
@@ -334,8 +339,8 @@
 
             $(".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se")
                 .css("background-color", "red");
-
-
+            activateSticky();
+            closeDataTableButton('tabId');
             function roundToTwo(num) {
                 return +(Math.round(num + "e+2") + "e-2");
             }
