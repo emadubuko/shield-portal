@@ -217,7 +217,7 @@
                         var LateMissedTrackingOutcome = retAdherence.LateMissedTrackingOutcome;
                         var LateMissedTrackingOutcomePercent = retAdherence.LateMissedTrackingOutcomePercent;
 
-                        
+
                         //unconfirmed  data
 
                         let unconfirmedData = [];
@@ -233,7 +233,7 @@
                         var UnconfirmedTrackingOutcome = retAdherence.UnconfirmedTrackingOutcome;
                         var UnconfirmedTrackingOutcomePercent = retAdherence.UnconfirmedTrackingOutcomePercent;
 
-                       
+
 
                         //differential model of care data
                         //index testing data
@@ -242,12 +242,12 @@
 
 
                         mocData.push(moc.MoCTXCurr);
-                        mocData.push(moc.MoCTotalDSD);
-                        mocData.push(moc.MoCPercentDevolved);
+                        mocData.push(moc.MoCTotalDSD);                        
                         mocData.push(moc.MoCMonthScript);
                         mocData.push(moc.MoCFastTrack);
                         mocData.push(moc.MoCHouseHold);
                         mocData.push(moc.MoCAdolescent);
+                        //mocData.push(moc.MoCPercentDevolved);
 
 
 
@@ -313,13 +313,13 @@
                         //viral load table
                         $('#viralLoadTable tr:last')
                             .after(`<tr>
-                                                                <td>${viralLoadData[0]}</td>
-                                                                <td>${viralLoadData[1]}</td>
-                                                                <td>${viralLoadData[2]}</td>
-                                                                <td>${viralLoadData[3]}</td>
-                                                                <td>${viralLoadData[4]}</td>
-                                                                <td>${vl.ViralLoadCascadeSupPercent}</td>
-                                                                </tr >`);
+                                                                    <td>${viralLoadData[0]}</td>
+                                                                    <td>${viralLoadData[1]}</td>
+                                                                    <td>${viralLoadData[2]}</td>
+                                                                    <td>${viralLoadData[3]}</td>
+                                                                    <td>${viralLoadData[4]}</td>
+                                                                    <td>${vl.ViralLoadCascadeSupPercent}</td>
+                                                                    </tr >`);
 
                         // unsuppressed viral load chart
                         Highcharts.chart('unsViralLoadChart', {
@@ -405,14 +405,14 @@
                         //table
                         $('#unsViralLoadTable tr:last')
                             .after(`<tr>
-                                                                <td>${unsuppressedViralLoadData[0]}</td>
-                                                                <td>${unsuppressedViralLoadData[1]}</td>
-                                                                <td>${unsuppressedViralLoadData[2]}</td>
-                                                                <td>${unsuppressedViralLoadData[3]}</td>
-                                                                <td>${unsuppressedViralLoadData[4]}</td>
-                                                                <td>${unsuppressedViralLoadData[5]}</td>
-                                                                <td>${unsuppressedViralLoadData[6]}</td>
-                                                                </tr >`);
+                                                                    <td>${unsuppressedViralLoadData[0]}</td>
+                                                                    <td>${unsuppressedViralLoadData[1]}</td>
+                                                                    <td>${unsuppressedViralLoadData[2]}</td>
+                                                                    <td>${unsuppressedViralLoadData[3]}</td>
+                                                                    <td>${unsuppressedViralLoadData[4]}</td>
+                                                                    <td>${unsuppressedViralLoadData[5]}</td>
+                                                                    <td>${unsuppressedViralLoadData[6]}</td>
+                                                                    </tr >`);
 
                         // Index Testing Chart
                         Highcharts.chart('indexTestingChart', {
@@ -431,7 +431,7 @@
                                 title: {
                                     text: ''
                                 },
-                                categories: ['% charts with partner(s) of index cases listed ', '% charts with ALL partners of index cases with known status', '% Partner status (POS) ', '% Partner status (NEG)', '% Partner status (UNK)', 'No of charts with children of index cases listed', 'No of charts with ALL children of index cases with known status', '% Child status (POS) ', '% Child status (NEG)', '% Child status (UNK)',],
+                                categories: ['No of charts with partner(s) of index cases listed ', 'No of charts with ALL partners of index cases with known status', 'No of Partner status (POS) ', 'No of Partner status (NEG)', 'No of Partner status (UNK)', 'No of charts with children of index cases listed', 'No of charts with ALL children of index cases with known status', 'Child status (POS) ', 'Child status (NEG)', 'Child status (UNK)',],
                                 crosshair: true,
                             },
 
@@ -490,26 +490,26 @@
                         //table
                         $('#indexTestingTable tr:last')
                             .after(`<tr>
-                                                                <td>${totalIndexIdentified}</td>
-                                                                <td>${indexTestingData[0]}</td>
-                                                                <td>${indexTestingData[1]}</td>
-                                                                <td>${indexTestingData[2]}</td>
-                                                                <td>${indexTestingData[3]}</td>
-                                                                <td>${indexTestingData[4]}</td>
-                                                                <td>${indexTestingData[5]}</td>
-                                                                <td>${indexTestingData[6]}</td>
-                                                                <td>${indexTestingData[7]}</td>
-                                                                <td>${indexTestingData[8]}</td>
-                                                                <td>${indexTestingData[9]}</td>
+                                                                    <td>${totalIndexIdentified}</td>
+                                                                    <td>${indexTestingData[0]}</td>
+                                                                    <td>${indexTestingData[1]}</td>
+                                                                    <td>${indexTestingData[2]}</td>
+                                                                    <td>${indexTestingData[3]}</td>
+                                                                    <td>${indexTestingData[4]}</td>
+                                                                    <td>${indexTestingData[5]}</td>
+                                                                    <td>${indexTestingData[6]}</td>
+                                                                    <td>${indexTestingData[7]}</td>
+                                                                    <td>${indexTestingData[8]}</td>
+                                                                    <td>${indexTestingData[9]}</td>
 
-                                                                </tr >`);
+                                                                    </tr >`);
 
 
                         // retention adherence chart
                         Highcharts.chart('retentionAdherenceChart', {
                             chart: {
                                 type: 'column',
-                                
+
                             },
                             title: {
                                 text: 'Retention Adherence'
@@ -524,38 +524,36 @@
                                     text: 'Appointments'
                                 },
                                 categories: ['Early Missed Appointments ', 'Late Missed Appointments ', 'Unconfirmed LTFU'],
-                                crosshair: true,
+
                             },
-
                             yAxis: [
-                                {
-                                    //Count Axes (Primary)
-                                    title: {
-                                        text: 'Count'
-                                    },
-                                    labels: {
-                                        formatter: function () {
-                                            return this.value;
-                                        },
 
-                                        format: '{value}',
+                                { // Primary yAxis
+                                    labels: {
                                         style: {
-                                            //color: Highcharts.getOptions().colors[1]
+                                            color: Highcharts.getOptions().colors[1]
+                                        }
+                                    },
+                                    title: {
+                                        text: 'Count',
+                                        style: {
+                                            color: Highcharts.getOptions().colors[1]
                                         }
                                     }
                                 },
-                                {
-                                    //Percentage Axes (Secondary)
+                                { // Secondary yAxis
                                     title: {
-                                        text : 'Percentage (%)'
+                                        text: 'Percentage',
+                                        style: {
+                                            color: '#ab47bc'
+                                        }
                                     },
                                     labels: {
                                         format: '{value} %',
                                         style: {
-                                            color: Highcharts.getOptions().colors[0]
+                                            color: '#ab47bc'
                                         }
                                     },
-
                                     opposite: true
                                 }
                             ],
@@ -586,87 +584,67 @@
                                 thousandsSep: ','
                             },
 
-                       
+
                             credits: false,
 
-                            //series: [
-                            //{
-                            //    name: ' No of patients reported in last month',
-                            //    data: [earlyMissedData[0], lateMissedData[0], unconfirmedData[0]]
-                            //}, {
-                            //    name: 'No of patient charts reviewed',
-                            //    data: [earlyMissedData[1], lateMissedData[1], unconfirmedData[1]]
-                            //}, {
-                            //    name: '(%) patient records with documented active tracking and tracing',
-                            //    data: [earlyMissedData[2], lateMissedData[2], unconfirmedData[2]]
-                            //}, {
-                            //    name: '(%) patient records with documented tracking and tracing outcome',
-                            //    data: [earlyMissedData[3], lateMissedData[3], unconfirmedData[3]]
-                            //}
-
-                            //]
-
                             series: [{
-                                name: 'Count of patient records with documented active tracking and tracing',
-                                type: 'column',                            
-                                data: [200, 150, 106],
+                                type: 'column',
+                                name: ' count patient records with documented active tracking and tracing',
+                                data: [EarlyMissedActiveTracking, LateMissedActiveTracking, UnconfirmedActiveTracking]
+                            }, {
+                                type: 'column',
+                                name: 'count patient records with documented tracking and tracing outcome',
+                                data: [EarlyMissedTrackingOutcome, LateMissedTrackingOutcome, UnconfirmedTrackingOutcome]
+                            }, {
+                                type: 'scatter',
+                                name: 'Percentage patient records with documented active tracking and tracing',
+                                yAxis: 1,
+                                data: [{ name: 'Percentage of patient records with documented active tracking and tracing', x: -.20, y: EarlyMissedActiveTrackingPercent }, { name: 'Percentage of patient records with documented active tracking and tracing', x: .80, y: LateMissedActiveTrackingPercent }, { name: 'Percentage of patient records with documented active tracking and tracing', x: 1.80, y: UnconfirmedActiveTrackingPercent }],
+                                color: '#ab47bc'
 
                             }, {
-                                name: 'Percentage of patient records with documented active tracking and tracing',
                                 type: 'scatter',
+                                name: 'Percentage patient records with documented tracking and tracing outcome',
                                 yAxis: 1,
-                                data: [70, 96, 50],
-                                tooltip: {
-                                    valueSuffix: '%'
-                                }
-                                }, {
-                                    name: 'Count of  patient records with documented tracking and tracing outcome',
-                                    type: 'column',
-                                    data: [540, 715, 1064],
+                                data: [{ name: 'Percentage of patient records with documented tracking and tracing outcome', x: .20, y: EarlyMissedTrackingOutcomePercent }, { name: 'Percentage of patient records with documented tracking and tracing outcome', x: 1.20, y: LateMissedTrackingOutcomePercent }, { name: 'Percentage of patient records with documented tracking and tracing outcome', x: 2.20, y: UnconfirmedTrackingOutcomePercent }],
+                                color: '#ab47bc'
 
-                                }, {
-                                    name: 'Percentage of  patient records with documented tracking and tracing outcome',
-                                    type: 'scatter',
-                                    yAxis: 1,
-                                    data: [40, 69, 85],
-                                    tooltip: {
-                                        valueSuffix: '%'
-                                    }
-                                }]
+                            }]
 
                         });
 
                         //table
                         $('#retentionAdherenceTable tr:last')
                             .after(`            <tr>
-                                                                <td>Early Missed Appointments (missed within 24hrs)</td>
-                                                                <td>${earlyMissedData[0]}</td>
-                                                                <td>${earlyMissedData[1]}</td>
-                                                                <td>${EarlyMissedActiveTracking}</td >
-                                                                <td>(${EarlyMissedActiveTrackingPercent}%)</td>
-                                                                <td>${EarlyMissedTrackingOutcome}</td>
-                                                                <td>(${EarlyMissedTrackingOutcomePercent}%)</td>
-                                                                </tr>
+                                                                    <td>Early Missed Appointments (missed within 24hrs)</td>
+                                                                    <td>${earlyMissedData[0]}</td>
+                                                                    <td>${earlyMissedData[1]}</td>
+                                                                    <td>${EarlyMissedActiveTracking}</td >
+                                                                    <td>(${EarlyMissedActiveTrackingPercent}%)</td>
+                                                                    <td>${EarlyMissedTrackingOutcome}</td>
+                                                                    <td>(${EarlyMissedTrackingOutcomePercent}%)</td>
+                                                                    </tr>
 
-                                                                <tr>
-                                                                <td>Late Missed Appointments (missed appointments for over a week)</td>
-                                                                <td>${lateMissedData[0]}</td>
-                                                                <td>${lateMissedData[1]}</td>
-                                                                <td>${LateMissedActiveTracking}</td >
-                                                                <td>(${LateMissedActiveTrackingPercent}%)</td>
-                                                                <td>${LateMissedTrackingOutcome}</td>
-                                                                <td>(${LateMissedTrackingOutcomePercent}%)</td>                                                                </tr>
+                                                                    <tr>
+                                                                    <td>Late Missed Appointments (missed appointments for over a week)</td>
+                                                                    <td>${lateMissedData[0]}</td>
+                                                                    <td>${lateMissedData[1]}</td>
+                                                                    <td>${LateMissedActiveTracking}</td >
+                                                                    <td>(${LateMissedActiveTrackingPercent}%)</td>
+                                                                    <td>${LateMissedTrackingOutcome}</td>
+                                                                    <td>(${LateMissedTrackingOutcomePercent}%)</td>
+                                                                    </tr>
 
-                                                                <tr>
-                                                                <td>Unconfirmed LTFU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
-                                                                <td>${unconfirmedData[0]}</td>
-                                                                <td>${unconfirmedData[1]}</td>
-                                                                <td>${UnconfirmedActiveTracking}</td >
-                                                                <td>(${UnconfirmedActiveTrackingPercent}%)</td>
-                                                                <td>${UnconfirmedTrackingOutcome}</td>
-                                                                <td>(${UnconfirmedTrackingOutcomePercent}%)</td>
-                                                                </tr>
-                                        `);
+                                                                    <tr>
+                                                                    <td>Unconfirmed LTFU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
+                                                                    <td>${unconfirmedData[0]}</td>
+                                                                    <td>${unconfirmedData[1]}</td>
+                                                                    <td>${UnconfirmedActiveTracking}</td >
+                                                                    <td>(${UnconfirmedActiveTrackingPercent}%)</td>
+                                                                    <td>${UnconfirmedTrackingOutcome}</td>
+                                                                    <td>(${UnconfirmedTrackingOutcomePercent}%)</td>
+                                                                    </tr>
+                                            `);
 
 
                         // TB/HIV chart
@@ -760,37 +738,37 @@
                         //table
                         $('#tbHivTable tr:last')
                             .after(`            <tr>
-                                                                <td>Adults starting ART</td>
-                                                                <td>${"Feb"}</td>
-                                                                <td>${2}</td>
-                                                                <td>${3}</td>
-                                                                <td>${5}</td>
-                                                                <td>${4}</td>
-                                                                <td>${41}</td>
-                                                                <td>${21}</td>
-                                                                </tr>
+                                                                    <td>Adults starting ART</td>
+                                                                    <td>${"Feb"}</td>
+                                                                    <td>${2}</td>
+                                                                    <td>${3}</td>
+                                                                    <td>${5}</td>
+                                                                    <td>${4}</td>
+                                                                    <td>${41}</td>
+                                                                    <td>${21}</td>
+                                                                    </tr>
 
-                                                                <tr>
-                                                                <td>Pregnant women starting ART</td>
-                                                                <td>${"Feb"}</td>
-                                                                <td>${3}</td>
-                                                                <td>${12}</td>
-                                                                <td>${7}</td>
-                                                                <td>${12}</td>
-                                                                <td>${112}</td>
-                                                                <td>${92}</td>                                                </tr>
+                                                                    <tr>
+                                                                    <td>Pregnant women starting ART</td>
+                                                                    <td>${"Feb"}</td>
+                                                                    <td>${3}</td>
+                                                                    <td>${12}</td>
+                                                                    <td>${7}</td>
+                                                                    <td>${12}</td>
+                                                                    <td>${112}</td>
+                                                                    <td>${92}</td>                                                </tr>
 
-                                                                <tr>
-                                                                <td>Patients who initiated TPT</td>
-                                                                <td>${"Feb"}</td>
-                                                                <td>${7}</td>
-                                                                <td>${5}</td>
-                                                                <td>${30}</td>
-                                                                <td>${23}</td>
-                                                                <td>${223}</td>
-                                                                <td>${123}</td>
-                                                                </tr>
-                                        `);
+                                                                    <tr>
+                                                                    <td>Patients who initiated TPT</td>
+                                                                    <td>${"Feb"}</td>
+                                                                    <td>${7}</td>
+                                                                    <td>${5}</td>
+                                                                    <td>${30}</td>
+                                                                    <td>${23}</td>
+                                                                    <td>${223}</td>
+                                                                    <td>${123}</td>
+                                                                    </tr>
+                                            `);
 
 
 
@@ -806,21 +784,29 @@
                             },
 
                             xAxis: {
-                                categories: ['TXCurr', 'Total on DSD', '% Devolved ', 'Multi-month Scripting', 'Fast Track', 'Household Led', 'Adolescent Model'],
+                                categories: ['TXCurr', 'Total on DSD', 'Multi-month Scripting', 'Fast Track', 'Household Led', 'Adolescent Model', '% Devolved'],
                                 crosshair: true,
                             },
 
-                            yAxis: {
+                            yAxis: [{
                                 min: 0,
                                 title: {
-                                    text: 'Indicator Values'
-                                },
-                                labels: {
-                                    formatter: function () {
-                                        return this.value;
-                                    }
+                                    text: 'Count'
                                 }
-                            },
+
+                            }, {
+                                    min:0,
+                                    title: { text: 'Percentage' },
+                                    labels: {
+                                        format: '{value} %',
+                                        style: {
+                                            color: '#ab47bc'
+                                        }
+                                    },
+                                    opposite: true
+                                }
+
+                            ],
 
                             plotOptions: {
                                 column: {
@@ -835,31 +821,35 @@
                                 thousandsSep: ','
                             },
 
-
-
                             credits: false,
-
 
                             series: [{
                                 type: 'column',
                                 colorByPoint: true,
                                 data: mocData,
                                 showInLegend: false
-                            }]
+                            },
+                                {
+                                    type: 'scatter',
+                                    yAxis: 1,
+                                    name:'Percentage Devloved',
+                                    data: [{ x: 6.20, y: moc.MoCPercentDevolved }],
+                                }
+                            ]
 
                         });
 
                         //diff table
                         $('#diffModelCareTable tr:last')
                             .after(`<tr>
-                                                                <td>${mocData[0]}</td>
-                                                                <td>${mocData[1]}</td>
-                                                                <td>${mocData[2]}</td>
-                                                                <td>${mocData[3]}</td>
-                                                                <td>${mocData[4]}</td>
-                                                                <td>${mocData[5]}</td>
-                                                                <td>${mocData[6]}</td>
-                                                                </tr >`);
+                                                                    <td>${mocData[0]}</td>
+                                                                    <td>${mocData[1]}</td>
+                                                                    <td>${moc.MoCPercentDevolved}</td>
+                                                                    <td>${mocData[2]}</td>
+                                                                    <td>${mocData[3]}</td>
+                                                                    <td>${mocData[4]}</td>
+                                                                    <td>${mocData[5]}</td>
+                                                                    </tr >`);
 
 
 
