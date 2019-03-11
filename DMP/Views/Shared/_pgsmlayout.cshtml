@@ -12,8 +12,8 @@
         <div class="col-sm-5 col-sm-push-3">
             <ol class="breadcrumb breadcrumb-2">
                 <li><a href="/"><i class="icon-folder"></i>Home</a></li>
-                <li><a href="/Home/submenu?id=pgsm">Overview</a></li>
-                <li class="active">e-GSM</li>
+                <li><a href="/Home/submenu?id=pgsm">e-GSM</a></li>
+                <li class="active">Dashboard</li>
             </ol>
         </div>
     </div>
@@ -23,15 +23,19 @@
             <div class="page-sidebar">
                 <div class="sidebar">
                     <ul id="side-nav" class="main-menu navbar-collapse collapse">
-
                         <li>
                             <a href=@Url.Action("Dashboard", "PGSM") style="color:darkturquoise;">
-                                <i class="fa fa-file-text-o"></i><span class="title">&nbsp; Report</span>
+                                <i class="fa fa-file"></i><span class="title">&nbsp; Pre-Visit Report</span>
                             </a>
                         </li>
                         <li>
                             <a href=@Url.Action("Dashboard", "PGSM") style="color:darkturquoise;">
                                 <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("Dashboard", "PGSM") style="color:darkturquoise;">
+                                <i class="fa fa-file-text-o"></i><span class="title">&nbsp; Qualitative Report</span>
                             </a>
                         </li>
                     </ul>
