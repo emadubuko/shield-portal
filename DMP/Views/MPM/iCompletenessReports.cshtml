@@ -28,72 +28,112 @@
     </script>
 }
 
-<h2>Completeness Report (Upload)</h2>
+<h2>GSM Completeness Report</h2>
 <div class="col-sm-7">
     <div class="row">
 
         <div class="tabs-container">
             <ul class="nav nav-tabs">
                 <li class="active"><a aria-expanded="false" href="#hts_cascade" data-toggle="tab">HTS</a></li>
-                <li class=""><a aria-expanded="false" href="#art" data-toggle="tab">ART</a></li>
                 <li class=""><a aria-expanded="false" href="#pmtct" data-toggle="tab">PMTCT</a></li>
-                <li class=""><a aria-expanded="false" href="#hiv-tb" data-toggle="tab">HIV-TB Cascade</a></li>
+                <li class=""><a aria-expanded="false" href="#art" data-toggle="tab">ART</a></li>
+
+                 <li class=""><a aria-expanded="false" href="#hiv-tb" data-toggle="tab">HIV-TB Cascade</a></li>
             </ul>
 
             <div class="tab-content" id="tabId">
                 <img src="~/images/ms-spinner.gif" id="a-spinner" style="padding: 5% 40%;" />
                 <div class="tab-pane active" id="hts_cascade">
+
+                    <div class="row">
+                        <div id="Comp_Stat_HTS_Other_PITC" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+                    <hr />
+
                     <div class="row">
                         <div id="COMP_stat" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
+
+
                     <hr />
                     <div class="row">
-                        <div id="COMP_stat_HTS_TST" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        <div id="COMP_stat_HTS_TST" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
+                </div>
+
+                <div class="tab-pane" id="pmtct">
+
+                    <div class="row">
+                        <div id="Comp_Stat_PMTCT" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
                     <hr />
                     <div class="row">
-                        <div id="Comp_Stat_HTS_Other_PITC" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        <div id="Comp_Stat_PMTCT_EID" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_Stat_PMTCT_Viral_Load" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="art">
 
                     <div class="row">
-                        <div id="Comp_Stat_ART" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        <div id="Comp_Stat_ART" style="min-width: 310px; height: 550px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="pmtct">
-
-                    <div class="row">
-                        <div id="Comp_Stat_PMTCT" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="row">
-                        <div id="Comp_Stat_PMTCT_EID" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="row">
-                        <div id="Comp_Stat_PMTCT_Viral_Load" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
-                        </div>
-                    </div>
-                </div>
-
                 <div class="tab-pane" id="hiv-tb">
 
                     <div class="row">
-                        <div id="Comp_TB_screened" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto">
+                        <div id="Comp_TB_screened" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
                         </div>
                     </div>
 
                     <hr />
+                    <div class="row">
+                        <div id="Comp_TB_Presumptive" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
 
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_TB_Bacteriology" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_TB_Diagnosis" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_TB_Relapsed_Status" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_TB_Relapsed_POS" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div id="Comp_TB_Relapsed" style="min-width: 310px; height: 410px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
+
+                    <hr />
                 </div>
             </div>
         </div>
@@ -312,7 +352,7 @@
                         buildallchart(dt);
                     }
                     catch (e) {
-                        alert("A system error has occurred. Kindly re-try again shortly");
+                    //    alert("A system error has occurred. Kindly re-try again shortly");
                         console.log(e);
                     }
                 }).error(function (xhr, status, err) {
@@ -353,9 +393,10 @@
             function buildallchart(dt) {
 
                  //HTS_Index
-                build_stacked_bar_with_drilldown('COMP_stat', 'HTS Index Completeness Report', 'Percentage Completeness',
-                    'Percentage Completeness', '', dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
-               
+                build_stacked_bar_with_drilldown_completeness('COMP_stat', 'HTS Index Completeness Report', 'Percentage Completeness (%)',
+                    'Percentage Completeness (%)', '', dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down_stack);
+                console.log(dt.Comp_Stat.Comp_Stat);
+                console.log(dt.Comp_Stat.lga_drill_down_stack);
 
 
 
@@ -365,34 +406,60 @@
                 //    dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
 
                 //HTS_TST
-                build_side_by_side_bar_chart_with_DrillDown('COMP_stat_HTS_TST', 'HTS_TST Completeness Report', 'Percentage Completeness',
-                    dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down);
-
+                build_stacked_bar_with_drilldown_completeness('COMP_stat_HTS_TST', 'HTS_TST Completeness Report', 'Percentage Completeness (%)',
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down);
+              
                 //HTS_Other_PITC
-                build_stacked_bar_with_drilldown('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness',
-                    'Percentage Completeness', '', dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
-                console.log(dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
-
+                build_stacked_bar_with_drilldown_horizontal('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness (%)',
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
+                //console.log(dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC);
+                //console.log(dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
                 //ART
-                build_stacked_bar_with_drilldown('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness',
-                     'Percentage Completeness', '', dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
+                build_stacked_bar_with_drilldown_completeness('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness (%)',
+                     'Percentage Completeness (%)', '', dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
 
                 //PMTCT
-                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT', 'PMTCT Completeness Report', 'Percentage Completeness',
-                    dt.Comp_Stat_PMTCT.Comp_Stat_PMTCT, dt.Comp_Stat_PMTCT.lga_drill_down);
+                build_stacked_bar_with_drilldown_completeness('Comp_Stat_PMTCT', 'PMTCT Completeness Report', 'Percentage Completeness (%)',
+                   'Percentage Completeness (%)', '', dt.Comp_Stat_PMTCT.Comp_Stat_PMTCT, dt.Comp_Stat_PMTCT.lga_drill_down);
 
 
                 //PMTCT_EID
-                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT_EID', 'PMTCT_EID Completeness Report', 'Percentage Completeness',
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_Stat_PMTCT_EID', 'PMTCT_EID Completeness Report', 'Percentage Completeness (%)',
                     dt.Comp_Stat_PMTCT_EID.Comp_Stat_PMTCT_EID, dt.Comp_Stat_PMTCT_EID.lga_drill_down);
 
                 //PMTCT_Viral_Load
-                build_side_by_side_bar_chart_with_DrillDown('Comp_Stat_PMTCT_Viral_Load', 'PMTCT Viral Load Completeness Report', 'Percentage Completeness',
-                    dt.Comp_Stat_PMTCT_Viral_Load.Comp_Stat_PMTCT_Viral_Load, dt.Comp_Stat_PMTCT_Viral_Load.lga_drill_down);
+                build_stacked_bar_with_drilldown_completeness('Comp_Stat_PMTCT_Viral_Load', 'PMTCT Viral Load Completeness Report', 'Percentage Completeness (%)',
+                     'Percentage Completeness (%)', '', dt.Comp_Stat_PMTCT_Viral_Load.Comp_Stat_PMTCT_Viral_Load, dt.Comp_Stat_PMTCT_Viral_Load.lga_drill_down);
 
                 //TB_Screened
-                build_side_by_side_bar_chart_with_DrillDown('Comp_TB_screened', 'TB Screened Completeness Report', 'Percentage Completeness',
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_screened', 'TB Screened Completeness Report', 'Percentage Completeness (%)',
                     dt.Comp_TB_screened.Comp_TB_screened, dt.Comp_TB_screened.lga_drill_down);
+
+                //TB_Presumptive
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Presumptive', 'TB Presumptive Completeness Report', 'Percentage Completeness (%)',
+                    dt.Comp_TB_Presumptive.Comp_TB_Presumptive, dt.Comp_TB_Presumptive.lga_drill_down);
+
+                //TB_Bacteriology
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Bacteriology', 'TB Bacteriology Completeness Report', 'Percentage Completeness (%)',
+                    dt.Comp_TB_Bacteriology.Comp_TB_Bacteriology, dt.Comp_TB_Bacteriology.lga_drill_down);
+
+                //TB_Diagnosis
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Diagnosis', 'TB Diagnosis Completeness Report', 'Percentage Completeness (%)',
+                    dt.Comp_TB_Diagnosis.Comp_TB_Diagnosis, dt.Comp_TB_Diagnosis.lga_drill_down);
+
+
+                //TB_Relapsed_Status
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Relapsed_Status', 'TB Relapsed Status Completeness Report', 'Percentage Completeness (%)',
+                    dt.Comp_TB_Relapsed_Status.Comp_TB_Relapsed_Status, dt.Comp_TB_Relapsed_Status.lga_drill_down);
+
+                //TB_Relapsed_POS
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Relapsed_POS', 'TB Relapsed Known POS Completeness Report', 'Percentage Completeness (%)',
+                    dt.Comp_TB_Relapsed_POS.Comp_TB_Relapsed_POS, dt.Comp_TB_Relapsed_POS.lga_drill_down);
+
+                
+                //TB_Relapsed
+                build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Relapsed', 'TB Relapsed Completeness Report', 'Percentage Completeness (%)',
+                    dt.Comp_TB_Relapsed.Comp_TB_Relapsed, dt.Comp_TB_Relapsed.lga_drill_down);
 
             }
 

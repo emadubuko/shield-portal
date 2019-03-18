@@ -1528,6 +1528,10 @@
     <Content Include="Views\MPM\iCompletenessReports.cshtml" />
     <Content Include="Views\MPM\ReportingRate.cshtml" />
     <Content Include="Views\MPM\iReportingRate.cshtml" />
+    <Content Include="Views\MPM\IMSCompletenessReports.cshtml" />
+    <Content Include="Views\MPM\iIMSCompletenessReports.cshtml" />
+    <Content Include="Views\MPM\IMSReportingRate.cshtml" />
+    <Content Include="Views\MPM\iIMSReportingRate.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

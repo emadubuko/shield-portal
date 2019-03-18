@@ -13,7 +13,7 @@
             <ol class="breadcrumb breadcrumb-2">
                 <li><a href="/"><i class="icon-folder"></i>Home</a></li>
                 <li><a href="/Home/submenu?id=smr">Enhanced Monitoring</a></li>
-                <li class="active">GSM</li>
+                @*<li class="active">GSM</li>*@
             </ol>
         </div>
     </div>
@@ -105,15 +105,16 @@
                                 <a href=""> <i class="fa fa-calendar"></i><span class="title">&nbsp; GSM</span></a>
                                 <ul class="submenu">
                                     <li>
-                                        <a href=@Url.Action("CompletenessReports", "MPM")>
-                                            Completeness Report
-                                        </a>
-                                    </li>
-                                    <li>
                                         <a href=@Url.Action("ReportingRate", "MPM")>
                                             Reporting Rate
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href=@Url.Action("CompletenessReports", "MPM")>
+                                            Completeness Report
+                                        </a>
+                                    </li>
+
                                     <li>
                                         <a href=@Url.Action("GSMUploadTracker", "MPM")>
                                             Upload Tracker
@@ -124,14 +125,15 @@
                             <li>
                                 <a href=""> <i class="fa fa-calendar-plus-o"></i><span class="title">&nbsp; IMS</span></a>
                                 <ul class="submenu">
+
                                     <li>
-                                        <a href=@Url.Action("CompletenessReports", "MPM")>
-                                            Completeness Report
+                                        <a href=@Url.Action("IMSReportingRate", "MPM")>
+                                            Reporting Rate
                                         </a>
                                     </li>
                                     <li>
-                                        <a href=@Url.Action("ReportingRate", "MPM")>
-                                            Reporting Rate
+                                        <a href=@Url.Action("IMSCompletenessReports", "MPM")>
+                                            Completeness Report
                                         </a>
                                     </li>
                                     <li>

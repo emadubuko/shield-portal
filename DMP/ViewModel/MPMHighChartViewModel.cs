@@ -49,6 +49,17 @@ namespace ShieldPortal.ViewModel
         public int Row_Number { get; set; }
     }
 
+    public class NDRStatisticsViewModel 
+    {
+        public string state_name { get; set; }
+        public int Id { get; set; }
+        public int NDR_TX_NEW { get; set; }
+        public int NDR_TX_CURR { get; set; }
+        public int FacilityId { get; set; }
+        public DateTime CachedDatetime { get; set; }
+        public string ReportPeriod { get; set; }
+    }
+
 
     public class PMTCT_VL_ViewModel : BaseModel
     {
@@ -221,7 +232,8 @@ namespace ShieldPortal.ViewModel
         public string AgeGroup { get; set; }
         public string ReportingPeriod { get; set; }
         public string Category { get; set; }
-       
+        public string _less_than_1000 { get; set; }
+        public string _greater_than_1000 { get; set; }
         public string Facility { get; set; }
         public string State { get; set; }
         public string LGA { get; set; }

@@ -101,7 +101,7 @@ function BuildBubbleChart_HTS_Other_PITC(id, title, xaxis_title, yaxis_title, bu
             labels: {
                 format: '{value} %'
             },
-            max: 105,
+            max: 20,
             min: 0,
             maxPadding: 0.2,
         },
@@ -169,7 +169,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
         xAxis: {
             max: 10000,
             min: 0,
-            gridLineWidth: 1,
+            gridLineWidth: 0,
             title: {
                 text: xaxis_title
             },
@@ -188,9 +188,11 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
             labels: {
                 format: '{value} %'
             },
-            max: 105,
+            max: 60,
             min: 0,
             maxPadding: 0.2,
+            gridLineWidth: 0,
+            minorGridLineWidth: 0,
           
         },
 
@@ -230,7 +232,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
     chart.renderer.rect(chart.plotBox.x + width,
         chart.plotBox.y, width, height, 1)
         .attr({
-            fill: '#4caf50',
+            fill: '#8bc34a',
             zIndex: 0
         })
         .add();
@@ -238,7 +240,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
     chart.renderer.rect(chart.plotBox.x,
         chart.plotBox.y, width, height, 1)
         .attr({
-            fill: '#8bc34a',
+            fill: '#4caf50', 
             zIndex: 0
         })
         .add();
@@ -743,6 +745,80 @@ function build_trend_chart(container_id, title, yAxistitle, xaxisCategory, serie
     });
 }
 
+function build_trend_chart_state(container_id, title, yAxistitle, xaxisCategory, series_data) {
+    //var colors = get_color_shades(2); 
+    Highcharts.chart(container_id, {
+
+        title: {
+            text: title
+        },
+
+        //subtitle: {
+        //    text: 'Source: thesolarfoundation.com'
+        //},
+
+        yAxis: {
+            title: {
+                text: yAxistitle
+            }
+        },
+
+        xAxis: {
+            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+             //   pointStart: 2015
+            }
+        },
+
+       series: series_data,
+
+        //series: [{
+        //    name: 'Benue',
+        //    data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        //}, {
+        //    name: 'Ebonyi',
+        //    data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+        //}, {
+        //    name: 'Delta',
+        //    data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+        //}, {
+        //    name: 'Ondo',
+        //    data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+        //}, {
+        //    name: 'Plateau',
+        //    data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+        //}],
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+
+    });
+}
+
+
 function build_side_by_side_column_chart(container_id, title, yAxistitle, xaxisCategory, series_data) {
     Highcharts.chart(container_id, {
         chart: {
@@ -995,6 +1071,88 @@ function build_stacked_bar_with_percent(container_id, title, xaxis_categories, y
     });
 }
 
+function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
+    
+    var drilldownTitle = title+" by LGAs in ";
+    var drilldownTitleLevel2 = title + " by Facilities in ";
+    Highcharts.chart(container_id, {
+        credits: {
+            enabled: true
+        },
+        chart: {
+            type: 'bar',
+            events: {
+                drilldown: function (e) {
+                    var chart = this;
+                    chart.setTitle({ text: drilldownTitle + e.point.name });
+                    console.log("Event log "+e.point.name);
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    chart.setTitle({ text: title });
+                }
+            }
+        },
+      
+        title: {
+            text: title
+        },
+
+        xAxis: {
+            type: 'category'
+            //categories: xaxis_categories
+        },
+
+        yAxis: {
+            min: 0,
+            title: {
+                text: yaxis_title
+            },
+            labels: {
+                format: '{value} %'
+            },
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': %' + this.y + '<br/>';
+                    //+
+                    //'Total % Completeness for Male and Female: %' + this.point.stackTotal;
+            }
+        },
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        color: 'white'
+                      // textShadow: '0 0 2px black, 0 0 2px black'
+                    },
+                    format: '{y} %'
+                },
+                stacking: 'normal'
+            }
+        },
+        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a', '#b71c1c', '#33691e', '#673ab7', '#78909c'],
+
+        series: parent_series_data,
+        drilldown: {
+            activeDataLabelStyle: {
+                color: 'white',
+                fontSize: '9px',
+                fontWeight: 'normal',
+                textDecoration: "none",
+              //  textShadow: '0 0 0px black, 0 0 0px black',
+              
+            },
+            series: child_series_data
+        }
+    });
+}
+
+
 function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
     Highcharts.chart(container_id, {
         credits: {
@@ -1036,34 +1194,34 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
                     enabled: true,
                     style: {
                         color: 'white'
-                      // textShadow: '0 0 2px black, 0 0 2px black'
-                    }
+                        // textShadow: '0 0 2px black, 0 0 2px black'
+                    },
+                   
                 },
                 stacking: 'normal'
             }
         },
-        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a'],
+        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a', '#b71c1c', '#33691e', '#673ab7', '#78909c'],
 
         series: parent_series_data,
         drilldown: {
             activeDataLabelStyle: {
                 color: 'white',
-                fontSize: '12px',
+                fontSize: '9px',
                 fontWeight: 'normal',
                 textDecoration: "none",
-              //  textShadow: '0 0 0px black, 0 0 0px black',
-              
+                //  textShadow: '0 0 0px black, 0 0 0px black',
+
             },
             series: child_series_data
         }
     });
 }
 
-
 function build_stacked_bar_with_drilldown_completeness(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
     Highcharts.chart(container_id, {
         credits: {
-            enabled: false
+            enabled: true
         },
         chart: {
             type: 'column'
@@ -1084,13 +1242,17 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
             min: 0,
             title: {
                 text: yaxis_title
-            }
+            },
+            labels: {
+                format: '{value} %'
+            },
         },
         tooltip: {
             formatter: function () {
-                return '<b>' + this.x + '</b><br/>' +
-                    this.series.name + ': ' + this.y + '<br/>' +
-                    'Total: ' + this.point.stackTotal;
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': %' + this.y + '<br/>'
+                + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities+ ' Facilitie(s)';
             }
         },
 
@@ -1100,20 +1262,26 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
                 dataLabels: {
                     enabled: true,
                     style: {
-                        color: 'white',
-                        textShadow: '0 0 2px black, 0 0 2px black'
-                    }
+                        color: 'white'
+                        // textShadow: '0 0 2px black, 0 0 2px black'
+                    },
+                    format: '{y}%',
+
                 },
                 stacking: 'normal'
             }
         },
-        colors: ['red', 'green', 'blue', 'black'],
+        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a', '#b71c1c', '#33691e', '#673ab7', '#78909c'],
 
         series: parent_series_data,
         drilldown: {
             activeDataLabelStyle: {
                 color: 'white',
-                textShadow: '0 0 2px black, 0 0 2px black'
+                fontSize: '9px',
+                fontWeight: 'normal',
+                textDecoration: "none",
+                //  textShadow: '0 0 0px black, 0 0 0px black',
+
             },
             series: child_series_data
         }
@@ -1121,8 +1289,76 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
 }
 
 
-
 function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat) {
+
+    Highcharts.chart(container_id, {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        subtitle: {
+            text: 'click on the states bar to drill down',
+        },
+        legend: {
+            enabled: true,
+        },
+        //tooltip: {
+        //    shared: true
+        //},
+
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.absolute + '</b><br>' +
+                    this.series.name + ': %' + this.y + '<br/>';
+                //+
+                //'Total % Completeness for Male and Female: %' + this.point.stackTotal;
+            }
+        },
+
+
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                },
+               
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: [
+            {
+                title: {
+                    text: y1_title,
+                },
+                labels: {
+                    format: '{value:,.0f}',
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            }],
+        series: principal_data_array,
+        drilldown: {
+            _animation: {
+                duration: 2000
+            },
+            series: child_data
+        }
+    });
+}
+
+
+
+function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat) {
 
     Highcharts.chart(container_id, {
         chart: {
@@ -1151,7 +1387,18 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
                 borderWidth: 0,
                 dataLabels: {
                     enabled: true,
-                }
+                    format: '{y} %',
+                },
+              
+              //  format: '{x} %',
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': %' + this.y + '<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facilitie(s)';
             }
         },
         colors: ['steelblue', 'red', 'sandybrown'],
@@ -1163,8 +1410,9 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
                 title: {
                     text: y1_title,
                 },
+              
                 labels: {
-                    format: '{value:,.0f}',
+                    format: '{value} %'
                 },
                 //max: Math.max.apply(Math, parent_data),
                 min: 0
@@ -1242,7 +1490,7 @@ function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title
 
     Highcharts.setOptions({
         lang: {
-            drillUpText: '<< go back to {series.name}'
+            drillUpText: '<< Go back to {series.name}'
         }
     });
 
@@ -1294,6 +1542,7 @@ function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title
                 },
                 title: {
                     text: y2_title,
+                    rotation: 270,
                 },
                 opposite: true,
                 max: 100,

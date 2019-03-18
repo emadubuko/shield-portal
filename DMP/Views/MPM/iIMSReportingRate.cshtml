@@ -28,7 +28,7 @@
     </script>
 }
 
-<h2>GSM Reporting Rate </h2>
+<h2>IMS Reporting Rate </h2>
 <div class="col-sm-7">
     <div class="row">
 
@@ -252,7 +252,7 @@
                 model.facilities = selectedFacilitties;
 
                 $.ajax({
-                    url: "/MPM/RetriveReportingRateData",
+                    url: "/MPM/RetriveIMSReportingRateData",
                     method: "Post",
                     data: JSON.stringify(model),
                     contentType: "application/json",
@@ -280,7 +280,7 @@
             _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
 
             $.ajax({
-                url: "/MPM/RetriveReportingRateData",
+                url: "/MPM/RetriveIMSReportingRateData",
                 method: "Post",
                 data: JSON.stringify(_model),
                 contentType: "application/json",

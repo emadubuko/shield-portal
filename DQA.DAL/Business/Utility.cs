@@ -491,6 +491,18 @@ namespace DQA.DAL.Business
 
         }
 
+        public static DataTable GetNDRStateStatistics(string state, string month)
+        {
+            var cmd = new SqlCommand();
+            cmd.CommandText = "sp_get_state_TX_NEW_by_month";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@State", state);
+            cmd.Parameters.AddWithValue("@month", month);
+            var dataTable = GetDatable(cmd);
+
+            return dataTable;
+        }
+
         public static void DeletePivotTable(int id)
         {
             var data = entity.dqa_pivot_table_upload.First(x => x.Id == id);

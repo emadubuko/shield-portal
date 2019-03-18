@@ -69,6 +69,11 @@
                         </div>
                     </div>
 
+                    <hr />
+                    <div class="row">
+                        <div id="LinkagebyState_trend" style="min-width: 310px; height: 700px; max-width: 100%; margin: 0 auto">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="tab-pane" id="3rd90">
@@ -336,7 +341,7 @@
                         buildallchart(dt);
                     }
                     catch (e) {
-                        alert("A system error has occurred. Kindly re-try again shortly");
+                      //  alert("A system error has occurred. Kindly re-try again shortly");
                         console.log(e);
                     }
                 }).error(function (xhr, status, err) {
@@ -367,7 +372,7 @@
                     //console.log(response);
                 }
                 catch (e) {
-                    alert("A system error has occurred. Kindly re-try again shortly");
+                 //   alert("A system error has occurred. Kindly re-try again shortly");
                     console.log(e);
                 }
             }).error(function (xhr, status, err) {
@@ -385,7 +390,7 @@
 
 
                 BuildBubbleChart_HTS_Other_PITC('HTSotherPITC', 'HTS Other PITC',
-                    'No. of client tested', '% Testing Yield', bubble_pointFormat,
+                    'Number of client tested', '% Testing Yield', bubble_pointFormat,
                     dt.hts_other_pitc);
 
                 //hts other pitc
@@ -396,56 +401,59 @@
 
                 //LinkagebyState
                 build_bar_chart_dual_axis_with_drill_down('LinkagebyState', 'New on ART vs Identified Positives',
-                    'No. of client', '% linkage', dt.Linkage.state_data, dt.Linkage.lga_drill_down,
+                    'Number of HIV client', '% linkage', dt.Linkage.state_data, dt.Linkage.lga_drill_down,
                     dt.Linkage.states);
-
+                
+                build_trend_chart_state('LinkagebyState_trend', 'Tx_New Trend',
+                    'Number of new clients', dt.ART_Trend.pos_state, dt.ART_Trend.pos_state);
+                console.log(dt.ART_Trend.pos_state);
 
                 //TX_RET
                 build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
-                    'No. of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
+                    'Number of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
                     dt.ART.states);
 
 
                 //Tx_VLA
                 build_bar_chart_dual_axis_with_drill_down('Tx_VLA', 'Viral Load Access',
-                    'No. of client', '% Viral load access', dt.ART.state_data_vl,
+                    'Number of client', '% Viral load access', dt.ART.state_data_vl,
                     dt.ART.lga_drill_down_vl, dt.ART.states);
 
                 //PMTCTVIRALLOAD
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression', 'Previously Known HIV Positive',
-                    "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
+                    "Number of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
 
-                console.log(dt.PMTCT_VL.drilldown_series_known_status);
+             //   console.log(dt.PMTCT_VL.drilldown_series_known_status);
 
                 //PMTCTVIRALLOAD_new
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
-                    "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
+                    "Number of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
 
                 //PMTCTCascade_uptake
                 build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
-                    'No. of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
+                    'Number of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
 
                 //PMTCTCascade_maternal_clinical
                 build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'Maternal/Infant Clinical Cascade',
-                    'No. of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
+                    'Number of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
 
                 //PMTCTCascade_linkage
                 build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
-                    'No. of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
+                    'Number of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
 
                 //TB_stat
-                build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'No of Client',
+                build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'Number of Client',
                     dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
             //    console.log("Logged Message " + dt.Tb_Stat.lga_drill_down);
 
                 //TB_treatment
                 build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',
-                    'No. of client', '% TX_TB', dt.TB_treatment.state_data,
+                    'Number of client', '% TX_TB', dt.TB_treatment.state_data,
                     dt.TB_treatment.lga_drill_down, dt.TB_treatment.states);
 
                 //TB_tpt
                 build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
-                    'No. of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
+                    'Number of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
 
                  //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
                     //    'No. of client', '% TPT', dt.tb_tpt.State,
