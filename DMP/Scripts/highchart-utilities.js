@@ -1133,7 +1133,14 @@ function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtit
                 enabled: true,
                 text: 'States'
             },
+            labels: {
+                rotation: -45,
+              
+            }
         },
+
+
+     
 
         yAxis: {
             min: 0,
@@ -1414,10 +1421,10 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
             }
         },
         subtitle: {
-            text: 'click on the states bar to drill down',
+            text: 'Click on the bars to drill down',
         },
         legend: {
-            enabled: false,
+            enabled: true,
         },
         //tooltip: {
         //    shared: true
