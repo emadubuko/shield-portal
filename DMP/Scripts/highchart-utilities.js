@@ -764,7 +764,8 @@ function build_trend_chart_state(container_id, title, yAxistitle, xaxisCategory,
         },
 
         xAxis: {
-            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            //categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            categories: ['Aug 18', 'Sep 18', 'Oct 18', 'Nov 18', 'Dec 18', 'Jan 19', 'Feb 19', 'Mar 19', 'Apr 19', 'May 19', 'Jun 19', 'Jul 19'],
         },
         legend: {
             layout: 'vertical',
@@ -1073,8 +1074,12 @@ function build_stacked_bar_with_percent(container_id, title, xaxis_categories, y
 
 function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
     
-    var drilldownTitle = title+" by LGAs in ";
-    var drilldownTitleLevel2 = title + " by Facilities in ";
+    var drilldownTitle = title;
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Go back'
+        }
+    });
     Highcharts.chart(container_id, {
         credits: {
             enabled: true
@@ -1084,12 +1089,36 @@ function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtit
             events: {
                 drilldown: function (e) {
                     var chart = this;
-                    chart.setTitle({ text: drilldownTitle + e.point.name });
-                    console.log("Event log "+e.point.name);
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
                 },
                 drillup: function (e) {
                     var chart = this;
-                    chart.setTitle({ text: title });
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
                 }
             }
         },
@@ -1099,8 +1128,11 @@ function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtit
         },
 
         xAxis: {
-            type: 'category'
-            //categories: xaxis_categories
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
         },
 
         yAxis: {
@@ -1109,15 +1141,15 @@ function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtit
                 text: yaxis_title
             },
             labels: {
-                format: '{value} %'
+                format: '{value}'
             },
         },
         tooltip: {
             formatter: function () {
                 return '<b>' + this.point.name + '</b><br>' +
-                    this.series.name + ': %' + this.y + '<br/>';
-                    //+
-                    //'Total % Completeness for Male and Female: %' + this.point.stackTotal;
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facility(ies)';
             }
         },
 
@@ -1182,8 +1214,7 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
         tooltip: {
             formatter: function () {
                 return '<b>' + this.point.name + '</b><br>' +
-                    this.series.name + ': %' + this.y + '<br/>' +
-                    'Total % Completeness for Male and Female: %' + this.point.stackTotal;
+                    this.series.name + ': ' + this.y + '<br/>'; 
             }
         },
 
@@ -1219,12 +1250,56 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
 }
 
 function build_stacked_bar_with_drilldown_completeness(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
+    var drilldownTitle = title;
+
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Go back'
+        }
+    });
+
     Highcharts.chart(container_id, {
         credits: {
             enabled: true
         },
         chart: {
-            type: 'column'
+            type: 'column',
+            events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
         },
         subtitle: {
             text: subtitle,
@@ -1234,8 +1309,11 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
         },
 
         xAxis: {
-            type: 'category'
-            //categories: xaxis_categories
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
         },
 
         yAxis: {
@@ -1244,15 +1322,15 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
                 text: yaxis_title
             },
             labels: {
-                format: '{value} %'
+                format: '{value}'
             },
         },
         tooltip: {
             formatter: function () {
                 return '<b>' + this.point.name + '</b><br>' +
-                    this.series.name + ': %' + this.y + '<br/>'
+                    this.series.name + ': ' + this.y + '%<br/>'
                 + this.point.absolute +
-                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities+ ' Facilitie(s)';
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities+ ' Facility(ies)';
             }
         },
 
@@ -1290,10 +1368,44 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
 
 
 function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat) {
-
+    var drilldownTitle = title;
     Highcharts.chart(container_id, {
         chart: {
-            type: 'column'
+            type: 'column', events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
         },
         title: {
             text: title,
@@ -1305,7 +1417,7 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
             text: 'click on the states bar to drill down',
         },
         legend: {
-            enabled: true,
+            enabled: false,
         },
         //tooltip: {
         //    shared: true
@@ -1313,10 +1425,10 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
 
         tooltip: {
             formatter: function () {
-                return '<b>' + this.point.absolute + '</b><br>' +
-                    this.series.name + ': %' + this.y + '<br/>';
-                //+
-                //'Total % Completeness for Male and Female: %' + this.point.stackTotal;
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.facilities + ' Facility(ies)';
             }
         },
 
@@ -1333,8 +1445,13 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
         },
         colors: ['steelblue', 'red', 'sandybrown'],
         xAxis: {
-            type: 'category'
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
         },
+
         yAxis: [
             {
                 title: {
@@ -1359,10 +1476,50 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
 
 
 function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat) {
-
+    var drilldownTitle = title;
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Go back'
+        }
+    });
     Highcharts.chart(container_id, {
         chart: {
-            type: 'column'
+            type: 'column',
+            events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
         },
         title: {
             text: title,
@@ -1371,7 +1528,7 @@ function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, 
             }
         },
         subtitle: {
-            text: 'click on the states bar to drill down',
+            text: 'click on bars to drill down',
         },
         legend: {
             enabled: true,
@@ -1396,14 +1553,18 @@ function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, 
         tooltip: {
             formatter: function () {
                 return '<b>' + this.point.name + '</b><br>' +
-                    this.series.name + ': %' + this.y + '<br/>'
+                    this.series.name + ': ' + this.y + '%<br/>'
                     + this.point.absolute +
-                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facilitie(s)';
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facility(ies)';
             }
         },
         colors: ['steelblue', 'red', 'sandybrown'],
         xAxis: {
-            type: 'category'
+            type: 'category',      
+              title: {
+                enabled: true,
+                text: 'States'
+            },
         },
         yAxis: [
             {
@@ -1412,7 +1573,7 @@ function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, 
                 },
               
                 labels: {
-                    format: '{value} %'
+                    format: '{value}'
                 },
                 //max: Math.max.apply(Math, parent_data),
                 min: 0

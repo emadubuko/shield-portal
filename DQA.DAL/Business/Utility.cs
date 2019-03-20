@@ -497,7 +497,7 @@ namespace DQA.DAL.Business
             cmd.CommandText = "sp_get_state_TX_NEW_by_month";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@State", state);
-            cmd.Parameters.AddWithValue("@month", month);
+            cmd.Parameters.AddWithValue("@reportPeriod", month);
             var dataTable = GetDatable(cmd);
 
             return dataTable;

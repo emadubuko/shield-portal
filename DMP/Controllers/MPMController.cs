@@ -427,15 +427,6 @@ namespace ShieldPortal.Controllers
         }
 
         //download for IMS monthly template
-        public ActionResult Download()
-        {
-            var facilities = new HealthFacilityDAO().RetrievebyIP(loggedinProfile.Organization.Id);
-            List<State> states = new List<State>();
-            if (facilities != null)
-                states.AddRange(facilities.Select(x => x.LGA.State).Distinct());
-
-            return View(states);
-        }
 
         //download for GSM bi-weekly template
         public async Task<ActionResult> DownloadTemplateForGSM()
@@ -797,13 +788,13 @@ namespace ShieldPortal.Controllers
         {
             Dictionary<string, string> storedProcedures = new Dictionary<string, string>
             {
-                { "hts_index_testing" ,"sp_mpm_hts_index" },
-                { "hts_other_pitc", "sp_MPM_HTS_Other_PITC" },
+                {"hts_index_testing" ,"sp_mpm_hts_index" },
+                {"hts_other_pitc", "sp_MPM_HTS_Other_PITC" },
                 {"ART","sp_mpm_ART" },
                 {"Linkage","sp_mpm_LinkageToTreatment" },
                 {"PMTCT_VL","sp_mpm_PMTCT_Viral_Load" },
                 {"PMTCT","sp_mpm_PMTCT" },
-                { "Tb_Stat", "[sp_mpm_TB_Stat]" },
+                {"Tb_Stat", "[sp_mpm_TB_Stat]" },
                 {"TB_treatment","[sp_mpm_TB_treatment]" },
                 {"tb_tpt","[sp_mpm_TB_TPT]" },
                 {"ART_Trend","[sp_mpm_LinkageToTreatment]" }
@@ -1215,9 +1206,6 @@ namespace ShieldPortal.Controllers
             });
         }
 
-
-
-
         //tb_tpt
         public dynamic GenerateTB_TPT(DataTable dt)
         {
@@ -1396,7 +1384,6 @@ namespace ShieldPortal.Controllers
             };
             */
         }
-
 
         //tb_treatment
         public dynamic GenerateTB_Treatment(DataTable dt)
@@ -1952,6 +1939,7 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
             };
         }
+
         public dynamic GenerateCOMPLETENESSRATE_HTS_Index(bool isGSM, DataTable dt)
         {
             MPMDAO dao = new MPMDAO();
@@ -1969,6 +1957,7 @@ namespace ShieldPortal.Controllers
 
             foreach (var state in groupedData)
             {
+         
                 int no_of_sites = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
 
                 if (no_of_sites > 0)
@@ -1981,7 +1970,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = Math.Round(50 * 1.0 * geneaology_male / (4 * no_of_sites), 0),
                             name = state.Key,
-                            drilldown = state.Key + "M",
+                            drilldown = state.Key + "MG",
                             absolute = geneaology_male,
                             entries = 4 * no_of_sites,
                             facilities = no_of_sites
@@ -1994,7 +1983,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "M",
+                            drilldown = state.Key + "MG",
                             absolute = geneaology_male,
                             entries = 4 * no_of_sites,
                             facilities = no_of_sites
@@ -2009,7 +1998,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = Math.Round(50 * 1.0 * geneaology_female / (4 * no_of_sites), 0),
                             name = state.Key,
-                            drilldown = state.Key + "F",
+                            drilldown = state.Key + "FG",
                             absolute = geneaology_female,
                             entries = 4 * no_of_sites,
                             facilities = no_of_sites
@@ -2022,7 +2011,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "F",
+                            drilldown = state.Key + "FG",
                             absolute = geneaology_female,
                             entries = 4 * no_of_sites,
                             facilities = no_of_sites
@@ -2036,7 +2025,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = Math.Round(50 * 1.0 * partner_male / (16 * no_of_sites), 0),
                             name = state.Key,
-                            drilldown = state.Key + "M",
+                            drilldown = state.Key + "MP",
                             absolute = partner_male,
                             entries = 16 * no_of_sites,
                             facilities = no_of_sites
@@ -2049,7 +2038,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "M",
+                            drilldown = state.Key + "MP",
                             absolute = partner_male,
                             entries = 16 * no_of_sites,
                             facilities = no_of_sites
@@ -2063,7 +2052,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = Math.Round(50 * 1.0 * partner_female / (16 * no_of_sites), 0),
                             name = state.Key,
-                            drilldown = state.Key + "F",
+                            drilldown = state.Key + "FP",
                             absolute = partner_female,
                             entries = 16 * no_of_sites,
                             facilities = no_of_sites
@@ -2076,7 +2065,7 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "F",
+                            drilldown = state.Key + "FP",
                             absolute = partner_female,
                             entries = 16 * no_of_sites,
                             facilities = no_of_sites
@@ -2103,11 +2092,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = Math.Round(50 * 1.0 * lga_no_genealogy_male / (4 * lga_no_genealogy_male), 0),
                                     name = lga.Key,
-                                    drilldown = lga.Key + "M",
+                                    drilldown = lga.Key + "MG",
                                     absolute = lga_no_genealogy_male,
                                     entries = 4 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key+"M"
+                                  
                                 });
                             }
                             else
@@ -2116,11 +2105,10 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = 0.0,
                                     name = lga.Key,
-                                    drilldown = lga.Key + "M",
+                                    drilldown = lga.Key + "MG",
                                     absolute = lga_no_genealogy_male,
                                     entries = 4 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "M"
                                 });
                             }
 
@@ -2132,11 +2120,10 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = Math.Round(50 * 1.0 * lga_no_genealogy_female / (4 * no_of_lga_sites), 0),
                                     name = lga.Key,
-                                    drilldown = lga.Key + "F",
+                                    drilldown = lga.Key + "FG",
                                     absolute = lga_no_genealogy_female,
                                     entries = 4 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "F"
                                 });
                             }
                             else
@@ -2145,11 +2132,10 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = 0.0,
                                     name = lga.Key,
-                                    drilldown = lga.Key + "F",
+                                    drilldown = lga.Key + "FG",
                                     absolute = lga_no_genealogy_female,
                                     entries = 4 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "F"
                                 });
                             }
 
@@ -2163,12 +2149,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = Math.Round(50 * 1.0 * lga_no_partner_male / (16 * no_of_lga_sites), 0),
                                     name = lga.Key,
-                                    drilldown = lga.Key + "M",
+                                    drilldown = lga.Key + "MP",
                                     absolute = lga_no_partner_male,
                                     entries = 16 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "M"
-                                });
+                              });
                             }
                             else
                             {
@@ -2176,11 +2161,10 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = 0.0,
                                     name = lga.Key,
-                                    drilldown = lga.Key + "M",
+                                    drilldown = lga.Key + "MP",
                                     absolute = lga_no_partner_male,
                                     entries = 16 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "M"
                                 });
                             }
 
@@ -2192,11 +2176,10 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = Math.Round(50 * 1.0 * lga_no_partner_female / (16 * no_of_lga_sites), 0),
                                     name = lga.Key,
-                                    drilldown = lga.Key + "F",
+                                    drilldown = lga.Key + "FP",
                                     absolute = lga_no_partner_female,
                                     entries = 16 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "F"
                                 });
                             }
                             else
@@ -2205,11 +2188,10 @@ namespace ShieldPortal.Controllers
                                 {
                                     y = 0.0,
                                     name = lga.Key,
-                                    drilldown = lga.Key + "F",
+                                    drilldown = lga.Key + "FP",
                                     absolute = lga_no_partner_female,
                                     entries = 16 * no_of_sites,
                                     facilities = no_of_sites,
-                                    id = state.Key + "F"
                                 });
                             }
 
@@ -2232,7 +2214,7 @@ namespace ShieldPortal.Controllers
 
                                            name = fty.Key,
                                          y  = Math.Round(50 * 1.0 * fac_no_genealogy_male / 4 , 1),                        
-                                          absolute = lga_no_partner_female,
+                                          absolute = fac_no_genealogy_male,
                                          entries =  4,
                                          facilities =  1
                                         });
@@ -2249,36 +2231,48 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "F").Count() != 0)
+                                    int facility_no_genealogy_female = lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "F").Count();
+                                    if (facility_no_genealogy_female != 0)
                                     {
 
-                                        facility_genealogy_testing_female.Add(new List<dynamic>
+                                        facility_genealogy_testing_female.Add(new
                                         {
-                                            fty.Key,
-                                           Math.Round(50 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Genealogy Testing Index" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "F").Count() / (4 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                           name = fty.Key,
+                                          y = Math.Round(50 * 1.0 * facility_no_genealogy_female / 4, 1),
+                                        
+                                            absolute = facility_no_genealogy_female,
+                                            entries = 4,
+                                            facilities = 1
                                         });
                                     }
                                     else
                                     {
-                                        facility_genealogy_testing_female.Add(new List<dynamic>
+                                        facility_genealogy_testing_female.Add(new 
                                         {
-                                           fty.Key,
-                                            0.0,
+                                         name =  fty.Key,
+                                          y =  0.0,
+
+                                            absolute = facility_no_genealogy_female,
+                                            entries = 4,
+                                            facilities = 1
                                         });
                                     }
 
 
 
-
-                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "M").Count() != 0)
+                                    int facility_no_partner_male = lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "M").Count();
+                                    if (facility_no_partner_male != 0)
                                     {
 
                                         facility_partner_testing_male.Add(new
                                         {
 
                                             name = fty.Key,
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "M").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_partner_male / 16, 0),
+
+                                            absolute = facility_no_partner_male,
+                                            entries = 16,
+                                            facilities = 1
                                         });
                                     }
                                     else
@@ -2287,17 +2281,23 @@ namespace ShieldPortal.Controllers
                                         {
                                             name = fty.Key,
                                             y = 0.0,
+                                            absolute = facility_no_partner_male,
+                                            entries = 16,
+                                            facilities = 1
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "F").Count() != 0)
+                                    int facility_no_partner_female = lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "F").Count();
+                                    if (facility_no_partner_female != 0)
                                     {
 
                                         facility_partner_testing_female.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.state_name == state.Key && x.TestingType == "Partner Testing" && x.lga_name == lga.Key && x.GSM_2 == isGSM && x.Name == fty.Key && x.Sex == "F").Count() / (16 * siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_partner_female / 16 , 0),
+                                            absolute = facility_no_partner_female,
+                                            entries = 16,
+                                            facilities = 1
                                         });
                                     }
                                     else
@@ -2306,42 +2306,51 @@ namespace ShieldPortal.Controllers
                                         {
                                             name = fty.Key,
                                             y = 0.0,
+                                            absolute = facility_no_partner_female,
+                                            entries = 16,
+                                            facilities = 1
                                         });
                                     }
                                 }
                             }
-                            lga_drill_down.Add(new { name = "Genealogy Testing for Male", id = lga.Key + "M", data = facility_genealogy_testing_male});
-                            lga_drill_down.Add(new { name = "Genealogy Testing for Female", id = lga.Key + "F", data = facility_genealogy_testing_female});
+                            //lga_drill_down.Add(new { name = "Genealogy Testing for Male", id = lga.Key + "M", data = facility_genealogy_testing_male});
+                            //lga_drill_down.Add(new { name = "Genealogy Testing for Female", id = lga.Key + "F", data = facility_genealogy_testing_female});
 
 
-                            lga_drill_down.Add(new { name = "Partner Testing for Male", id = lga.Key + "M", data = facility_partner_testing_male });
-                            lga_drill_down.Add(new { name = "Partner Testing for Female", id = lga.Key + "F", data = facility_partner_testing_female});
+                            //lga_drill_down.Add(new { name = "Partner Testing for Male", id = lga.Key + "M", data = facility_partner_testing_male });
+                            //lga_drill_down.Add(new { name = "Partner Testing for Female", id = lga.Key + "F", data = facility_partner_testing_female});
+
+                            lga_drill_down_stack.Add(new { name = "Genealogy Testing for Male", id = lga.Key + "MG", data = facility_genealogy_testing_male, stack = "genealogy" });
+                            lga_drill_down_stack.Add(new { name = "Genealogy Testing for Female", id = lga.Key + "FG", data = facility_genealogy_testing_female, stack = "genealogy" });
+
+
+                            lga_drill_down_stack.Add(new { name = "Partner Testing for Male", id = lga.Key + "MP", data = facility_partner_testing_male, stack = "partner" });
+                            lga_drill_down_stack.Add(new { name = "Partner Testing for Female", id = lga.Key + "FP", data = facility_partner_testing_female, stack = "partner" });
                         }
 
-                        lga_drill_down.Add(new { name = "Genealogy Testing for Male", id = state.Key + "M", data = lga_genealogy_testing_male, stack = "genealogy" });
-                        lga_drill_down.Add(new { name = "Genealogy Testing for Female", id = state.Key + "F", data = lga_genealogy_testing_female, stack = "genealogy" });
-
-
-                        lga_drill_down.Add(new { name = "Partner Testing for Male", id = state.Key + "M", data = lga_partner_testing_male, stack = "partner" });
-                        lga_drill_down.Add(new { name = "Partner Testing for Female", id = state.Key + "F", data = lga_partner_testing_female, stack = "partner"  });
+                      
 
                         //lga_drill_down.Add(new { name = "Genealogy Testing for Male", id = state.Key + "M", data = lga_genealogy_testing_male, stack = "genealogy" });
                         //lga_drill_down.Add(new { name = "Genealogy Testing for Female", id = state.Key + "F", data = lga_genealogy_testing_female, stack = "genealogy" });
 
                         //lga_drill_down.Add(new { name = "Partner Testing for Male", id = state.Key + "M", data = lga_partner_testing_male, stack = "partner" });
                         //lga_drill_down.Add(new { name = "Partner Testing for Female", id = state.Key + "F", data = lga_partner_testing_female, stack = "partner" });
-                        
+
 
                     }
 
 
-                    lga_drill_down_stack = new List<dynamic>
-                        {
-                            new { name = "Genealogy Testing for Male", id = state.Key + "M", data = lga_genealogy_testing_male, stack = "genealogy" },
-                            new { name = "Genealogy Testing for Female", id = state.Key + "F", data = lga_genealogy_testing_female, stack = "genealogy" },
-                            new { name = "Partner Testing for Male", id = state.Key + "M", data = lga_partner_testing_male, stack = "partner" },
-                            new { name = "Partner Testing for Female", id = state.Key + "F", data = lga_partner_testing_female, stack = "partner" }
-                        };
+                    lga_drill_down_stack.Add(new { name = "Genealogy Testing for Male", id = state.Key + "MG", data = lga_genealogy_testing_male, stack = "genealogy" });
+                    lga_drill_down_stack.Add(new { name = "Genealogy Testing for Female", id = state.Key + "FG", data = lga_genealogy_testing_female, stack = "genealogy" });
+
+                    lga_drill_down_stack.Add(new { name = "Partner Testing for Male", id = state.Key + "MP", data = lga_partner_testing_male, stack = "partner" });
+                    lga_drill_down_stack.Add(new { name = "Partner Testing for Female", id = state.Key + "FP", data = lga_partner_testing_female, stack = "partner" });
+                    //{
+                    //    new { name = "Genealogy Testing for Male", id = state.Key + "M", data = lga_genealogy_testing_male, stack = "genealogy" },
+                    //    new { name = "Genealogy Testing for Female", id = state.Key + "F", data = lga_genealogy_testing_female, stack = "genealogy" },
+                    //    new { name = "Partner Testing for Male", id = state.Key + "M", data = lga_partner_testing_male, stack = "partner" },
+                    //    new { name = "Partner Testing for Female", id = state.Key + "F", data = lga_partner_testing_female, stack = "partner" }
+                    //};
 
                 }
 
@@ -2387,11 +2396,10 @@ namespace ShieldPortal.Controllers
             return new
             {
                 Comp_Stat,
-                lga_drill_down_stack,
+              //  lga_drill_down,
+                lga_drill_down_stack
             };
         }
-
-
 
         public dynamic GenerateCOMPLETENESSRATE_TB_Screened(bool isGSM, DataTable dt)
         {
@@ -2408,10 +2416,10 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
 
-
-                if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
+                int state_no_of_facilities = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                if (state_no_of_facilities > 0)
                 {
-                    int state_no_of_facilities = siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                  
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                         state_data_male.Add(new
@@ -2534,7 +2542,6 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
             };
         }
-
 
         public dynamic GenerateCOMPLETENESSRATE_TB_Relapsed_Status(bool isGSM, DataTable dt)
         {
@@ -2961,7 +2968,6 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
             };
         }
-
 
         public dynamic GenerateCOMPLETENESSRATE_TB_Presumptive(bool isGSM, DataTable dt)
         {
@@ -3391,7 +3397,6 @@ namespace ShieldPortal.Controllers
         }
 
 
-
         public dynamic GenerateCOMPLETENESSRATE_HTS_Other_PITC(bool isGSM, DataTable dt)
         {
             MPMDAO dao = new MPMDAO();
@@ -3411,18 +3416,22 @@ namespace ShieldPortal.Controllers
             var state_ent_clinic_female = new List<dynamic>();
             foreach (var state in groupedData)
             {
+                int state_no_facilities = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count();
 
-
-                if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count() > 0)
+                if (state_no_facilities > 0)
                 {
                     //blood bank
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "M").Count() != 0)
+                    int state_no_blood_male = lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "M").Count();
+                    if (state_no_blood_male != 0)
                     {
                         state_blood_bank_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "M").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_blood_male / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "1M"
+                            drilldown = state.Key + "1M",
+                            absolute = state_no_blood_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
 
                     }
@@ -3432,18 +3441,24 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "1M"
+                            drilldown = state.Key + "1M",
+                            absolute = state_no_blood_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
-
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "F").Count() != 0)
+                    int state_no_blood_female = lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "F").Count();
+                    if (state_no_blood_female  != 0)
                     {
                         state_blood_bank_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "F").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_blood_female / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "1F"
+                            drilldown = state.Key + "1F",
+                            absolute = state_no_blood_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
 
                     }
@@ -3453,18 +3468,25 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "1F"
+                            drilldown = state.Key + "1F",
+                            absolute = state_no_blood_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
                     //eye clinic
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "M").Count() != 0)
+                    int state_no_eye_male = lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "M").Count();
+                    if (state_no_eye_male != 0)
                     {
                         state_eye_clinic_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "M").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_eye_male / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "2M"
+                            drilldown = state.Key + "2M",
+                            absolute = state_no_eye_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
                     else
@@ -3473,17 +3495,24 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "2M"
+                            drilldown = state.Key + "2M",
+                            absolute = state_no_eye_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "F").Count() != 0)
+                    int state_no_eye_female = lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "F").Count();
+                    if (state_no_eye_female != 0)
                     {
                         state_eye_clinic_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "F").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_eye_female / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "2F"
+                            drilldown = state.Key + "2F",
+                            absolute = state_no_eye_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
                     else
@@ -3492,19 +3521,26 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "2F"
+                            drilldown = state.Key + "2F",
+                            absolute = state_no_eye_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
 
                     //Faminly planning
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "M").Count() != 0)
+                    int state_family_male = lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "M").Count();
+                    if (state_family_male != 0)
                     {
                         state_familiy_planning_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "M").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_family_male / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "3M"
+                            drilldown = state.Key + "3M",
+                            absolute = state_family_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
                     else
@@ -3513,17 +3549,24 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "3M"
+                            drilldown = state.Key + "3M",
+                            absolute = state_family_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "F").Count() != 0)
+                    int state_family_female = lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "F").Count();
+                    if (state_family_female != 0)
                     {
                         state_familiy_planning_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "F").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_family_female / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "3F"
+                            drilldown = state.Key + "3F",
+                            absolute = state_family_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
                     else
@@ -3532,19 +3575,26 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "3F"
+                            drilldown = state.Key + "3F",
+                            absolute = state_family_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
 
                     //ENT Clinic
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "M").Count() != 0)
+                    int state_ent_no_male = lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "M").Count();
+                    if (state_ent_no_male != 0)
                     {
                         state_ent_clinic_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "M").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_ent_no_male / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "4M"
+                            drilldown = state.Key + "4M",
+                            absolute = state_ent_no_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
                     else
@@ -3553,17 +3603,24 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "4M"
+                            drilldown = state.Key + "4M",
+                            absolute = state_ent_no_male,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "F").Count() != 0)
+                    int state_ent_no_female = lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "F").Count();
+                    if (state_ent_no_female != 0)
                     {
                         state_ent_clinic_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "F").Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_ent_no_female / (20 * state_no_facilities), 0),
                             name = state.Key,
-                            drilldown = state.Key + "4F"
+                            drilldown = state.Key + "4F",
+                            absolute = state_ent_no_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
                     else
@@ -3572,7 +3629,10 @@ namespace ShieldPortal.Controllers
                         {
                             y = 0.0,
                             name = state.Key,
-                            drilldown = state.Key + "4F"
+                            drilldown = state.Key + "4F",
+                            absolute = state_ent_no_female,
+                            entries = 20 * state_no_facilities,
+                            facilities = state_no_facilities
                         });
                     }
 
@@ -3587,18 +3647,22 @@ namespace ShieldPortal.Controllers
                     var lga_ent_clinic_female = new List<dynamic>();
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
-
-                        if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key).Count() > 0)
+                        int lga_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key).Count();
+                        if (lga_no_facilities > 0)
                         {
-                            
-                                //blood bank
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+
+                            //blood bank
+                            int lga_no_blood_bank_male = lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count();
+                                if (lga_no_blood_bank_male != 0)
                                 {
                                     lga_blood_bank_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_blood_bank_male / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "1M"
+                                        drilldown = lga.Key + "1M",
+                                        absolute = lga_no_blood_bank_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
 
                                 }
@@ -3608,18 +3672,24 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "1M"
+                                        drilldown = lga.Key + "1M",
+                                        absolute = lga_no_blood_bank_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
 
-
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_blood_bank_female = lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count();
+                                if (lga_no_blood_bank_female != 0)
                                 {
                                     lga_blood_bank_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_blood_bank_female / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "1F"
+                                        drilldown = lga.Key + "1F",
+                                        absolute = lga_no_blood_bank_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
 
                                 }
@@ -3629,18 +3699,25 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "1F"
+                                        drilldown = lga.Key + "1F",
+                                        absolute = lga_no_blood_bank_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
 
-                                //eye clinic
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            //eye clinic
+                            int lga_no_eye_clinic_male = lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count();
+                                if (lga_no_eye_clinic_male != 0)
                                 {
                                     lga_eye_clinic_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_eye_clinic_male / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "2M"
+                                        drilldown = lga.Key + "2M",
+                                        absolute = lga_no_eye_clinic_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                                 else
@@ -3649,17 +3726,24 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "2M"
+                                        drilldown = lga.Key + "2M",
+                                        absolute = lga_no_eye_clinic_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
 
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_eye_clinic_female = lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count();
+                                if (lga_no_eye_clinic_female != 0)
                                 {
                                     lga_eye_clinic_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_eye_clinic_female / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "2F"
+                                        drilldown = lga.Key + "2F",
+                                        absolute = lga_no_eye_clinic_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                                 else
@@ -3668,19 +3752,26 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "2F"
+                                        drilldown = lga.Key + "2F",
+                                        absolute = lga_no_eye_clinic_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
 
 
-                                //Faminly planning
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            //Faminly planning
+                            int lga_no_familiy_planning_male = lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count();
+                                if (lga_no_familiy_planning_male != 0)
                                 {
                                     lga_familiy_planning_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_familiy_planning_male / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "3M"
+                                        drilldown = lga.Key + "3M",
+                                        absolute = lga_no_familiy_planning_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                                 else
@@ -3689,17 +3780,23 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "3M"
+                                        drilldown = lga.Key + "3M",
+                                        absolute = lga_no_familiy_planning_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
-
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                         int lga_no_familiy_planning_female =   lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count();
+                                if (lga_no_familiy_planning_female != 0)
                                 {
                                     lga_familiy_planning_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_familiy_planning_female / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "3F"
+                                        drilldown = lga.Key + "3F",
+                                        absolute = lga_no_familiy_planning_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                                 else
@@ -3708,19 +3805,26 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "3F"
+                                        drilldown = lga.Key + "3F",
+                                        absolute = lga_no_familiy_planning_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
 
 
-                                //ENT Clinic
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            //ENT Clinic
+                            int lga_no_ent_clinic_male = lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count();
+                                if (lga_no_ent_clinic_male != 0)
                                 {
                                     lga_ent_clinic_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "M" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_ent_clinic_male / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "4M"
+                                        drilldown = lga.Key + "4M",
+                                        absolute = lga_no_ent_clinic_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                                 else
@@ -3729,17 +3833,24 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "4M"
+                                        drilldown = lga.Key + "4M",
+                                        absolute = lga_no_ent_clinic_male,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
 
-                                if (lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_ent_clinic_female = lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count();
+                                if (lga_no_ent_clinic_female != 0)
                                 {
                                     lga_ent_clinic_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.GSM_2 == isGSM && x.Sex == "F" && x.LGA == lga.Key).Count() / (20 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_ent_clinic_female / (20 * lga_no_facilities), 0),
                                         name = lga.Key,
-                                        drilldown = lga.Key + "4F"
+                                        drilldown = lga.Key + "4F",
+                                        absolute = lga_no_ent_clinic_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                                 else
@@ -3748,7 +3859,10 @@ namespace ShieldPortal.Controllers
                                     {
                                         y = 0.0,
                                         name = lga.Key,
-                                        drilldown = lga.Key + "4F"
+                                        drilldown = lga.Key + "4F",
+                                        absolute = lga_no_ent_clinic_female,
+                                        entries = 20 * lga_no_facilities,
+                                        facilities = lga_no_facilities
                                     });
                                 }
                             
@@ -3765,14 +3879,18 @@ namespace ShieldPortal.Controllers
 
                                     if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key  && x.Name == fty.Key).Count() > 0)
                                     {
-                                        //Blood bank
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "M").Count() != 0)
+                                    //Blood bank
+                                    int facility_no_blood_bank_male = lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "M").Count();
+                                        if (facility_no_blood_bank_male != 0)
                                         {
 
                                             facility_blood_bank_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_blood_bank_male / 20, 1),
+                                                absolute = facility_no_blood_bank_male,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
                                         else
@@ -3781,16 +3899,23 @@ namespace ShieldPortal.Controllers
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
+                                                absolute = facility_no_blood_bank_male,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
 
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() != 0)
+                                    int facility_no_blood_bank_female = lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "F").Count();
+                                        if (facility_no_blood_bank_female != 0)
                                         {
 
                                             facility_blood_bank_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Blood Bank" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_blood_bank_female / 20, 1),
+                                                absolute = facility_no_blood_bank_female,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
                                         else
@@ -3799,18 +3924,25 @@ namespace ShieldPortal.Controllers
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
+                                                absolute = facility_no_blood_bank_female,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
 
 
-                                        //Eye clinic
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() != 0)
+                                    //Eye clinic
+                                    int facility_no_eye_clinic_male = lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "M").Count();
+                                        if (facility_no_eye_clinic_male != 0)
                                         {
 
                                             facility_eye_clinic_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_eye_clinic_male / 20, 1),
+                                                absolute = facility_no_eye_clinic_male,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
                                         else
@@ -3819,16 +3951,23 @@ namespace ShieldPortal.Controllers
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
+                                                absolute = facility_no_eye_clinic_male,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
 
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() != 0)
+                                    int facility_no_eye_clinic_female = lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "F").Count();
+                                        if (facility_no_eye_clinic_female != 0)
                                         {
 
                                             facility_eye_clinic_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Eye clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_eye_clinic_female / 20, 1),
+                                                absolute = facility_no_eye_clinic_female,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
                                         else
@@ -3837,18 +3976,25 @@ namespace ShieldPortal.Controllers
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
+                                                absolute = facility_no_eye_clinic_female,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
 
 
-                                        //Family Planning/RH
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() != 0)
+                                    //Family Planning/RH
+                                    int facility_no_familiy_planning_male = lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "M").Count();
+                                        if (facility_no_familiy_planning_male != 0)
                                         {
 
                                             facility_familiy_planning_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_familiy_planning_male / 20, 1),
+                                                absolute = facility_no_familiy_planning_male,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
                                         else
@@ -3857,16 +4003,23 @@ namespace ShieldPortal.Controllers
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
+                                                absolute = facility_no_familiy_planning_male,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
 
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() != 0)
+                                    int facility_no_familiy_planning_female = lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "F").Count();
+                                        if (facility_no_familiy_planning_female != 0)
                                         {
 
                                             facility_familiy_planning_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "Family Planning/RH" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_familiy_planning_female / 20, 1),
+                                                absolute = facility_no_familiy_planning_female,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
                                         else
@@ -3875,45 +4028,62 @@ namespace ShieldPortal.Controllers
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
+                                                absolute = facility_no_familiy_planning_female,
+                                                entries = 20,
+                                                facilities = 1
                                             });
                                         }
 
 
-                                        //ENT Clinic
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() != 0)
+                                    //ENT Clinic
+                                    int facility_no_ent_clinic_male = lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "M").Count();
+                                        if (facility_no_ent_clinic_male != 0)
                                         {
 
-                                            facility_familiy_planning_male.Add(new
+                                        facility_ent_clinic_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "M").Count() / 20, 1),
-                                            });
-                                        }
-                                        else
-                                        {
-                                            facility_familiy_planning_male.Add(new
-                                            {
-                                                name = fty.Key,
-                                                y = 0.0,
-                                            });
-                                        }
-
-                                        if (lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() != 0)
-                                        {
-
-                                            facility_familiy_planning_female.Add(new
-                                            {
-                                                name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM  && x.Facility == fty.Key && x.Sex == "F").Count() / 20, 1),
-                                            });
+                                                y = Math.Round(50 * 1.0 * facility_no_ent_clinic_male / 20, 1),
+                                            absolute = facility_no_ent_clinic_male,
+                                            entries = 20,
+                                            facilities = 1
+                                        });
                                         }
                                         else
                                         {
-                                            facility_familiy_planning_female.Add(new
+                                        facility_ent_clinic_male.Add(new
                                             {
                                                 name = fty.Key,
                                                 y = 0.0,
-                                            });
+                                            absolute = facility_no_ent_clinic_male,
+                                            entries = 20,
+                                            facilities = 1
+                                        });
+                                        }
+
+                                    int facility_no_ent_clinic_female = lst.Where(x => x.State == state.Key && x.SDP == "ENT Clinic" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x.Sex == "F").Count();
+                                        if (facility_no_ent_clinic_female != 0)
+                                        {
+
+                                        facility_ent_clinic_female.Add(new
+                                            {
+                                                name = fty.Key,
+                                                y = Math.Round(50 * 1.0 * facility_no_ent_clinic_female / 20, 1),
+                                            absolute = facility_no_ent_clinic_female,
+                                            entries = 20,
+                                            facilities = 1
+                                        });
+                                        }
+                                        else
+                                        {
+                                        facility_ent_clinic_female.Add(new
+                                            {
+                                                name = fty.Key,
+                                                y = 0.0,
+                                            absolute = facility_no_ent_clinic_female,
+                                            entries = 20,
+                                            facilities = 1
+                                        });
                                         }
 
 
@@ -3921,33 +4091,33 @@ namespace ShieldPortal.Controllers
                                 }
 
 
-                                lga_drill_down.Add(new { name = "Blood Bank Male", id = lga.Key + "1M", data = facility_blood_bank_male });
-                                lga_drill_down.Add(new { name = "Blood Bank Female", id = lga.Key + "1F", data = facility_blood_bank_female });
+                                lga_drill_down.Add(new { name = "Blood Bank Male", id = lga.Key + "1M", data = facility_blood_bank_male, stack = "blood" });
+                                lga_drill_down.Add(new { name = "Blood Bank Female", id = lga.Key + "1F", data = facility_blood_bank_female, stack = "blood" });
 
-                                lga_drill_down.Add(new { name = "Eye clinic Male", id = lga.Key + "2M", data = facility_eye_clinic_male });
-                                lga_drill_down.Add(new { name = "Eye clinic Female", id = lga.Key + "2F", data = facility_eye_clinic_female });
+                                lga_drill_down.Add(new { name = "Eye clinic Male", id = lga.Key + "2M", data = facility_eye_clinic_male, stack = "eye" });
+                                lga_drill_down.Add(new { name = "Eye clinic Female", id = lga.Key + "2F", data = facility_eye_clinic_female, stack = "eye" });
 
-                                lga_drill_down.Add(new { name = "Family Planning/RH Male", id = lga.Key + "3M", data = facility_familiy_planning_male });
-                                lga_drill_down.Add(new { name = "Family Planning/RH Female", id = lga.Key + "3F", data = facility_familiy_planning_female });
+                                lga_drill_down.Add(new { name = "Family Planning/RH Male", id = lga.Key + "3M", data = facility_familiy_planning_male, stack = "family" });
+                                lga_drill_down.Add(new { name = "Family Planning/RH Female", id = lga.Key + "3F", data = facility_familiy_planning_female, stack = "family" });
 
-                                lga_drill_down.Add(new { name = "ENT Clinic Male", id = lga.Key + "4M", data = facility_ent_clinic_male });
-                                lga_drill_down.Add(new { name = "ENT Clinic Female", id = lga.Key + "4F", data = facility_ent_clinic_female });
+                                lga_drill_down.Add(new { name = "ENT Clinic Male", id = lga.Key + "4M", data = facility_ent_clinic_male, stack = "ent" });
+                                lga_drill_down.Add(new { name = "ENT Clinic Female", id = lga.Key + "4F", data = facility_ent_clinic_female, stack = "ent" });
                             }
                         }
 
 
 
-                        lga_drill_down.Add(new { name = "Blood Bank Male", id = state.Key + "1M", data = lga_blood_bank_male });
-                        lga_drill_down.Add(new { name = "Blood Bank Female", id = state.Key + "1F", data = lga_blood_bank_female });
+                        lga_drill_down.Add(new { name = "Blood Bank Male", id = state.Key + "1M", data = lga_blood_bank_male, stack = "blood" });
+                        lga_drill_down.Add(new { name = "Blood Bank Female", id = state.Key + "1F", data = lga_blood_bank_female, stack = "blood" });
 
-                        lga_drill_down.Add(new { name = "Eye clinic Male", id = state.Key + "2M", data = lga_eye_clinic_male });
-                        lga_drill_down.Add(new { name = "Eye clinic Female", id = state.Key + "2F", data = lga_eye_clinic_female });
+                        lga_drill_down.Add(new { name = "Eye clinic Male", id = state.Key + "2M", data = lga_eye_clinic_male, stack = "eye" });
+                        lga_drill_down.Add(new { name = "Eye clinic Female", id = state.Key + "2F", data = lga_eye_clinic_female, stack = "eye" });
 
-                        lga_drill_down.Add(new { name = "Family Planning/RH Male", id = state.Key + "3M", data = lga_familiy_planning_male });
-                        lga_drill_down.Add(new { name = "Family Planning/RH Female", id = state.Key + "3F", data = lga_familiy_planning_female });
+                        lga_drill_down.Add(new { name = "Family Planning/RH Male", id = state.Key + "3M", data = lga_familiy_planning_male, stack = "family" });
+                        lga_drill_down.Add(new { name = "Family Planning/RH Female", id = state.Key + "3F", data = lga_familiy_planning_female, stack = "family" });
 
-                        lga_drill_down.Add(new { name = "ENT Clinic Male", id = state.Key + "4M", data = lga_ent_clinic_male });
-                        lga_drill_down.Add(new { name = "ENT Clinic Female", id = state.Key + "4F", data = lga_ent_clinic_female });
+                        lga_drill_down.Add(new { name = "ENT Clinic Male", id = state.Key + "4M", data = lga_ent_clinic_male, stack = "ent" });
+                        lga_drill_down.Add(new { name = "ENT Clinic Female", id = state.Key + "4F", data = lga_ent_clinic_female, stack = "ent" });
                     }
 
                 }
@@ -4042,18 +4212,20 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
 
-
-                if (siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count() > 0)
+                int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                if (state_no_facilities > 0)
                 {
                     // set1
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count() != 0)
+                    int state_no_tx_ret_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count();
+                    if (state_no_tx_ret_den_male != 0)
                     {
                         state_Tx_RET_den_male.Add(new
                         {
                          
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_ret_den_male / (11 * state_no_facilities), 1),
                             name = state.Key,
-                            drilldown = state.Key+"1M"
+                            drilldown = state.Key+"1M",
+                           
                         });
 
                     }
@@ -4067,13 +4239,13 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M").Count() != 0)
+                    int state_no_tx_ret_num_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M").Count();
+                    if (state_no_tx_ret_num_male != 0)
                     {
                         state_Tx_RET_num_male.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM &&  x.Numerator != "" && x.Sex == "M").Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_ret_num_male / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2M"
                         });
@@ -4090,12 +4262,13 @@ namespace ShieldPortal.Controllers
                     }
 
                     //set2
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F").Count() != 0)
+                    int state_no_tx_ret_den_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F").Count();
+                    if (state_no_tx_ret_den_female != 0)
                     {
                         state_Tx_RET_den_female.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_ret_den_female / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key+"1F"
                         });
@@ -4111,12 +4284,13 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F").Count() != 0)
+                    int state_no_tx_ret_num_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F").Count();
+                    if (state_no_tx_ret_num_female != 0)
                     {
                         state_Tx_RET_num_female.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_ret_num_female / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2F"
                         });
@@ -4135,12 +4309,13 @@ namespace ShieldPortal.Controllers
 
 
                     // set1
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count() != 0)
+                    int state_no_tx_vla_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count();
+                    if (state_no_tx_vla_den_male != 0)
                     {
                         state_Tx_VLA_den_male.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_vla_den_male / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "3M"
                         });
@@ -4156,13 +4331,13 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M").Count() != 0)
+                    int state_no_tx_vla_num_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M").Count();
+                    if (state_no_tx_vla_num_male != 0)
                     {
                         state_Tx_VLA_num_male.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_vla_num_male / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "4M"
                         });
@@ -4179,12 +4354,13 @@ namespace ShieldPortal.Controllers
                     }
 
                     //set2
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F").Count() != 0)
+                    int  state_no_tx_vla_den_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F").Count();
+                    if (state_no_tx_vla_den_female != 0)
                     {
                         state_Tx_VLA_den_female.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM  && x.Denominator != "" && x.Sex == "F").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_vla_den_female / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "3F"
                         });
@@ -4200,12 +4376,13 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F").Count() != 0)
+                    int state_no_tx_vla_num_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F").Count();
+                    if (state_no_tx_vla_num_female != 0)
                     {
                         state_Tx_VLA_num_female.Add(new
                         {
 
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F").Count() / (11 * siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_tx_vla_num_female / (11 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "4F"
                         });
@@ -4235,18 +4412,19 @@ namespace ShieldPortal.Controllers
                     var lga_Tx_VLA_num_female = new List<dynamic>();
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
-
-                        if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key).Count() > 0)
+                        int lga_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key).Count();
+                        if (lga_no_facilities > 0)
                         {
 
 
                             // set1
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_RET_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_RET_den_male != 0)
                             {
                                 lga_Tx_RET_den_male.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_RET_den_male / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1M"
                                 });
@@ -4262,13 +4440,13 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_RET_num_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_RET_num_male != 0)
                             {
                                 lga_Tx_RET_num_male.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_RET_num_male / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2M"
                                 });
@@ -4285,12 +4463,13 @@ namespace ShieldPortal.Controllers
                             }
 
                             //set2
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_RET_den_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_RET_den_female != 0)
                             {
                                 lga_Tx_RET_den_female.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_RET_den_female / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1F"
                                 });
@@ -4306,12 +4485,13 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_RET_num_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_RET_num_female != 0)
                             {
                                 lga_Tx_RET_num_female.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_RET_num_female / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2F"
                                 });
@@ -4330,12 +4510,13 @@ namespace ShieldPortal.Controllers
 
 
                             // set1
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_VLA_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_VLA_den_male != 0)
                             {
                                 lga_Tx_VLA_den_male.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_VLA_den_male / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "3M"
                                 });
@@ -4351,13 +4532,13 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_VLA_num_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_VLA_num_male != 0)
                             {
                                 lga_Tx_VLA_num_male.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_VLA_num_male / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "4M"
                                 });
@@ -4374,12 +4555,13 @@ namespace ShieldPortal.Controllers
                             }
 
                             //set2
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_VLA_den_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_VLA_den_female != 0)
                             {
                                 lga_Tx_VLA_den_female.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_VLA_den_female / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "3F"
                                 });
@@ -4395,12 +4577,13 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_Tx_VLA_num_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count();
+                            if (lga_no_Tx_VLA_num_female != 0)
                             {
                                 lga_Tx_VLA_num_female.Add(new
                                 {
 
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_Tx_VLA_num_female / (11 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "4F"
                                 });
@@ -4416,13 +4599,7 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-
-
-
-
-
-
+                           
                             var facility_Tx_RET_den_male = new List<dynamic>();
                             var facility_Tx_RET_num_male = new List<dynamic>();
 
@@ -4441,15 +4618,16 @@ namespace ShieldPortal.Controllers
                                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
                                 {
 
-                                   
+
 
                                     // set1
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_RET_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_RET_den_male != 0)
                                     {
                                         facility_Tx_RET_den_male.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_RET_den_male / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4463,13 +4641,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_RET_num_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_RET_num_male != 0)
                                     {
                                         facility_Tx_RET_num_male.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_RET_num_male / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4484,12 +4662,13 @@ namespace ShieldPortal.Controllers
                                     }
 
                                     //set2
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                  int   facility_no_Tx_RET_den_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_RET_den_female != 0)
                                     {
                                         facility_Tx_RET_den_female.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_RET_den_female / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4503,12 +4682,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_RET_num_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_RET_num_female != 0)
                                     {
                                         facility_Tx_RET_num_female.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_RET_num_female / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4525,12 +4705,13 @@ namespace ShieldPortal.Controllers
 
 
                                     // set1
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_VLA_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_VLA_den_male != 0)
                                     {
                                         facility_Tx_VLA_den_male.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_VLA_den_male / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4544,13 +4725,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_VLA_num_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_VLA_num_male != 0)
                                     {
                                         facility_Tx_VLA_num_male.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "M" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_VLA_num_male / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4565,12 +4746,13 @@ namespace ShieldPortal.Controllers
                                     }
 
                                     //set2
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_VLA_den_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_VLA_den_female != 0)
                                     {
                                         facility_Tx_VLA_den_female.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_VLA_den_female / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4584,12 +4766,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_Tx_VLA_num_female = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" && x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_Tx_VLA_num_female != 0)
                                     {
                                         facility_Tx_VLA_num_female.Add(new
                                         {
 
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_VLA" &&  x.GSM_2 == isGSM && x.Numerator != "" && x.Sex == "F" && x.LGA == lga.Key).Count() / (11 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_Tx_VLA_num_female / 11, 0),
                                             name = fty.Key,
                                         });
 
@@ -4608,34 +4791,34 @@ namespace ShieldPortal.Controllers
                             }
 
 
-                            lga_drill_down.Add(new { name = "Tx_RET Male Denominator", id = lga.Key+"1M", data = facility_Tx_RET_den_male });
-                            lga_drill_down.Add(new { name = "Tx_RET Female Denominator", id = lga.Key + "1F", data = facility_Tx_RET_den_female });
+                            lga_drill_down.Add(new { name = "Tx_RET Male Denominator", id = lga.Key+"1M", data = facility_Tx_RET_den_male, stack = "Tx_RET_den" });
+                            lga_drill_down.Add(new { name = "Tx_RET Female Denominator", id = lga.Key + "1F", data = facility_Tx_RET_den_female, stack = "Tx_RET_den" });
 
-                            lga_drill_down.Add(new { name = "Tx_RET Male Numerator", id = lga.Key + "2M", data = facility_Tx_RET_num_male });
-                            lga_drill_down.Add(new { name = "Tx_RET Female Numerator", id = lga.Key + "2F", data = facility_Tx_RET_num_female });
+                            lga_drill_down.Add(new { name = "Tx_RET Male Numerator", id = lga.Key + "2M", data = facility_Tx_RET_num_male, stack = "Tx_RET_num" });
+                            lga_drill_down.Add(new { name = "Tx_RET Female Numerator", id = lga.Key + "2F", data = facility_Tx_RET_num_female, stack = "Tx_RET_num" });
 
-                            lga_drill_down.Add(new { name = "Tx_VLA Male Denominator", id = lga.Key + "3M", data = facility_Tx_VLA_den_male });
-                            lga_drill_down.Add(new { name = "Tx_VLA Female Denominator", id = lga.Key + "3F", data = facility_Tx_VLA_den_female });
+                            lga_drill_down.Add(new { name = "Tx_VLA Male Denominator", id = lga.Key + "3M", data = facility_Tx_VLA_den_male, stack = "Tx_VLA_den" });
+                            lga_drill_down.Add(new { name = "Tx_VLA Female Denominator", id = lga.Key + "3F", data = facility_Tx_VLA_den_female, stack = "Tx_VLA_den" });
 
-                            lga_drill_down.Add(new { name = "Tx_VLA Male Numerator", id = lga.Key + "4M", data = facility_Tx_VLA_num_male });
-                            lga_drill_down.Add(new { name = "Tx_VLA Female Numerator", id = lga.Key + "4F", data = facility_Tx_VLA_num_female });
+                            lga_drill_down.Add(new { name = "Tx_VLA Male Numerator", id = lga.Key + "4M", data = facility_Tx_VLA_num_male, stack = "Tx_VLA_num" });
+                            lga_drill_down.Add(new { name = "Tx_VLA Female Numerator", id = lga.Key + "4F", data = facility_Tx_VLA_num_female, stack = "Tx_VLA_num" });
                         }
                     }
 
                    
 
 
-                    lga_drill_down.Add(new { name = "Tx_RET Male Denominator", id = state.Key + "1M", data = lga_Tx_RET_den_male });
-                    lga_drill_down.Add(new { name = "Tx_RET Female Denominator", id = state.Key + "1F", data = lga_Tx_RET_den_female });
+                    lga_drill_down.Add(new { name = "Tx_RET Male Denominator", id = state.Key + "1M", data = lga_Tx_RET_den_male, stack = "Tx_RET_den" });
+                    lga_drill_down.Add(new { name = "Tx_RET Female Denominator", id = state.Key + "1F", data = lga_Tx_RET_den_female, stack = "Tx_RET_den" });
 
-                    lga_drill_down.Add(new { name = "Tx_RET Male Numerator", id = state.Key + "2M", data = lga_Tx_RET_num_male });
-                    lga_drill_down.Add(new { name = "Tx_RET Female Numerator", id = state.Key + "2F", data = lga_Tx_RET_num_female });
+                    lga_drill_down.Add(new { name = "Tx_RET Male Numerator", id = state.Key + "2M", data = lga_Tx_RET_num_male, stack = "Tx_RET_num" });
+                    lga_drill_down.Add(new { name = "Tx_RET Female Numerator", id = state.Key + "2F", data = lga_Tx_RET_num_female, stack = "Tx_RET_num" });
 
-                    lga_drill_down.Add(new { name = "Tx_VLA Male Denominator", id = state.Key + "3M", data = lga_Tx_VLA_den_male });
-                    lga_drill_down.Add(new { name = "Tx_VLA Female Denominator", id = state.Key + "3F", data = lga_Tx_VLA_den_female });
+                    lga_drill_down.Add(new { name = "Tx_VLA Male Denominator", id = state.Key + "3M", data = lga_Tx_VLA_den_male, stack = "Tx_VLA_den" });
+                    lga_drill_down.Add(new { name = "Tx_VLA Female Denominator", id = state.Key + "3F", data = lga_Tx_VLA_den_female, stack = "Tx_VLA_den" });
 
-                    lga_drill_down.Add(new { name = "Tx_VLA Male Numerator", id = state.Key + "4M", data = lga_Tx_VLA_num_male });
-                    lga_drill_down.Add(new { name = "Tx_VLA Female Numerator", id = state.Key + "4F", data = lga_Tx_VLA_num_female });
+                    lga_drill_down.Add(new { name = "Tx_VLA Male Numerator", id = state.Key + "4M", data = lga_Tx_VLA_num_male, stack = "Tx_VLA_num" });
+                    lga_drill_down.Add(new { name = "Tx_VLA Female Numerator", id = state.Key + "4F", data = lga_Tx_VLA_num_female, stack = "Tx_VLA_num" });
 
                 }
             }
@@ -4728,16 +4911,16 @@ namespace ShieldPortal.Controllers
 
             foreach (var state in groupedData)
             {
+                int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
 
-
-                if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
+                if (state_no_facilities > 0)
                 {
-
-                    if (lst.Where(x => x.State == state.Key && x.NewClient != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_new_client = lst.Where(x => x.State == state.Key && x.NewClient != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_new_client != 0)
                     {
                         state_new_client.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewClient != "" &&  x.GSM_2 == isGSM).Count() /(10* siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_new_client / (10* state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key+"1n"
                         });
@@ -4753,11 +4936,12 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.KnownStatus != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_known_status = lst.Where(x => x.State == state.Key && x.KnownStatus != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_known_status != 0)
                     {
                         state_known_status.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownStatus != "" &&  x.GSM_2 == isGSM).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_known_status / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2n"
                         });
@@ -4772,13 +4956,14 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    
+
                     //set 2
-                    if (lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_known_hiv_pos = lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_known_hiv_pos != 0)
                     {
                         state_known_hiv_pos.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" &&  x.GSM_2 == isGSM).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_known_hiv_pos / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "1k"
                         });
@@ -4794,11 +4979,12 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.NewHIVPos != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_new_hiv_pos = lst.Where(x => x.State == state.Key && x.NewHIVPos != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_new_hiv_pos != 0)
                     {
                         state_new_hiv_pos.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewHIVPos != "" &&  x.GSM_2 == isGSM).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_new_hiv_pos / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2k"
                         });
@@ -4814,11 +5000,12 @@ namespace ShieldPortal.Controllers
                     }
 
                     //set 3
-                    if (lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_already_on_art = lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_already_on_art != 0)
                     {
                         state_already_on_art.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" &&  x.GSM_2 == isGSM).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_already_on_art / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "1a"
                         });
@@ -4834,11 +5021,12 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.NewOnART != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_new_on_art = lst.Where(x => x.State == state.Key && x.NewOnART != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_new_on_art != 0)
                     {
                         state_new_on_art.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewOnART != "" &&  x.GSM_2 == isGSM).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 0),
+                            y = Math.Round(50 * 1.0 * state_no_new_on_art / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2a"
                         });
@@ -4863,14 +5051,15 @@ namespace ShieldPortal.Controllers
 
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
-
-                        if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key).Count() > 0)
+                        int lga_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key).Count();
+                        if (lga_no_facilities > 0)
                         {
-                            if (lst.Where(x => x.State == state.Key && x.NewClient != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_new_client = lst.Where(x => x.State == state.Key && x.NewClient != "" && x.GSM_2 == isGSM && x.LGA == lga.Key).Count();
+                            if (lga_no_new_client != 0)
                             {
                                 lga_new_client.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewClient != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_new_client / (10 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1n"
                                 });
@@ -4886,11 +5075,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.KnownStatus != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_known_status = lst.Where(x => x.State == state.Key && x.KnownStatus != "" && x.GSM_2 == isGSM && x.LGA == lga.Key).Count();
+                            if (lga_no_known_status != 0)
                             {
                                 lga_known_status.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownStatus != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_known_status / (10 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2n"
                                 });
@@ -4907,11 +5097,12 @@ namespace ShieldPortal.Controllers
 
 
                             //set 2
-                            if (lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_known_hiv_pos = lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" && x.GSM_2 == isGSM && x.LGA == lga.Key).Count();
+                            if (lga_no_known_hiv_pos != 0)
                             {
                                 lga_known_hiv_pos.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_known_hiv_pos / (10 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1k"
                                 });
@@ -4927,11 +5118,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.NewHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_new_hiv_pos = lst.Where(x => x.State == state.Key && x.NewHIVPos != "" && x.GSM_2 == isGSM && x.LGA == lga.Key).Count();
+                            if (lga_no_new_hiv_pos != 0)
                             {
                                 lga_new_hiv_pos.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_new_hiv_pos / (10 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2k"
                                 });
@@ -4947,11 +5139,12 @@ namespace ShieldPortal.Controllers
                             }
 
                             //set 3
-                            if (lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_already_on_art = lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" && x.GSM_2 == isGSM && x.LGA == lga.Key).Count();
+                            if (lga_no_already_on_art != 0)
                             {
                                 lga_already_on_art.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_already_on_art / (10 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1a"
                                 });
@@ -4967,11 +5160,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.NewOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_new_on_art = lst.Where(x => x.State == state.Key && x.NewOnART != "" && x.GSM_2 == isGSM && x.LGA == lga.Key).Count();
+                            if (lga_no_new_on_art != 0)
                             {
                                 lga_new_on_art.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_new_on_art / (10 * lga_no_facilities), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2a"
                                 });
@@ -4999,11 +5193,12 @@ namespace ShieldPortal.Controllers
 
                                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
                                 {
-                                    if (lst.Where(x => x.State == state.Key && x.NewClient != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key &&  x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_new_client = lst.Where(x => x.State == state.Key && x.NewClient != "" && x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_new_client != 0)
                                     {
                                         facility_new_client.Add(new
                                         {
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewClient != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_new_client / 10, 1),
                                             name = fty.Key,
                                         });
 
@@ -5017,11 +5212,12 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.KnownStatus != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_known_status = lst.Where(x => x.State == state.Key && x.KnownStatus != "" && x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_known_status != 0)
                                     {
                                         facility_known_status.Add(new
                                         {
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownStatus != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_known_status / 10, 1),
                                             name = fty.Key,
                                         });
                                     }
@@ -5036,11 +5232,12 @@ namespace ShieldPortal.Controllers
 
 
                                     //set 2
-                                    if (lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_known_hiv_pos = lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" && x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_known_hiv_pos != 0)
                                     {
                                         facility_known_hiv_pos.Add(new
                                         {
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.KnownHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_known_hiv_pos / 10, 1),
                                             name = fty.Key,
                                         });
 
@@ -5054,11 +5251,12 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.NewHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_new_hiv_pos = lst.Where(x => x.State == state.Key && x.NewHIVPos != "" && x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_new_hiv_pos != 0)
                                     {
                                         facility_new_hiv_pos.Add(new
                                         {
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewHIVPos != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_new_hiv_pos / 10, 1),
                                             name = fty.Key,
                                         });
                                     }
@@ -5072,11 +5270,12 @@ namespace ShieldPortal.Controllers
                                     }
 
                                     //set 3
-                                    if (lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_already_on_art = lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" && x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_already_on_art != 0)
                                     {
                                         facility_already_on_art.Add(new
                                         {
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.AlreadyOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_already_on_art / 10, 1),
                                             name = fty.Key,
                                         });
 
@@ -5090,11 +5289,12 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.NewOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_new_on_art = lst.Where(x => x.State == state.Key && x.NewOnART != "" && x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count();
+                                    if (facility_no_new_on_art != 0)
                                     {
                                         facility_new_on_art.Add(new
                                         {
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.NewOnART != "" &&  x.GSM_2 == isGSM && x.LGA == lga.Key && x.Facility == fty.Key).Count() / (10 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count()), 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_new_on_art / 10, 1),
                                             name = fty.Key,
                                         });
                                     }
@@ -5110,27 +5310,27 @@ namespace ShieldPortal.Controllers
                             }
 
 
-                            lga_drill_down.Add(new { name = "New ANC Client", id = lga.Key+"1n", data = facility_new_client });
-                            lga_drill_down.Add(new { name = "Know HIV Status", id = lga.Key+"2n", data = facility_known_status });
+                            lga_drill_down.Add(new { name = "New ANC Client", id = lga.Key+"1n", data = facility_new_client, stack = "Status" });
+                            lga_drill_down.Add(new { name = "Know HIV Status", id = lga.Key+"2n", data = facility_known_status, stack = "Status" });
 
-                            lga_drill_down.Add(new { name = "Known HIV POS", id = lga.Key + "1k", data = facility_known_hiv_pos });
-                            lga_drill_down.Add(new { name = "New HIV POS", id = lga.Key + "2k", data = facility_new_hiv_pos });
+                            lga_drill_down.Add(new { name = "Known HIV POS", id = lga.Key + "1k", data = facility_known_hiv_pos, stack = "POS" });
+                            lga_drill_down.Add(new { name = "New HIV POS", id = lga.Key + "2k", data = facility_new_hiv_pos, stack = "POS" });
 
-                            lga_drill_down.Add(new { name = "Already on ART", id = lga.Key + "1a", data = facility_already_on_art });
-                            lga_drill_down.Add(new { name = "New on ART", id = lga.Key + "2a", data = facility_new_on_art });
+                            lga_drill_down.Add(new { name = "Already on ART", id = lga.Key + "1a", data = facility_already_on_art, stack = "ART" });
+                            lga_drill_down.Add(new { name = "New on ART", id = lga.Key + "2a", data = facility_new_on_art, stack = "ART" });
                         }
                     }
 
                  
 
-                    lga_drill_down.Add(new { name = "New ANC Client", id = state.Key + "1n", data = lga_new_client });
-                    lga_drill_down.Add(new { name = "Know HIV Status", id = state.Key + "2n", data = lga_known_status });
+                    lga_drill_down.Add(new { name = "New ANC Client", id = state.Key + "1n", data = lga_new_client, stack = "Status" });
+                    lga_drill_down.Add(new { name = "Know HIV Status", id = state.Key + "2n", data = lga_known_status, stack = "Status" });
 
-                    lga_drill_down.Add(new { name = "Known HIV POS", id = state.Key + "1k", data = lga_known_hiv_pos });
-                    lga_drill_down.Add(new { name = "New HIV POS", id = state.Key + "2k", data = lga_new_hiv_pos });
+                    lga_drill_down.Add(new { name = "Known HIV POS", id = state.Key + "1k", data = lga_known_hiv_pos, stack = "POS" });
+                    lga_drill_down.Add(new { name = "New HIV POS", id = state.Key + "2k", data = lga_new_hiv_pos, stack = "POS" });
 
-                    lga_drill_down.Add(new { name = "Already on ART", id = state.Key + "1a", data = lga_already_on_art });
-                    lga_drill_down.Add(new { name = "New on ART", id = state.Key + "2a", data = lga_new_on_art });
+                    lga_drill_down.Add(new { name = "Already on ART", id = state.Key + "1a", data = lga_already_on_art, stack = "ART" });
+                    lga_drill_down.Add(new { name = "New on ART", id = state.Key + "2a", data = lga_new_on_art, stack = "ART" });
                 }
 
             }
@@ -5207,15 +5407,15 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
 
-
-                if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
+                int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                if (state_no_facilities > 0)
                 {
-
-                    if (lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_eid_sample_collected = lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_eid_sample_collected != 0)
                     {
                         state_eid_sample_collected.Add(new
                         {
-                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" &&  x.GSM_2 == isGSM).Count() / (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count() * 2), 1),
+                            y = Math.Round(100 * 1.0 * state_no_eid_sample_collected / (state_no_facilities * 2), 1),
                             name = state.Key,
                             drilldown = state.Key
                         });
@@ -5231,11 +5431,12 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.EID_POS != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_eid_pos = lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_eid_pos != 0)
                     {
                         state_eid_pos.Add(new
                         {
-                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_POS != "" &&  x.GSM_2 == isGSM).Count() / (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count() * 2), 1),
+                            y = Math.Round(100 * 1.0 * state_no_eid_pos / (state_no_facilities * 2), 1),
                             name = state.Key,
                             drilldown = state.Key + " "
                         });
@@ -5250,11 +5451,12 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" &&  x.GSM_2 == isGSM).Count() != 0)
+                    int state_no_eid_art_initiation = lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.GSM_2 == isGSM).Count();
+                    if (state_no_eid_art_initiation != 0)
                     {
                         state_eid_art_initiation.Add(new
                         {
-                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" &&  x.GSM_2 == isGSM).Count() / (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count() * 2), 1),
+                            y = Math.Round(100 * 1.0 * state_no_eid_art_initiation / (state_no_facilities * 2), 1),
                             name = state.Key,
                             drilldown = state.Key + "  "
                         });
@@ -5276,15 +5478,16 @@ namespace ShieldPortal.Controllers
 
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
-
-                        if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key).Count() > 0)
+                        int lga_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key).Count();
+                        if (lga_no_facilities > 0)
                         {
 
-                            if (lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM).Count() != 0)
+                            int lga_no_eid_sample_collected = lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key && x.GSM_2 == isGSM).Count();
+                            if (lga_no_eid_sample_collected != 0)
                             {
                                 lga_eid_sample_collected.Add(new
                                 {
-                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM).Count() / (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count() * 2), 1),
+                                    y = Math.Round(100 * 1.0 * lga_no_eid_sample_collected / (lga_no_facilities * 2), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key
                                 });
@@ -5299,12 +5502,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-                            if (lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM).Count() != 0)
+                            int lga_no_eid_pos = lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA == lga.Key && x.GSM_2 == isGSM).Count();
+                            if (lga_no_eid_pos != 0)
                             {
                                 lga_eid_pos.Add(new
                                 {
-                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM).Count() / (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count() * 2), 1),
+                                    y = Math.Round(100 * 1.0 * lga_no_eid_pos / (lga_no_facilities * 2), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + " "
                                 });
@@ -5319,11 +5522,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM).Count() != 0)
+                            int lga_no_eid_art_initiation = lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key && x.GSM_2 == isGSM).Count();
+                            if (lga_no_eid_art_initiation != 0)
                             {
                                 lga_eid_art_initiation.Add(new
                                 {
-                                    y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM).Count() / (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count() * 2), 1),
+                                    y = Math.Round(100 * 1.0 * lga_no_eid_art_initiation / (lga_no_facilities * 2), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "  "
                                 });
@@ -5349,14 +5553,14 @@ namespace ShieldPortal.Controllers
 
                                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
                                 {
-
-                                    if (lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_eid_sample_collected = lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key).Count();
+                                    if (facility_no_eid_sample_collected != 0)
                                     {
 
                                         facility_eid_sample_collected.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key).Count() / 2, 1),
+                                            y = Math.Round(100 * 1.0 * facility_no_eid_sample_collected / 2, 1),
                                         });
                                     }
                                     else
@@ -5368,12 +5572,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA.Trim() == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_eid_pos = lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA.Trim() == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key).Count();
+                                    if (facility_no_eid_pos != 0)
                                     {
                                         facility_eid_pos.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_POS != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key).Count() / 2, 1),
+                                            y = Math.Round(100 * 1.0 * facility_no_eid_pos / 2, 1),
                                         });
                                     }
                                     else
@@ -5385,13 +5590,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA.Trim() == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key).Count() != 0)
+                                    int facility_no_eid_art_initiation = lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA.Trim() == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key).Count();
+                                    if (facility_no_eid_art_initiation != 0)
                                     {
                                         facility_eid_art_initiation.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(100 * 1.0 * lst.Where(x => x.State == state.Key && x.EID_ART_Initiation != "" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key).Count() / 2, 1),
+                                            y = Math.Round(100 * 1.0 * facility_no_eid_art_initiation / 2, 1),
                                         });
                                     }
                                     else
@@ -6396,15 +6601,15 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
 
-
-                if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
+                int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                if (state_no_facilities > 0)
                 {
-
-                    if (lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" &&  x.GSM_2 == isGSM && x._less_than_1000 !="").Count() != 0)
+                   int state_no_newly_identified_less = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.GSM_2 == isGSM && x._less_than_1000 != "").Count();
+                    if (state_no_newly_identified_less != 0)
                     {
                         state_newly_identified_less.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" &&  x.GSM_2 == isGSM && x._less_than_1000 != "0").Count() /(20* siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_newly_identified_less / (20* state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key+"1l"
                         });
@@ -6420,16 +6625,18 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() != 0)
+                    int state_no_newly_identified_greater = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.GSM_2 == isGSM && x._greater_than_1000 != "").Count();
+                    if (state_no_newly_identified_greater != 0)
                     {
                         state_newly_identified_greater.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" &&  x.GSM_2 == isGSM && x._greater_than_1000 != "0").Count() / (20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_newly_identified_greater / (20 * state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key+"1g"
                         });
 
                     }
+
                     else
                     {
                         state_newly_identified_greater.Add(new
@@ -6442,12 +6649,12 @@ namespace ShieldPortal.Controllers
 
 
 
-
-                    if (lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" &&  x.GSM_2 == isGSM && x._less_than_1000 !="").Count() != 0)
+                    int state_no_already_hiv_pos_less = lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.GSM_2 == isGSM && x._less_than_1000 != "").Count();
+                    if (state_no_already_hiv_pos_less != 0)
                     {
                         state_already_hiv_pos_less.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" &&  x.GSM_2 == isGSM && x._less_than_1000 != "").Count() / (20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_already_hiv_pos_less / (20 * state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key + "2l"
                         });
@@ -6462,11 +6669,12 @@ namespace ShieldPortal.Controllers
                         });
                     }
 
-                    if (lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() != 0)
+                    int state_no_already_hiv_pos_greater = lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.GSM_2 == isGSM && x._greater_than_1000 != "").Count();
+                    if (state_no_already_hiv_pos_greater != 0)
                     {
                         state_already_hiv_pos_greater.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() / (20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count()), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_already_hiv_pos_greater / (20 * state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key + "2g"
                         });
@@ -6490,15 +6698,15 @@ namespace ShieldPortal.Controllers
 
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
-
-                        if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key).Count() > 0)
+                        int no_lga_sites = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM && x.lga_name == lga.Key).Count();
+                        if (no_lga_sites > 0)
                         {
-
-                            if (lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._less_than_1000 != "").Count() != 0)
+                            int lga_no_newly_identified_less = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key && x.GSM_2 == isGSM && x._less_than_1000 != "").Count();
+                            if (lga_no_newly_identified_less != 0)
                             {
                                 lga_newly_identified_less.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._less_than_1000 != "").Count() /(20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_newly_identified_less / (20 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key+"1l"
                                 });
@@ -6513,11 +6721,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-                            if (lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() != 0)
+                            int lga_no_newly_identified_greater = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key && x.GSM_2 == isGSM && x._greater_than_1000 != "").Count();
+                            if (lga_no_newly_identified_greater != 0)
                             {
                                 lga_newly_identified_greater.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() / (20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_newly_identified_greater / (20 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1g"
                                 });
@@ -6532,12 +6741,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-                            if (lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._less_than_1000 !="").Count() != 0)
+                            int lga_no_already_hiv_pos_less = lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key && x.GSM_2 == isGSM && x._less_than_1000 != "").Count();
+                            if (lga_no_already_hiv_pos_less != 0)
                             {
                                 lga_already_hiv_pos_less.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._less_than_1000 != "").Count() / (20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_already_hiv_pos_less / (20 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2l"
                                 });
@@ -6552,12 +6761,12 @@ namespace ShieldPortal.Controllers
                                 });
                             }
 
-
-                            if (lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() != 0)
+                            int lga_no_already_hiv_pos_greater = lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key && x.GSM_2 == isGSM && x._greater_than_1000 != "").Count();
+                            if (lga_no_already_hiv_pos_greater != 0)
                             {
                                 lga_already_hiv_pos_greater.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x._greater_than_1000 != "").Count() / (20 * siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count()), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_already_hiv_pos_greater / (20 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2g"
                                 });
@@ -6584,14 +6793,14 @@ namespace ShieldPortal.Controllers
 
                                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
                                 {
-
-                                    if (lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._less_than_1000 !="").Count() != 0)
+                                    int facility_no_newly_identified_less = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x._less_than_1000 != "").Count();
+                                    if (facility_no_newly_identified_less != 0)
                                     {
 
                                         facility_newly_identified_less.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._less_than_1000 != "").Count() / 20, 1),
+                                            y = Math.Round( 50 * 1.0 * facility_no_newly_identified_less / 20, 1),
                                         });
                                     }
                                     else
@@ -6603,13 +6812,14 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-                                    if (lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._greater_than_1000 != "").Count() != 0)
+                                    int facility_no_newly_identified_greater = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x._greater_than_1000 != "").Count();
+                                    if (facility_no_newly_identified_greater != 0)
                                     {
 
                                         facility_newly_identified_greater.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._greater_than_1000 != "").Count() / 20, 1),
+                                            y = Math.Round( 50 * 1.0 * facility_no_newly_identified_greater / 20, 1),
                                         });
                                     }
                                     else
@@ -6621,13 +6831,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._less_than_1000 != "").Count() != 0)
+                                    int facility_no_already_hiv_pos_less = lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x._less_than_1000 != "").Count();
+                                    if (facility_no_already_hiv_pos_less != 0)
                                     {
                                         facility_already_hiv_pos_less.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round( 50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._less_than_1000 != "").Count() / 20, 1),
+                                            y = Math.Round( 50 * 1.0 * facility_no_already_hiv_pos_less / 20, 1),
                                         });
                                     }
                                     else
@@ -6639,13 +6849,13 @@ namespace ShieldPortal.Controllers
                                         });
                                     }
 
-
-                                    if (lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._greater_than_1000 != "").Count() != 0)
+                                    int facility_no_already_hiv_pos_greater = lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key && x.GSM_2 == isGSM && x.Facility == fty.Key && x._greater_than_1000 != "").Count();
+                                    if (facility_no_already_hiv_pos_greater != 0)
                                     {
                                         facility_already_hiv_pos_greater.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(50 * 1.0 * lst.Where(x => x.State == state.Key && x.Category == "Already_HIV_Positive" && x.LGA == lga.Key &&  x.GSM_2 == isGSM && x.Facility == fty.Key && x._greater_than_1000 != "").Count() / 20, 1),
+                                            y = Math.Round(50 * 1.0 * facility_no_already_hiv_pos_greater / 20, 1),
                                         });
                                     }
                                     else
@@ -6660,20 +6870,20 @@ namespace ShieldPortal.Controllers
                             }
 
 
-                            lga_drill_down.Add(new { name = "Newly Identified < 1000cp/mL", id = lga.Key+"1l", data = facility_newly_identified_less });
-                            lga_drill_down.Add(new { name = "Newly Identified >= 1000cp/mL", id = lga.Key+"1g", data = facility_newly_identified_greater });
+                            lga_drill_down.Add(new { name = "Newly Identified < 1000cp/mL", id = lga.Key+"1l", data = facility_newly_identified_less, stack = "new" });
+                            lga_drill_down.Add(new { name = "Newly Identified >= 1000cp/mL", id = lga.Key+"1g", data = facility_newly_identified_greater, stack = "new" });
 
-                            lga_drill_down.Add(new { name = "Already HIV Positive < 1000cp/mL", id = lga.Key + "2l", data = facility_already_hiv_pos_less });
-                            lga_drill_down.Add(new { name = "Already HIV Positive >= 1000cp/mL", id = lga.Key + "2g", data = facility_already_hiv_pos_greater });
+                            lga_drill_down.Add(new { name = "Already HIV Positive < 1000cp/mL", id = lga.Key + "2l", data = facility_already_hiv_pos_less, stack = "already" });
+                            lga_drill_down.Add(new { name = "Already HIV Positive >= 1000cp/mL", id = lga.Key + "2g", data = facility_already_hiv_pos_greater, stack = "already" });
 
                         }
                     }
 
-                    lga_drill_down.Add(new { name = "Newly Identified < 1000cp/mL", id = state.Key + "1l", data = lga_newly_identified_less });
-                    lga_drill_down.Add(new { name = "Newly Identified >= 1000cp/mL", id = state.Key + "1g", data = lga_newly_identified_greater });
+                    lga_drill_down.Add(new { name = "Newly Identified < 1000cp/mL", id = state.Key + "1l", data = lga_newly_identified_less, stack = "new" });
+                    lga_drill_down.Add(new { name = "Newly Identified >= 1000cp/mL", id = state.Key + "1g", data = lga_newly_identified_greater, stack = "new" });
 
-                    lga_drill_down.Add(new { name = "Already HIV Positive < 1000cp/mL", id = state.Key + "2l", data = lga_already_hiv_pos_less });
-                    lga_drill_down.Add(new { name = "Already HIV Positive >= 1000cp/mL", id = state.Key + "2g", data = lga_already_hiv_pos_greater });
+                    lga_drill_down.Add(new { name = "Already HIV Positive < 1000cp/mL", id = state.Key + "2l", data = lga_already_hiv_pos_less, stack = "already" });
+                    lga_drill_down.Add(new { name = "Already HIV Positive >= 1000cp/mL", id = state.Key + "2g", data = lga_already_hiv_pos_greater, stack = "already" });
 
 
                 }
@@ -6728,18 +6938,20 @@ namespace ShieldPortal.Controllers
             var state_gsm = new List<dynamic>();
             foreach (var state in groupedData)
             {
-                if(siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count() > 0) {
-                    //  int statecount = lst.Where(x => x.GSM_2 && ((x.indicator == "PMTCT")!=false || (x.indicator == "PMTCT_EID") != false) && x.State == state.Key).Count();
-                //    if (lst.Where(x => x.GSM_2 && (x.indicator == "PMTCT" || x.indicator == "PMTCT_EID" || x.indicator == "ART" || x.indicator == "HTS" || x.indicator == "HTS_PITC" || x.indicator == "Linkage_To_Treatment" || x.indicator == "PMTCT_VIRAL_Load" || x.indicator == "TB_Screening" || x.indicator == "TB_Presumptive" || x.indicator == "TB_Bacteriology_Diagnosis" || x.indicator == "TB_Diagnosed" || x.indicator == "TB_Treatment" || x.indicator == "TPT_Eligible" || x.indicator == "TB_ART") && x.State == state.Key).Count() != 0)
-
-                        if (lst.Where(x =>  x.GSM_2 == isGSM && x.State == state.Key).Count() != 0)
+                int state_no_facilities = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                if (state_no_facilities > 0) {
+                    int state_no_gsm = lst.Where(x => x.GSM_2 == isGSM && x.State == state.Key).Count();
+                    if (state_no_gsm != 0)
                 {
+                    
                     state_gsm.Add(new
                     {
-                        y = Math.Round(100 * 1.0 * lst.Where(x =>  x.GSM_2 == isGSM && x.State == state.Key).Count() / siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count(), 1),
+                        y = Math.Round(100 * 1.0 * state_no_gsm / state_no_facilities, 1),
                         name = state.Key,
                         drilldown = state.Key,
-                        absolute = 365
+                        absolute = state_no_gsm,
+                        facilities = state_no_facilities,
+
                     });
                 }
                 else
@@ -6750,22 +6962,27 @@ namespace ShieldPortal.Controllers
                         y = 0.0,
                         name = state.Key,
                         drilldown = state.Key,
-                        absolute = 365
+                        absolute = state_no_gsm,
+                        facilities = state_no_facilities,
                     });
                 }
 
                 var lga_gsm = new List<dynamic>();
                     foreach (var lga in state.GroupBy(x => x.lga_name))
                     {
-                        if (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count() > 0)
+                        int lga_no_sites = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count();
+                        if (lga_no_sites > 0)
                         {
-                            if (lst.Where(x =>  x.GSM_2 == isGSM  && x.State == state.Key && x.LGA == lga.Key).Count() != 0)
+                            int lga_no_gsm = lst.Where(x => x.GSM_2 == isGSM && x.State == state.Key && x.LGA == lga.Key).Count();
+                            if(lga_no_gsm != 0)
                         {
                             lga_gsm.Add(new
                             {
-                                y = Math.Round(100 * 1.0 * lst.Where(x =>  x.GSM_2 == isGSM  && x.State == state.Key && x.LGA == lga.Key).Count() / siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key).Count(), 1),
+                                y = Math.Round(100 * 1.0 * lga_no_gsm / lga_no_sites, 1),
                                 name = lga.Key,
-                                drilldown = lga.Key
+                                drilldown = lga.Key,
+                                absolute = lga_no_gsm,
+                                facilities = lga_no_sites,
                             });
                         }
                         else
@@ -6774,7 +6991,9 @@ namespace ShieldPortal.Controllers
                             {
                                 y = 0.0,
                                 name = lga.Key,
-                                drilldown = lga.Key
+                                drilldown = lga.Key,
+                                absolute = lga_no_gsm,
+                                facilities = lga_no_sites,
                             });
                         }
 
@@ -6784,12 +7003,16 @@ namespace ShieldPortal.Controllers
                             {
                                 if (siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count() > 0)
                                 {
+                                    int facility_no_gsm = lst.Where(x => x.GSM_2 == isGSM && x.State == state.Key && x.LGA == lga.Key && x.Facility == fty.Key).Count();
                                     if (lst.Where(x =>  x.GSM_2 == isGSM  && x.State == state.Key && x.LGA == lga.Key && x.Facility == fty.Key).Count() != 0)
                                 {
+                                      
                                     facility_gsm.Add(new
                                     {
                                         name = fty.Key,
-                                        y = Math.Round(100 * 1.0 * lst.Where(x =>  x.GSM_2 == isGSM  && x.State == state.Key && x.LGA == lga.Key && x.Facility == fty.Key).Count() / siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key && x.lga_name == lga.Key && x.Name == fty.Key).Count(), 1),
+                                        y = Math.Round(100 * 1.0 * facility_no_gsm / 1, 1),
+                                        absolute = facility_no_gsm,
+                                        facilities = 1,
                                     });
                                 }
                                 else
@@ -6798,6 +7021,8 @@ namespace ShieldPortal.Controllers
                                     {
                                         name = fty.Key,
                                         y = 0.0,
+                                        absolute = facility_no_gsm,
+                                        facilities = 1,
                                     });
                                 }
                             }
@@ -7088,12 +7313,12 @@ namespace ShieldPortal.Controllers
             {
                 new
                 {
-                    name = "HIV+ pregenant women in the reporting Period",
+                    name = "HIV+ pregnant women in the reporting Period",
                     data = hiv_pos_reporting_period_state
                 },
                 new
                 {
-                    name = "HIV+ pregenant women receiving ARVs",
+                    name = "HIV+ pregnant women receiving ARVs",
                     data = hiv_pos_on_ART_state
                 },
                 new
@@ -7103,8 +7328,25 @@ namespace ShieldPortal.Controllers
                 },
                 new
                 {
-                    name = "HIV exposed infants tested by 12 months",
+                    name = "HIV exposed infants tested by 2-12 months",
                     data = hiv_exposed_tested_at_12mnth_state
+                }
+            };
+
+            List<dynamic> state_maternal_clinical_cascade_stack = new List<dynamic>
+            {
+                new
+                {
+                    name = "HIV+ pregnant women in the reporting Period",
+                    data = hiv_pos_reporting_period_state,
+                    stack = "new"
+                },
+                new
+                {
+                    name = "HIV+ pregnant women receiving ARVs",
+                    data = hiv_pos_on_ART_state,
+                    stack = "new"
+
                 }
             };
 
@@ -7135,6 +7377,7 @@ namespace ShieldPortal.Controllers
                 lga_maternal_clinical_cascade,
                 state_infant_linkage,
                 lga_infant_linkage,
+                state_maternal_clinical_cascade_stack,
             };
         }
 
@@ -7484,18 +7727,19 @@ namespace ShieldPortal.Controllers
 
             Dictionary<string, string> reportingMonths = new Dictionary<string, string>
             {
-                {"Jan" ,"Jan" },
-                {"Feb", "Feb" },
-                {"Mar","Mar" },
-                {"Apr","Apr" },
-                {"May","May" },
-                {"Jun","Jun" },
-                {"Jul", "Jul" },
-                {"Aug","Aug" },
-                {"Sep","Sep" },
-                {"Oct","Oct" },
-                {"Nov","Nov" },
-                {"Dec","Dec" }
+               
+                {"Aug-18","Aug-18" },
+                {"Sep-18","Sep-18" },
+                {"Oct-18","Oct-18" },
+                {"Nov-18","Nov-18" },
+                {"Dec-18","Dec-18" },
+                {"Jan-19" ,"Jan-19" },
+                {"Feb-19", "Feb-19" },
+                {"Mar-19","Mar-19" },
+                {"Apr-19","Apr-19" },
+                {"May-19","May-19" },
+                {"Jun-19","Jun-19" },
+                {"Jul-19", "Jul-19" },
             };
 
             foreach (var state in groupedData)
@@ -7755,8 +7999,8 @@ namespace ShieldPortal.Controllers
                     lga_drill_down_ret.Add(new { name = "Retention (%)", yAxis = 1, type = "scatter", id = lga.Key + "  ", data = facility_percet_ret, categories = facilities });
 
                     //add facility VL
-                    lga_drill_down_vl.Add(new { name = "VLA (den)", id = lga.Key, data = facility_den_vl, type = "column", categories = facilities });
-                    lga_drill_down_vl.Add(new { name = "VLA (num)", id = lga.Key + " ", data = facility_num_vl, type = "column", categories = facilities });
+                    lga_drill_down_vl.Add(new { name = "VLA (Eligible Client)", id = lga.Key, data = facility_den_vl, type = "column", categories = facilities });
+                    lga_drill_down_vl.Add(new { name = "VLA (No. of Samples Collected)", id = lga.Key + " ", data = facility_num_vl, type = "column", categories = facilities });
                     lga_drill_down_vl.Add(new { name = "VLA Uptake (%)", yAxis = 1, type = "scatter", id = lga.Key + "  ", data = facility_percet_vl, categories = facilities });
 
                 }
@@ -7766,8 +8010,8 @@ namespace ShieldPortal.Controllers
                 lga_drill_down_ret.Add(new { name = "Retention (%)", yAxis = 1, type = "scatter", id = state.Key + "  ", data = lga_percent_ret, categories = lgas });
 
                 //add lga vl
-                lga_drill_down_vl.Add(new { name = "VLA (den)", id = state.Key, data = lga_den_vl, categories = lgas, type = "column" });
-                lga_drill_down_vl.Add(new { name = "VLA (num)", id = state.Key + " ", data = lga_num_vl, categories = lgas, type = "column" });
+                lga_drill_down_vl.Add(new { name = "VLA (Eligible Client)", id = state.Key, data = lga_den_vl, categories = lgas, type = "column" });
+                lga_drill_down_vl.Add(new { name = "VLA (No. of Samples Collected)", id = state.Key + " ", data = lga_num_vl, categories = lgas, type = "column" });
                 lga_drill_down_vl.Add(new { name = "VLA Uptake (%)", yAxis = 1, type = "scatter", id = state.Key + "  ", data = lga_percent_vl, categories = lgas });
             }
 
@@ -7798,13 +8042,13 @@ namespace ShieldPortal.Controllers
             {
                 new
                 {
-                    name = "VLA (den)",
+                    name = "VLA (Eligible Client)",
                     type  = "column",
                     data = state_vl_den,
                 },
                 new
                 {
-                    name = "VLA (num)",
+                    name = "VLA (No. of Samples Collected)",
                     type  = "column",
                     data = state_vl_num
                 },
