@@ -1712,234 +1712,7 @@ namespace ShieldPortal.Controllers
                 lga_drill_down,
             };
         }
-
-        public dynamic GenerateCOMPLETENESS_STAT(DataTable dt)
-        {
-            List<CompletenessReport> lst = Utilities.ConvertToList<CompletenessReport>(dt);
-
-            var groupedData = lst.GroupBy(x => x.State);
-            int submitted_gsm = 0;
-
-            int PMTCT = 0;
-            int PMTCT_EID = 0;
-            int HTS_PITC = 0;
-            int HTS = 0;
-            int Linkage_To_Treatment = 0;
-            int ART = 0;
-            int PMTCT_VIRAL_Load = 0;
-            int TB_Screening = 0;
-            int TB_Presumptive = 0;
-            int TB_Bacteriology_Diagnosis = 0;
-            int TB_Diagnosed = 0;
-            int TB_Treatment = 0;
-            int TPT_Eligible = 0;
-            int TB_ART = 0;
-
-            int IMS_PMTCT = 0;
-            int IMS_PMTCT_EID = 0;
-            int IMS_HTS_PITC = 0;
-            int IMS_HTS = 0;
-            int IMS_Linkage_To_Treatment = 0;
-            int IMS_ART = 0;
-            int IMS_PMTCT_VIRAL_Load = 0;
-            int IMS_TB_Screening = 0;
-            int IMS_TB_Presumptive = 0;
-            int IMS_TB_Bacteriology_Diagnosis = 0;
-            int IMS_TB_Diagnosed = 0;
-            int IMS_TB_Treatment = 0;
-            int IMS_TPT_Eligible = 0;
-            int IMS_TB_ART = 0;
-
-            var lga_drill_down = new List<dynamic>();
-
-            var state_gsm = new List<dynamic>();
-            var state_ims = new List<dynamic>();
-
-            foreach (var state in groupedData)
-            {
-                PMTCT = 0;
-                PMTCT_EID = 0;
-                HTS_PITC = 0;
-                HTS = 0;
-                Linkage_To_Treatment = 0;
-                ART = 0;
-                PMTCT_VIRAL_Load = 0;
-                TB_Screening = 0;
-                TB_Presumptive = 0;
-                TB_Bacteriology_Diagnosis = 0;
-                TB_Diagnosed = 0;
-                TB_Treatment = 0;
-                TPT_Eligible = 0;
-                TB_ART = 0;
-
-                IMS_PMTCT = 0;
-                IMS_PMTCT_EID = 0;
-                IMS_HTS_PITC = 0;
-                IMS_HTS = 0;
-                IMS_Linkage_To_Treatment = 0;
-                IMS_ART = 0;
-                IMS_PMTCT_VIRAL_Load = 0;
-                IMS_TB_Screening = 0;
-                IMS_TB_Presumptive = 0;
-                IMS_TB_Bacteriology_Diagnosis = 0;
-                IMS_TB_Diagnosed = 0;
-                IMS_TB_Treatment = 0;
-                IMS_TPT_Eligible = 0;
-                IMS_TB_ART = 0;
-
-
-                PMTCT = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT").Count();
-                PMTCT_EID = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_EID").Count();
-                ART = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "ART").Count();
-                HTS = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "HTS").Count();
-                HTS_PITC = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "HTS_PITC").Count();
-                Linkage_To_Treatment = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "Linkage_To_Treatment").Count();
-                PMTCT_VIRAL_Load = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_VIRAL_Load").Count();
-                TB_Screening = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Screening").Count();
-                TB_Presumptive = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Presumptive").Count();
-                TB_Bacteriology_Diagnosis = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Bacteriology_Diagnosis").Count();
-                TB_Diagnosed = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Diagnosed").Count();
-                TB_Treatment = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_Treatment").Count();
-                TPT_Eligible = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TPT_Eligible").Count();
-                TB_ART = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "TB_ART").Count();
-
-
-
-                IMS_PMTCT = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT").Count();
-                IMS_PMTCT_EID = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_EID").Count();
-                IMS_ART = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "ART").Count();
-                IMS_HTS = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "HTS").Count();
-                IMS_HTS_PITC = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "HTS_PITC").Count();
-                IMS_Linkage_To_Treatment = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "Linkage_To_Treatment").Count();
-                IMS_PMTCT_VIRAL_Load = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT_VIRAL_Load").Count();
-                IMS_TB_Screening = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Screening").Count();
-                IMS_TB_Presumptive = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Presumptive").Count();
-                IMS_TB_Bacteriology_Diagnosis = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Bacteriology_Diagnosis").Count();
-                IMS_TB_Diagnosed = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Diagnosed").Count();
-                IMS_TB_Treatment = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_Treatment").Count();
-                IMS_TPT_Eligible = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TPT_Eligible").Count();
-                IMS_TB_ART = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "TB_ART").Count();
-
-
-                if (PMTCT != 0)
-                {
-                    state_gsm.Add(new
-                    {
-                        y = Math.Round(100 * 1.0 * PMTCT / 20, 1),
-                        name = state.Key,
-                        drilldown = state.Key
-                    });
-                }
-                if (IMS_PMTCT != 0)
-                {
-                    state_ims.Add(new
-                    {
-                        y = Math.Round(100 * 1.0 * IMS_PMTCT / 162, 0),
-                        name = state.Key,
-                        drilldown = state.Key
-                    });
-                }
-
-
-
-
-                var lga_gsm = new List<dynamic>();
-                var lga_ims = new List<dynamic>();
-
-                foreach (var lga in state.GroupBy(x => x.LGA))
-                {
-                    PMTCT = 0;
-                    IMS_PMTCT = 0;
-
-                    PMTCT = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key).Count();
-
-                    IMS_PMTCT = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key).Count();
-                    if (PMTCT != 0)
-                    {
-                        lga_gsm.Add(new
-                        {
-                            y = Math.Round(100 * 1.0 * PMTCT / 20, 1),
-                            name = state.Key,
-                            drilldown = state.Key
-                        });
-
-                    }
-
-                    if (IMS_PMTCT != 0)
-                    {
-                        lga_ims.Add(new
-                        {
-                            y = Math.Round(100 * 1.0 * IMS_PMTCT / 162, 0),
-                            name = state.Key,
-                            drilldown = state.Key
-                        });
-
-                    }
-                    var facility_gsm = new List<dynamic>();
-                    var facility_ims = new List<dynamic>();
-
-                    foreach (var fty in lga.GroupBy(x => x.Facility))
-                    {
-
-                        PMTCT = 0;
-                        IMS_PMTCT = 0;
-
-                        PMTCT = lst.Where(x => x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
-
-                        IMS_PMTCT = lst.Where(x => !x.GSM_2 && x.State == state.Key && x.indicator == "PMTCT" && x.LGA == lga.Key && x.Facility == fty.Key).Count();
-                        if (PMTCT != 0)
-                        {
-                            facility_gsm.Add(new
-                            {
-                                fty.Key,
-                                percent = Math.Round(100 * 1.0 * PMTCT / 20, 1),
-
-                            });
-                        }
-                        if (IMS_PMTCT != 0)
-                        {
-                            facility_ims.Add(new
-                            {
-                                fty.Key,
-                                percent = Math.Round(100 * 1.0 * IMS_PMTCT / 162, 0),
-
-                            });
-                        }
-                    }
-
-                    //add facility
-                    lga_drill_down.Add(new { name = "GSM", id = lga.Key, data = facility_gsm });
-                    lga_drill_down.Add(new { name = "IMS", id = lga.Key, data = facility_ims });
-
-                }
-                //add lga
-                lga_drill_down.Add(new { name = "GSM", id = state.Key, data = lga_gsm });
-                lga_drill_down.Add(new { name = "IMS", id = state.Key, data = lga_ims });
-
-            }
-
-            List<dynamic> Comp_Stat = new List<dynamic>
-            {
-                new
-                {
-                    name = "GSM",
-                    data = state_gsm
-                },
-                  new
-                {
-                    name = "IMS",
-                    data = state_ims
-                }
-
-            };
-
-            return new
-            {
-                Comp_Stat,
-                lga_drill_down,
-            };
-        }
-
+        
         public dynamic GenerateCOMPLETENESSRATE_HTS_Index(bool isGSM, DataTable dt)
         {
             MPMDAO dao = new MPMDAO();
@@ -1959,6 +1732,7 @@ namespace ShieldPortal.Controllers
             {
          
                 int no_of_sites = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                 if (no_of_sites > 0)
                 {
@@ -1973,7 +1747,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "MG",
                             absolute = geneaology_male,
                             entries = 4 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
 
                     }
@@ -1986,7 +1761,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "MG",
                             absolute = geneaology_male,
                             entries = 4 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
                     }
 
@@ -2001,7 +1777,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "FG",
                             absolute = geneaology_female,
                             entries = 4 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
 
                     }
@@ -2014,7 +1791,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "FG",
                             absolute = geneaology_female,
                             entries = 4 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
                     }
 
@@ -2028,7 +1806,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "MP",
                             absolute = partner_male,
                             entries = 16 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
 
                     }
@@ -2041,7 +1820,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "MP",
                             absolute = partner_male,
                             entries = 16 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
                     }
 
@@ -2055,7 +1835,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "FP",
                             absolute = partner_female,
                             entries = 16 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
 
                     }
@@ -2068,7 +1849,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "FP",
                             absolute = partner_female,
                             entries = 16 * no_of_sites,
-                            facilities = no_of_sites
+                            facilities = no_of_sites,
+                            ips = stateIps
                         });
                     }
 
@@ -2417,6 +2199,8 @@ namespace ShieldPortal.Controllers
             {
 
                 int state_no_of_facilities = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
+
                 if (state_no_of_facilities > 0)
                 {
                   
@@ -2429,7 +2213,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key,
                             absolute = state_no_male,
                             entries = state_no_of_facilities * 12,
-                            facilities = state_no_of_facilities
+                            facilities = state_no_of_facilities,
+                            ips = stateIps
                         });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -2440,7 +2225,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key+" ",
                         absolute = state_no_female,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -2562,6 +2348,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
                 {
                     int state_no_of_facilities = siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                     state_data_male.Add(new
@@ -2571,7 +2358,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_male,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -2582,7 +2370,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + " ",
                         absolute = state_no_female,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -2704,6 +2493,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
                 {
                     int state_no_of_facilities = siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                     state_data_male.Add(new
@@ -2713,7 +2503,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_male,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -2724,7 +2515,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + " ",
                         absolute = state_no_female,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -2846,6 +2638,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
                 {
                     int state_no_of_facilities = siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                     state_data_male.Add(new
@@ -2855,7 +2648,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_male,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -2866,7 +2660,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + " ",
                         absolute = state_no_female,
                         entries = state_no_of_facilities * 12,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -2988,6 +2783,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
                 {
                     int state_no_of_facilities = siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                     state_data_male.Add(new
@@ -2997,7 +2793,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_male,
                         entries = 12 * state_no_of_facilities,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -3008,7 +2805,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + " ",
                         absolute = state_no_female,
                         entries = 12 * state_no_of_facilities,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -3130,6 +2928,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM).Count() > 0)
                 {
                     int state_no_of_facilities = siteLst.Where(x =>  x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                     state_data_male.Add(new
@@ -3139,7 +2938,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_male,
                         entries = 12 * state_no_of_facilities,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -3150,7 +2950,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + " ",
                         absolute = state_no_female,
                         entries = 12 * state_no_of_facilities,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -3272,6 +3073,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&   x.GSM_2 == isGSM ).Count() > 0)
                 {
                     int state_no_of_facilities = siteLst.Where(x =>   x.GSM_2 == isGSM  && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     int state_no_male = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "M").Count();
                     state_data_male.Add(new
@@ -3281,7 +3083,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_male,
                         entries = 12 * state_no_of_facilities,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
                     int state_no_female = lst.Where(x => x.state_name == state.Key && x.Number != "" &&  x.GSM_2 == isGSM && x.Sex == "F").Count();
@@ -3292,7 +3095,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + " ",
                         absolute = state_no_female,
                         entries = 12 * state_no_of_facilities,
-                        facilities = state_no_of_facilities
+                        facilities = state_no_of_facilities,
+                        ips = stateIps
                     });
 
 
@@ -3401,6 +3205,9 @@ namespace ShieldPortal.Controllers
         {
             MPMDAO dao = new MPMDAO();
 
+            //List<IPLGAFacility> IPList = Utilities.ConvertToList<IPLGAFacility>(dao.exeCuteStoredProcedure("sp_mpm_granular_sites"));
+            //var selected = IPList.Select(x => x.IP).Distinct();
+
             List<GranularSites> siteLst = Utilities.ConvertToList<GranularSites>(dao.exeCuteStoredProcedure("sp_mpm_granular_sites"));
             List<HTS_Other_PITC_Completeness_Rate> lst = Utilities.ConvertToList<HTS_Other_PITC_Completeness_Rate>(dt);
             var groupedData = siteLst.GroupBy(x => x.state_name);
@@ -3417,6 +3224,7 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
                 int state_no_facilities = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                string[]  stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                 if (state_no_facilities > 0)
                 {
@@ -3431,7 +3239,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1M",
                             absolute = state_no_blood_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -3444,7 +3253,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1M",
                             absolute = state_no_blood_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3458,7 +3268,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1F",
                             absolute = state_no_blood_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -3471,7 +3282,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1F",
                             absolute = state_no_blood_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3486,7 +3298,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2M",
                             absolute = state_no_eye_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -3498,7 +3311,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2M",
                             absolute = state_no_eye_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3512,7 +3326,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2F",
                             absolute = state_no_eye_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -3524,7 +3339,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2F",
                             absolute = state_no_eye_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3540,7 +3356,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3M",
                             absolute = state_family_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -3552,7 +3369,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3M",
                             absolute = state_family_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3566,7 +3384,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3F",
                             absolute = state_family_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -3578,7 +3397,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3F",
                             absolute = state_family_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3594,7 +3414,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4M",
                             absolute = state_ent_no_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -3606,7 +3427,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4M",
                             absolute = state_ent_no_male,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -3620,7 +3442,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4F",
                             absolute = state_ent_no_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -3632,7 +3455,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4F",
                             absolute = state_ent_no_female,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4215,6 +4039,8 @@ namespace ShieldPortal.Controllers
                 int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
                 if (state_no_facilities > 0)
                 {
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
+
                     // set1
                     int state_no_tx_ret_den_male = lst.Where(x => x.State == state.Key && x.IndicatorType == "Tx_RET" && x.GSM_2 == isGSM && x.Denominator != "" && x.Sex == "M").Count();
                     if (state_no_tx_ret_den_male != 0)
@@ -4227,7 +4053,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+"1M",
                             absolute = state_no_tx_ret_den_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
 
                         });
 
@@ -4241,7 +4068,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+"1M",
                             absolute = state_no_tx_ret_den_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4256,7 +4084,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2M",
                             absolute = state_no_tx_ret_num_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -4269,7 +4098,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2M",
                             absolute = state_no_tx_ret_num_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4285,7 +4115,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+"1F",
                             absolute = state_no_tx_ret_den_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                          
                     }
@@ -4298,7 +4129,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1F",
                             absolute = state_no_tx_ret_den_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4313,7 +4145,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2F",
                             absolute = state_no_tx_ret_num_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -4326,7 +4159,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2F",
                             absolute = state_no_tx_ret_num_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4344,7 +4178,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3M",
                             absolute = state_no_tx_vla_den_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -4357,7 +4192,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3M",
                             absolute = state_no_tx_vla_den_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4372,7 +4208,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4M",
                             absolute = state_no_tx_vla_num_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -4385,7 +4222,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4M",
                             absolute = state_no_tx_vla_num_male,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4401,7 +4239,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3F",
                             absolute = state_no_tx_vla_den_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -4414,7 +4253,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "3F",
                             absolute = state_no_tx_vla_den_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -4429,7 +4269,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4F",
                             absolute = state_no_tx_vla_num_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -4442,7 +4283,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "4F",
                             absolute = state_no_tx_vla_num_female,
                             entries = 11 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5056,6 +4898,7 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
                 int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                 if (state_no_facilities > 0)
                 {
@@ -5069,7 +4912,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+"1n",
                             absolute = state_no_new_client,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -5082,7 +4926,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+"1n",
                             absolute = state_no_new_client,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5096,7 +4941,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2n",
                             absolute = state_no_known_status,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -5108,7 +4954,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2n",
                             absolute = state_no_known_status,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5124,7 +4971,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1k",
                             absolute = state_no_known_hiv_pos,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -5137,7 +4985,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1k",
                             absolute = state_no_known_hiv_pos,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5151,7 +5000,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2k",
                             absolute = state_no_new_hiv_pos,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -5163,7 +5013,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2k",
                             absolute = state_no_new_hiv_pos,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5178,7 +5029,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1a",
                             absolute = state_no_already_on_art,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -5191,7 +5043,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1a",
                             absolute = state_no_already_on_art,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5205,7 +5058,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2a",
                             absolute = state_no_new_on_art,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -5217,7 +5071,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2a",
                             absolute = state_no_new_on_art,
                             entries = 10 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5660,6 +5515,8 @@ namespace ShieldPortal.Controllers
             {
 
                 int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
+
                 if (state_no_facilities > 0)
                 {
                     int state_no_eid_sample_collected = lst.Where(x => x.State == state.Key && x.EID_Sample_Collected != "" && x.GSM_2 == isGSM).Count();
@@ -5672,7 +5529,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key,
                             absolute = state_no_eid_sample_collected,
                             entries = 2 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -5685,7 +5543,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key,
                             absolute = state_no_eid_sample_collected,
                             entries = 2 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5699,7 +5558,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + " ",
                             absolute = state_no_eid_pos,
                             entries = 2 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -5711,7 +5571,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + " ",
                             absolute = state_no_eid_pos,
                             entries = 2 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5725,7 +5586,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "  ",
                             absolute = state_no_eid_art_initiation,
                             entries = 2 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -5737,7 +5599,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "  ",
                             absolute = state_no_eid_art_initiation,
                             entries = 2 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -5997,6 +5860,7 @@ namespace ShieldPortal.Controllers
                 if (siteLst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM).Count() > 0)
                 {
                     int state_no_of_sites = siteLst.Where(x =>  x.GSM_2 == isGSM == isGSM && x.state_name == state.Key).Count();
+                    string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
 
                     //Emergency
                     int no_of_emergency_male = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "Emergency" && x.Sex == "M").Count();
@@ -6007,7 +5871,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key +"1M",
                         absolute = no_of_emergency_male,
                         entries = state_no_of_sites *20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_emergency_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "Emergency" && x.Sex == "F").Count();
@@ -6018,7 +5883,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "1F",
                         absolute = no_of_emergency_female,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //In patient
@@ -6030,7 +5896,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "2M",
                         absolute = no_of_in_patient_male,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_in_patient_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "In-Patient" && x.Sex == "F").Count();
@@ -6041,7 +5908,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "2F",
                         absolute = no_of_in_patient_female,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //Malnutrition Clinic
@@ -6053,7 +5921,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "3M",
                         absolute = no_of_mal_clinic_male,
                         entries = state_no_of_sites * 2,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_mal_clinic_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "Malnutrition Clinic" && x.Sex == "F").Count();
@@ -6064,7 +5933,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "3F",
                         absolute = no_of_mal_clinic_female,
                         entries = state_no_of_sites * 2,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //Under-5 (Pediatric) Clinic
@@ -6076,7 +5946,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "4M",
                         absolute = no_of_under5_male,
                         entries = state_no_of_sites * 2,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_under5_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "Under-5 (Pediatric) Clinic" && x.Sex == "F").Count();
@@ -6087,7 +5958,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "4F",
                         absolute = no_of_under5_female,
                         entries = state_no_of_sites * 2,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //STI Clinic
@@ -6099,7 +5971,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "5M",
                         absolute = no_of_sti_clinic_male,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_sti_clinic_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "STI Clinic" && x.Sex == "F").Count();
@@ -6110,7 +5983,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "5F",
                         absolute = no_of_sti_clinic_female,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //STI Clinic
@@ -6122,7 +5996,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "6M",
                         absolute = no_of_tb_clinic_male,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_tb_clinic_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "TB Clinic" && x.Sex == "F").Count();
@@ -6133,7 +6008,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "6F",
                         absolute = no_of_tb_clinic_female,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //VCT (co-located in the Health Facility)
@@ -6145,7 +6021,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "7M",
                         absolute = no_of_vct_male,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_vct_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "VCT (co-located in the Health Facility)" && x.Sex == "F").Count();
@@ -6156,7 +6033,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "7F",
                         absolute = no_of_vct_female,
                         entries = state_no_of_sites * 20,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     //PMTCT (Post ANC1)
@@ -6168,7 +6046,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "8M",
                         absolute = no_of_anc1_male,
                         entries = state_no_of_sites * 18,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
                     int no_of_anc1_female = lst.Where(x => x.state_name == state.Key &&  x.GSM_2 == isGSM == isGSM && x.SDP == "PMTCT (Post ANC1)" && x.Sex == "F").Count();
@@ -6179,7 +6058,8 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key + "8F",
                         absolute = no_of_anc1_female,
                         entries = state_no_of_sites * 18,
-                        facilities = state_no_of_sites
+                        facilities = state_no_of_sites,
+                        ips = stateIps
                     });
 
 
@@ -6826,6 +6706,8 @@ namespace ShieldPortal.Controllers
             {
 
                 int state_no_facilities = siteLst.Where(x => x.state_name == state.Key && x.GSM_2 == isGSM).Count();
+                string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
+
                 if (state_no_facilities > 0)
                 {
                    int state_no_newly_identified_less = lst.Where(x => x.State == state.Key && x.Category == "Newly_Identified" && x.GSM_2 == isGSM && x._less_than_1000 != "").Count();
@@ -6838,7 +6720,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+ "1l",
                             absolute = state_no_newly_identified_less,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -6851,7 +6734,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1l",
                             absolute = state_no_newly_identified_less,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -6865,7 +6749,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key+"1g",
                             absolute = state_no_newly_identified_greater,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
 
                     }
@@ -6879,7 +6764,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "1g",
                             absolute = state_no_newly_identified_greater,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -6895,7 +6781,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2l",
                             absolute = state_no_already_hiv_pos_less,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -6907,7 +6794,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2l",
                             absolute = state_no_already_hiv_pos_less,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -6921,7 +6809,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2g",
                             absolute = state_no_already_hiv_pos_greater,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
                     else
@@ -6933,7 +6822,8 @@ namespace ShieldPortal.Controllers
                             drilldown = state.Key + "2g",
                             absolute = state_no_already_hiv_pos_greater,
                             entries = 20 * state_no_facilities,
-                            facilities = state_no_facilities
+                            facilities = state_no_facilities,
+                            ips = stateIps
                         });
                     }
 
@@ -7235,6 +7125,8 @@ namespace ShieldPortal.Controllers
             foreach (var state in groupedData)
             {
                 int state_no_facilities = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Count();
+                string[] stateIps = siteLst.Where(x => x.GSM_2 == isGSM && x.state_name == state.Key).Select(x => x.IP).Distinct().ToArray();
+
                 if (state_no_facilities > 0) {
                     int state_no_gsm = lst.Where(x => x.GSM_2 == isGSM && x.State == state.Key).Count();
                     if (state_no_gsm != 0)
@@ -7247,6 +7139,7 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_gsm,
                         facilities = state_no_facilities,
+                        ips = stateIps
 
                     });
                 }
@@ -7260,6 +7153,7 @@ namespace ShieldPortal.Controllers
                         drilldown = state.Key,
                         absolute = state_no_gsm,
                         facilities = state_no_facilities,
+                        ips = stateIps
                     });
                 }
 

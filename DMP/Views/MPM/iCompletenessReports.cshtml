@@ -339,6 +339,7 @@
                 model.lga_codes = selectedLGA;
                 model.facilities = selectedFacilitties;
 
+               
                 $.ajax({
                     url: "/MPM/RetriveCompletenessData",
                     method: "Post",
@@ -349,10 +350,11 @@
                     try {
                         var dt = JSON.parse(response)._data;
                        // console.log(dt);
-                        buildallchart(dt);
+                        buildallchart(dt, selectedIP);
+                     
                     }
                     catch (e) {
-                    //    alert("A system error has occurred. Kindly re-try again shortly");
+                        alert("A system error has occurred. Kindly re-try again shortly");
                         console.log(e);
                     }
                 }).error(function (xhr, status, err) {
@@ -366,7 +368,7 @@
 
             var _model = {};
             _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
-
+            var selectedIP = ''; 
             $.ajax({
                 url: "/MPM/RetriveCompletenessData",
                 method: "Post",
@@ -376,11 +378,11 @@
                 $("#a-spinner").hide();
                 try {
                     var dt = JSON.parse(response)._data;
-                    buildallchart(dt);
+                    buildallchart(dt, selectedIP);
                    // console.log(response);
                 }
                 catch (e) {
-                  //  alert("A system error has occurred. Kindly re-try again shortly == " + e);
+                    alert("A system error has occurred. Kindly re-try again shortly");
                     console.log(e);
                 }
             }).error(function (xhr, status, err) {
@@ -390,76 +392,71 @@
 
 
 
-            function buildallchart(dt) {
-
+            function buildallchart(dt, selectedIP) {
                  //HTS_Index
                 build_stacked_bar_with_drilldown_completeness('COMP_stat', 'HTS Index Completeness Report', 'Percentage Completeness (%)',
-                    'Percentage Completeness (%)', '', dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down_stack);
+                    'Percentage Completeness (%)', '', dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down_stack, selectedIP);
              //   console.log(dt.Comp_Stat.Comp_Stat);
               //  console.log(dt.Comp_Stat.lga_drill_down_stack);
 
 
-
-
-                //HTS_Index
-                //build_side_by_side_bar_chart_with_DrillDown('COMP_stat', 'HTS_Index Completeness Report', 'Percentage Completeness',
-                //    dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down);
+                
 
                 //HTS_TST
                 build_stacked_bar_with_drilldown_completeness('COMP_stat_HTS_TST', 'HTS_TST Completeness Report', 'Percentage Completeness (%)',
-                    'Percentage Completeness (%)', '', dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down);
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_HTS_TST.Comp_Stat_HTS_TST, dt.Comp_Stat_HTS_TST.lga_drill_down, selectedIP);
               
                 //HTS_Other_PITC
                 build_stacked_bar_with_drilldown_horizontal('Comp_Stat_HTS_Other_PITC', 'HTS Other PITC Completeness Report', 'Percentage Completeness (%)',
-                    'Percentage Completeness (%)', '', dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC, dt.Comp_Stat_HTS_Other_PITC.lga_drill_down, selectedIP);
              //   console.log(dt.Comp_Stat_HTS_Other_PITC.Comp_Stat_HTS_Other_PITC);
                 //console.log(dt.Comp_Stat_HTS_Other_PITC.lga_drill_down);
                 //ART
                 build_stacked_bar_with_drilldown_completeness('Comp_Stat_ART', 'ART Completeness Report', 'Percentage Completeness (%)',
-                     'Percentage Completeness (%)', '', dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down);
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_ART.Comp_Stat_ART, dt.Comp_Stat_ART.lga_drill_down, selectedIP);
 
                 //PMTCT
                 build_stacked_bar_with_drilldown_completeness('Comp_Stat_PMTCT', 'PMTCT Completeness Report', 'Percentage Completeness (%)',
-                   'Percentage Completeness (%)', '', dt.Comp_Stat_PMTCT.Comp_Stat_PMTCT, dt.Comp_Stat_PMTCT.lga_drill_down);
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_PMTCT.Comp_Stat_PMTCT, dt.Comp_Stat_PMTCT.lga_drill_down, selectedIP);
 
 
                 //PMTCT_EID
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_Stat_PMTCT_EID', 'PMTCT_EID Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_Stat_PMTCT_EID.Comp_Stat_PMTCT_EID, dt.Comp_Stat_PMTCT_EID.lga_drill_down);
+                    dt.Comp_Stat_PMTCT_EID.Comp_Stat_PMTCT_EID, dt.Comp_Stat_PMTCT_EID.lga_drill_down, selectedIP);
 
                 //PMTCT_Viral_Load
                 build_stacked_bar_with_drilldown_completeness('Comp_Stat_PMTCT_Viral_Load', 'PMTCT Viral Load Completeness Report', 'Percentage Completeness (%)',
-                     'Percentage Completeness (%)', '', dt.Comp_Stat_PMTCT_Viral_Load.Comp_Stat_PMTCT_Viral_Load, dt.Comp_Stat_PMTCT_Viral_Load.lga_drill_down);
+                    'Percentage Completeness (%)', '', dt.Comp_Stat_PMTCT_Viral_Load.Comp_Stat_PMTCT_Viral_Load, dt.Comp_Stat_PMTCT_Viral_Load.lga_drill_down, selectedIP);
 
                 //TB_Screened
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_screened', 'TB Screened Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_screened.Comp_TB_screened, dt.Comp_TB_screened.lga_drill_down);
+                    dt.Comp_TB_screened.Comp_TB_screened, dt.Comp_TB_screened.lga_drill_down, selectedIP);
 
                 //TB_Presumptive
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Presumptive', 'TB Presumptive Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_Presumptive.Comp_TB_Presumptive, dt.Comp_TB_Presumptive.lga_drill_down);
+                    dt.Comp_TB_Presumptive.Comp_TB_Presumptive, dt.Comp_TB_Presumptive.lga_drill_down, selectedIP);
 
                 //TB_Bacteriology
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Bacteriology', 'TB Bacteriology Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_Bacteriology.Comp_TB_Bacteriology, dt.Comp_TB_Bacteriology.lga_drill_down);
+                    dt.Comp_TB_Bacteriology.Comp_TB_Bacteriology, dt.Comp_TB_Bacteriology.lga_drill_down, selectedIP);
 
                 //TB_Diagnosis
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Diagnosis', 'TB Diagnosis Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_Diagnosis.Comp_TB_Diagnosis, dt.Comp_TB_Diagnosis.lga_drill_down);
+                    dt.Comp_TB_Diagnosis.Comp_TB_Diagnosis, dt.Comp_TB_Diagnosis.lga_drill_down, selectedIP);
 
 
                 //TB_Relapsed_Status
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Relapsed_Status', 'TB Relapsed Status Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_Relapsed_Status.Comp_TB_Relapsed_Status, dt.Comp_TB_Relapsed_Status.lga_drill_down);
+                    dt.Comp_TB_Relapsed_Status.Comp_TB_Relapsed_Status, dt.Comp_TB_Relapsed_Status.lga_drill_down, selectedIP);
 
                 //TB_Relapsed_POS
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Relapsed_POS', 'TB Relapsed Known POS Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_Relapsed_POS.Comp_TB_Relapsed_POS, dt.Comp_TB_Relapsed_POS.lga_drill_down);
+                    dt.Comp_TB_Relapsed_POS.Comp_TB_Relapsed_POS, dt.Comp_TB_Relapsed_POS.lga_drill_down, selectedIP);
 
                 
                 //TB_Relapsed
                 build_side_by_side_bar_chart_with_DrillDown_Completeness('Comp_TB_Relapsed', 'TB Relapsed Completeness Report', 'Percentage Completeness (%)',
-                    dt.Comp_TB_Relapsed.Comp_TB_Relapsed, dt.Comp_TB_Relapsed.lga_drill_down);
+                    dt.Comp_TB_Relapsed.Comp_TB_Relapsed, dt.Comp_TB_Relapsed.lga_drill_down, selectedIP);
 
             }
 
