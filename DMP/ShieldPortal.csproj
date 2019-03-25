@@ -1528,6 +1528,8 @@
     <Content Include="Views\MPM\iCompletenessReports.cshtml" />
     <Content Include="Views\PGSM\Dashboard.cshtml" />
     <Content Include="Views\Shared\Partials\_DiffModelCareTab.cshtml" />
+    <Content Include="Views\PGSM\PreVisit.cshtml" />
+    <Content Include="Views\PGSM\QReport.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />

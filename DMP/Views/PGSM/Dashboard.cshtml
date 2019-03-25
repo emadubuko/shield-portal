@@ -62,21 +62,25 @@
         <form class="form-horizontal">
             <div class="form-group">
                 <div class="col-sm-12">
-                    <h5 style="text-decoration:underline;">Filter</h5>
+                    <h5 style="text-decoration:underline;">Filter <span class="pull-right"> <a href="javascript:window.location.reload()" class="btn-sm">Refresh All <i class="glyphicon glyphicon-refresh"></i> </a></span></h5>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <select class="form-control">
+                    <select id="ip" class="form-control" required>
                         <option value="">Select IP</option>
+                        <option value="APIN">APIN</option>
+                        <option value="IHVN">IHVN</option>
+                        <option value="CIHP">CIHP</option>
+                        <option value="CCFN">CCFN</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <select class="form-control">
+                    <select class="form-control" id="states">
                         <option value="">Select State</option>
                     </select>
                 </div>
@@ -84,17 +88,17 @@
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <select class="form-control">
+                    <select class="form-control" id="site">
                         <option value="">Select Site</option>
                     </select>
                 </div>
             </div>
 
-            <div class="form-group">
+            @*<div class="form-group">
                 <div class="col-sm-12">
                     <a class="btn btn-sm btn-info" id="btnSearch">Refresh</a>
                 </div>
-            </div>
+            </div>*@
         </form>
     </div>
 </div>
@@ -134,20 +138,40 @@
             var mocData = [];
             let moc;
 
+            $("#site").change(function () {
+                var site = this.value;
+
+                loadData(site);
 
 
-            function loadData() {
+            });
+
+            function loadData(site) {
                 $.ajax({
-                    url: "/Content/data/data.json",
-                    type: "GET",
-                    success: function (data) {
+//                    url: "/Content/data/data.json" + site,
+                      url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName="+ site,
+                      type: "GET",
+                    success: function (response) {
+                      
+               
+                        let jsonResponse = JSON.parse(response);
+                        let jsonData = jsonResponse.data;
+                        let data = jsonData;
+
+                        console.log(data.length);
+
+                        if (data.length < 1) {
+                            alert("No survey response was found the selected site !");
+                        } else if (data[0].UnSuppresedVLCascade === undefined ) {
+                            alert("No response found for unsuppressed viral load for the selected site");
+                        }
 
                         //Viral load data
                         vl = data[0];
-
-                        viralLoadData.push(vl.ViralLoadCascadeTXCurr);
+                        
+                        viralLoadData.push(vl.ViralLoadTXCurr);
                         viralLoadData.push(vl.ViralLoadCascadeEligible);
-                        viralLoadData.push(vl.ViralLoadCascadeSample);
+                        viralLoadData.push(vl.ViralLoadCascadeCollected);
                         viralLoadData.push(vl.ViralLoadCascadeDoc);
                         viralLoadData.push(vl.ViralLoadCascadeSupp);
 
@@ -297,12 +321,7 @@
                         mocData.push(moc.MoCHouseHold);
                         mocData.push(moc.MoCAdolescent);
                         //mocData.push(moc.MoCPercentDevolved);
-
-
-
-
-
-
+                       
                         //viral load chart
                         Highcharts.chart('viralLoadChart', {
 
@@ -311,7 +330,7 @@
                             },
 
                             subtitle: {
-                                text: 'Viral Load Cascade For the month in Review'
+                                text: ''
                             },
 
                             xAxis: {
@@ -380,7 +399,7 @@
                             },
 
                             subtitle: {
-                                text: 'Unsuppressed Viral Load Cascade For the month in Review'
+                                text: ''
                             },
 
                             xAxis: {
@@ -431,22 +450,22 @@
 
                             series: [{
                                 name: ' No of Male',
-                                data: [2]
+                                data: [ unsuppressedViralLoadData[1]]
                             }, {
                                 name: 'No of Female',
-                                data: [3]
+                                    data: [unsuppressedViralLoadData[2]]
                             }, {
                                 name: 'No of Unsuppressed VL',
-                                data: [5]
+                                    data: [unsuppressedViralLoadData[3]]
                             }, {
                                 name: 'No. Commenced on EAC',
-                                data: [4]
+                                    data: [unsuppressedViralLoadData[4]]
                             }, {
                                 name: 'No of Repeat VL',
-                                data: [4]
+                                    data: [unsuppressedViralLoadData[5]]
                             }, {
                                 name: 'No. Switched',
-                                data: [8]
+                                    data: [unsuppressedViralLoadData[6]]
                             }]
 
                         });
@@ -473,7 +492,7 @@
                             },
 
                             subtitle: {
-                                text: 'Index Testing Chart Review'
+                                text: ''
                             },
 
                             xAxis: {
@@ -565,7 +584,7 @@
                             },
 
                             subtitle: {
-                                text: 'Retention Adherence Chart Review'
+                                text:''
                             },
 
                             xAxis: {
@@ -706,7 +725,7 @@
                             },
 
                             subtitle: {
-                                text: 'TB/HIV Chart Review'
+                                text: ''
                             },
 
                             xAxis: {
@@ -895,7 +914,7 @@
                             },
 
                             subtitle: {
-                                text: 'Differential Model of Care Chart'
+                                text: ''
                             },
 
                             xAxis: {
@@ -971,10 +990,9 @@
                     }
                 });
             }
-
-            loadData();
-
         });
+
+
 
 
     </script>

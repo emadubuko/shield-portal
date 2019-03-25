@@ -21,6 +21,16 @@ namespace ShieldPortal.Controllers
             return View();
         }
 
+        public ActionResult PreVisit()
+        {
+            return View();
+        }
+
+        public ActionResult QReport()
+        {
+            return View();
+        }
+
         // GET: PGSM/Details/5
         public ActionResult Details(int id)
         {

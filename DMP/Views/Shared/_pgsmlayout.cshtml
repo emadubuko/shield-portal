@@ -24,7 +24,7 @@
                 <div class="sidebar">
                     <ul id="side-nav" class="main-menu navbar-collapse collapse">
                         <li>
-                            <a href=@Url.Action("Dashboard", "PGSM") style="color:darkturquoise;">
+                            <a href=@Url.Action("PreVisit", "PGSM") style="color:darkturquoise;">
                                 <i class="fa fa-file"></i><span class="title">&nbsp; Pre-Visit Report</span>
                             </a>
                         </li>
@@ -34,7 +34,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href=@Url.Action("Dashboard", "PGSM") style="color:darkturquoise;">
+                            <a href=@Url.Action("QReport", "PGSM") style="color:darkturquoise;">
                                 <i class="fa fa-file-text-o"></i><span class="title">&nbsp; Qualitative Report</span>
                             </a>
                         </li>
@@ -63,31 +63,84 @@
 
     <!--Jvector Map-->
     @*<script src="~/plugins/jvectormap/js/jquery-jvectormap-2.0.3.min.js"></script>
-    <script src="~/plugins/jvectormap/js/jquery-jvectormap-world-mill-en.js"></script>*@
+        <script src="~/plugins/jvectormap/js/jquery-jvectormap-world-mill-en.js"></script>*@
 
     <!--ChartJs-->
-    <script src="~/plugins/chartjs/js/Chart.min.js"></script>
+    @*<script src="~/plugins/chartjs/js/Chart.min.js"></script>*@
 
     <!--Morris Charts-->
     @*<script src="~/plugins/morris/js/raphael-min.js"></script>
-    <script src="~/plugins/morris/js/morris.min.js"></script>*@
+        <script src="~/plugins/morris/js/morris.min.js"></script>*@
 
     <!--Float Charts-->
     @*<script src="~/plugins/flot/js/jquery.flot.min.js"></script>
-    <script src="~/plugins/flot/js/jquery.flot.tooltip.min.js"></script>
-    <script src="~/plugins/flot/js/jquery.flot.resize.min.js"></script>
-    <script src="~/plugins/flot/js/jquery.flot.pie.min.js"></script>
-    <script src="~/plugins/flot/js/jquery.flot.time.min.js"></script>*@
+        <script src="~/plugins/flot/js/jquery.flot.tooltip.min.js"></script>
+        <script src="~/plugins/flot/js/jquery.flot.resize.min.js"></script>
+        <script src="~/plugins/flot/js/jquery.flot.pie.min.js"></script>
+        <script src="~/plugins/flot/js/jquery.flot.time.min.js"></script>*@
 
     <!--Functions Js-->
     @*<script src="~/Scripts/functions.js"></script>*@
 
     <!--Dashboard Js-->
     @*<script src="~/Scripts/ipdashboard.js"></script>
-    <script src="~/Scripts/jsonTable.js"></script>
-    <script src="~/Scripts/fns/base.js" type="text/javascript"></script>
-    <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
-    <script src="~/Scripts/fns/fn_dashboard.js" type="text/javascript"></script>*@
+        <script src="~/Scripts/jsonTable.js"></script>
+        <script src="~/Scripts/fns/base.js" type="text/javascript"></script>
+        <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
+        <script src="~/Scripts/fns/fn_dashboard.js" type="text/javascript"></script>*@
     <script src="~/scripts/profile-display.js"></script>
+    <script>
+        //function getStates(ip) {
+           
+
+        //}
+
+
+        
+        $("#ip").change(function () {
+            var ip = this.value;
+            
+            $.ajax({
+               url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetIPInfo?ip=" + ip,
+               // url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName=Federal Medical Center Katsina",
+                type: "Get",
+                success: function (response) {
+                    let data = response.stateAndSite;
+
+
+                    var $states = $("#states");
+                    var $site = $("#site");
+                    $states.empty();
+
+                    $.each(data, function (index) {
+                        //console.log(data[index].State)                        
+                        $states.append($("<option />").val(this.State).text(this.State));
+                    });
+
+                    $("#states").change(function () {
+                        var selectedState = this.value;
+                        let filtered = data.filter(function (sstate) {
+                            return sstate.State === selectedState;
+                        });
+
+                        
+                        if (filtered.length > 0) {
+                            let sites = filtered[0].Site;
+                            $site.empty();                          
+                            $.each(sites, function () {
+                            $site.append($("<option />").val(this).text(this));
+                            });
+
+                        }
+                        
+                    });
+                }
+            }
+            );            
+        });
+
+
+    </script>
+
     @RenderSection("scripts", required: false)
 }
