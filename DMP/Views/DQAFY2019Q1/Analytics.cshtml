@@ -49,7 +49,7 @@
     </style>
 }
 
-<div class="col-md-11">
+<div class="col-md-10">
     <div class="row">
         <div class="col-sm-2" style="margin-bottom: 10px;">
             <select id="rpt_type" onchange="reloadPage(this)" class="form-control">
@@ -62,7 +62,7 @@
 
     <div class="panel panel-success">
         <div class="panel-heading clearfix">
-            <h2 style="margin-left:10em">All partners <span style="color: #fff;">concurrence rate</span> by <span style="color: #fff;">Indicator</span></h2>
+            <h2>All partners <span style="color: #fff;">concurrence rate</span> by <span style="color: #fff;">Indicator</span></h2>
         </div>
         <div class="panel-body">
             <div class="tabs-container" id="resizer" style="min-width: 350px; min-height: 200px">
@@ -183,8 +183,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $(".page-container").addClass("sidebar-collapsed");
-            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+          //  $(".page-container").addClass("sidebar-collapsed");
+          //  $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
 
             var report_type = window.location.href.split('?reportType=')[1];
             $("#rpt_type").val(report_type);
@@ -451,8 +451,8 @@
             $(".highcharts-title").css("color", "#000");
             $(".highcharts-title").css("fill", "#000");
 
-            $(".page-container").addClass("sidebar-collapsed");
-            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+          //  $(".page-container").addClass("sidebar-collapsed");
+            //$('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
 
         });
     </script>

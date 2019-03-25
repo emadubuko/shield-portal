@@ -35,7 +35,7 @@
     </style>
 }
 
-<div class="col-md-11">
+<div class="col-md-10">
 
     <div class="panel panel-success">
         <div class="panel-heading clearfix">
@@ -103,8 +103,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $(".page-container").addClass("sidebar-collapsed");
-            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+         //   $(".page-container").addClass("sidebar-collapsed");
+            //$('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
 
 
             var comparisonData = JSON.parse(@Html.Raw(Json.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.mainData))));
@@ -225,8 +225,8 @@
             $(".highcharts-title").css("color", "#000");
             $(".highcharts-title").css("fill", "#000");
 
-            $(".page-container").addClass("sidebar-collapsed");
-            $('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
+            //$(".page-container").addClass("sidebar-collapsed");
+            //$('.col-md-3').removeClass('col-md-3').addClass('col-md-1');
 
         });
     </script>

@@ -368,7 +368,7 @@
 
             var _model = {};
             _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
-            var selectedIP = ''; 
+            var selectedIP = []; 
             $.ajax({
                 url: "/MPM/RetriveCompletenessData",
                 method: "Post",

@@ -1076,7 +1076,7 @@ function build_stacked_bar_with_percent(container_id, title, xaxis_categories, y
 
 function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data, selectedIP) {
 
-    if (selectedIP != '') {
+    if (selectedIP.length > 0) {
         parent_series_data.forEach(p => {
                 p.data = (p.data || []).filter(d =>  selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip))); 
         })
@@ -1272,7 +1272,7 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
 
 function build_stacked_bar_with_drilldown_completeness(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data, selectedIP) {
 
-    if (selectedIP != '') {
+    if (selectedIP.length > 0) {
         parent_series_data.forEach(p => {
             p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
         })
@@ -1395,9 +1395,10 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
 }
 
 
-function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat, selectedIP) {
-    if (selectedIP != '') {
-        parent_series_data.forEach(p => {
+function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
+
+    if (selectedIP.length > 0) {
+        principal_data_array.forEach(p => {
             p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
         })
     }
@@ -1508,9 +1509,9 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
 
 
 
-function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data, tooltip_pointFormat, selectedIP) {
-
-    if (selectedIP != '') {
+function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data,  selectedIP) {
+   
+    if (selectedIP.length > 0) {
         principal_data_array.forEach(p => {
             p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
         })
