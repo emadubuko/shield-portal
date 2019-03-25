@@ -345,10 +345,10 @@
                     $("#a-spinner").hide();
                     try {
                         var dt = JSON.parse(response)._data;
-                        buildallchart(dt);
+                        buildallchart(dt, selectedIP);
                     }
                     catch (e) {
-                      //  alert("A system error has occurred. Kindly re-try again shortly");
+                        alert("A system error has occurred. Kindly re-try again shortly");
                         console.log(e);
                     }
                 }).error(function (xhr, status, err) {
@@ -365,7 +365,7 @@
 
             var _model = {};
             _model.ReportPeriod = '@ViewBag.LastReportedPeriod';
-
+            var selectedIP = '';
             $.ajax({
                 url: "/MPM/RetriveData",
                 method: "Post",
@@ -375,11 +375,10 @@
                 $("#a-spinner").hide();
                 try {
                     var dt = JSON.parse(response)._data;
-                    buildallchart(dt);
-                    //console.log(response);
+                    buildallchart(dt, selectedIP);
                 }
                 catch (e) {
-                 //   alert("A system error has occurred. Kindly re-try again shortly");
+                   alert("A system error has occurred. Kindly re-try again shortly");
                     console.log(e);
                 }
             }).error(function (xhr, status, err) {
@@ -388,7 +387,7 @@
             });
 
 
-            function buildallchart(dt) {
+            function buildallchart(dt, selectedIP) {
 
                 BuildBubbleChart('HTSindextesting', 'HTS Index Testing Yield',
                     'Total Tested', 'Percentage Yield', bubble_pointFormat,
@@ -413,7 +412,6 @@
                 
                 build_trend_chart_state('LinkagebyState_trend', 'Tx_New Trend for States by Month',
                     'Number of new clients', dt.ART_Trend.pos_state, dt.ART_Trend.pos_state);
-             //   console.log(dt.ART_Trend.pos_state);
 
                 //TX_RET
                 build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
@@ -430,34 +428,29 @@
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression', 'Previously Known HIV Positive',
                     "Number of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
 
-             //   console.log(dt.PMTCT_VL.drilldown_series_known_status);
-
                 //PMTCTVIRALLOAD_new
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_new', '(PMTCT) Viral Load Suppression', 'Newly Identified HIV Positive',
                     "Number of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.newly_known, dt.PMTCT_VL.drilldown_series_new_pos);
 
                 //PMTCTCascade_uptake
                 build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_uptake', 'Uptake of Maternal HIV Testing',
-                    'Number of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake);
+                    'Number of Client', dt.PMTCT.state_data_maternal_uptake, dt.PMTCT.lga_data_maternal_uptake, selectedIP);
 
                 //PMTCTCascade_maternal_clinical
                 build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_maternal_clinical', 'PMTCT Cascade',
-                    'Number of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade);
+                    'Number of Client', dt.PMTCT.state_maternal_clinical_cascade, dt.PMTCT.lga_maternal_clinical_cascade, selectedIP);
 
                 //PMTCTCascade_linkage
                 build_side_by_side_bar_chart_with_DrillDown('PMTCTCascade_linkage', 'HIV+ Infant Linked to Treatment',
-                    'Number of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage);
+                    'Number of Client', dt.PMTCT.state_infant_linkage, dt.PMTCT.lga_infant_linkage, selectedIP);
 
-
-              //  function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
                 //PMTCTCascade_maternal_clinical_stacked
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD_stacked', 'Newly Identified Positives Vs. New on ART', '',
                     "Number of Clients", dt.PMTCT.State, dt.PMTCT.state_maternal_clinical_cascade_stack, dt.PMTCT.lga_maternal_clinical_cascade);
 
                 //TB_stat
                 build_side_by_side_bar_chart_with_DrillDown('TB_stat', 'TB HIV', 'Number of Client',
-                    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down);
-            //    console.log("Logged Message " + dt.Tb_Stat.lga_drill_down);
+                    dt.Tb_Stat.tb_stat, dt.Tb_Stat.lga_drill_down, selectedIP);
 
                 //TB_treatment
                 build_bar_chart_dual_axis_with_drill_down('TB_treatment', 'Percentage of patients started on TB Treatment',

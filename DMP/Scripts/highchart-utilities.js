@@ -1394,14 +1394,122 @@ function build_stacked_bar_with_drilldown_completeness(container_id, title, subt
     });
 }
 
-
-function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
+function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
 
     if (selectedIP.length > 0) {
         principal_data_array.forEach(p => {
             p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
         })
     }
+    var drilldownTitle = title;
+    Highcharts.chart(container_id, {
+        chart: {
+            type: 'column', events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        subtitle: {
+            text: 'Click on the bars to drill down',
+        },
+        legend: {
+            enabled: true,
+        },
+        //tooltip: {
+        //    shared: true
+        //},
+
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.facilities + ' Facility(ies)';
+            }
+        },
+
+
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                },
+
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        xAxis: {
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
+        },
+
+        yAxis: [
+            {
+                title: {
+                    text: y1_title,
+                },
+                labels: {
+                    format: '{value:,.0f}',
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            }],
+        series: principal_data_array,
+        drilldown: {
+            _animation: {
+                duration: 2000
+            },
+            series: child_data
+        }
+    });
+}
+
+
+
+function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
+
+  
     var drilldownTitle = title;
     Highcharts.chart(container_id, {
         chart: {

@@ -404,6 +404,11 @@ namespace ShieldPortal.Controllers
                 return Json("<span style='color: red;'> No File Uploaded</span>");
 
             var filePath = directory + DateTime.Now.ToString("dd MMM yyyy") + "_" + Path.GetFileName(Request.Files[0].FileName);
+            if (filePath.Contains("&"))
+            {
+                filePath = filePath.Replace("&", "_");
+            }
+            
 
             try
             {
@@ -1742,11 +1747,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_genealogy_testing_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * geneaology_male / (4 * no_of_sites), 0),
+                            y = Math.Round(50 * 1.0 * geneaology_male / (2 * no_of_sites), 0),
                             name = state.Key,
                             drilldown = state.Key + "MG",
                             absolute = geneaology_male,
-                            entries = 4 * no_of_sites,
+                            entries = 2 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1760,7 +1765,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "MG",
                             absolute = geneaology_male,
-                            entries = 4 * no_of_sites,
+                            entries = 2 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1772,11 +1777,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_genealogy_testing_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * geneaology_female / (4 * no_of_sites), 0),
+                            y = Math.Round(50 * 1.0 * geneaology_female / (2 * no_of_sites), 0),
                             name = state.Key,
                             drilldown = state.Key + "FG",
                             absolute = geneaology_female,
-                            entries = 4 * no_of_sites,
+                            entries = 2 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1790,7 +1795,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "FG",
                             absolute = geneaology_female,
-                            entries = 4 * no_of_sites,
+                            entries = 2 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1801,11 +1806,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_partner_testing_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * partner_male / (16 * no_of_sites), 0),
+                            y = Math.Round(50 * 1.0 * partner_male / (8 * no_of_sites), 0),
                             name = state.Key,
                             drilldown = state.Key + "MP",
                             absolute = partner_male,
-                            entries = 16 * no_of_sites,
+                            entries = 8 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1819,7 +1824,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "MP",
                             absolute = partner_male,
-                            entries = 16 * no_of_sites,
+                            entries = 8 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1830,11 +1835,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_partner_testing_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * partner_female / (16 * no_of_sites), 0),
+                            y = Math.Round(50 * 1.0 * partner_female / (8 * no_of_sites), 0),
                             name = state.Key,
                             drilldown = state.Key + "FP",
                             absolute = partner_female,
-                            entries = 16 * no_of_sites,
+                            entries = 8 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1848,7 +1853,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "FP",
                             absolute = partner_female,
-                            entries = 16 * no_of_sites,
+                            entries = 8 * no_of_sites,
                             facilities = no_of_sites,
                             ips = stateIps
                         });
@@ -1872,12 +1877,12 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_genealogy_testing_male.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lga_no_genealogy_male / (4 * lga_no_genealogy_male), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_genealogy_male / (2 * no_of_lga_sites), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "MG",
                                     absolute = lga_no_genealogy_male,
-                                    entries = 4 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 2 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                                   
                                 });
                             }
@@ -1889,7 +1894,7 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "MG",
                                     absolute = lga_no_genealogy_male,
-                                    entries = 4 * no_of_sites,
+                                    entries = 2 * no_of_sites,
                                     facilities = no_of_sites,
                                 });
                             }
@@ -1900,12 +1905,12 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_genealogy_testing_female.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lga_no_genealogy_female / (4 * no_of_lga_sites), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_genealogy_female / (2 * no_of_lga_sites), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "FG",
                                     absolute = lga_no_genealogy_female,
-                                    entries = 4 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 2 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                                 });
                             }
                             else
@@ -1916,8 +1921,8 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "FG",
                                     absolute = lga_no_genealogy_female,
-                                    entries = 4 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 2 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                                 });
                             }
 
@@ -1929,12 +1934,12 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_partner_testing_male.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lga_no_partner_male / (16 * no_of_lga_sites), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_partner_male / (8 * no_of_lga_sites), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "MP",
                                     absolute = lga_no_partner_male,
-                                    entries = 16 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 8 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                               });
                             }
                             else
@@ -1945,8 +1950,8 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "MP",
                                     absolute = lga_no_partner_male,
-                                    entries = 16 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 8 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                                 });
                             }
 
@@ -1956,12 +1961,12 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_partner_testing_female.Add(new
                                 {
-                                    y = Math.Round(50 * 1.0 * lga_no_partner_female / (16 * no_of_lga_sites), 0),
+                                    y = Math.Round(50 * 1.0 * lga_no_partner_female / (8 * no_of_lga_sites), 0),
                                     name = lga.Key,
                                     drilldown = lga.Key + "FP",
                                     absolute = lga_no_partner_female,
-                                    entries = 16 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 8 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                                 });
                             }
                             else
@@ -1972,8 +1977,8 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "FP",
                                     absolute = lga_no_partner_female,
-                                    entries = 16 * no_of_sites,
-                                    facilities = no_of_sites,
+                                    entries = 8 * no_of_lga_sites,
+                                    facilities = no_of_lga_sites,
                                 });
                             }
 
@@ -1995,9 +2000,9 @@ namespace ShieldPortal.Controllers
                                         {
 
                                            name = fty.Key,
-                                         y  = Math.Round(50 * 1.0 * fac_no_genealogy_male / 4 , 1),                        
+                                         y  = Math.Round(50 * 1.0 * fac_no_genealogy_male / 2 , 1),                        
                                           absolute = fac_no_genealogy_male,
-                                         entries =  4,
+                                         entries =  2,
                                          facilities =  1
                                         });
                                     }
@@ -2008,7 +2013,7 @@ namespace ShieldPortal.Controllers
                                            name = fty.Key,
                                          y = 0.0,
                                             absolute =  lga_no_partner_female,
-                                            entries =   4,
+                                            entries =   2,
                                             facilities =   1
                                         });
                                     }
@@ -2020,7 +2025,7 @@ namespace ShieldPortal.Controllers
                                         facility_genealogy_testing_female.Add(new
                                         {
                                            name = fty.Key,
-                                          y = Math.Round(50 * 1.0 * facility_no_genealogy_female / 4, 1),
+                                          y = Math.Round(50 * 1.0 * facility_no_genealogy_female / 2, 1),
                                         
                                             absolute = facility_no_genealogy_female,
                                             entries = 4,
@@ -2035,7 +2040,7 @@ namespace ShieldPortal.Controllers
                                           y =  0.0,
 
                                             absolute = facility_no_genealogy_female,
-                                            entries = 4,
+                                            entries = 2,
                                             facilities = 1
                                         });
                                     }
@@ -2050,10 +2055,10 @@ namespace ShieldPortal.Controllers
                                         {
 
                                             name = fty.Key,
-                                            y = Math.Round(50 * 1.0 * facility_no_partner_male / 16, 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_partner_male / 8, 0),
 
                                             absolute = facility_no_partner_male,
-                                            entries = 16,
+                                            entries = 8,
                                             facilities = 1
                                         });
                                     }
@@ -2064,7 +2069,7 @@ namespace ShieldPortal.Controllers
                                             name = fty.Key,
                                             y = 0.0,
                                             absolute = facility_no_partner_male,
-                                            entries = 16,
+                                            entries = 8,
                                             facilities = 1
                                         });
                                     }
@@ -2076,9 +2081,9 @@ namespace ShieldPortal.Controllers
                                         facility_partner_testing_female.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(50 * 1.0 * facility_no_partner_female / 16 , 0),
+                                            y = Math.Round(50 * 1.0 * facility_no_partner_female / 8 , 0),
                                             absolute = facility_no_partner_female,
-                                            entries = 16,
+                                            entries = 8,
                                             facilities = 1
                                         });
                                     }
@@ -2089,7 +2094,7 @@ namespace ShieldPortal.Controllers
                                             name = fty.Key,
                                             y = 0.0,
                                             absolute = facility_no_partner_female,
-                                            entries = 16,
+                                            entries = 8,
                                             facilities = 1
                                         });
                                     }
@@ -3234,11 +3239,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_blood_bank_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_no_blood_male / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_no_blood_male / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "1M",
                             absolute = state_no_blood_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3252,7 +3257,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "1M",
                             absolute = state_no_blood_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3263,11 +3268,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_blood_bank_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_no_blood_female / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_no_blood_female / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "1F",
                             absolute = state_no_blood_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3281,7 +3286,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "1F",
                             absolute = state_no_blood_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3293,11 +3298,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_eye_clinic_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_no_eye_male / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_no_eye_male / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2M",
                             absolute = state_no_eye_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3310,7 +3315,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "2M",
                             absolute = state_no_eye_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3321,11 +3326,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_eye_clinic_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_no_eye_female / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_no_eye_female / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "2F",
                             absolute = state_no_eye_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3338,7 +3343,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "2F",
                             absolute = state_no_eye_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3351,11 +3356,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_familiy_planning_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_family_male / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_family_male / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "3M",
                             absolute = state_family_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3368,7 +3373,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "3M",
                             absolute = state_family_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3379,11 +3384,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_familiy_planning_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_family_female / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_family_female / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "3F",
                             absolute = state_family_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3396,7 +3401,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "3F",
                             absolute = state_family_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3409,11 +3414,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_ent_clinic_male.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_ent_no_male / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_ent_no_male / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "4M",
                             absolute = state_ent_no_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3426,7 +3431,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "4M",
                             absolute = state_ent_no_male,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3437,11 +3442,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_ent_clinic_female.Add(new
                         {
-                            y = Math.Round(50 * 1.0 * state_ent_no_female / (20 * state_no_facilities), 0),
+                            y = Math.Round(50 * 1.0 * state_ent_no_female / (10 * state_no_facilities), 0),
                             name = state.Key,
                             drilldown = state.Key + "4F",
                             absolute = state_ent_no_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3454,7 +3459,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "4F",
                             absolute = state_ent_no_female,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -3481,11 +3486,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_blood_bank_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_blood_bank_male / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_blood_bank_male / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "1M",
                                         absolute = lga_no_blood_bank_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
 
@@ -3498,7 +3503,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "1M",
                                         absolute = lga_no_blood_bank_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3508,11 +3513,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_blood_bank_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_blood_bank_female / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_blood_bank_female / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "1F",
                                         absolute = lga_no_blood_bank_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
 
@@ -3525,7 +3530,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "1F",
                                         absolute = lga_no_blood_bank_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3536,11 +3541,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_eye_clinic_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_eye_clinic_male / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_eye_clinic_male / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "2M",
                                         absolute = lga_no_eye_clinic_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3552,7 +3557,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "2M",
                                         absolute = lga_no_eye_clinic_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3562,11 +3567,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_eye_clinic_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_eye_clinic_female / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_eye_clinic_female / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "2F",
                                         absolute = lga_no_eye_clinic_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3578,7 +3583,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "2F",
                                         absolute = lga_no_eye_clinic_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3590,11 +3595,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_familiy_planning_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_familiy_planning_male / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_familiy_planning_male / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "3M",
                                         absolute = lga_no_familiy_planning_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3606,7 +3611,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "3M",
                                         absolute = lga_no_familiy_planning_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3615,11 +3620,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_familiy_planning_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_familiy_planning_female / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_familiy_planning_female / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "3F",
                                         absolute = lga_no_familiy_planning_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3631,7 +3636,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "3F",
                                         absolute = lga_no_familiy_planning_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3643,11 +3648,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_ent_clinic_male.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_ent_clinic_male / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_ent_clinic_male / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "4M",
                                         absolute = lga_no_ent_clinic_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3659,7 +3664,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "4M",
                                         absolute = lga_no_ent_clinic_male,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3669,11 +3674,11 @@ namespace ShieldPortal.Controllers
                                 {
                                     lga_ent_clinic_female.Add(new
                                     {
-                                        y = Math.Round(50 * 1.0 * lga_no_ent_clinic_female / (20 * lga_no_facilities), 0),
+                                        y = Math.Round(50 * 1.0 * lga_no_ent_clinic_female / (10 * lga_no_facilities), 0),
                                         name = lga.Key,
                                         drilldown = lga.Key + "4F",
                                         absolute = lga_no_ent_clinic_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3685,7 +3690,7 @@ namespace ShieldPortal.Controllers
                                         name = lga.Key,
                                         drilldown = lga.Key + "4F",
                                         absolute = lga_no_ent_clinic_female,
-                                        entries = 20 * lga_no_facilities,
+                                        entries = 10 * lga_no_facilities,
                                         facilities = lga_no_facilities
                                     });
                                 }
@@ -3711,9 +3716,9 @@ namespace ShieldPortal.Controllers
                                             facility_blood_bank_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_blood_bank_male / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_blood_bank_male / 10, 1),
                                                 absolute = facility_no_blood_bank_male,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3724,7 +3729,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                                 absolute = facility_no_blood_bank_male,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3736,9 +3741,9 @@ namespace ShieldPortal.Controllers
                                             facility_blood_bank_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_blood_bank_female / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_blood_bank_female / 10, 1),
                                                 absolute = facility_no_blood_bank_female,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3749,7 +3754,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                                 absolute = facility_no_blood_bank_female,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3763,9 +3768,9 @@ namespace ShieldPortal.Controllers
                                             facility_eye_clinic_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_eye_clinic_male / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_eye_clinic_male / 10, 1),
                                                 absolute = facility_no_eye_clinic_male,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3776,7 +3781,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                                 absolute = facility_no_eye_clinic_male,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3788,9 +3793,9 @@ namespace ShieldPortal.Controllers
                                             facility_eye_clinic_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_eye_clinic_female / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_eye_clinic_female / 10, 1),
                                                 absolute = facility_no_eye_clinic_female,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3801,7 +3806,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                                 absolute = facility_no_eye_clinic_female,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3815,9 +3820,9 @@ namespace ShieldPortal.Controllers
                                             facility_familiy_planning_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_familiy_planning_male / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_familiy_planning_male / 10, 1),
                                                 absolute = facility_no_familiy_planning_male,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3828,7 +3833,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                                 absolute = facility_no_familiy_planning_male,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3840,9 +3845,9 @@ namespace ShieldPortal.Controllers
                                             facility_familiy_planning_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_familiy_planning_female / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_familiy_planning_female / 10, 1),
                                                 absolute = facility_no_familiy_planning_female,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3853,7 +3858,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                                 absolute = facility_no_familiy_planning_female,
-                                                entries = 20,
+                                                entries = 10,
                                                 facilities = 1
                                             });
                                         }
@@ -3867,9 +3872,9 @@ namespace ShieldPortal.Controllers
                                         facility_ent_clinic_male.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_ent_clinic_male / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_ent_clinic_male / 10, 1),
                                             absolute = facility_no_ent_clinic_male,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                         }
@@ -3880,7 +3885,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                             absolute = facility_no_ent_clinic_male,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                         }
@@ -3892,9 +3897,9 @@ namespace ShieldPortal.Controllers
                                         facility_ent_clinic_female.Add(new
                                             {
                                                 name = fty.Key,
-                                                y = Math.Round(50 * 1.0 * facility_no_ent_clinic_female / 20, 1),
+                                                y = Math.Round(50 * 1.0 * facility_no_ent_clinic_female / 10, 1),
                                             absolute = facility_no_ent_clinic_female,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                         }
@@ -3905,7 +3910,7 @@ namespace ShieldPortal.Controllers
                                                 name = fty.Key,
                                                 y = 0.0,
                                             absolute = facility_no_ent_clinic_female,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                         }
@@ -6715,11 +6720,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_newly_identified_less.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * state_no_newly_identified_less / (20* state_no_facilities), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_newly_identified_less / (10* state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key+ "1l",
                             absolute = state_no_newly_identified_less,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6733,7 +6738,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "1l",
                             absolute = state_no_newly_identified_less,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6744,11 +6749,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_newly_identified_greater.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * state_no_newly_identified_greater / (20 * state_no_facilities), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_newly_identified_greater / (10 * state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key+"1g",
                             absolute = state_no_newly_identified_greater,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6763,7 +6768,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "1g",
                             absolute = state_no_newly_identified_greater,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6776,11 +6781,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_already_hiv_pos_less.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * state_no_already_hiv_pos_less / (20 * state_no_facilities), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_already_hiv_pos_less / (10 * state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key + "2l",
                             absolute = state_no_already_hiv_pos_less,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6793,7 +6798,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "2l",
                             absolute = state_no_already_hiv_pos_less,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6804,11 +6809,11 @@ namespace ShieldPortal.Controllers
                     {
                         state_already_hiv_pos_greater.Add(new
                         {
-                            y = Math.Round( 50 * 1.0 * state_no_already_hiv_pos_greater / (20 * state_no_facilities), 1),
+                            y = Math.Round( 50 * 1.0 * state_no_already_hiv_pos_greater / (10 * state_no_facilities), 1),
                             name = state.Key,
                             drilldown = state.Key + "2g",
                             absolute = state_no_already_hiv_pos_greater,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6821,7 +6826,7 @@ namespace ShieldPortal.Controllers
                             name = state.Key,
                             drilldown = state.Key + "2g",
                             absolute = state_no_already_hiv_pos_greater,
-                            entries = 20 * state_no_facilities,
+                            entries = 10 * state_no_facilities,
                             facilities = state_no_facilities,
                             ips = stateIps
                         });
@@ -6844,11 +6849,11 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_newly_identified_less.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lga_no_newly_identified_less / (20 * no_lga_sites), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_newly_identified_less / (10 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key+"1l",
                                     absolute = lga_no_newly_identified_less,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6860,7 +6865,7 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "1l",
                                     absolute = lga_no_newly_identified_less,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6870,11 +6875,11 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_newly_identified_greater.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lga_no_newly_identified_greater / (20 * no_lga_sites), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_newly_identified_greater / (10 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "1g",
                                     absolute = lga_no_newly_identified_greater,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6886,7 +6891,7 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "1g",
                                     absolute = lga_no_newly_identified_greater,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6896,11 +6901,11 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_already_hiv_pos_less.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lga_no_already_hiv_pos_less / (20 * no_lga_sites), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_already_hiv_pos_less / (10 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2l",
                                     absolute = lga_no_already_hiv_pos_less,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6912,7 +6917,7 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "2l",
                                     absolute = lga_no_already_hiv_pos_less,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6922,11 +6927,11 @@ namespace ShieldPortal.Controllers
                             {
                                 lga_already_hiv_pos_greater.Add(new
                                 {
-                                    y = Math.Round( 50 * 1.0 * lga_no_already_hiv_pos_greater / (20 * no_lga_sites), 1),
+                                    y = Math.Round( 50 * 1.0 * lga_no_already_hiv_pos_greater / (10 * no_lga_sites), 1),
                                     name = lga.Key,
                                     drilldown = lga.Key + "2g",
                                     absolute = lga_no_already_hiv_pos_greater,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6938,7 +6943,7 @@ namespace ShieldPortal.Controllers
                                     name = lga.Key,
                                     drilldown = lga.Key + "2g",
                                     absolute = lga_no_already_hiv_pos_greater,
-                                    entries = 20 * no_lga_sites,
+                                    entries = 10 * no_lga_sites,
                                     facilities = no_lga_sites
                                 });
                             }
@@ -6962,9 +6967,9 @@ namespace ShieldPortal.Controllers
                                         facility_newly_identified_less.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round( 50 * 1.0 * facility_no_newly_identified_less / 20, 1),
+                                            y = Math.Round( 50 * 1.0 * facility_no_newly_identified_less / 10, 1),
                                             absolute = facility_no_newly_identified_less,
-                                           entries = 20,
+                                           entries = 10,
                                             facilities = 1 
                                         });
                                     }
@@ -6975,7 +6980,7 @@ namespace ShieldPortal.Controllers
                                             name = fty.Key,
                                             y = 0.0,
                                             absolute = facility_no_newly_identified_less,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
@@ -6987,9 +6992,9 @@ namespace ShieldPortal.Controllers
                                         facility_newly_identified_greater.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round( 50 * 1.0 * facility_no_newly_identified_greater / 20, 1),
+                                            y = Math.Round( 50 * 1.0 * facility_no_newly_identified_greater / 10, 1),
                                             absolute = facility_no_newly_identified_greater,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
@@ -7000,7 +7005,7 @@ namespace ShieldPortal.Controllers
                                             name = fty.Key,
                                             y = 0.0,
                                             absolute = facility_no_newly_identified_greater,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
@@ -7011,9 +7016,9 @@ namespace ShieldPortal.Controllers
                                         facility_already_hiv_pos_less.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round( 50 * 1.0 * facility_no_already_hiv_pos_less / 20, 1),
+                                            y = Math.Round( 50 * 1.0 * facility_no_already_hiv_pos_less / 10, 1),
                                             absolute = facility_no_already_hiv_pos_less,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
@@ -7024,7 +7029,7 @@ namespace ShieldPortal.Controllers
                                             name = fty.Key,
                                             y = 0.0,
                                             absolute = facility_no_already_hiv_pos_less,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
@@ -7035,9 +7040,9 @@ namespace ShieldPortal.Controllers
                                         facility_already_hiv_pos_greater.Add(new
                                         {
                                             name = fty.Key,
-                                            y = Math.Round(50 * 1.0 * facility_no_already_hiv_pos_greater / 20, 1),
+                                            y = Math.Round(50 * 1.0 * facility_no_already_hiv_pos_greater / 10, 1),
                                             absolute = facility_no_already_hiv_pos_greater,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
@@ -7048,7 +7053,7 @@ namespace ShieldPortal.Controllers
                                             name = fty.Key,
                                             y = 0.0,
                                             absolute = facility_no_already_hiv_pos_greater,
-                                            entries = 20,
+                                            entries = 10,
                                             facilities = 1
                                         });
                                     }
