@@ -1583,6 +1583,7 @@
     <Content Include="Views\Shared\Partials\_IndexTestingTab.cshtml" />
     <Content Include="Views\Shared\Partials\_RetentionAdherenceTab.cshtml" />
     <Content Include="Views\Shared\Partials\_TbHivTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_ActionPlanTab.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
