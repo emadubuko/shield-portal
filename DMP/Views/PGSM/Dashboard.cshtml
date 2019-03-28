@@ -119,31 +119,13 @@
     <script>
 
         $(document).ready(function () {
-            //viral load data from API
-            var viralLoadData = [];
-            let vl;
 
-            //unsuppressed viral load data from API
-            var unsuppressedViralLoadData = [];
-            let unsVL;
-
-            //index testing data from API
-            var indexTestingData = [];
-            let indexTesting;
-
-            //retention adherence data from API
-            var retAdherenceData = [];
-            let retAdherence;
-
-            //tbHiv data from API
-            var tbHivData = [];
-            let tbHiv;
-
-            //diff model of care data from API
-            var mocData = [];
-            let moc;
+            let data = [];
+            let indexTestingData = [];
 
             $("#site").change(function () {
+                data = [];
+
                 var site = this.value;
 
                 loadData(site);
@@ -151,25 +133,53 @@
 
             });
 
+            function formatValue(value, percentage = false) {
+                if (value === null || typeof value === 'undefined') {
+                    return "";
+                } else if (percentage === true && (value != null || typeof value != 'undefined')) {
+                    return value + "%";
+                }
+                return value;
+            }
+
             function loadData(site) {
                 $.ajax({
 //                    url: "/Content/data/data.json" + site,
                       url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName="+ site,
                       type: "GET",
                     success: function (response) {
-                      
-               
+
+
                         let jsonResponse = JSON.parse(response);
                         let jsonData = jsonResponse.data;
-                        let data = jsonData;
+                        data = jsonData;
 
                         console.log(data);
 
+                        //viral load data from API
+                        var viralLoadData = [];
+                        let vl;
+
+                        //unsuppressed viral load data from API
+                        var unsuppressedViralLoadData = [];
+                        let unsVL;
+
+                      
+                        let retAdherence;
+
+                     
+                        let tbHiv;
+
+                        indexTestingData = [];
+
+
+
                         if (data.length < 1) {
-                            alert("No survey response was found the selected site !");
+                            alert("No survey response was found in the selected site !");
                         } else if (data[0].UnSuppresedVLCascade === undefined ) {
                             alert("No response found for unsuppressed viral load for the selected site");
                         }
+
 
                         //Viral load data
                         vl = data[0];
@@ -194,7 +204,8 @@
 
                         //index testing data
                         let indTesting = data[0];
-                        let indexTestingData = [];
+
+                        indexTestingData = [];
 
 
                         indexTestingData.push(indTesting.ChartWithPartner);
@@ -384,14 +395,15 @@
                         });
 
                         //viral load table
+                        $('#viralLoadTable tr#vlStart').remove();
                         $('#viralLoadTable tr:last')
-                            .after(`<tr>
-                                                                    <td>${viralLoadData[0]}</td>
-                                                                    <td>${viralLoadData[1]}</td>
-                                                                    <td>${viralLoadData[2]}</td>
-                                                                    <td>${viralLoadData[3]}</td>
-                                                                    <td>${viralLoadData[4]}</td>
-                                                                    <td>${vl.ViralLoadCascadeSupPercent}</td>
+                            .after(`<tr id = "vlStart">
+                                                                    <td>${formatValue(viralLoadData[0])}</td>
+                                                                    <td>${formatValue(viralLoadData[1])}</td>
+                                                                    <td>${formatValue(viralLoadData[2])}</td>
+                                                                    <td>${formatValue(viralLoadData[3])}</td>
+                                                                    <td>${formatValue(viralLoadData[4])}</td>
+                                                                    <td>${formatValue(vl.ViralLoadCascadeSupPercent)}</td>
                                                                     </tr >`);
 
                         // unsuppressed viral load chart
@@ -476,15 +488,16 @@
                         });
 
                         //table
+                        $('#unsViralLoadTable tr#unsStart').remove();
                         $('#unsViralLoadTable tr:last')
-                            .after(`<tr>
+                            .after(`<tr id = "unsStart">
                                                                     <td>${unsuppressedViralLoadData[0]}</td>
-                                                                    <td>${unsuppressedViralLoadData[1]}</td>
-                                                                    <td>${unsuppressedViralLoadData[2]}</td>
-                                                                    <td>${unsuppressedViralLoadData[3]}</td>
-                                                                    <td>${unsuppressedViralLoadData[4]}</td>
-                                                                    <td>${unsuppressedViralLoadData[5]}</td>
-                                                                    <td>${unsuppressedViralLoadData[6]}</td>
+                                                                    <td>${formatValue(unsuppressedViralLoadData[1])}</td>
+                                                                    <td>${formatValue(unsuppressedViralLoadData[2])}</td>
+                                                                    <td>${formatValue(unsuppressedViralLoadData[3])}</td>
+                                                                    <td>${formatValue(unsuppressedViralLoadData[4])}</td>
+                                                                    <td>${formatValue(unsuppressedViralLoadData[5])}</td>
+                                                                    <td>${formatValue(unsuppressedViralLoadData[6])}</td>
                                                                     </tr >`);
 
                         // Index Testing Chart
@@ -561,19 +574,21 @@
                         });
 
                         //table
+                        $('#indexTestingTable tr#indexStart').remove();
+
                         $('#indexTestingTable tr:last')
-                            .after(`<tr>
-                                                                    <td>${totalIndexIdentified}</td>
-                                                                    <td>${indexTestingData[0]}</td>
-                                                                    <td>${indexTestingData[1]}</td>
-                                                                    <td>${indexTestingData[2]}</td>
-                                                                    <td>${indexTestingData[3]}</td>
-                                                                    <td>${indexTestingData[4]}</td>
-                                                                    <td>${indexTestingData[5]}</td>
-                                                                    <td>${indexTestingData[6]}</td>
-                                                                    <td>${indexTestingData[7]}</td>
-                                                                    <td>${indexTestingData[8]}</td>
-                                                                    <td>${indexTestingData[9]}</td>
+                            .after(`<tr id = "indexStart">
+                                                                    <td>${formatValue(totalIndexIdentified)}</td>
+                                                                    <td>${formatValue(indexTestingData[0])}</td>
+                                                                    <td>${formatValue(indexTestingData[1])}</td>
+                                                                    <td>${formatValue(indexTestingData[2])}</td>
+                                                                    <td>${formatValue(indexTestingData[3])}</td>
+                                                                    <td>${formatValue(indexTestingData[4])}</td>
+                                                                    <td>${formatValue(indexTestingData[5])}</td>
+                                                                    <td>${formatValue(indexTestingData[6])}</td>
+                                                                    <td>${formatValue(indexTestingData[7])}</td>
+                                                                    <td>${formatValue(indexTestingData[8])}</td>
+                                                                    <td>${formatValue(indexTestingData[9])}</td>
 
                                                                     </tr >`);
 
@@ -687,35 +702,36 @@
                         });
 
                         //table
+                        $('#retentionAdherenceTable tr#retStart').remove();
                         $('#retentionAdherenceTable tr:last')
-                            .after(`            <tr>
+                            .after(`            <tr id="retStart">
                                                                     <td>Early Missed Appointments (missed within 24hrs)</td>
-                                                                    <td>${earlyMissedData[0]}</td>
-                                                                    <td>${earlyMissedData[1]}</td>
-                                                                    <td>${EarlyMissedActiveTracking}</td >
-                                                                    <td>(${EarlyMissedActiveTrackingPercent}%)</td>
-                                                                    <td>${EarlyMissedTrackingOutcome}</td>
-                                                                    <td>(${EarlyMissedTrackingOutcomePercent}%)</td>
+                                                                    <td>${formatValue(earlyMissedData[0])}</td>
+                                                                    <td>${formatValue(earlyMissedData[1])}</td>
+                                                                    <td>${formatValue(EarlyMissedActiveTracking)}</td>
+                                                                    <td>${formatValue(EarlyMissedActiveTrackingPercent,true)}</td>
+                                                                    <td>${formatValue(EarlyMissedTrackingOutcome)}</td>
+                                                                    <td>${formatValue(EarlyMissedTrackingOutcomePercent,true)}</td>
                                                                     </tr>
 
                                                                     <tr>
                                                                     <td>Late Missed Appointments (missed appointments for over a week)</td>
-                                                                    <td>${lateMissedData[0]}</td>
-                                                                    <td>${lateMissedData[1]}</td>
-                                                                    <td>${LateMissedActiveTracking}</td >
-                                                                    <td>(${LateMissedActiveTrackingPercent}%)</td>
-                                                                    <td>${LateMissedTrackingOutcome}</td>
-                                                                    <td>(${LateMissedTrackingOutcomePercent}%)</td>
+                                                                    <td>${formatValue(lateMissedData[0])}</td>
+                                                                    <td>${formatValue(lateMissedData[1])}</td>
+                                                                    <td>${formatValue(LateMissedActiveTracking)}</td >
+                                                                    <td>${formatValue(LateMissedActiveTrackingPercent,true)}</td>
+                                                                    <td>${formatValue(LateMissedTrackingOutcome)}</td>
+                                                                    <td>${formatValue(LateMissedTrackingOutcomePercent,true)}</td>
                                                                     </tr>
 
                                                                     <tr>
                                                                     <td>Unconfirmed LTFU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
-                                                                    <td>${unconfirmedData[0]}</td>
-                                                                    <td>${unconfirmedData[1]}</td>
-                                                                    <td>${UnconfirmedActiveTracking}</td >
-                                                                    <td>(${UnconfirmedActiveTrackingPercent}%)</td>
-                                                                    <td>${UnconfirmedTrackingOutcome}</td>
-                                                                    <td>(${UnconfirmedTrackingOutcomePercent}%)</td>
+                                                                    <td>${formatValue(unconfirmedData[0])}</td>
+                                                                    <td>${formatValue(unconfirmedData[1])}</td>
+                                                                    <td>${formatValue(UnconfirmedActiveTracking)}</td >
+                                                                    <td>${formatValue(UnconfirmedActiveTrackingPercent,true)}</td>
+                                                                    <td>${formatValue(UnconfirmedTrackingOutcome)}</td>
+                                                                    <td>${formatValue(UnconfirmedTrackingOutcomePercent,true)}</td>
                                                                     </tr>
                                             `);
 
@@ -857,55 +873,56 @@
                         });
 
                         //table
+                        $('#tbHivTable tr#tbStart').remove();
                         $('#tbHivTable tr:last')
-                            .after(`            <tr>
+                            .after(`            <tr id = "tbStart">
                                                                     <td>Adults starting ART</td>
                                                                     <td>${AdultStartMonth}</td>
-                                                                    <td>${AdultStartCharts}</td>
-                                                                    <td>${AdultTBScreenDocumented}</td>
-                                                                    <td>${AdultTBScreenDocumentedPercent}%</td>
-                                                                    <td>${AdultStartEligileIPT}</td>
-                                                                    <td>${AdultStartEligileIPTPercent}%</td>
-                                                                    <td>${AdultStartStartIPT}</td>
-                                                                    <td>${AdultStartStartIPTPercent}%</td>
-                                                                    <td>${AdultStartRegisterIPTEMR}</td>
-                                                                    <td>${AdultStartRegisterIPTEMRPercent}%</td>
-                                                                    <td>${AdultCompletedIPT}</td>
-                                                                    <td>${AdultCompletedIPTPercent}%</td>
+                                                                    <td>${formatValue(AdultStartCharts)}</td>
+                                                                    <td>${formatValue(AdultTBScreenDocumented)}</td>
+                                                                    <td>${formatValue(AdultTBScreenDocumentedPercent, true)}</td>
+                                                                    <td>${formatValue(AdultStartEligileIPT)}</td>
+                                                                    <td>${formatValue(AdultStartEligileIPTPercent,true)}</td>
+                                                                    <td>${formatValue(AdultStartStartIPT)}</td>
+                                                                    <td>${formatValue(AdultStartStartIPTPercent,true)}</td>
+                                                                    <td>${formatValue(AdultStartRegisterIPTEMR)}</td>
+                                                                    <td>${formatValue(AdultStartRegisterIPTEMRPercent,true)}</td>
+                                                                    <td>${formatValue(AdultCompletedIPT)}</td>
+                                                                    <td>${formatValue(AdultCompletedIPTPercent,true)}</td>
 
                                                                     </tr>
 
-                                                                    <tr>
+                                                                    <tr  id = "tbStart">
                                                                     <td>Pregnant women starting ART</td>
                                                                     <td>${PregnantWomenMonth}</td>
-                                                                    <td>${PregnantWomenCharts}</td>
-                                                                    <td>${PregnantWomenScreenDocumented}</td>
-                                                                    <td>${PregnantWomenScreenDocumentedPercent}%</td>
-                                                                    <td>${PregnantWomenEligileIPT}</td>
-                                                                    <td>${PregnantWomenEligileIPTPercent}%</td>
-                                                                    <td>${PregnantWomenStartIPT}</td>   
-                                                                    <td>${PregnantWomenStartIPTPercent}%</td>
-                                                                    <td>${PregnantWomenRegisterIPTEMR}</td>
-                                                                    <td>${PregnantWomenRegisterIPTEMRPercent}%</td>   
-                                                                    <td>${PregnantWomenCompletedIPT}</td>
-                                                                    <td>${PregnantWomenCompletedIPTPercent}%</td> 
+                                                                    <td>${formatValue(PregnantWomenCharts)}</td>
+                                                                    <td>${formatValue(PregnantWomenScreenDocumented)}</td>
+                                                                    <td>${formatValue(PregnantWomenScreenDocumentedPercent, true)}</td>
+                                                                    <td>${formatValue(PregnantWomenEligileIPT)}</td>
+                                                                    <td>${formatValue(PregnantWomenEligileIPTPercent,true)}</td>
+                                                                    <td>${formatValue(PregnantWomenStartIPT)}</td>   
+                                                                    <td>${formatValue(PregnantWomenStartIPTPercent,true)}</td>
+                                                                    <td>${formatValue(PregnantWomenRegisterIPTEMR)}</td>
+                                                                    <td>${formatValue(PregnantWomenRegisterIPTEMRPercent,true)}</td>   
+                                                                    <td>${formatValue(PregnantWomenCompletedIPT)}</td>
+                                                                    <td>${formatValue(PregnantWomenCompletedIPTPercent,true)}</td> 
     
     </tr>
 
-                                                                    <tr>
+                                                                    <tr  id = "tbStart">
                                                                     <td>Patients who initiated TPT</td>
                                                                     <td>${PatientInitiatMonth}</td>
-                                                                    <td>${PatientInitiatCharts}</td>
-                                                                    <td>${PatientInitiatScreenDocumented}</td>
-                                                                    <td>${PatientInitiatScreenDocumentedPercent}%</td>
-                                                                    <td>${PatientInitiatEligileIPT}</td>
-                                                                    <td>${PatientInitiatEligileIPTPercent}%</td>
-                                                                    <td>${PatientInitiatStartIPT}</td>
-                                                                    <td>${PatientInitiatStartIPTPercent}%</td>
-                                                                    <td>${PatientInitiatRegisterIPTEMR}</td>
-                                                                    <td>${PatientInitiatRegisterIPTEMRPercent}%</td>
-                                                                    <td>${PatientInitiatCompletedIPT}</td>
-                                                                    <td>${PatientInitiatCompletedIPTPercent}%</td>
+                                                                    <td>${formatValue(PatientInitiatCharts)}</td>
+                                                                    <td>${formatValue(PatientInitiatScreenDocumented)}</td>
+                                                                    <td>${formatValue(PatientInitiatScreenDocumentedPercent,true)}</td>
+                                                                    <td>${formatValue(PatientInitiatEligileIPT)}</td>
+                                                                    <td>${formatValue(PatientInitiatEligileIPTPercent, true)}</td>
+                                                                    <td>${formatValue(PatientInitiatStartIPT)}</td>
+                                                                    <td>${formatValue(PatientInitiatStartIPTPercent, true)}</td>
+                                                                    <td>${formatValue(PatientInitiatRegisterIPTEMR)}</td>
+                                                                    <td>${formatValue(PatientInitiatRegisterIPTEMRPercent,true)}</td>
+                                                                    <td>${formatValue(PatientInitiatCompletedIPT)}</td>
+                                                                    <td>${formatValue(PatientInitiatCompletedIPTPercent, true)}</td>
                                                                     </tr>
                                             `);
 
@@ -979,16 +996,46 @@
                         });
 
                         //diff table
+                        //table
+                        $('#diffModelCareTable tr#diffStart').remove();
                         $('#diffModelCareTable tr:last')
-                            .after(`<tr>
-                                                                    <td>${mocData[0]}</td>
-                                                                    <td>${mocData[1]}</td>
-                                                                    <td>${moc.MoCPercentDevolved}</td>
-                                                                    <td>${mocData[2]}</td>
-                                                                    <td>${mocData[3]}</td>
-                                                                    <td>${mocData[4]}</td>
-                                                                    <td>${mocData[5]}</td>
+                            .after(`<tr id="diffStart">                 
+                                                                    <td>${formatValue(mocData[0])}</td>
+                                                                    <td>${formatValue(mocData[1])}</td>
+                                                                    <td>${formatValue(moc.MoCPercentDevolved)}</td>
+                                                                    <td>${formatValue(mocData[2])}</td>
+                                                                    <td>${formatValue(mocData[3])}</td>
+                                                                    <td>${formatValue(mocData[4])}</td>
+                                                                    <td>${formatValue(mocData[5])}</td>
                                                                     </tr >`);
+
+                        //unsuppressed Viral load data
+
+                        $('#actionPlanTable tr#actStart').remove();
+
+                        let actionPlan = data[0].GSMActionPlan;
+
+                        for (var i = 0; i < actionPlan.length; i++) {
+                            $('#actionPlanTable tr:last')
+                                .after(
+                                `<tr id="actStart">
+                                    <td>${i+1}</td>
+                                    <td>${actionPlan[i].IdentifiedChallenges}</td>
+                                        <td>${actionPlan[i].RootCause}</td>
+                                        <td>${actionPlan[i].ResponsiblePersonnel}</td>
+                                        <td>${actionPlan[i].IndicatorsMonitored}</td>
+                                        <td>${actionPlan[i].ExpectedOutcome}</td>
+                                        <td>${actionPlan[i].IndicatorsToMonitored}</td>
+                                        <td>${actionPlan[i].Intervention}</td>
+
+
+
+
+                                        
+    </tr>          
+                                                `
+                                );
+                        }
 
 
 
