@@ -289,7 +289,7 @@
                 try {
                     var dt = JSON.parse(response)._data;
                     buildallchart(dt, selectedIP);
-                    console.log(response);
+          
                 }
                 catch (e) {
                     alert("A system error has occurred. Kindly re-try again shortly");
@@ -305,10 +305,10 @@
             function buildallchart(dt, selectedIP) {
 
      
-                build_side_by_side_bar_chart_with_DrillDown_Completeness('COMP_stat', 'Reporting Rate', 'Percentage Completeness',
+                build_side_by_side_bar_chart_with_DrillDown_Reporting('COMP_stat', 'Reporting Rate', 'Percentage Completeness',
                     dt.Comp_Stat.Comp_Stat, dt.Comp_Stat.lga_drill_down, selectedIP);
              
-            }
+            };
 
 
             $('#resizer').resizable({

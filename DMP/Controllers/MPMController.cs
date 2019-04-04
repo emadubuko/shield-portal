@@ -3961,7 +3961,7 @@ namespace ShieldPortal.Controllers
                 },
                  new
                 {
-                    name = "Blood Bank",
+                    name = "Blood Bank Female",
                     data = state_blood_bank_female,
                       stack = "blood"
                 },
