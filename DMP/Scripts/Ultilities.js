@@ -105,6 +105,40 @@ function CreateTrainingTable(trainings) {
         $('#trainingTable').append(html);
     }
 }
+function activateSticky() {
+    var oldScrollFunction = window.onscroll;
+    // When the user scrolls the page, execute myFunction 
+    window.onscroll = function (ev) {
+        checkSticky();
+        if (oldScrollFunction)
+            oldScrollFunction(ev);
+    };
+
+    // Get the header
+    var $header = $(".sticky-header");
+    //var $content = $(".sticky-content");
+
+    // Get the offset position of the navbar
+    var headerOffsetTop = $header.offset().top;
+    //var contentOffsetTop = $content.offset().top;
+    var hasSticky = false;
+
+    // Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function checkSticky() {
+        if (window.pageYOffset > headerOffsetTop) {
+            if (!hasSticky) {
+                $header.addClass("sticky");
+                //put an offset for the content
+                //$content.offset({ top: contentOffsetTop, left: $content.offset().left });
+                hasSticky = true;
+            }
+        } else if (hasSticky) {
+            $header.removeClass("sticky");
+            //$content.offset({ top: contentOffsetTop, left: $content.offset().left });
+            hasSticky = false;
+        }
+    }
+}
 
 //export table as csv
 function exportTableToCSV($table, filename, ignoredvalue, ignoredValueColumn, ignoredColumnIndex) {
@@ -162,4 +196,7 @@ function exportTableToCSV($table, filename, ignoredvalue, ignoredValueColumn, ig
     else {
         $(this).attr({ 'download': filename, 'href': csvData, 'target': '_blank' });
     }
+
+
+   
 }

@@ -158,6 +158,7 @@ $("#sltstate").change(function (e) {
     $("#sltFacility").select2("val", "");
 
     if (e.currentTarget.selectedOptions.length == 0) {
+        debugger;
         $.each(model_data, function (i, a) {
             if (checkforuniqueness(_buildLGA_, a.LGA.lga_code).length == 0) {
                 _buildLGA_.push(a.LGA.lga_code);

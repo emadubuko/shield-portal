@@ -441,6 +441,8 @@ namespace CommonUtil.Utilities
             public string Facility { get; set; }
             public string LGA { get; set; }
         }
+
+
     }
 
 }

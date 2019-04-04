@@ -7,65 +7,140 @@
         @RenderSection("AddToHead", required: false)
     }
 }
+
+
+
+<style>
+
+
+    /* Style the sidenav links and the dropdown button */
+    .sidenav a, .dropdown-btn {
+        padding: 12px 8px 12px 16px;
+        text-decoration: none;
+        font-size: 15px;
+        color: #818181;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        color: #302e83
+    }
+
+        /* On mouse-over */
+        .sidenav a:hover, .dropdown-btn:hover {
+            color: #000000;
+        }
+
+
+
+    /* Main content */
+    .main {
+        margin-left: 200px; /* Same as the width of the sidenav */
+        font-size: 20px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+    }
+
+    /* Add an active class to the active dropdown button */
+    .active {
+        /*background-color: green;*/
+        color: #808080;
+    }
+
+    /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+    .dropdown-container {
+        display: none;
+        background-color: #d3d3d3;
+        padding-left: 8px;
+    }
+
+    /* Optional: Style the caret down icon */
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+
+    /* Some media queries for responsiveness */
+
+</style>
 <div class="main-content" style="padding-top: 0px;">
     <div class="row" id="breadcrumb">
         <div class="col-sm-5 col-sm-push-3">
             <ol class="breadcrumb breadcrumb-2">
                 <li><a href="/"><i class="icon-folder"></i>Home</a></li>
                 <li><a href="/Home/submenu?id=smr">Enhanced Monitoring</a></li>
-                <li class="active">GSM</li>
+                @*<li class="active">GSM</li>*@
             </ol>
         </div>
     </div>
 
+
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <br /><br />
             <div class="page-sidebar">
+
                 <div class="sidebar">
-                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
-                        
-                        <li>
-                            <a href=@Url.Action("GSMUploadTracker", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; GSM Upload Tracker</span>
+
+                    <div class="sidenav">
+
+                        <button class="dropdown-btn">
+                            <i class="fa fa-calendar"></i>&nbsp;GSM
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-container">
+                            <a href=@Url.Action("ReportingRate", "MPM")>
+                                Reporting Rate
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("index", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; IMS Upload Tracker</span>
+                            <a href=@Url.Action("CompletenessReports", "MPM")>
+                                Completeness Report
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("CompletenessReports", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; Completeness Report</span>
+                            <a href=@Url.Action("GSMUploadTracker", "MPM")>
+                                Upload Tracker
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("Dashboard", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
+                        </div>
+
+                        <button class="dropdown-btn">
+                            <i class="fa fa-calendar-plus-o"></i>&nbsp;IMS
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-container">
+                            <a href=@Url.Action("IMSReportingRate", "MPM")>
+                                Reporting Rate
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("Upload", "MPM") style="color:darkturquoise;">
-                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload</span>
+                            <a href=@Url.Action("IMSCompletenessReports", "MPM")>
+                                Completeness Report
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("NDR_Statictics","MPM") style="color:darkturquoise;">
-                                <i class="fa fa-cloud-chart"></i><span class="title">&nbsp; NDR Statistics</span>
+                            <a href=@Url.Action("Index", "MPM")>
+                                Upload Tracker
                             </a>
-                        </li>
-                        <li class="navigation-header">Downloads</li>
-                        <li>
-                            <a href="~/MPM/Download" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; Download IMS Template</span>
+                        </div>
+                        <a href=@Url.Action("Dashboard", "MPM")>
+                            <i class="fa fa-dashboard"></i><span class="title">&nbsp; Dashboard</span>
+                        </a>
+                        <a href=@Url.Action("Upload", "MPM")>
+                            <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload</span>
+                        </a>
+                        <a href=@Url.Action("NDR_Statictics", "MPM")>
+                            <i class="fa fa-bar-chart"></i><span class="title">&nbsp; NDR Statistics</span>
+                        </a>
+                        <button class="dropdown-btn">
+                            <i class="fa fa-download"></i>&nbsp; Downloads
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-container">
+                            <a href="~/MPM/DownloadTemplateForGSM">
+                                GSM Template
                             </a>
-                        </li>
-                        <li>
-                            <a href="~/MPM/DownloadTemplateForGSM" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; Download GSM Template</span>
+                            <a href="~/MPM/Download">
+                                IMS Template
                             </a>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -115,5 +190,24 @@
     <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
     <script src="~/Scripts/fns/fn_dashboard.js" type="text/javascript"></script>
     <script src="~/Scripts/profile-display.js"></script>
+
+    <script>
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+    </script>
+
+
     @RenderSection("scripts", required: false)
 }
