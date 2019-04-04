@@ -11,6 +11,36 @@
         html, body {
             height: 100%
         }
+
+        .highcharts-table-caption {
+            margin-bottom: 5px;
+            font-family: sans-serif;
+            font-size: 14pt;
+        }
+
+        .highcharts-data-table table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            background: white;
+            min-width: 100%;
+            margin-top: 10px;
+        }
+
+        .highcharts-data-table td, .highcharts-data-table th {
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 10pt;
+            border: 1px solid silver;
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table tr:nth-child(even), .highcharts-data-table thead tr {
+            background: #f8f8f8;
+        }
+
+        .highcharts-data-table tr:hover {
+            background: #eff;
+        }
     </style>
 
 
@@ -152,9 +182,7 @@
 
                         let jsonResponse = JSON.parse(response);
                         let jsonData = jsonResponse.data;
-                        data = jsonData;
-
-                        console.log(data);
+                        data = jsonData;                   
 
                         //viral load data from API
                         var viralLoadData = [];
@@ -192,7 +220,18 @@
 
 
                         //unsuppressed Viral load data
+                        console.log(); 
                         unsVL = data[0].UnSuppresedVLCascade[0];
+                        let unsMale = [], unsFemale = [], noUnsVl = [], noCommencedEac = [], noOfRepeat = [], noOfSwitched = [];
+                        for (var i = 0; i < data[0].UnSuppresedVLCascade.length; i++) {
+                            
+                            unsMale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexMale);
+                            unsFemale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexFemale);
+                            noUnsVl.push(data[0].UnSuppresedVLCascade[i].NoUnSuppressedVL);
+                            noCommencedEac.push(data[0].UnSuppresedVLCascade[i].NoCommencedEAC);
+                            noOfRepeat.push(data[0].UnSuppresedVLCascade[i].NoOfRepeat);
+                            noOfSwitched.push(data[0].UnSuppresedVLCascade[i].NoSwitched);
+                        }
 
                         unsuppressedViralLoadData.push(unsVL.AgeCohort);
                         unsuppressedViralLoadData.push(unsVL.UnSuppressedSexMale);
@@ -202,11 +241,14 @@
                         unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
                         unsuppressedViralLoadData.push(unsVL.NoSwitched);
 
+
+
                         //index testing data
                         let indTesting = data[0];
 
                         indexTestingData = [];
 
+                        console.log(indTesting);
 
                         indexTestingData.push(indTesting.ChartWithPartner);
                         indexTestingData.push(indTesting.ChartPartnerKnownCase);
@@ -409,7 +451,7 @@
                         // unsuppressed viral load chart
                         Highcharts.chart('unsViralLoadChart', {
                             chart: {
-                                type: 'column'
+                                type: 'bar'
                             },
                             title: {
                                 text: 'Unsuppressed Viral Load Performance'
@@ -467,38 +509,38 @@
 
                             series: [{
                                 name: ' No of Male',
-                                data: [ unsuppressedViralLoadData[1]]
+                                data: unsMale
                             }, {
                                 name: 'No of Female',
-                                    data: [unsuppressedViralLoadData[2]]
+                                    data: unsFemale 
                             }, {
                                 name: 'No of Unsuppressed VL',
-                                    data: [unsuppressedViralLoadData[3]]
+                                    data: noUnsVl
                             }, {
                                 name: 'No. Commenced on EAC',
-                                    data: [unsuppressedViralLoadData[4]]
+                                    data: noCommencedEac
                             }, {
-                                name: 'No of Repeat VL',
-                                    data: [unsuppressedViralLoadData[5]]
+                                    name: 'No of Repeat VL',
+                                    data: noOfSwitched
                             }, {
-                                name: 'No. Switched',
-                                    data: [unsuppressedViralLoadData[6]]
+                                    name: 'No. Switched',
+                                    data: noOfSwitched
                             }]
 
                         });
 
                         //table
-                        $('#unsViralLoadTable tr#unsStart').remove();
-                        $('#unsViralLoadTable tr:last')
-                            .after(`<tr id = "unsStart">
-                                                                    <td>${unsuppressedViralLoadData[0]}</td>
-                                                                    <td>${formatValue(unsuppressedViralLoadData[1])}</td>
-                                                                    <td>${formatValue(unsuppressedViralLoadData[2])}</td>
-                                                                    <td>${formatValue(unsuppressedViralLoadData[3])}</td>
-                                                                    <td>${formatValue(unsuppressedViralLoadData[4])}</td>
-                                                                    <td>${formatValue(unsuppressedViralLoadData[5])}</td>
-                                                                    <td>${formatValue(unsuppressedViralLoadData[6])}</td>
-                                                                    </tr >`);
+                        //$('#unsViralLoadTable tr#unsStart').remove();
+                        //$('#unsViralLoadTable tr:last')
+                        //    .after(`<tr id = "unsStart">
+                        //                                            <td>${unsuppressedViralLoadData[0]}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[1])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[2])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[3])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[4])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[5])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[6])}</td>
+                        //                                            </tr >`);
 
                         // Index Testing Chart
                         Highcharts.chart('indexTestingChart', {
