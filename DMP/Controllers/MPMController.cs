@@ -432,6 +432,15 @@ namespace ShieldPortal.Controllers
         }
 
         //download for IMS monthly template
+        public ActionResult Download()
+        {
+            var facilities = new HealthFacilityDAO().RetrievebyIP(loggedinProfile.Organization.Id);
+            List<State> states = new List<State>();
+            if (facilities != null)
+                states.AddRange(facilities.Select(x => x.LGA.State).Distinct());
+
+            return View(states);
+        }
 
         //download for GSM bi-weekly template
         public async Task<ActionResult> DownloadTemplateForGSM()
