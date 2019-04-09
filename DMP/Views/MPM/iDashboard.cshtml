@@ -389,9 +389,8 @@
 
                 //Tx_VLA
                 build_bar_chart_dual_axis_with_drill_down('Tx_VLA', 'Viral Load Access',
-                    'No. of client', '% Viral load access', dt.ART.state_data_vl,
-                    dt.ART.lga_drill_down_vl, dt.ART.states);
-
+                    'No. of client', '% Viral load access', dt.ART.state_data_vl, dt.ART.lga_drill_down_vl, dt.ART.states);
+   
                 //PMTCTVIRALLOAD
                 build_stacked_bar_with_drilldown('PMTCTVIRALLOAD', '(PMTCT) Viral Load Suppression', 'Previously Known HIV Positive',
                     "No. of Clients", dt.PMTCT_VL.State, dt.PMTCT_VL.known_status, dt.PMTCT_VL.drilldown_series_known_status);
