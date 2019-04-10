@@ -129,9 +129,7 @@
                 </div>
             </div>
 
-            <div id="download">
-
-            </div>
+          
 
 
 
@@ -185,31 +183,21 @@
                         let jsonResponse = JSON.parse(response);
                         let jsonData = jsonResponse.data;
                         data = jsonData;
-
+                        console.log(data);
                         //viral load data from API
                         var viralLoadData = [];
                         let vl;
-
                         //unsuppressed viral load data from API
                         var unsuppressedViralLoadData = [];
-                        let unsVL;
-
-
-                        let retAdherence;
-
-
-                        let tbHiv;
+                        let unsVL, retAdherence, tbHiv;
 
                         indexTestingData = [];
-
-
 
                         if (data.length < 1) {
                             alert("No survey response was found in the selected site !");
                         } else if (data[0].UnSuppresedVLCascade === undefined) {
                             alert("No response found for unsuppressed viral load for the selected site");
                         }
-
 
                         //Viral load data
                         vl = data[0];
@@ -220,9 +208,8 @@
                         viralLoadData.push(vl.ViralLoadCascadeDoc);
                         viralLoadData.push(vl.ViralLoadCascadeSupp);
 
-
                         //unsuppressed Viral load data
-                        console.log();
+
                         unsVL = data[0].UnSuppresedVLCascade[0];
                         let unsMale = [], unsFemale = [], noUnsVl = [], noCommencedEac = [], noOfRepeat = [], noOfSwitched = [];
                         for (var i = 0; i < data[0].UnSuppresedVLCascade.length; i++) {
@@ -243,14 +230,9 @@
                         unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
                         unsuppressedViralLoadData.push(unsVL.NoSwitched);
 
-
-
                         //index testing data
                         let indTesting = data[0];
-
                         indexTestingData = [];
-
-                        console.log(indTesting);
 
                         indexTestingData.push(indTesting.ChartWithPartner);
                         indexTestingData.push(indTesting.ChartPartnerKnownCase);
@@ -265,13 +247,10 @@
 
                         let totalIndexIdentified = indTesting.ChartIndentified;
 
-
                         //retention adherence data
-
                         retAdherence = data[0];
 
                         //early missed data
-
                         let earlyMissedData = [];
 
                         earlyMissedData.push(retAdherence.EarlyMissedPatient);
@@ -287,7 +266,6 @@
 
 
                         //late missed data
-
                         let lateMissedData = [];
 
                         lateMissedData.push(retAdherence.LateMissedPatient);
@@ -303,7 +281,6 @@
 
 
                         //unconfirmed  data
-
                         let unconfirmedData = [];
 
                         unconfirmedData.push(retAdherence.UnconfirmedPatient);
@@ -318,7 +295,6 @@
                         var UnconfirmedTrackingOutcomePercent = retAdherence.UnconfirmedTrackingOutcomePercent;
 
                         //tBHiv Data
-
                         tbHiv = data[0];
 
                         var AdultStartMonth = tbHiv.AdultStartMonth;
@@ -373,7 +349,6 @@
                         let moc = data[0];
                         let mocData = [];
 
-
                         mocData.push(moc.MoCTXCurr);
                         mocData.push(moc.MoCTotalDSD);
                         mocData.push(moc.MoCMonthScript);
@@ -423,19 +398,13 @@
                                 thousandsSep: ','
                             },
 
-
-
                             credits: false,
-
-
                             series: [{
                                 type: 'column',
                                 colorByPoint: true,
                                 data: viralLoadData,
                                 showInLegend: false
                             }],
-
-
                         });
 
                         //viral load table
@@ -503,12 +472,7 @@
                                 decimalPoint: '.',
                                 thousandsSep: ','
                             },
-
-
-
                             credits: false,
-
-
                             series: [{
                                 name: ' No of Male',
                                 data: unsMale
@@ -597,13 +561,7 @@
                                 decimalPoint: '.',
                                 thousandsSep: ','
                             },
-
-
-
-
                             credits: false,
-
-
                             series: [{
                                 type: 'column',
                                 colorByPoint: true,
@@ -611,8 +569,6 @@
                                 showInLegend: false
 
                             }
-
-
                             ]
 
                         });
@@ -633,33 +589,25 @@
                                                                         <td>${formatValue(indexTestingData[7])}</td>
                                                                         <td>${formatValue(indexTestingData[8])}</td>
                                                                         <td>${formatValue(indexTestingData[9])}</td>
-
                                                                         </tr >`);
-
-
                         // retention adherence chart
                         Highcharts.chart('retentionAdherenceChart', {
                             chart: {
                                 type: 'column',
-
                             },
                             title: {
                                 text: 'Retention Adherence'
                             },
-
                             subtitle: {
                                 text: ''
                             },
-
                             xAxis: {
                                 title: {
                                     text: 'Appointments'
                                 },
                                 categories: ['Early Missed Appointments ', 'Late Missed Appointments ', 'Unconfirmed LTFU'],
-
                             },
                             yAxis: [
-
                                 { // Primary yAxis
                                     labels: {
                                         style: {
@@ -704,21 +652,16 @@
                                     pointPadding: 0.2,
                                     borderWidth: 0,
                                     groupPadding: 0.1,
-
                                 },
                                 series: {
                                     pointWidth: 40
                                 }
                             },
-
                             lang: {
                                 decimalPoint: '.',
                                 thousandsSep: ','
                             },
-
-
                             credits: false,
-
                             series: [{
                                 type: 'column',
                                 name: ' count patient records with documented active tracking and tracing',
@@ -740,9 +683,7 @@
                                 yAxis: 1,
                                 data: [{ name: 'Percentage of patient records with documented tracking and tracing outcome', x: .20, y: EarlyMissedTrackingOutcomePercent }, { name: 'Percentage of patient records with documented tracking and tracing outcome', x: 1.20, y: LateMissedTrackingOutcomePercent }, { name: 'Percentage of patient records with documented tracking and tracing outcome', x: 2.20, y: UnconfirmedTrackingOutcomePercent }],
                                 color: '#ab47bc'
-
                             }]
-
                         });
 
                         //table
@@ -778,8 +719,6 @@
                                                                         <td>${formatValue(UnconfirmedTrackingOutcomePercent, true)}</td>
                                                                         </tr>
                                                 `);
-
-
                         // TB/HIV chart
                         Highcharts.chart('tbHivChart', {
                             chart: {
@@ -788,11 +727,9 @@
                             title: {
                                 text: 'Tuberculosis / HIV Chart'
                             },
-
                             subtitle: {
                                 text: ''
                             },
-
                             xAxis: {
                                 title: {
                                     text: 'Patient Group'
@@ -800,9 +737,7 @@
                                 categories: ['Adults starting ART ', 'Pregnant women starting ART', 'Patients who initiated TPT'],
                                 crosshair: true,
                             },
-
                             yAxis: [
-
                                 {
                                     min: 0,
                                     title: {
@@ -814,7 +749,6 @@
                                         }
                                     }
                                 },
-
                                 { // Secondary yAxis
                                     min: 0,
                                     title: {
@@ -831,7 +765,6 @@
                                     },
                                     opposite: true
                                 }
-
                             ],
                             tooltip: {
                                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
@@ -841,7 +774,6 @@
                                 shared: true,
                                 useHTML: true
                             },
-
                             plotOptions: {
                                 column: {
                                     pointPadding: 0.2,
@@ -858,11 +790,6 @@
                                 decimalPoint: '.',
                                 thousandsSep: ','
                             },
-
-
-
-                            credits: false,
-
 
                             series: [{
                                 name: 'No. with TB screening documented at most recent visit (Patient chart)',
@@ -1071,37 +998,27 @@
                                             <td>${actionPlan[i].ExpectedOutcome}</td>
                                             <td>${actionPlan[i].IndicatorsToMonitored}</td>
                                             <td>${actionPlan[i].Intervention}</td>
-
-
-
-
-
         </tr>
                                                     `
                                 );
                         }
 
                         if (actionPlan !== null) {
+                            $('#download_link').remove();
 
                             var linkDiv = document.getElementById('download');
                             var dwLink = document.createElement('a');
                             var linkText = document.createTextNode("Download ACTION PLAN REPORT");
                             dwLink.appendChild(linkText);
                             dwLink.title = "Download ACTION PLAN REPORT";
+                            dwLink.id = "download_link";
                             dwLink.href = "http://survey.shieldnigeriaproject.com/api/Externalapi/downloadActionPlan?id=31&siteName=" + site;
                             dwLink.className = 'btn btn-sm btn-success';
                             linkDiv.appendChild(dwLink);
-
-
                         }
-
                     }
                 });
             }
         });
-
-
-
-
     </script>
 }
