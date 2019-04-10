@@ -1,0 +1,394 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_mpmlayout.cshtml";
+}
+@section AddToHead{
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <link href="~/plugins/select2/css/select2.css" rel="stylesheet" />
+    <script src="~/Scripts/Ultilities.js?v=@DateTime.Now.Ticks.ToString()"></script>
+
+    <style>
+        .container {
+            max-width: 400px;
+            height: 70px;
+            margin: 0em auto -1em auto;
+        }
+
+        .other-container {
+            max-width: 400px;
+            height: 100px;
+            margin: 0em auto -1em auto;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+    </script>
+}
+<h2>IMS Completeness Reports</h2>
+
+<div class="col-sm-8">
+    <div class="row">
+
+        <div class="tabs-container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a aria-expanded="false" href="#hts_cascade" data-toggle="tab">HTS</a></li>
+                <li class=""><a aria-expanded="false" href="#pmtct" data-toggle="tab">PMTCT</a></li>
+                <li class=""><a aria-expanded="false" href="#art" data-toggle="tab">ART</a></li>
+
+                  <li class=""><a aria-expanded="false" href="#hiv-tb" data-toggle="tab">HIV-TB Cascade</a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                <div class="tab-pane active" id="hts_cascade">
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+
+                    <hr />
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+
+                    <hr />
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+                </div>
+
+
+
+                <div class="tab-pane" id="pmtct">
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+
+                    <hr />
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+
+                    <hr />
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="art">
+                    <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                        <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                            <param name='embed_code_version' value='3' />
+                            <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                            <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='no' />
+                            <param name='showAppBanner' value='false' />
+                            <param name='showShareOptions' value='false' />
+                            <param name='customViews' value='no' />
+                            <param name='filter' value='iframeSizedToWindow=true' />
+                            @if (User.IsInRole("ip"))
+                            {
+                                <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                            }
+                        </object>
+                    </div>
+
+
+                </div>
+
+                <div class="tab-pane" id="hiv-tb">
+            <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr />
+            <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr /> <div class='tableauPlaceholder' style='width: 1000px; height: 1300px;'>
+                <object class='tableauViz' width='1000' height='1300' style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fus-west-2b.online.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' />
+                    <param name='site_root' value='&#47;t&#47;mpmdataanalysis' />
+                    <param name='name' value='TB_HIVCascade&#47;TB_HIVCascade' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='no' />
+                    <param name='showAppBanner' value='false' />
+                    <param name='showShareOptions' value='false' />
+                    <param name='customViews' value='no' />
+                    <param name='filter' value='iframeSizedToWindow=true' />
+                    @if (User.IsInRole("ip"))
+                    {
+                        <param name='filter' value='IP=@(new ShieldPortal.Services.Utils().GetloggedInProfile().Organization.ShortName)' />
+                    }
+                </object>
+            </div>
+            <hr />
+
+        </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+
+    <script>
+        $(document).ready(function () {
+
+            $(".tabToolbarButton.tab-widget.edit").hide();
+
+        });
+    </script>
+}

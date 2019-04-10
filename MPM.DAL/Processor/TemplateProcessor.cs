@@ -1224,7 +1224,7 @@ namespace MPM.DAL.Processor
                     break;
                 }
                 else
-                {
+                { 
                     sites.TryGetValue(facCell.Value.ToString(), out HealthFacility site);
 
                     if (site == null)//goto Loop;

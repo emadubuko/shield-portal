@@ -4,19 +4,19 @@ function percentage(num, per) {
     return Math.round(result);
 }
 
-Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
-    return {
-        radialGradient: {
-            cx: 0.5,
-            cy: 0.3,
-            r: 0.7
-        },
-        stops: [
-            [0, color],
-            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-        ]
-    };
-});
+//Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+//    return {
+//        radialGradient: {
+//            cx: 0.5,
+//            cy: 0.3,
+//            r: 0.7
+//        },
+//        stops: [
+//            [0, color],
+//            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+//        ]
+//    };
+//});
 
 Highcharts.setOptions({
     lang: {
@@ -58,8 +58,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
+function BuildBubbleChart_HTS_Other_PITC(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
 
     Highcharts.chart(id, {
         credits: {
@@ -80,7 +79,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
         },
 
         subtitle: {
-            text: 'click the bubbles to drill down'
+           // text: 'click the bubbles to drill down'
         },
 
         xAxis: {
@@ -102,7 +101,7 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
             labels: {
                 format: '{value} %'
             },
-            max: 105,
+            max: 20,
             min: 0,
             maxPadding: 0.2,
         },
@@ -125,7 +124,99 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
             }
         },
         series: [{
+            name: 'Service Delivery Points',
+              colorByPoint: true,
+            data: data_array.all_sdp
+        }],
+        //drilldown: {
+        //    series: data_array.lga_drill_down_data
+        //}
+
+    });
+
+}
+
+
+function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointFormat, data_array) {
+
+
+    var chart = new Highcharts.chart(id, {
+        credits: {
+            enabled: true
+        },
+
+        chart: {
+            type: 'bubble',
+            plotBorderWidth: 1,
+            zoomType: 'xy',
+
+        },
+
+        legend: {
+            enabled: true
+        },
+
+        title: {
+            text: title
+        },
+
+        subtitle: {
+            text: 'Click the bubbles to drill down'
+        },
+
+      
+
+        xAxis: {
+            max: 10000,
+            min: 0,
+            gridLineWidth: 0,
+            title: {
+                text: xaxis_title
+            },
+            labels: {
+                format: '{value}'
+            },
+          
+        },
+
+        yAxis: {
+            startOnTick: false,
+            endOnTick: false,
+            title: {
+                text: yaxis_title
+            },
+            labels: {
+                format: '{value} %'
+            },
+            max: 60,
+            min: 0,
+            maxPadding: 0.2,
+            gridLineWidth: 0,
+            minorGridLineWidth: 0,
+          
+        },
+
+        tooltip: {
+            useHTML: true,
+            headerFormat: '<table>',
+            pointFormat: bubble_pointFormat,
+            footerFormat: '</table>',
+            followPointer: true
+        },
+
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '<span style="color: white>{point.name}</span>',
+
+                },
+
+            }
+        },
+        series: [{
             name: 'State',
+            colorByPoint: true,
             data: data_array.state_data
         }],
         drilldown: {
@@ -134,7 +225,91 @@ function BuildBubbleChart(id, title, xaxis_title, yaxis_title, bubble_pointForma
 
     });
 
+
+    var width = chart.plotBox.width / 2.0;
+    var height = chart.plotBox.height / 2.0 + 1;
+
+    chart.renderer.rect(chart.plotBox.x + width,
+        chart.plotBox.y, width, height, 1)
+        .attr({
+            fill: '#8bc34a',
+            zIndex: 0
+        })
+        .add();
+
+    chart.renderer.rect(chart.plotBox.x,
+        chart.plotBox.y, width, height, 1)
+        .attr({
+            fill: '#4caf50', 
+            zIndex: 0
+        })
+        .add();
+
+
+
+    chart.renderer.rect(chart.plotBox.x,
+        chart.plotBox.y + height, width, height, 1)
+        .attr({
+            fill: '#ffca28',
+            zIndex: 0
+        })
+        .add();
+
+    chart.renderer.rect(chart.plotBox.x + width,
+        chart.plotBox.y + height, width, height, 1)
+        .attr({
+            fill: '#ef5350',
+            zIndex: 0
+        })
+        .add();
+
+    //let  labelText = 'Series 1, y:  + point1.y + , x:  + point1.x +<br/> + Series 2, y:  + point2.y + , x:  + point2'; 37+20
+
+    chart.renderer.text('<table><tr><td><i>Low Testing</i></td></tr><tr><td><i>High Positive</i></td></tr><tr><td><i>High Yield</i></td></tr></table>', 100, 120, true)
+        //.attr({
+        //    zIndex: 5
+        //})
+        .css({
+            fontSize: '12px'
+        })
+        .add();
+
+
+    chart.renderer.text('<table><tr><td><i>High Testing</i></td></tr><tr><td><i>High Positive</i></td></tr><tr><td><i>High Yield</i></td></tr></table>', 650, 125, true)
+        //.attr({
+        //    zIndex: 5
+        //})
+        .css({
+            fontSize: '12px'
+        })
+        .add();
+
+
+    chart.renderer.text('<table><tr><td><i>High Testing</i></td></tr><tr><td><i>Low Positive</i></td></tr><tr><td><i>Low Yield</i></td></tr></table>', 650, 360, true)
+        //.attr({
+        //    zIndex: 5
+        //})
+        .css({
+            fontSize: '12px',
+            color: 'white'
+        })
+        .add();
+
+
+    chart.renderer.text('<table><tr><td><i>Low Testing</i></td></tr><tr><td><i>Low Positive</i></td></tr><tr><td><i>Low Yield</i></td></tr></table>', 100, 360, true)
+        //.attr({
+        //    zIndex: 5
+        //})
+        .css({
+            fontSize: '12px',
+            color: 'white'
+        })
+        .add();
+  
+
 }
+
+
 
 function BuildDonut(id, title, data_array) {
 
@@ -570,6 +745,81 @@ function build_trend_chart(container_id, title, yAxistitle, xaxisCategory, serie
     });
 }
 
+function build_trend_chart_state(container_id, title, yAxistitle, xaxisCategory, series_data) {
+    //var colors = get_color_shades(2); 
+    Highcharts.chart(container_id, {
+
+        title: {
+            text: title
+        },
+
+        //subtitle: {
+        //    text: 'Source: thesolarfoundation.com'
+        //},
+
+        yAxis: {
+            title: {
+                text: yAxistitle
+            }
+        },
+
+        xAxis: {
+            //categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            categories: ['Aug 18', 'Sep 18', 'Oct 18', 'Nov 18', 'Dec 18', 'Jan 19', 'Feb 19', 'Mar 19', 'Apr 19', 'May 19', 'Jun 19', 'Jul 19'],
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+             //   pointStart: 2015
+            }
+        },
+
+       series: series_data,
+
+        //series: [{
+        //    name: 'Benue',
+        //    data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        //}, {
+        //    name: 'Ebonyi',
+        //    data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+        //}, {
+        //    name: 'Delta',
+        //    data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+        //}, {
+        //    name: 'Ondo',
+        //    data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+        //}, {
+        //    name: 'Plateau',
+        //    data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+        //}],
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+
+    });
+}
+
+
 function build_side_by_side_column_chart(container_id, title, yAxistitle, xaxisCategory, series_data) {
     Highcharts.chart(container_id, {
         chart: {
@@ -822,10 +1072,144 @@ function build_stacked_bar_with_percent(container_id, title, xaxis_categories, y
     });
 }
 
+
+
+function build_stacked_bar_with_drilldown_horizontal(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data, selectedIP) {
+
+    if (selectedIP.length > 0) {
+        parent_series_data.forEach(p => {
+                p.data = (p.data || []).filter(d =>  selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip))); 
+        })
+    }
+
+
+    var drilldownTitle = title;
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Go back'
+        }
+    });
+    Highcharts.chart(container_id, {
+        credits: {
+            enabled: true
+        },
+        chart: {
+            type: 'bar',
+            events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+      
+        title: {
+            text: title
+        },
+
+        xAxis: {
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
+            labels: {
+                rotation: -45,
+              
+            }
+        },
+
+
+     
+
+        yAxis: {
+            min: 0,
+            title: {
+                text: yaxis_title
+            },
+            labels: {
+                format: '{value}'
+            },
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facility(ies)';
+            }
+        },
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        color: 'white'
+                      // textShadow: '0 0 2px black, 0 0 2px black'
+                    },
+                    format: '{y} %',
+                    //formatter: function () {
+                    //    if (this.y > 0)
+                    //        return this.y;
+
+                    //}
+                },
+                stacking: 'normal'
+            }
+        },
+        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a', '#b71c1c', '#33691e', '#673ab7', '#78909c'],
+
+        series: parent_series_data,
+        drilldown: {
+            activeDataLabelStyle: {
+                color: 'white',
+                fontSize: '9px',
+                fontWeight: 'normal',
+                textDecoration: "none",
+              //  textShadow: '0 0 0px black, 0 0 0px black',
+              
+            },
+            series: child_series_data
+        }
+    });
+}
+
+
 function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data) {
     Highcharts.chart(container_id, {
         credits: {
-            enabled: false
+            enabled: true
         },
         chart: {
             type: 'column'
@@ -850,9 +1234,8 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
         },
         tooltip: {
             formatter: function () {
-                return '<b>' + this.x + '</b><br/>' +
-                    this.series.name + ': ' + this.y + '<br/>' +
-                    'Total: ' + this.point.stackTotal;
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '<br/>'; 
             }
         },
 
@@ -862,27 +1245,613 @@ function build_stacked_bar_with_drilldown(container_id, title, subtitle, yaxis_t
                 dataLabels: {
                     enabled: true,
                     style: {
-                        color: 'white',
-                        textShadow: '0 0 2px black, 0 0 2px black'
-                    }
+                        color: 'white'
+                        // textShadow: '0 0 2px black, 0 0 2px black'
+                    },
+                   
                 },
                 stacking: 'normal'
             }
         },
-        colors: ['red', 'green'],
+        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a', '#b71c1c', '#33691e', '#673ab7', '#78909c'],
 
         series: parent_series_data,
         drilldown: {
             activeDataLabelStyle: {
                 color: 'white',
-                textShadow: '0 0 2px black, 0 0 2px black'
+                fontSize: '9px',
+                fontWeight: 'normal',
+                textDecoration: "none",
+                //  textShadow: '0 0 0px black, 0 0 0px black',
+
             },
             series: child_series_data
         }
     });
 }
 
-function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data) {
+function build_stacked_bar_with_drilldown_completeness(container_id, title, subtitle, yaxis_title, xaxis_categories, parent_series_data, child_series_data, selectedIP) {
+
+    if (selectedIP.length > 0) {
+        parent_series_data.forEach(p => {
+            p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
+        })
+    }
+
+    var drilldownTitle = title;
+
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Go back'
+        }
+    });
+
+    Highcharts.chart(container_id, {
+        credits: {
+            enabled: true
+        },
+        chart: {
+            type: 'column',
+            events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+        subtitle: {
+            text: subtitle,
+        },
+        title: {
+            text: title
+        },
+
+        xAxis: {
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
+        },
+
+        yAxis: {
+            min: 0,
+            title: {
+                text: yaxis_title
+            },
+            labels: {
+                format: '{value}'
+            },
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities+ ' Facility(ies)';
+            }
+        },
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        color: 'white'
+                        // textShadow: '0 0 2px black, 0 0 2px black'
+                    },
+                    format: '{y}%',
+
+                },
+                stacking: 'normal'
+            }
+        },
+        colors: ['#ffa726', '#42a5f5', '#26a69a', '#ec407a', '#b71c1c', '#33691e', '#673ab7', '#78909c'],
+
+        series: parent_series_data,
+        drilldown: {
+            activeDataLabelStyle: {
+                color: 'white',
+                fontSize: '9px',
+                fontWeight: 'normal',
+                textDecoration: "none",
+                //  textShadow: '0 0 0px black, 0 0 0px black',
+
+            },
+            series: child_series_data
+        }
+    });
+}
+
+function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
+
+    if (selectedIP.length > 0) {
+        principal_data_array.forEach(p => {
+            p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
+        })
+    }
+    var drilldownTitle = title;
+    Highcharts.chart(container_id, {
+        chart: {
+            type: 'column', events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        subtitle: {
+            text: 'Click on the bars to drill down',
+        },
+        legend: {
+            enabled: true,
+        },
+        //tooltip: {
+        //    shared: true
+        //},
+
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facility(ies)';
+            }
+        },
+
+
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                },
+
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        xAxis: {
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
+        },
+
+        yAxis: [
+            {
+                title: {
+                    text: y1_title,
+                },
+                labels: {
+                    format: '{value:,.0f}',
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            }],
+        series: principal_data_array,
+        drilldown: {
+            _animation: {
+                duration: 2000
+            },
+            series: child_data
+        }
+    });
+}
+
+
+
+function build_side_by_side_bar_chart_with_DrillDown_Reporting(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
+
+    if (selectedIP.length > 0) {
+        principal_data_array.forEach(p => {
+            p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
+        })
+    }
+    var drilldownTitle = title;
+    Highcharts.chart(container_id, {
+        chart: {
+            type: 'column', events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        subtitle: {
+            text: 'Click on the bars to drill down',
+        },
+        legend: {
+            enabled: true,
+        },
+        //tooltip: {
+        //    shared: true
+        //},
+
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.facilities + ' Facility(ies)';
+            }
+        },
+
+
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                },
+
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        xAxis: {
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
+        },
+
+        yAxis: [
+            {
+                title: {
+                    text: y1_title,
+                },
+                labels: {
+                    format: '{value:,.0f}',
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            }],
+        series: principal_data_array,
+        drilldown: {
+            _animation: {
+                duration: 2000
+            },
+            series: child_data
+        }
+    });
+}
+
+
+
+function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_title, principal_data_array, child_data, selectedIP) {
+
+  
+    var drilldownTitle = title;
+    Highcharts.chart(container_id, {
+        chart: {
+            type: 'column', events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        subtitle: {
+            text: 'Click on the bars to drill down',
+        },
+        legend: {
+            enabled: true,
+        },
+        //tooltip: {
+        //    shared: true
+        //},
+
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.facilities + ' Facility(ies)';
+            }
+        },
+
+
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                },
+               
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        xAxis: {
+            type: 'category',
+            title: {
+                enabled: true,
+                text: 'States'
+            },
+        },
+
+        yAxis: [
+            {
+                title: {
+                    text: y1_title,
+                },
+                labels: {
+                    format: '{value:,.0f}',
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            }],
+        series: principal_data_array,
+        drilldown: {
+            _animation: {
+                duration: 2000
+            },
+            series: child_data
+        }
+    });
+}
+
+
+
+function build_side_by_side_bar_chart_with_DrillDown_Completeness(container_id, title, y1_title, principal_data_array, child_data,  selectedIP) {
+   
+    if (selectedIP.length > 0) {
+        principal_data_array.forEach(p => {
+            p.data = (p.data || []).filter(d => selectedIP.length == 0 || d.ips.every(ip => selectedIP.includes(ip)));
+        })
+    }
+    var drilldownTitle = title;
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Go back'
+        }
+    });
+    Highcharts.chart(container_id, {
+        chart: {
+            type: 'column',
+            events: {
+                drilldown: function (e) {
+                    var chart = this;
+
+                    if (chart.series[0].options._levelNumber == 0) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by Facilities in " + e.point.name });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'Facilities'
+                        });
+                    }
+                },
+                drillup: function (e) {
+                    var chart = this;
+                    if (chart.series[0].options._levelNumber == 0) {
+                        //  chart.setTitle({ text: drilldownTitle + " by LGAs in " + e.point.name });
+                    } else if (chart.series[0].options._levelNumber == 1) {
+                        chart.setTitle({ text: drilldownTitle + " by States" });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'States'
+                        });
+                    } else if (chart.series[0].options._levelNumber == 2) {
+                        chart.setTitle({ text: drilldownTitle + " by LGAs " });
+                        chart.xAxis[0].axisTitle.attr({
+                            text: 'LGAs'
+                        });
+                    }
+
+
+                }
+            }
+        },
+        title: {
+            text: title,
+            style: {
+                fontSize: '12px'
+            }
+        },
+        subtitle: {
+            text: 'click on bars to drill down',
+        },
+        legend: {
+            enabled: true,
+        },
+        tooltip: {
+            shared: true
+        },
+
+
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{y} %',
+                },
+              
+              //  format: '{x} %',
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b><br>' +
+                    this.series.name + ': ' + this.y + '%<br/>'
+                    + this.point.absolute +
+                    ' of ' + this.point.entries + ' entries in ' + this.point.facilities + ' Facility(ies)';
+            }
+        },
+        colors: ['steelblue', 'red', 'sandybrown'],
+        xAxis: {
+            type: 'category',      
+              title: {
+                enabled: true,
+                text: 'States'
+            },
+        },
+        yAxis: [
+            {
+                title: {
+                    text: y1_title,
+                },
+              
+                labels: {
+                    format: '{value}'
+                },
+                //max: Math.max.apply(Math, parent_data),
+                min: 0
+            }],
+        series: principal_data_array,
+        drilldown: {
+            _animation: {
+                duration: 2000
+            },
+            series: child_data
+        }
+    });
+}
+
+
+
+function build_side_by_side_bar_chart_with_DrillDown_Completeness_Rate(container_id, title, y1_title, principal_data_array, child_data) {
 
     Highcharts.chart(container_id, {
         chart: {
@@ -895,7 +1864,7 @@ function build_side_by_side_bar_chart_with_DrillDown(container_id, title, y1_tit
             }
         },
         subtitle: {
-            text: 'Click the bars to drill down',
+            text: 'click on the states bar to drill down',
         },
         legend: {
             enabled: true,
@@ -943,7 +1912,7 @@ function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title
 
     Highcharts.setOptions({
         lang: {
-            drillUpText: '<< go back to {series.name}'
+            drillUpText: '<< Go back to {series.name}'
         }
     });
 
@@ -995,6 +1964,7 @@ function build_bar_chart_dual_axis_with_drill_down(container_id, title, y1_title
                 },
                 title: {
                     text: y2_title,
+                    rotation: 270,
                 },
                 opposite: true,
                 max: 100,
@@ -1082,6 +2052,47 @@ function setChart(chartId, series_data) {
         //drilledDownChart.applyDrilldown();
     }    
 }
+function closeDataTableButton(areaId){
+    // Select the node that will be observed for mutations
+    var tabContentNode = document.getElementById(areaId);
+    var closeDiv = document.getElementById('closeDiv');
+
+    // Options for the observer (which mutations to observe)
+    var config = { childList: true, subtree: true };
+
+    // Callback function to execute when mutations are observed
+    var callback = function (mutationsList, observer) {
+        for (var mutation of mutationsList) {
+            var $addedNodes = $(mutation.addedNodes);
+            var $dataTableDiv = $(mutation.addedNodes).filter(".highcharts-data-table");
+            if ($dataTableDiv.length > 0 || ($addedNodes.is('table') && ($dataTableDiv = $addedNodes.parent(".highcharts-data-table")).length > 0)) {
+                if (!$dataTableDiv.children("button.ndr-data-table-close").length) {
+                    $dataTableDiv.prepend(closeDiv.innerHTML);
+                    //remove all empty entries
+                  //  $dataTableDiv.find("tr:has(td:empty)").hide();
+                    ////add an appropriate y category name
+                    //var categoryName = $dataTableDiv.siblings('.ndr-chart-container').attr("data-ndr-category-name");
+                    //$dataTableDiv.find("thead tr:first-child th:first-child").html(categoryName);
+                }
+            }
+        }
+    };
+
+    // Create an observer instance linked to the callback function
+    var observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(tabContentNode, config);
+
+    //// Later, you can stop observing
+    //observer.disconnect();
+
+    //handle data table close
+    $(tabContentNode).on('click', "button.ndr-data-table-close", function (e) {
+        $(e.currentTarget).hide('fast').siblings('table').hide('fast');
+    });
+}
+
 
 $(document).on('click', '.drillup', function () {
     console.log(this);
