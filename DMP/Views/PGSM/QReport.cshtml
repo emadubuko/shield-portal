@@ -1,0 +1,71 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_pgsmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <link href="~/Scripts/Highcharts/code/css/highcharts.css" rel="stylesheet" />
+    <style>
+        html, body {
+            height: 100%
+        }
+    </style>
+
+
+}
+<h2>e-GSM Qualitative Report</h2>
+
+<div class="col-md-8">
+    <div class="row">
+
+    </div>
+
+</div>
+<div class="col-md-2">
+    <div class="" style="margin-top:15px;">
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <h5 style="text-decoration:underline;">Filter <span class="pull-right"> <a href="javascript:window.location.reload()" class="btn-sm">Refresh All <i class="glyphicon glyphicon-refresh"></i> </a></span></h5>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select id="ip" class="form-control" required>
+                        <option value="">Select IP</option>
+                        <option value="APIN">APIN</option>
+                        <option value="IHVN">IHVN</option>
+                        <option value="CIHP">CIHP</option>
+                        <option value="CCFN">CCFN</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="site">
+                        <option value="">Select Site</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts
+{
+
+}

@@ -39,204 +39,231 @@
         }
     </style>
 }
-<div class="main-content" style="padding-top: 0px;">
+    <div class="main-content" style="padding-top: 0px;">
 
-    <div class="row" id="breadcrumb">
-        <div class="col-sm-5 col-sm-push-1">
-            <ol class="breadcrumb breadcrumb-2">
-                <li><a href="/"><i class="icon-folder"></i>Home</a></li>
-                <li class="active">@ViewBag.breadcrumb</li>
-            </ol>
-        </div>
-    </div>
-
-    <div id="dmp" style="display:none">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="panel minimal" style="background-color: #ec407a;border-color:#ec407a">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <a href="@Url.Action("index", "DMP" )">
-                            <table>
-                                <tr>
-                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Management Plan</strong></td>
-                                </tr>
-                            </table>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="panel minimal" style="background-color:darkcyan; border-color:darkcyan">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <a href="#">
-                            <table>
-                                <tr>
-                                    <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
-                                    <td style="padding-left: 25px;">
-                                        <strong class="custom-heading-div">Data Quality Assessment</strong>
-                                    </td>
-                                </tr>
-                            </table>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="panel minimal" style="background-color:steelblue;border-color:steelblue">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <a href="#/">
-                            <table>
-                                <tr>
-                                    <td><i class="fa fa-history fa-2x" style="color: #fff;"></i> </td>
-                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Quality Improvement</strong> </td>
-                                </tr>
-                            </table>
-                        </a>
-                    </div>
-                </div>
+        <div class="row" id="breadcrumb">
+            <div class="col-sm-5 col-sm-push-1">
+                <ol class="breadcrumb breadcrumb-2">
+                    <li><a href="/"><i class="icon-folder"></i>Home</a></li>
+                    <li class="active">@ViewBag.breadcrumb</li>
+                </ol>
             </div>
         </div>
 
-        <div class="row">
+        <div id="dmp" style="display:none">
 
-            <div class="col-md-4">
-                <div class="panel panel-info" style="border-color:#ec407a;">
-                    <div class="panel-body" style="height: 460px;">
-                        <div class="col-sm-12">
-                            <ul class="list-item todo-list">
-                                <li>
-                                    <a href="@Url.Action("index", "DMP" )" class="btn btn-sm btn-default btn-outline" style="color:#ec407a;text-transform: capitalize">Go to Data Management Plan</a>
-                                </li>
-                            </ul>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="panel minimal" style="background-color: #ec407a;border-color:#ec407a">
+                        <div class="panel-body" style="margin-top: -15px;">
+                            <a href="@Url.Action("index", "DMP" )">
+                                <table>
+                                    <tr>
+                                        <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Management Plan</strong></td>
+                                    </tr>
+                                </table>
+                            </a>
                         </div>
-
-                        <div class="col-sm-12">
-                            <hr />
-                            <h5 style="font-weight: bold">Program Overview</h5>
-                            <p>
-                                In line with CDC’s Overview of institutionalizing a sustainable M&E system for Nigeria and developing a robust Data Management Plan for all its implementing mechanisms, the Data Management Summary (DMS) document has been developed.
-                                This document aims to harmonize all information collated from CDC-funded partners on their Data Management Processes.
-                            </p>
-                            <p> In so doing, the CDC Data Management Summary will be a standardized document where detailed information pertaining to organizational Data Management is archived, to be referenced by CDC-funded implementing partners and relevant stakeholders.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel minimal" style="background-color:darkcyan; border-color:darkcyan">
+                        <div class="panel-body" style="margin-top: -15px;">
+                            <a href="#">
+                                <table>
+                                    <tr>
+                                        <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
+                                        <td style="padding-left: 25px;">
+                                            <strong class="custom-heading-div">Data Quality Assessment</strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </a>
                         </div>
+                    </div>
+                </div>
 
+                <div class="col-lg-4">
+                    <div class="panel minimal" style="background-color:steelblue;border-color:steelblue">
+                        <div class="panel-body" style="margin-top: -15px;">
+                            <a href="#/">
+                                <table>
+                                    <tr>
+                                        <td><i class="fa fa-history fa-2x" style="color: #fff;"></i> </td>
+                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">Data Quality Improvement</strong> </td>
+                                    </tr>
+                                </table>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="panel panel-success">
-                    <!-- panel body -->
-                    <div class="panel-body" style="height: 460px;">
+            <div class="row">
 
-                        <div class="col-sm-12">
-                            <div class="dropdown col-sm-2">
-                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                    FY 2019
-                                </button>
-                                <div class="dropdown-menu">
-                                  
-                                    <a class="dropdown-item" href="/DQAFY2019Q1/index">Q1 DQA</a>
-                                </div>
-                            </div> &nbsp;&nbsp;
-                            <div class="dropdown col-sm-2">
-                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                    FY 2018
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/DQAFY2018Q4/index">Q4 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2018Q3/index">Q3 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2018Q2/index">Q2 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2018Q1/index">Q1 DQA</a>
-                                </div>
-                            </div> &nbsp;&nbsp;
-                            <div class="dropdown col-sm-2">
-                                <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                    FY 2017
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/DQAFY2017Q4/index">Q4 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2017Q2/index">Q3 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQAFY2017Q2/index">Q2 DQA</a><br />
-                                    <a class="dropdown-item" href="/DQA/index">Q1 DQA</a><br />
-                                </div>
-                            </div> &nbsp;&nbsp;
-                            @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
-                            {
+                <div class="col-md-4">
+                    <div class="panel panel-info" style="border-color:#ec407a;">
+                        <div class="panel-body" style="height: 460px;">
+                            <div class="col-sm-12">
+                                <ul class="list-item todo-list">
+                                    <li>
+                                        <a href="@Url.Action("index", "DMP" )" class="btn btn-sm btn-default btn-outline" style="color:#ec407a;text-transform: capitalize">Go to Data Management Plan</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <hr />
+                                <h5 style="font-weight: bold">Program Overview</h5>
+                                <p>
+                                    In line with CDC’s Overview of institutionalizing a sustainable M&E system for Nigeria and developing a robust Data Management Plan for all its implementing mechanisms, the Data Management Summary (DMS) document has been developed.
+                                    This document aims to harmonize all information collated from CDC-funded partners on their Data Management Processes.
+                                </p>
+                                <p> In so doing, the CDC Data Management Summary will be a standardized document where detailed information pertaining to organizational Data Management is archived, to be referenced by CDC-funded implementing partners and relevant stakeholders.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="panel panel-success">
+                        <!-- panel body -->
+                        <div class="panel-body" style="height: 460px;">
+
+                            <div class="col-sm-12">
                                 <div class="dropdown col-sm-2">
                                     <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                                        FY2016
+                                        FY 2019
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="/DQAFY2016/homepage">DQA</a><br />
-                                    </div>
-                                </div><br /><br />
-                            }
-                        </div>
 
-                        <div class="col-sm-12" style="margin-top: 20px;">
+                                        <a class="dropdown-item" href="/DQAFY2019Q1/index">Q1 DQA</a>
+                                    </div>
+                                </div> &nbsp;&nbsp;
+                                <div class="dropdown col-sm-2">
+                                    <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                        FY 2018
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/DQAFY2018Q4/index">Q4 DQA</a><br />
+                                        <a class="dropdown-item" href="/DQAFY2018Q3/index">Q3 DQA</a><br />
+                                        <a class="dropdown-item" href="/DQAFY2018Q2/index">Q2 DQA</a><br />
+                                        <a class="dropdown-item" href="/DQAFY2018Q1/index">Q1 DQA</a>
+                                    </div>
+                                </div> &nbsp;&nbsp;
+                                <div class="dropdown col-sm-2">
+                                    <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                        FY 2017
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/DQAFY2017Q4/index">Q4 DQA</a><br />
+                                        <a class="dropdown-item" href="/DQAFY2017Q2/index">Q3 DQA</a><br />
+                                        <a class="dropdown-item" href="/DQAFY2017Q2/index">Q2 DQA</a><br />
+                                        <a class="dropdown-item" href="/DQA/index">Q1 DQA</a><br />
+                                    </div>
+                                </div> &nbsp;&nbsp;
+                                @if (User.IsInRole("shield_team") || (User.IsInRole("sys_admin")))
+                                {
+                                    <div class="dropdown col-sm-2">
+                                        <button class="btn btn-sm btn-success btn-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                            FY2016
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="/DQAFY2016/homepage">DQA</a><br />
+                                        </div>
+                                    </div><br /><br />
+                                }
+                            </div>
+
+                            <div class="col-sm-12" style="margin-top: 20px;">
+                                <hr />
+                                <h5 style="font-weight: bold">Program Overview</h5>
+                                <p>
+                                    The ability to collect and report high quality data is the cornerstone of a data-driven approach for HIV program delivery. Data quality assessment gives us the true reflection of how efficient HIV program is and how close health outcomes have been achieved. As part of PEPFAR’s Accountability frame work, routine data quality assessments are required as a means of validating reported achievements.
+                                </p>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="panel panel-warning">
+                        <!-- panel body -->
+                        <div class="panel-body" style="height: 460px;">
+                            <div class="row">
+                                <div class="dropdown col-sm-2">
+                                    <button class="btn btn-sm btn-info btn-outline dropdown-toggle" type="button" data-toggle="dropdown" style="border-color:darkcyan">
+                                        FY2019
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/DQIFY2019Q1/DownloadDQITool">Q1 DQI</a>
+                                    </div>
+                                </div> &nbsp;
+                                <div class="dropdown col-sm-2">
+                                    <button class="btn btn-sm btn-info btn-outline dropdown-toggle" type="button" data-toggle="dropdown" style="border-color:darkcyan">
+                                        FY2018
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/DQIFY2018Q4/DownloadDQITool">Q4 DQI</a><br />
+                                        <a class="dropdown-item" href="/DQIFY2018Q3/DownloadDQITool">Q3 DQI</a><br />
+                                        <a class="dropdown-item" href="/DQIFY2018Q2/DownloadDQITool">Q2 DQI</a><br />
+                                        <a class="dropdown-item" href="/DQIFY2018Q1/DownloadDQITool">Q1 DQI</a><br />
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr />
                             <h5 style="font-weight: bold">Program Overview</h5>
                             <p>
-                                The ability to collect and report high quality data is the cornerstone of a data-driven approach for HIV program delivery. Data quality assessment gives us the true reflection of how efficient HIV program is and how close health outcomes have been achieved. As part of PEPFAR’s Accountability frame work, routine data quality assessments are required as a means of validating reported achievements.
+                                The Data Quality improvement strategy combines best practices in quality improvement to guide the implementation and monitoring of sustainable solutions to identified data quality issues. Through these efforts, methods and strategies through which data quality and reporting can be significantly improved across CDC implementing partners and facilities will be established and routinized
                             </p>
+
                         </div>
-
-
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="panel panel-warning">
-                    <!-- panel body -->
-                    <div class="panel-body" style="height: 460px;">
-                        <div class="row">
-                            <div class="dropdown col-sm-2">
-                                <button class="btn btn-sm btn-info btn-outline dropdown-toggle" type="button" data-toggle="dropdown" style="border-color:darkcyan">
-                                    FY2019
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/DQIFY2019Q1/DownloadDQITool">Q1 DQI</a>
-                                </div>
-                            </div> &nbsp;
-                            <div class="dropdown col-sm-2">
-                                <button class="btn btn-sm btn-info btn-outline dropdown-toggle" type="button" data-toggle="dropdown" style="border-color:darkcyan">
-                                    FY2018
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/DQIFY2018Q4/DownloadDQITool">Q4 DQI</a><br />
-                                    <a class="dropdown-item" href="/DQIFY2018Q3/DownloadDQITool">Q3 DQI</a><br />
-                                    <a class="dropdown-item" href="/DQIFY2018Q2/DownloadDQITool">Q2 DQI</a><br />
-                                    <a class="dropdown-item" href="/DQIFY2018Q1/DownloadDQITool">Q1 DQI</a><br />
-                                </div>
+            <div class="row">
+
+                <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
+                    <div class="col-sm-4">
+                        <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                            <div class="panel-body" style="margin-top: -15px;">
+                                <table>
+                                    <tr>
+                                        <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                        <td style="padding-left: 25px;"><strong class="custom-heading-div">HTS Assessment</strong></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-
-                        <hr />
-                        <h5 style="font-weight: bold">Program Overview</h5>
-                        <p>
-                            The Data Quality improvement strategy combines best practices in quality improvement to guide the implementation and monitoring of sustainable solutions to identified data quality issues. Through these efforts, methods and strategies through which data quality and reporting can be significantly improved across CDC implementing partners and facilities will be established and routinized
-                        </p>
-
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="row">
-
-            <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="col-sm-4">
-                    <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                    <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
                         <div class="panel-body" style="margin-top: -15px;">
                             <table>
                                 <tr>
-                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">HTS Assessment</strong></td>
+                                    <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
+                                    <td style="padding-left: 25px;"> <strong class="custom-heading-div">RADET Report</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4" style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
+                    <div class="panel minimal teal-bg" style="background-color:deepskyblue; border-color:deepskyblue">
+                        <div class="panel-body" style="margin-top: -15px;">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
+                                    <td style="padding-left: 25px;"> <strong class="custom-heading-div">SIMS</strong></td>
                                 </tr>
                             </table>
                         </div>
@@ -244,143 +271,116 @@
                 </div>
             </div>
 
-            <div class="col-sm-4">
-                <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
-                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">RADET Report</strong></td>
-                            </tr>
-                        </table>
+            <div class="row">
+
+                <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
+                    <div class="col-sm-4">
+                        <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                            <div class="panel-body">
+                                <hr />
+                                <h5 style="font-weight: bold">Overview</h5>
+                                <p></p>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-sm-4" style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
-                <div class="panel minimal teal-bg" style="background-color:deepskyblue; border-color:deepskyblue">
-                    <div class="panel-body" style="margin-top: -15px;">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
-                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">SIMS</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-
-            <div style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
                 <div class="col-sm-4">
-                    <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                    <div class="panel panel-success pnl-height">
                         <div class="panel-body">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="@Url.Action("RADETScoreCard","RadetAnalytics")" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize">Go to RADET Report</a>
+                                </li>
+                            </ul>
                             <hr />
                             <h5 style="font-weight: bold">Overview</h5>
-                            <p></p>
+                            <p>Retention and Audit Determination Tool (RADET)</p>
+                            <p>
+                                The PEPFAR Nigeria SI TWG commenced current on treatment audit using the RADET in October 2014.
+                                Aim was to determine the accurate total number of patients currently on treatment (as at September 30th 2014).
+                                The process required the implementing partners to submit a line list of all clients enrolled on ART since the beginning of the PEPFAR program
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-sm-4" style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
+                    <div class="panel panel-default pnl-height" style="border-color:deepskyblue">
+                        <div class="panel-body">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a class="btn btn-sm btn-default btn-outline disabled" style="text-transform: capitalize;color:deepskyblue;border-color:deepskyblue">Go to SIMS</a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <h5 style="font-weight: bold">Overview</h5>
+                            <p>Site Monitoring Systems (SIMS)</p>
+                            <p>
+                                SIMS is PEPFAR/CDC Site Monitoring System with a goal of standardizing clinical site quality monitoring by PEPFAR/CDC in-country staff through assessment and scoring of site performance on key program area elements.
+                                SIMS is a comprehensive yet rapid assessment that focus on issues that directly impact service quality
+                            </p>
+                            <a style="text-decoration:underline; color:blue" href="https://data.pepfar.net/reference/Global_SMS_summary_and_21_countries_Nov_2014_v5.21.pdf" target="_blank">Global SIMS summary in 21 countries (Nov 2014)</a>
+                            <br />
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-sm-4">
-                <div class="panel panel-success pnl-height">
-                    <div class="panel-body">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a href="@Url.Action("RADETScoreCard","RadetAnalytics")" class="btn btn-sm btn-success btn-outline" style="text-transform: capitalize">Go to RADET Report</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Overview</h5>
-                        <p>Retention and Audit Determination Tool (RADET)</p>
-                        <p>
-                            The PEPFAR Nigeria SI TWG commenced current on treatment audit using the RADET in October 2014.
-                            Aim was to determine the accurate total number of patients currently on treatment (as at September 30th 2014).
-                            The process required the implementing partners to submit a line list of all clients enrolled on ART since the beginning of the PEPFAR program
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-4" style="visibility:@(User.IsInRole("sys_admin") || User.IsInRole("shield_team") ? "visible" : "hidden" )">
-                <div class="panel panel-default pnl-height" style="border-color:deepskyblue">
-                    <div class="panel-body">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a class="btn btn-sm btn-default btn-outline disabled" style="text-transform: capitalize;color:deepskyblue;border-color:deepskyblue">Go to SIMS</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Overview</h5>
-                        <p>Site Monitoring Systems (SIMS)</p>
-                        <p>
-                            SIMS is PEPFAR/CDC Site Monitoring System with a goal of standardizing clinical site quality monitoring by PEPFAR/CDC in-country staff through assessment and scoring of site performance on key program area elements.
-                            SIMS is a comprehensive yet rapid assessment that focus on issues that directly impact service quality
-                        </p>
-                        <a style="text-decoration:underline; color:blue" href="https://data.pepfar.net/reference/Global_SMS_summary_and_21_countries_Nov_2014_v5.21.pdf" target="_blank">Global SIMS summary in 21 countries (Nov 2014)</a>
-                        <br />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <div id="outcome" style="display:none">
-        <div class="row">
-
-            <div class="col-sm-4">
-                <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Test & Start Evaluation</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
-                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">Community ART Evaluation</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="panel minimal" style="background-color:steelblue;border-color:steelblue">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
-                                <td style="padding-left: 25px;"> <strong class="custom-heading-div">Pediatric Evaluation</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <div class="row">
 
-            <div class="col-sm-4">
-                <div class="panel panel-info pnl-height" style="border-color:darkorange">
-                    <div class="panel-body">
-                        Outcome evaluation study for ART &quot;Test and Start.&quot; - Nigeria multi-Center ART Study (NCAS).
+
+        <div id="outcome" style="display:none">
+            <div class="row">
+
+                <div class="col-sm-4">
+                    <div class="panel minimal info-bg" style="background-color: darkorange;border-color:darkorange">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Test & Start Evaluation</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel minimal teal-bg" style="background-color:#029b17; border-color:#029b17">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
+                                    <td style="padding-left: 25px;"> <strong class="custom-heading-div">Community ART Evaluation</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel minimal" style="background-color:steelblue;border-color:steelblue">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-clock-o fa-2x" style="color: #fff;"></i></td>
+                                    <td style="padding-left: 25px;"> <strong class="custom-heading-div">Pediatric Evaluation</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-4">
+                    <div class="panel panel-info pnl-height" style="border-color:darkorange">
+                        <div class="panel-body">
+                            Outcome evaluation study for ART &quot;Test and Start.&quot; - Nigeria multi-Center ART Study (NCAS).
                             This study aims to
                             <div style="margin-left:10px;">
                                 <span> •	To determine proportion of patients with viral load suppression at  24 weeks after initiation of ART, using the &quot;Test and Start&quot; approach </span><br />
@@ -396,344 +396,387 @@
                             </div>
                             <div style="margin-left:10px;">
                                 <span> •	To determine providers’ perspectives of factors contributing to attrition.</span>
-                            </div> 
-                        <a href="~/Resources/protocols/Protocol version 1.4_revised Test and Start.pdf"
-                           style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="panel panel-success pnl-height">
-                    <div class="panel-body">
-                        <p>To help Nigeria improve ART uptake, the PEPFAR HIV program in Nigeria has proposed community-based ART (CoART) models. This alternative to the conventional facility-based ART model is expected to expand access to free treatment and improve quality clinical care. The CoART model also has the potential to decongest the facilities in which ART is provided allowing health care provider time to be focused on patients with more complex disease progression and/or comorbidities who need it. </p>
-
-                        <p>This outcome evaluation of Community-based Antiretroviral Therapy (CoART) Program in Nigeria is to evaluate CoART program performance in achieving the short-term goals of improving HIV treatment uptake and maintenance within the community essential for long-term attainment of UNAIDS 90-90-90 goals <br />
-                            <a href="~/Resources/protocols/Nigeria CoART outcome evaluation protocol.pdf"
+                            </div>
+                            <a href="~/Resources/protocols/Protocol version 1.4_revised Test and Start.pdf"
                                style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
-                        </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-sm-4">
-                <div class="panel panel-warning pnl-height">
-                    <div class="panel-body">
-                        <p>The United States President’s Emergency Plan for AIDS Relief (PEPFAR) has pioneered the expansion of antiretroviral treatment (ART) in Nigeria since 2004. As at the end of the fiscal year 2016, 34,695 children aged &lt;15 years and 10, 402 adolescents age 15 – 19 years were currently receiving life-saving ART across all PEPFAR sites in Nigeria. While Nigeria routinely reports programmatic data to meet PEPFAR’s reporting requirements, the outcomes of children and adolescents receiving ART in PEPFAR sites have not been systematically assessed</p>
-                        <p>Hence, this study aims to determine treatment outcomes and 12 months retention ART of human immunodeficiency virus (HIV)-infected children and adolescents initiated on ART in Nigeria in PEPFAR sites and proportion virally suppressed</p>
-                        <a href="~/Resources/protocols/protocol_outcome evaluation of children and adolescents on ART.pdf"
-                           style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
+                <div class="col-sm-4">
+                    <div class="panel panel-success pnl-height">
+                        <div class="panel-body">
+                            <p>To help Nigeria improve ART uptake, the PEPFAR HIV program in Nigeria has proposed community-based ART (CoART) models. This alternative to the conventional facility-based ART model is expected to expand access to free treatment and improve quality clinical care. The CoART model also has the potential to decongest the facilities in which ART is provided allowing health care provider time to be focused on patients with more complex disease progression and/or comorbidities who need it. </p>
+
+                            <p>
+                                This outcome evaluation of Community-based Antiretroviral Therapy (CoART) Program in Nigeria is to evaluate CoART program performance in achieving the short-term goals of improving HIV treatment uptake and maintenance within the community essential for long-term attainment of UNAIDS 90-90-90 goals <br />
+                                <a href="~/Resources/protocols/Nigeria CoART outcome evaluation protocol.pdf"
+                                   style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    </div>
-
-    <div id="survey" style="display:none">
-        <div class="row">
-
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-9">
-                <div class="panel minimal" style="background-color: steelblue;border-color:steelblue">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Mapping and Population Size estimation of Key Populations in Nigeria </strong></td>
-                            </tr>
-                        </table>
+                <div class="col-sm-4">
+                    <div class="panel panel-warning pnl-height">
+                        <div class="panel-body">
+                            <p>The United States President’s Emergency Plan for AIDS Relief (PEPFAR) has pioneered the expansion of antiretroviral treatment (ART) in Nigeria since 2004. As at the end of the fiscal year 2016, 34,695 children aged &lt;15 years and 10, 402 adolescents age 15 – 19 years were currently receiving life-saving ART across all PEPFAR sites in Nigeria. While Nigeria routinely reports programmatic data to meet PEPFAR’s reporting requirements, the outcomes of children and adolescents receiving ART in PEPFAR sites have not been systematically assessed</p>
+                            <p>Hence, this study aims to determine treatment outcomes and 12 months retention ART of human immunodeficiency virus (HIV)-infected children and adolescents initiated on ART in Nigeria in PEPFAR sites and proportion virally suppressed</p>
+                            <a href="~/Resources/protocols/protocol_outcome evaluation of children and adolescents on ART.pdf"
+                               style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-sm-2">
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-9">
-                <div class="panel panel-warning pnl-height">
-                    <div class="panel-body">
-                        <p>The goal of this activity is to obtain population size estimate for key populations including Female Sex Workers (FSWs), People Who Inject Drugs (PWID) and Men who Have sex with Men (MSM) in 6+1 states (Lagos, Benue, Nasarawa, Cross River, Rivers, and Akwa Ibom, + FCT) of Nigeria using empirical methods.</p>
-                        <p>
-                            The overarching goal of this process is to obtain state-level population size estimate (PSE) of KP (MSM, FSW, and PWID) in the 6+1 States in Nigeria using multiple-source capture-recapture-MS-CRC. Below are the expected strategic outcomes: <br />
-                            <span> • Identify on earth surface and, where appropriate, characterize the type of active Key Population hotspots in the 6+1 PEPFAR scale-up states </span><br />
-                            <span> • Obtain sex and age-disaggregated PSE of PWID and age-disaggregated PSE of FSW and MSM in the 6+1 PEPFAR scale-up states  </span><br />
-                        </p>
-                        <p>
-                            Multiple-source capture-recapture methodology was adopted to be used to estimate the population size of FSW, MSM and PWID. This method determines population size estimates based on identifying individuals who appear in one, two, three or more “captures” within a specified time frame. Individuals will be “tagged” and in each round, we will ascertain the aggregate number of those who are newly tagged or are “recaptures” from previous round(s). This method allows estimation of the number who have not been captured and then uses this information on the “unobserved” with the “observed” to estimate the total key population size. Adding sources to traditional capture-recapture studies strengthens the design and produces more robust estimates across these KP sub-groups.
-                            This activity have been designed to implement the following key data collection activities in sequence; 1. Formative assessment 2. Hotspot mapping and validation 3. Three round Venue based capture recapture 4. One round non-venue based capture recapture.
-                        </p>
-
-                        <a href="~/Resources/protocols/Mapping and Size Estimation of Key Populations in Nigeria.pdf"
-                           style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-1"></div>
-
-        </div>
-    </div>
-
-    <div id="vl_survey" style="display:none">
-        <div class="row">
-
-            <div class="col-sm-2"></div>
-
-            <div class="col-sm-8">
-                <div class="panel minimal" style="background-color: steelblue;border-color:steelblue">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Viral Load Sentinel Survey </strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-2">
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-sm-2"></div>
-
-            <div class="col-sm-8">
-                <div class="panel panel-warning pnl-height">
-                    <div class="panel-body">
-                        <p>
-                            Currently, about 3.4 million people in Nigeria are estimated to be living with HIV/AIDS, and about 1.6
-                            million are in need of ART.Anti-Retroviral Therapy (ART). In line with the Joint United Nations
-                            Programme on HIV/AIDS (UNAIDS) identification of the VLS as a key component of its Fast Track
-                            strategy targets, termed “90-90-90” and the World Health Organization (WHO) recommendation for
-                            routine viral load monitoring to diagnose and confirm treatment failure, it is critical that programs
-                            be able to monitor Viral Load Suppression (VLS) and HIV drug resistance (HIVDR) among People
-                            Living with HIV (PLHIV) receiving treatment for the purposes of program management, monitoring
-                            and evaluation (M&E), and surveillance. In addition, the routine monitoring of VLS and HIV DR allows
-                            clinicians to identify PLHIV who are failing treatment, understand the HIV drug resistance among
-                            them, and intervene, reducing the probability of poor HIV-related outcomes and preventing
-                            /minimizing the development of HIV drug resistance (HIVDR). However, accurate national estimates
-                            on these essential indicators in Nigeria are not available
-                        </p>
-                        <p>
-                            The purpose of this survey is <br />
-                            <span>
-                                1. To estimate the national and regional prevalence of VLS and of HIVDR
-                                among PLHIVs on ART in Nigeria
-                            </span><br />
-                            <span>
-                                2. To estimate the national and regional prevalence of viral suppression
-                                among paediatric PLHIV (&lt;15 years) receiving ART for at least 12 months, and
-                            </span><br />
-                            <span>
-                                3. To estimate the national and regional prevalence of acquired HIV
-                                drug resistance among adult and child PLHIVs receiving ART for at least 12
-                                months with VL≥1000 copies/ml
-                            </span>
-                        </p>
-
-                        <a href="~/Resources/protocols/VLS and HIV DR Survey Protocol.pdf"
-                           style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-2"></div>
-
-        </div>
-    </div> 
-
-    <div id="hiv_aid" style="display:none">
-
-        <div class="row">
-
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-7">
-                <div class="panel minimal" style="background-color: darkorange;border-color:darkorange">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">HIV/AIDS Monitoring and Evaluation </strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-             
-        </div>
-
-        <div class="row">
-            <div class="col-lg-1"> </div>
-
-            <div class="col-sm-7">
-                <div class="panel panel-info" style="border-color:darkorange">
-                    <div class="panel-body">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize">Go to HIV/AIDS Monitoring and Evaluation</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Program Overview</h5>
-                        <p>The HIV/AIDS program evaluation Protocol is a strategic document which will monitor and evaluate the HIV/AIDS programs in Nigeria, as well as outline how the program evaluation results and findings will be used for the programs improvement and to inform policy decision making. It will be used to ascertain if the HIV/AIDS Nigeria Program is helping the country reach a sustainable national HIV/AIDS program model. The plan will be instrumental in identifying the key factors contributing to or impeding program results, and also allow for program adjustment recommendations. The evaluation process will aid all stakeholders in gaining insight, ensuring best practices, assessing effects and informing relevant decisions. With consideration of the 90-90-90 goal, evaluation is necessary for all HIV/AIDS programs.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="smr" style="display:none">
-        <div class="row">
-
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-5">
-                <div class="panel minimal" style="background-color: coral;border-color:coral">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly Reporting</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-5">
-                <div class="panel minimal" style="background-color: darkturquoise;border-color:darkturquoise">
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
-                                <td style="padding-left: 25px;"><strong style="font-size: 18px;color:#fff">Monthly Performance Monitoring  Reporting</strong></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-1"> </div>
+        <div id="survey" style="display:none">
+            <div class="row">
 
-            <div class="col-sm-5">
-                <div class="panel panel-info" style="border-color:coral">
-                      
-                    <div class="panel-body" style="height: 340px;">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a href="@Url.Action("Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:coral; border-color:coral">Go to Semi Monthly Report</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Overview</h5>
-                        <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
-                        <br /><br /><br />
+                <div class="col-sm-1"></div>
+
+                <div class="col-sm-9">
+                    <div class="panel minimal" style="background-color: steelblue;border-color:steelblue">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Mapping and Population Size estimation of Key Populations in Nigeria </strong></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
+
+                <div class="col-sm-2">
+                </div>
+
             </div>
 
-            <div class="col-sm-5">
-                <div class="panel panel-info" style="border-color:darkturquoise">
-                    
-                    <div class="panel-body" style="height: 340px;">
-                        <ul class="list-item todo-list">
-                            <li>
-                                <a href="@Url.Action("GSMUploadTracker", "MPM" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkturquoise; border-color:darkturquoise">Go to Monthly Performance Monitoring</a>
-                            </li>
-                        </ul>
-                        <hr />
-                        <h5 style="font-weight: bold">Overview</h5>
-                        <p>
-                            CDC Nigeria applies enhanced monitoring approach to support its implementing partners for improved understanding and monitoring of the PEPFAR program being implemented. With enhanced monitoring, CDC Nigeria worked with its implementing partners on the additional and custom indicators to be reported more frequently than quarterly for improved monitoring impact. These indicators have been developed into the Monthly Performance Monitoring (MPM) template. The template incorporates the data entry page for indicators by health facilities and across program areas with an interactive dashboard. The MPM will be submitted on the 15th day of the following month
-                        </p>
+            <div class="row">
+
+                <div class="col-sm-1"></div>
+
+                <div class="col-sm-9">
+                    <div class="panel panel-warning pnl-height">
+                        <div class="panel-body">
+                            <p>The goal of this activity is to obtain population size estimate for key populations including Female Sex Workers (FSWs), People Who Inject Drugs (PWID) and Men who Have sex with Men (MSM) in 6+1 states (Lagos, Benue, Nasarawa, Cross River, Rivers, and Akwa Ibom, + FCT) of Nigeria using empirical methods.</p>
+                            <p>
+                                The overarching goal of this process is to obtain state-level population size estimate (PSE) of KP (MSM, FSW, and PWID) in the 6+1 States in Nigeria using multiple-source capture-recapture-MS-CRC. Below are the expected strategic outcomes: <br />
+                                <span> • Identify on earth surface and, where appropriate, characterize the type of active Key Population hotspots in the 6+1 PEPFAR scale-up states </span><br />
+                                <span> • Obtain sex and age-disaggregated PSE of PWID and age-disaggregated PSE of FSW and MSM in the 6+1 PEPFAR scale-up states  </span><br />
+                            </p>
+                            <p>
+                                Multiple-source capture-recapture methodology was adopted to be used to estimate the population size of FSW, MSM and PWID. This method determines population size estimates based on identifying individuals who appear in one, two, three or more “captures” within a specified time frame. Individuals will be “tagged” and in each round, we will ascertain the aggregate number of those who are newly tagged or are “recaptures” from previous round(s). This method allows estimation of the number who have not been captured and then uses this information on the “unobserved” with the “observed” to estimate the total key population size. Adding sources to traditional capture-recapture studies strengthens the design and produces more robust estimates across these KP sub-groups.
+                                This activity have been designed to implement the following key data collection activities in sequence; 1. Formative assessment 2. Hotspot mapping and validation 3. Three round Venue based capture recapture 4. One round non-venue based capture recapture.
+                            </p>
+
+                            <a href="~/Resources/protocols/Mapping and Size Estimation of Key Populations in Nigeria.pdf"
+                               style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
+                        </div>
                     </div>
                 </div>
+
+                <div class="col-sm-1"></div>
+
             </div>
         </div>
-    </div>
 
-    <div id="admin" style="display:none">
-        <div class="row">
-            <div class="col-sm-1"> </div>
+        <div id="vl_survey" style="display:none">
+            <div class="row">
 
-            <div class="col-sm-5">
-                <div class="panel panel-default" style="border-color:#ec407a">
-                    <div class="panel-heading clearfix" style="background-color: #ec407a;border-color:#ec407a; color:#fff">
-                        <h4 class="panel-title">Admin page</h4>
+                <div class="col-sm-2"></div>
+
+                <div class="col-sm-8">
+                    <div class="panel minimal" style="background-color: steelblue;border-color:steelblue">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Viral Load Sentinel Survey </strong></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <!-- panel body -->
-                    <div class="panel-body">
-                        <ul class="list-item mailbox-list">
-                            <li>
-                                <a href=@Url.Action("index", "Organization" ) style="text-transform: capitalize;color: #ec407a">
-                                    <i class="fa fa-bank"></i><span class="title">&nbsp; &nbsp;View List of Implementing Partners</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href=@Url.Action("index", "HealthFacility" ) style="text-transform: capitalize;color: #ec407a">
-                                    <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;View List of Health Facilities</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href=@Url.Action("DownloadNDRFacilities", "HealthFacility" ) style="text-transform: capitalize;color: #ec407a">
-                                    <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;Download Faciliting on NDR</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport" ) style="text-transform: capitalize;color: #ec407a">
-                                    <i class="fa fa-hourglass-end"></i><span class="title">&nbsp; &nbsp;View Facility Perfomance Target</span>
-                                </a>
-                            </li>
-                            @if (HttpContext.Current.User.IsInRole("sys_admin"))
-                            {
+                </div>
+
+                <div class="col-sm-2">
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-2"></div>
+
+                <div class="col-sm-8">
+                    <div class="panel panel-warning pnl-height">
+                        <div class="panel-body">
+                            <p>
+                                Currently, about 3.4 million people in Nigeria are estimated to be living with HIV/AIDS, and about 1.6
+                                million are in need of ART.Anti-Retroviral Therapy (ART). In line with the Joint United Nations
+                                Programme on HIV/AIDS (UNAIDS) identification of the VLS as a key component of its Fast Track
+                                strategy targets, termed “90-90-90” and the World Health Organization (WHO) recommendation for
+                                routine viral load monitoring to diagnose and confirm treatment failure, it is critical that programs
+                                be able to monitor Viral Load Suppression (VLS) and HIV drug resistance (HIVDR) among People
+                                Living with HIV (PLHIV) receiving treatment for the purposes of program management, monitoring
+                                and evaluation (M&E), and surveillance. In addition, the routine monitoring of VLS and HIV DR allows
+                                clinicians to identify PLHIV who are failing treatment, understand the HIV drug resistance among
+                                them, and intervene, reducing the probability of poor HIV-related outcomes and preventing
+                                /minimizing the development of HIV drug resistance (HIVDR). However, accurate national estimates
+                                on these essential indicators in Nigeria are not available
+                            </p>
+                            <p>
+                                The purpose of this survey is <br />
+                                <span>
+                                    1. To estimate the national and regional prevalence of VLS and of HIVDR
+                                    among PLHIVs on ART in Nigeria
+                                </span><br />
+                                <span>
+                                    2. To estimate the national and regional prevalence of viral suppression
+                                    among paediatric PLHIV (&lt;15 years) receiving ART for at least 12 months, and
+                                </span><br />
+                                <span>
+                                    3. To estimate the national and regional prevalence of acquired HIV
+                                    drug resistance among adult and child PLHIVs receiving ART for at least 12
+                                    months with VL≥1000 copies/ml
+                                </span>
+                            </p>
+
+                            <a href="~/Resources/protocols/VLS and HIV DR Survey Protocol.pdf"
+                               style="color: blue;font-weight: bold;text-decoration: underline;">Down the protocol here</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2"></div>
+
+            </div>
+        </div>
+
+        <div id="hiv_aid" style="display:none">
+
+            <div class="row">
+
+                <div class="col-sm-1"></div>
+
+                <div class="col-sm-7">
+                    <div class="panel minimal" style="background-color: darkorange;border-color:darkorange">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">HIV/AIDS Monitoring and Evaluation </strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-1"> </div>
+
+                <div class="col-sm-7">
+                    <div class="panel panel-info" style="border-color:darkorange">
+                        <div class="panel-body">
+                            <ul class="list-item todo-list">
                                 <li>
-                                    <a href=@Url.Action("index", "Profile" ) style="text-transform: capitalize;color: #ec407a">
-                                        <i class="fa fa-users">
-                                        </i><span class="title">&nbsp; &nbsp;Manage User Profiles</span>
+                                    <a class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize">Go to HIV/AIDS Monitoring and Evaluation</a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <h5 style="font-weight: bold">Program Overview</h5>
+                            <p>The HIV/AIDS program evaluation Protocol is a strategic document which will monitor and evaluate the HIV/AIDS programs in Nigeria, as well as outline how the program evaluation results and findings will be used for the programs improvement and to inform policy decision making. It will be used to ascertain if the HIV/AIDS Nigeria Program is helping the country reach a sustainable national HIV/AIDS program model. The plan will be instrumental in identifying the key factors contributing to or impeding program results, and also allow for program adjustment recommendations. The evaluation process will aid all stakeholders in gaining insight, ensuring best practices, assessing effects and informing relevant decisions. With consideration of the 90-90-90 goal, evaluation is necessary for all HIV/AIDS programs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="smr" style="display:none">
+            <div class="row">
+
+                <div class="col-sm-1"></div>
+
+                <div class="col-sm-5">
+                    <div class="panel minimal" style="background-color: coral;border-color:coral">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">Semi Monthly Reporting</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="panel minimal" style="background-color: darkturquoise;border-color:darkturquoise">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-file-text fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong style="font-size: 18px;color:#fff">Monthly Performance Monitoring  Reporting</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-1"> </div>
+
+                <div class="col-sm-5">
+                    <div class="panel panel-info" style="border-color:coral">
+
+                        <div class="panel-body" style="height: 340px;">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="@Url.Action("Dashboard", "BiWeeklyReport" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:coral; border-color:coral">Go to Semi Monthly Report</a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <h5 style="font-weight: bold">Overview</h5>
+                            <p>PEPFAR Nigeria Semi-Monthly Implementing Partner Performance Monitoring is targeted at to monitoring performance and intervening in a timely manner so that any deviant trend observed could be reversed on time based on PEPFAR’s planned pivot by doing more in scale-up LGAs and maintaining services in sustained LGAs. Data is reported at LGA for both community and facility and measured against an assigned targets.</p>
+                            <br /><br /><br />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="panel panel-info" style="border-color:darkturquoise">
+
+                        <div class="panel-body" style="height: 340px;">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="@Url.Action("GSMUploadTracker", "MPM" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:darkturquoise; border-color:darkturquoise">Go to Monthly Performance Monitoring</a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <h5 style="font-weight: bold">Overview</h5>
+                            <p>
+                                CDC Nigeria applies enhanced monitoring approach to support its implementing partners for improved understanding and monitoring of the PEPFAR program being implemented. With enhanced monitoring, CDC Nigeria worked with its implementing partners on the additional and custom indicators to be reported more frequently than quarterly for improved monitoring impact. These indicators have been developed into the Monthly Performance Monitoring (MPM) template. The template incorporates the data entry page for indicators by health facilities and across program areas with an interactive dashboard. The MPM will be submitted on the 15th day of the following month
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin" style="display:none">
+            <div class="row">
+                <div class="col-sm-1"> </div>
+
+                <div class="col-sm-5">
+                    <div class="panel panel-default" style="border-color:#ec407a">
+                        <div class="panel-heading clearfix" style="background-color: #ec407a;border-color:#ec407a; color:#fff">
+                            <h4 class="panel-title">Admin page</h4>
+                        </div>
+                        <!-- panel body -->
+                        <div class="panel-body">
+                            <ul class="list-item mailbox-list">
+                                <li>
+                                    <a href=@Url.Action("index", "Organization" ) style="text-transform: capitalize;color: #ec407a">
+                                        <i class="fa fa-bank"></i><span class="title">&nbsp; &nbsp;View List of Implementing Partners</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href=@Url.Action("index", "HealthFacility" ) style="text-transform: capitalize;color: #ec407a">
+                                        <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;View List of Health Facilities</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("DownloadNDRFacilities", "HealthFacility" ) style="text-transform: capitalize;color: #ec407a">
+                                        <i class="fa fa-h-square"></i><span class="title">&nbsp; &nbsp;Download Faciliting on NDR</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("ManageYearlyPerformanceTarget", "BiWeeklyReport" ) style="text-transform: capitalize;color: #ec407a">
+                                        <i class="fa fa-hourglass-end"></i><span class="title">&nbsp; &nbsp;View Facility Perfomance Target</span>
+                                    </a>
+                                </li>
+                                @if (HttpContext.Current.User.IsInRole("sys_admin"))
+                                {
+                                    <li>
+                                        <a href=@Url.Action("index", "Profile" ) style="text-transform: capitalize;color: #ec407a">
+                                            <i class="fa fa-users">
+                                            </i><span class="title">&nbsp; &nbsp;Manage User Profiles</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1"> </div>
+                <div class="col-sm-3">
+                    <div class="panel minimal secondary-bg">
+                        <div class="panel-body" style="padding-left: 15%;">
+                            <h1>
+                                <strong style="padding-left: 25%;">@MvcApplication.Sessions.Values.Count()</strong>
+                            </h1>
+                            <p>Active Users within the last 1 hour</p>
+                            <hr />
+                            @foreach (var item in MvcApplication.Sessions.Values)
+                            {
+                                @item <br />
                             }
-                        </ul>
-                        <hr />
+                        </div>
                     </div>
                 </div>
+
             </div>
-            <div class="col-sm-1"> </div>
-            <div class="col-sm-3">
-                <div class="panel minimal secondary-bg">
-                    <div class="panel-body" style="padding-left: 15%;">
-                        <h1>
-                            <strong style="padding-left: 25%;">@MvcApplication.Sessions.Values.Count()</strong>
-                        </h1>
-                        <p>Active Users within the last 1 hour</p>
-                        <hr />
-                        @foreach (var item in MvcApplication.Sessions.Values)
-                        {
-                            @item <br />
-                        }
+        </div>
+
+        <div id="pgsm" style="display:none">
+            <div class="row">
+
+                
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="panel minimal" style="background-color: #303f9f;border-color:#303f9f">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td><i class="fa fa-bar-chart fa-2x" style="color: #fff;"></i> </td>
+                                    <td style="padding-left: 25px;"><strong class="custom-heading-div">e-GSM DASHBOARD</strong></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
+            <div class="row">
+              
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="panel panel-info" style="border-color:#303f9fl">
+
+                        <div class="panel-body" style="height: 340px;">
+                            <ul class="list-item todo-list">
+                                <li>
+                                    <a href="@Url.Action("Dashboard", "PGSM" )" class="btn btn-sm btn-default btn-outline" style="text-transform: capitalize; color:#303f9f; border-color:#303f9f">Go to e-GSM Dashboard</a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <h5 style="font-weight: bold">Overview</h5>
+                            <p>Nigeria e-GSM .. </p>
+                            <br /><br /><br />
+                        </div>
+                    </div>
+                </div>
+
+      
+            </div>
         </div>
     </div>
-</div>
 
 
 

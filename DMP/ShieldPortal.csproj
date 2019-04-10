@@ -244,6 +244,7 @@
     <Compile Include="Controllers\MPMController.cs" />
     <Compile Include="Controllers\NHMISController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
+    <Compile Include="Controllers\PGSMController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RadetAnalyticsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -1342,7 +1343,6 @@
     <Content Include="Report\Template\DQI\Q1 FY18\DQI TOOL_unlocked.xlsm" />
     <Content Include="Report\Template\DQA FY2018 Q2\DATIM PIVOT TABLE Q2 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q2\Summary Sheet FY18 Q2 DQA.pdf" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Report\Template\DQA FY2018 Q3\DATIM PIVOT TABLE FOR Q3 FY18.xlsx" />
     <Content Include="Report\Template\DQA FY2018 Q3\Summary Sheet FY18 Q3 DQA.pdf" />
@@ -1579,6 +1579,13 @@
     <Content Include="Views\Shared\_dqaFY18Q3layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY18Q4layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY19Q1layout.cshtml" />
+    <Content Include="Views\Shared\_pgsmlayout.cshtml" />
+    <Content Include="Views\Shared\Partials\_UnsViralLoadTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_ViralLoadTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_IndexTestingTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_RetentionAdherenceTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_TbHivTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_ActionPlanTab.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
