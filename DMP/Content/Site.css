@@ -62,3 +62,47 @@ label {
     table-layout: fixed;
     background-color: #fff;
 }
+
+.highcharts-data-table table {
+    display: block;
+    white-space: nowrap;
+    overflow-x: auto;
+    text-align: center;
+}
+
+.highcharts-data-table thead, .highcharts-data-table tbody {
+    display: inline-block;
+}
+
+.highcharts-data-table tr {
+    display: inline-block;
+}
+
+.highcharts-data-table th, .highcharts-data-table td {
+    display: block;
+    text-align: right;
+    padding: 5px 7px;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+
+    .highcharts-data-table td:empty {
+        display: none;
+    }
+
+    .highcharts-data-table th:last-child, .highcharts-data-table td:last-child {
+        border: none;
+    }
+
+ /*The sticky class is added to the header with JS when it reaches its scroll position /*/
+.sticky {
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin-right: 8.2%;
+    /*padding-right: 23.5%;*/
+    /*padding-top: 15%;*/
+    /*width: 100%;
+     z-index: 9999;*/
+    /*background-color: white;*/
+}

@@ -1,0 +1,3 @@
+﻿function baseUrl() {
+    return "/api/";
+}

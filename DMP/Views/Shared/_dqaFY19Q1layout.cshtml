@@ -7,6 +7,62 @@
         @RenderSection("AddToHead", required: false)
     }
 }
+
+
+<style>
+
+
+    /* Style the sidenav links and the dropdown button */
+    .sidenav a, .dropdown-btn {
+        padding: 12px 8px 12px 16px;
+        text-decoration: none;
+        font-size: 15px;
+        color: #818181;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+    }
+
+        /* On mouse-over */
+        .sidenav a:hover, .dropdown-btn:hover {
+            color: #000000;
+        }
+
+
+
+    /* Main content */
+    .main {
+        margin-left: 200px; /* Same as the width of the sidenav */
+        font-size: 20px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+    }
+
+    /* Add an active class to the active dropdown button */
+    .active {
+        /*background-color: green;*/
+        color: #808080;
+    }
+
+    /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+    .dropdown-container {
+        display: none;
+        background-color: #d3d3d3;
+        padding-left: 8px;
+    }
+
+    /* Optional: Style the caret down icon */
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+
+    /* Some media queries for responsiveness */
+
+</style>
 <div class="main-content" style="padding-top: 0px;">
     <div class="row" id="breadcrumb">
         <div class="col-sm-5 col-sm-push-3">
@@ -20,74 +76,66 @@
 
     <div class="row">
         @*side bar*@
-        <div class="col-md-3">
+        <div class="col-md-2">
+
+            <br /><br />
             <div class="page-sidebar">
+
                 <div class="sidebar">
-                    <ul id="side-nav" class="main-menu navbar-collapse collapse">
-                        <li>
-                            <a href=@Url.Action("index", "DQAFY2019Q1") style="color:#029b17;">
-                                <i class="fa fa-home"></i><span class="title">&nbsp; Home</span>
+
+                    <div class="sidenav">
+                        <a href=@Url.Action("index", "DQAFY2019Q1")>
+                            <i class="fa fa-home"></i><span class="title">&nbsp; Home</span>
+                        </a>
+                        <a href="~/DQAFY2019Q1/Analytics?reportType=Partners">
+                            <i class="fa fa-dashboard"></i><span class="title">&nbsp; Dashboard</span>
+                        </a>
+                        <a href=@Url.Action("DQAAnalysisReport", "DQAFY2019Q1", new { type="Partners"}) s>
+                            <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
+                        </a>
+                        <a href=@Url.Action("UMB_Partner_Report", "DQAFY2019Q1")>
+                            <i class="fa fa-bar-chart"></i><span class="title">&nbsp; DQA Report Comparison</span>
+                        </a>
+                        <a href=@Url.Action("DQAResult", "DQAFY2019Q1")>
+                            <i class="fa fa-fax"></i><span class="title">&nbsp; DQA Result</span>
+                        </a>
+                        <a href=@Url.Action("RadetValidation", "DQAFY2019Q1")>
+                            <i class="fa fa-check-square-o"></i><span class="title">&nbsp; RADET Validation</span>
+                        </a>
+                        <a href=@Url.Action("UploadDQA", "DQAFY2019Q1")>
+                            <i class="fa fa-cloud-upload"></i><span class="title">&nbsp;  Upload DQA</span>
+                        </a>
+                        <a href=@Url.Action("UploadPivotTable", "DQAFY2019Q1")>
+                            <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Site selection (Pivot Table)</span>
+                        </a>
+
+
+                        <button class="dropdown-btn">
+                            <i class="fa fa-download"></i>&nbsp; Downloads
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-container">
+                            <a href="~/DQAFY2019Q1/DownloadDQATool">
+                                DQA tool
                             </a>
-                        </li>
-                        <li>
-                            <a href="~/DQAFY2019Q1/Analytics?reportType=Partners" style="color:#029b17;">
-                                <i class="fa fa-bar-chart"></i><span class="title">&nbsp; Dashboard</span>
+                            <a href="~/DQAFY2019Q1/DownloadDQAResource?fileType=SummarySheet">
+                                Printable DQA tool
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("DQAAnalysisReport", "DQAFY2019Q1", new { type="Partners"}) style="color:#029b17;">
-                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Analysis report</span>
+                            <a href="~/DQAFY2019Q1/DownloadDQAResource?fileType=PivotTable">
+                                Pivot Table Template
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("UMB_Partner_Report", "DQAFY2019Q1") style="color:#029b17;">
-                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Report Comparison</span>
+                            <a href="~/DQAFY2019Q1/DownloadDQAResource?fileType=DQAUserGuide">
+                                DQA user guide
                             </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("DQAResult", "DQAFY2019Q1") style="color:#029b17;">
-                                <i class="fa fa-newspaper-o"></i><span class="title">&nbsp; DQA Result</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("RadetValidation", "DQAFY2019Q1") style="color:#029b17;">
-                                <i class="fa fa-check-square-o"></i><span class="title">&nbsp; RADET Validation</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("UploadDQA", "DQAFY2019Q1") style="color:#029b17;">
-                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Upload DQA</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=@Url.Action("UploadPivotTable", "DQAFY2019Q1") style="color:#029b17;">
-                                <i class="fa fa-cloud-upload"></i><span class="title">&nbsp; Site selection <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Pivot Table)</span>
-                            </a>
-                        </li>
-                        <li class="navigation-header">Downloads</li>
-                        <li>
-                            <a href="~/DQAFY2019Q1/DownloadDQATool" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; DQA tool</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a download="Printable DQA tool" href="~/DQAFY2019Q1/DownloadDQAResource?fileType=SummarySheet" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp;Printable DQA tool</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="~/DQAFY2019Q1/DownloadDQAResource?fileType=PivotTable" style="color:deeppink;">
-                                <i class="fa fa-download"></i><span class="title">&nbsp; Pivot Table Template</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="~/DQAFY2019Q1/DownloadDQAResource?fileType=DQAUserGuide" style="color:deeppink;">
-                                <i class="fa fa-download"></i> <span class="title">&nbsp; DQA user guide</span>
-                            </a>
-                        </li>
-                    </ul>
+                           
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
+
+          
         </div>
 
         @RenderBody()
@@ -135,5 +183,21 @@
     <script src="~/Scripts/fns/fn_dqa.js" type="text/javascript"></script>
     <script src="~/Scripts/fns/fn_dashboard.js" type="text/javascript"></script>
     <script src="~/Scripts/profile-display.js"></script>
+    <script>
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+    </script>
     @RenderSection("scripts", required: false)
 }
