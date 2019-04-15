@@ -1,0 +1,197 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_pgsmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <link href="~/Scripts/Highcharts/code/css/highcharts.css" rel="stylesheet" />
+    <style>
+        html, body {
+            height: 100%
+        }
+    </style>
+
+
+}
+<h2>e-GSM Previsit Report</h2>
+
+<div class="col-md-8">
+    <div class="row">
+        <table class="table table-bordered table-striped">
+            <caption class="text-center" id="visitDate">  </caption>
+            <tr>
+                <th colspan="2" class="bg-info">Testing (FY2018 Cummulative)</th>
+            </tr>
+            <tr>
+                <td>HTS_TST</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>HTS_TST_POS</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Yield</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>No. of test needed to find 1 positive</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th colspan="2" class="bg-info">Treatment Changes (FY17-FY18)</th>
+            </tr>
+            <tr>
+                <td>TX_CURR(FY2017 Q4)</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>TX_CURR(FY2018 Q4)</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>TX_NEW</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>TX_NET_NEW</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>TX_NEW : TX_NET_NEW</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th colspan="2" class="bg-info">Linkage Proxy</th>
+            </tr>
+            <tr>
+                <td>(HTS_TST_POS - TX_NEW) / HTS_TST_POS</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th colspan="2" class="bg-info">Viral Load Suppression</th>
+            </tr>
+            <tr>
+                <td>Eligible among TX_CURR</td>
+                <td id="eligibleTxCurr"></td>
+            </tr>
+            <tr>
+                <td>Tested among eligible TX_CURR</td>
+                <td id="testedEligibleTxCurr"></td>
+            </tr>
+            <tr>
+                <td>Results available among tested</td>
+                <td id="resultAvailable"></td>
+            </tr>
+            <tr>
+                <td>Viral Load Suppressed among those with results available </td>
+                <td id="viralLoadSuppressed"></td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+<div class="col-md-2">
+    <div class="" style="margin-top:15px;">
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <h5 style="text-decoration:underline;">Filter <span class="pull-right"> <a href="javascript:window.location.reload()" class="btn-sm">Refresh All <i class="glyphicon glyphicon-refresh"></i> </a></span></h5>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select id="ip" class="form-control" required>
+                        <option value="">Select IP</option>
+                        <option value="APIN">APIN</option>
+                        <option value="IHVN">IHVN</option>
+                        <option value="CIHP">CIHP</option>
+                        <option value="CCFN">CCFN</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="site">
+                        <option value="">Select Site</option>
+                    </select>
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                    <div class="col-sm-12">
+                        <a class="btn btn-sm btn-info" id="btnSearch">Refresh</a>
+                    </div>
+                </div>*@
+        </form>
+    </div>
+</div>
+
+
+@section Scripts
+{
+  
+    <script>
+        $(document).ready(function () {
+            $("#site").change(function () {
+                data = [];
+
+                var site = this.value;
+
+                loadData(site);
+
+                function loadData(site) {
+                    $.ajax({
+                       
+                        url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName=" + site,
+                        type: "GET",
+                        success: function (response) {
+
+
+                            let jsonResponse = JSON.parse(response);
+                            let jsonData = jsonResponse.data;
+                            data = jsonData;
+
+                            console.log(data);
+
+               
+                            if (data.length < 1) {
+                                alert("No survey response was found in the selected site !");
+                            } else {
+                                //Viral load data
+                                vl = data[0];
+
+                                
+                                $("caption#visitDate").html("Visit Date: " + vl.visitDate);
+                                $("td#eligibleTxCurr").html(vl.ViralLoadCascadeEligible);
+                                $("td#testedEligibleTxCurr").html(vl.ViralLoadCascadeCollected + " (" + parseInt((vl.ViralLoadCascadeCollected / vl.ViralLoadCascadeEligible) * 100) + "%)");
+                                $("td#resultAvailable").html(vl.ViralLoadCascadeDoc + " (" + parseInt((vl.ViralLoadCascadeDoc / vl.ViralLoadCascadeCollected) * 100) + "%)");
+                                $("td#viralLoadSuppressed").html(vl.ViralLoadCascadeSupp + " (" + parseInt((vl.ViralLoadCascadeSupp / vl.ViralLoadCascadeDoc) * 100) + "%)");
+
+                            }
+
+                        }
+                    });
+                }
+
+
+            });
+        });
+    </script>
+
+
+}

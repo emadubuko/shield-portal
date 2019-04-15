@@ -1,0 +1,253 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_pgsmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <link href="~/Scripts/Highcharts/code/css/highcharts.css" rel="stylesheet" />
+    <style>
+        html, body {
+            height: 100%
+        }
+    </style>
+
+
+}
+<h2>e-GSM Qualitative Report</h2>
+
+<div class="col-md-8">
+    <div class="row">
+        <table class="table table-bordered table-striped " id="tbl_issue_case">
+            <caption> <h5>Issue Case</h5>  </caption>
+            <thead>
+                <tr>
+                    <th style="width:10px;">#</th>
+                    <th class="text-center">Issue Concerns</th>
+                    <th style="width:10px;">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-striped" id="tbl_index_issue">
+            <caption> <h5>Index Issues Identified</h5>  </caption>
+            <thead>
+                <tr>
+                    <th style="width:10px;">#</th>
+                    <th class="text-center">Issue Concerns</th>
+                    <th style="width:10px;">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+
+        <table class="table table-bordered table-striped" id="tbl_linkage_issue">
+            <caption> <h5>Linkage Issues Identified</h5>  </caption>
+            <thead>
+                <tr>
+                    <th style="width:10px;">#</th>
+                    <th class="text-center">Issue Concerns</th>
+                    <th style="width:10px;">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+           
+
+        </table>
+
+        <table class="table table-bordered table-striped" id="tbl_retention_issue">
+            <caption> <h5>Retention Issues Identified</h5>  </caption>
+            <thead>
+                <tr>
+                    <th style="width:10px;">#</th>
+                    <th class="text-center">Issue Concerns</th>
+                    <th style="width:10px;">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-striped" id="tbl_tb_issue">
+            <caption> <h5>TB Issues Identified</h5>  </caption>
+            <thead>
+                <tr>
+                    <th style="width:10px;">#</th>
+                    <th class="text-center">Issue Concerns</th>
+                    <th style="width:10px;">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+           
+
+        </table>
+
+        <table class="table table-bordered table-striped" id="tbl_vl_issue">
+            <caption> <h5>Viral Load Issues Identified</h5>  </caption>
+            <thead>
+                <tr>
+                    <th style="width:10px;">#</th>
+                    <th class="text-center">Issue Concerns</th>
+                    <th style="width:10px;">Priority</th>
+                </tr>
+            </thead>
+           <tbody>
+
+           </tbody>
+        </table>
+    </div>
+
+</div>
+<div class="col-md-2">
+    <div class="" style="margin-top:15px;">
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <h5 style="text-decoration:underline;">Filter <span class="pull-right"> <a href="javascript:window.location.reload()" class="btn-sm">Refresh All <i class="glyphicon glyphicon-refresh"></i> </a></span></h5>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select id="ip" class="form-control" required>
+                        <option value="">Select IP</option>
+                        <option value="APIN">APIN</option>
+                        <option value="IHVN">IHVN</option>
+                        <option value="CIHP">CIHP</option>
+                        <option value="CCFN">CCFN</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="site">
+                        <option value="">Select Site</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+
+    <script>
+        $(document).ready(function () {
+            $("#site").change(function () {
+                data = [];
+
+                var site = this.value;
+
+                loadData(site);
+
+                function loadData(site) {
+                    $.ajax({
+
+                        url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName=" + site,
+                        type: "GET",
+                        success: function (response) {
+
+
+                            let jsonResponse = JSON.parse(response);
+                            let jsonData = jsonResponse.data;
+                            data = jsonData;
+
+                            if (data.length < 1) {
+                                alert("No survey response was found in the selected site !");
+                            } else {
+                                //Viral load data
+                                qreport = data[0];
+                                var retentionData = qreport.RetentionIssueIdentified;
+                                var caseData = qreport.IssueIdentifiedCase;
+                                var indexData = qreport.IndexIssueIdentified;
+                                var linkageData = qreport.LinkageIssueIdentified;
+                                var tbData = qreport.TBIssueIdentified;
+                                var vlData = qreport.VLIssueIdentified;
+
+                                //clears existing records off table and append new ones (case)
+                                $("#tbl_issue_case > tbody").empty();
+                                for (i = 0; i < caseData.length; i++) {
+                                    var caseRows = `<tr><td>${i + 1}</td><td> ${caseData[i].IssuesConcerns} </td><td>${caseData[i].OrderOfPriority}</td></tr>`;
+                                    $("#tbl_issue_case tbody").append(caseRows);
+                                }
+
+                                //clears existing records off table and append new ones (index)
+                                $("#tbl_index_issue > tbody").empty();
+                                for (i = 0; i < indexData.length; i++) {
+                                    var indexRows = `<tr><td>${i + 1}</td><td> ${indexData[i].IssuesConcerns} </td><td>${indexData[i].OrderOfPriority}</td></tr>`;
+                                    $("#tbl_index_issue tbody").append(indexRows);
+                                }
+
+                                //clears existing records off table and append new ones (linkage)
+                                $("#tbl_linkage_issue > tbody").empty();
+                                for (i = 0; i < linkageData.length; i++) {
+                                    var linkageRows = `<tr><td>${i + 1}</td><td> ${linkageData[i].ARTInitiation} </td><td>${linkageData[i].LinkageOrderOfPriority}</td></tr>`;
+                                    $("#tbl_linkage_issue tbody").append(linkageRows);
+                                }
+                                
+                                //clears existing records off table and append new ones (retention)
+                                $("#tbl_retention_issue > tbody").empty();
+                                for (i = 0; i < retentionData.length; i++) {
+
+                                   var retentionRows = `<tr><td>${i + 1}</td><td> ${retentionData[i].IssuesOnTracking} </td><td>${retentionData[i].RentionOrderOfPriority}</td></tr>`;
+                                    $("#tbl_retention_issue tbody").append(retentionRows);
+
+                                }
+
+                                //clears existing records off table and append new ones (tb)
+                                $("#tbl_tb_issue > tbody").empty();
+                                for (i = 0; i < tbData.length; i++) {
+
+                                    var tbRows = `<tr><td>${i + 1}</td><td> ${tbData[i].TBIssuesOnTracking} </td><td>${tbData[i].TBOrderOfPriority}</td></tr>`;
+                                    $("#tbl_tb_issue tbody").append(tbRows);
+
+                                }
+
+                                //clears existing records off table and append new ones (vl)
+                                $("#tbl_vl_issue > tbody").empty();
+                                for (i = 0; i < vlData.length; i++) {
+
+                                    var vlRows = `<tr><td>${i + 1}</td><td> ${vlData[i].VLIssuesOnTracking} </td><td>${vlData[i].VLOrderOfPriority}</td></tr>`;
+                                    $("#tbl_vl_issue tbody").append(vlRows);
+
+                                }
+
+                            }
+
+                        }
+                    });
+                }
+
+
+            });
+        });
+    </script>
+
+
+}

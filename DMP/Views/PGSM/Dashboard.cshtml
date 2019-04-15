@@ -1,0 +1,1024 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_pgsmlayout.cshtml";
+}
+
+@section AddToHead{
+
+    <link href="~/Scripts/Highcharts/code/css/highcharts.css" rel="stylesheet" />
+    <style>
+        html, body {
+            height: 100%
+        }
+
+        .highcharts-table-caption {
+            margin-bottom: 5px;
+            font-family: sans-serif;
+            font-size: 14pt;
+        }
+
+        .highcharts-data-table table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            background: white;
+            min-width: 100%;
+            margin-top: 10px;
+        }
+
+        .highcharts-data-table td, .highcharts-data-table th {
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 10pt;
+            border: 1px solid silver;
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table tr:nth-child(even), .highcharts-data-table thead tr {
+            background: #f8f8f8;
+        }
+
+        .highcharts-data-table tr:hover {
+            background: #eff;
+        }
+    </style>
+
+
+}
+
+
+<h2>e-GSM Dashboard</h2>
+
+<div class="col-md-8">
+    <div class="row">
+
+        <div class="tabs-container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a aria-expanded="false" href="#indexTesting" data-toggle="tab">Index Testing </a></li>
+                <li><a aria-expanded="false" href="#retentionAdherence" data-toggle="tab">Retention / Adherence </a></li>
+                <li><a aria-expanded="true" href="#viralLoad" data-toggle="tab">Viral Load</a></li>
+                <li><a aria-expanded="false" href="#unsViralLoad" data-toggle="tab">Unsuppressed Viral Load</a></li>
+                <li><a aria-expanded="false" href="#tbHiv" data-toggle="tab">TB HIV </a></li>
+                <li><a aria-expanded="false" href="#diffModelCare" data-toggle="tab">Differentiated Model of Care </a></li>
+                <li><a aria-expanded="false" href="#actionPlan" data-toggle="tab">Action Plan </a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                @*Index Testing tab partial view*@
+                @Html.Partial("~/Views/Shared/Partials/_IndexTestingTab.cshtml")
+
+                @*Retention Adherence tab partial view*@
+                @Html.Partial("~/Views/Shared/Partials/_RetentionAdherenceTab.cshtml")
+
+                @*viralload tab partial view*@
+                @Html.Partial("~/Views/Shared/Partials/_ViralLoadTab.cshtml")
+
+                @*Unsuppressed viralload tab partial view*@
+                @Html.Partial("~/Views/Shared/Partials/_UnsViralLoadTab.cshtml")
+
+                @*TB / HIV tab partial view*@
+                @Html.Partial("~/Views/Shared/Partials/_TbHivTab.cshtml")
+
+                @*Differential Model of Care Partial View*@
+                @Html.Partial("~/Views/Shared/Partials/_DiffModelCareTab.cshtml")
+
+                @*GSM Action Plan Partial View*@
+                @Html.Partial("~/Views/Shared/Partials/_ActionPlanTab.cshtml")
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-2">
+    <div class="" style="margin-top:15px;">
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-12 ">
+                    <h5 style="text-decoration:underline;">Filter <span class="pull-right"> <a href="javascript:window.location.reload()" class="btn-sm">Refresh All <i class="glyphicon glyphicon-refresh"></i> </a></span></h5>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select id="ip" class="form-control" required>
+                        <option value="">Select IP</option>
+                        <option value="APIN">APIN</option>
+                        <option value="IHVN">IHVN</option>
+                        <option value="CIHP">CIHP</option>
+                        <option value="CCFN">CCFN</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <select class="form-control" id="site">
+                        <option value="">Select Site</option>
+                    </select>
+                </div>
+            </div>
+
+          
+
+
+
+
+        </form>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
+    <script src="~/Scripts/Highcharts/code/js/modules/exporting.js"></script>
+    <script src="~/Scripts/Highcharts/code/js/modules/export-data.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            let data = [];
+            let indexTestingData = [];
+            var site;
+            $("#site").change(function () {
+                data = [];
+
+                site = this.value;
+
+                loadData(site);
+
+
+            });
+
+            function formatValue(value, percentage = false) {
+                if (value === null || typeof value === 'undefined') {
+                    return "";
+                } else if (percentage === true && (value != null || typeof value != 'undefined')) {
+                    return value + "%";
+                }
+                return value;
+            }
+
+            function loadData(site) {
+                $.ajax({
+                    //                    url: "/Content/data/data.json" + site,
+                    url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName=" + site,
+                    type: "GET",
+                    success: function (response) {
+
+
+                        let jsonResponse = JSON.parse(response);
+                        let jsonData = jsonResponse.data;
+                        data = jsonData;
+                        console.log(data);
+                        //viral load data from API
+                        var viralLoadData = [];
+                        let vl;
+                        //unsuppressed viral load data from API
+                        var unsuppressedViralLoadData = [];
+                        let unsVL, retAdherence, tbHiv;
+
+                        indexTestingData = [];
+
+                        if (data.length < 1) {
+                            alert("No survey response was found in the selected site !");
+                        } else if (data[0].UnSuppresedVLCascade === undefined) {
+                            alert("No response found for unsuppressed viral load for the selected site");
+                        }
+
+                        //Viral load data
+                        vl = data[0];
+
+                        viralLoadData.push(vl.ViralLoadTXCurr);
+                        viralLoadData.push(vl.ViralLoadCascadeEligible);
+                        viralLoadData.push(vl.ViralLoadCascadeCollected);
+                        viralLoadData.push(vl.ViralLoadCascadeDoc);
+                        viralLoadData.push(vl.ViralLoadCascadeSupp);
+
+                        //unsuppressed Viral load data
+
+                        unsVL = data[0].UnSuppresedVLCascade[0];
+                        let unsMale = [], unsFemale = [], noUnsVl = [], noCommencedEac = [], noOfRepeat = [], noOfSwitched = [];
+                        for (var i = 0; i < data[0].UnSuppresedVLCascade.length; i++) {
+
+                            unsMale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexMale);
+                            unsFemale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexFemale);
+                            noUnsVl.push(data[0].UnSuppresedVLCascade[i].NoUnSuppressedVL);
+                            noCommencedEac.push(data[0].UnSuppresedVLCascade[i].NoCommencedEAC);
+                            noOfRepeat.push(data[0].UnSuppresedVLCascade[i].NoOfRepeat);
+                            noOfSwitched.push(data[0].UnSuppresedVLCascade[i].NoSwitched);
+                        }
+
+                        unsuppressedViralLoadData.push(unsVL.AgeCohort);
+                        unsuppressedViralLoadData.push(unsVL.UnSuppressedSexMale);
+                        unsuppressedViralLoadData.push(unsVL.UnSuppressedSexFemale);
+                        unsuppressedViralLoadData.push(unsVL.NoUnSuppressedVL);
+                        unsuppressedViralLoadData.push(unsVL.NoCommencedEAC);
+                        unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
+                        unsuppressedViralLoadData.push(unsVL.NoSwitched);
+
+                        //index testing data
+                        let indTesting = data[0];
+                        indexTestingData = [];
+
+                        indexTestingData.push(indTesting.ChartWithPartner);
+                        indexTestingData.push(indTesting.ChartPartnerKnownCase);
+                        indexTestingData.push(indTesting.PartnerStatusPositive);
+                        indexTestingData.push(indTesting.PartnerStatusNegative);
+                        indexTestingData.push(indTesting.PartnerStatusUnknown);
+                        indexTestingData.push(indTesting.ChildrenIndexCasesListed);
+                        indexTestingData.push(indTesting.ChildrenIndexCasesKnown);
+                        indexTestingData.push(indTesting.ChildStatusPositive);
+                        indexTestingData.push(indTesting.ChildStatusNegative);
+                        indexTestingData.push(indTesting.ChildStatusUnknown);
+
+                        let totalIndexIdentified = indTesting.ChartIndentified;
+
+                        //retention adherence data
+                        retAdherence = data[0];
+
+                        //early missed data
+                        let earlyMissedData = [];
+
+                        earlyMissedData.push(retAdherence.EarlyMissedPatient);
+                        earlyMissedData.push(retAdherence.EarlyMissedChartView);
+                        earlyMissedData.push(retAdherence.EarlyMissedActiveTrackingPercent);
+                        earlyMissedData.push(retAdherence.EarlyMissedTrackingOutcomePercent);
+
+                        var EarlyMissedActiveTracking = retAdherence.EarlyMissedActiveTracking;
+                        var EarlyMissedActiveTrackingPercent = retAdherence.EarlyMissedActiveTrackingPercent;
+
+                        var EarlyMissedTrackingOutcome = retAdherence.EarlyMissedTrackingOutcome;
+                        var EarlyMissedTrackingOutcomePercent = retAdherence.EarlyMissedTrackingOutcomePercent;
+
+
+                        //late missed data
+                        let lateMissedData = [];
+
+                        lateMissedData.push(retAdherence.LateMissedPatient);
+                        lateMissedData.push(retAdherence.LateMissedChartView);
+                        lateMissedData.push(retAdherence.LateMissedActiveTrackingPercent);
+                        lateMissedData.push(retAdherence.LateMissedTrackingOutcomePercent);
+
+                        var LateMissedActiveTracking = retAdherence.LateMissedActiveTracking;
+                        var LateMissedActiveTrackingPercent = retAdherence.LateMissedActiveTrackingPercent;
+
+                        var LateMissedTrackingOutcome = retAdherence.LateMissedTrackingOutcome;
+                        var LateMissedTrackingOutcomePercent = retAdherence.LateMissedTrackingOutcomePercent;
+
+
+                        //unconfirmed  data
+                        let unconfirmedData = [];
+
+                        unconfirmedData.push(retAdherence.UnconfirmedPatient);
+                        unconfirmedData.push(retAdherence.UnconfirmedChartView);
+                        unconfirmedData.push(retAdherence.UnconfirmedActiveTrackingPercent);
+                        unconfirmedData.push(retAdherence.UnconfirmedTrackingOutcomePercent);
+
+                        var UnconfirmedActiveTracking = retAdherence.UnconfirmedActiveTracking;
+                        var UnconfirmedActiveTrackingPercent = retAdherence.UnconfirmedActiveTrackingPercent;
+
+                        var UnconfirmedTrackingOutcome = retAdherence.UnconfirmedTrackingOutcome;
+                        var UnconfirmedTrackingOutcomePercent = retAdherence.UnconfirmedTrackingOutcomePercent;
+
+                        //tBHiv Data
+                        tbHiv = data[0];
+
+                        var AdultStartMonth = tbHiv.AdultStartMonth;
+                        var AdultStartCharts = tbHiv.AdultStartCharts;
+                        var AdultTBScreenDocumented = tbHiv.AdultTBScreenDocumented;
+                        var AdultTBScreenDocumentedPercent = tbHiv.AdultTBScreenDocumentedPercent;
+                        var AdultStartEligileIPT = tbHiv.AdultStartEligileIPT;
+                        var AdultStartEligileIPTPercent = tbHiv.AdultStartEligileIPTPercent;
+                        var AdultStartStartIPT = tbHiv.AdultStartStartIPT;
+                        var AdultStartStartIPTPercent = tbHiv.AdultStartStartIPTPercent;
+                        var AdultStartRegisterIPTEMR = tbHiv.AdultStartRegisterIPTEMR;
+                        var AdultStartRegisterIPTEMRPercent = tbHiv.AdultStartRegisterIPTEMRPercent;
+                        var AdultCompletedIPT = tbHiv.AdultCompletedIPT;
+                        var AdultCompletedIPTPercent = tbHiv.AdultCompletedIPTPercent;
+
+                        let TbAdultStartArtCount = [AdultTBScreenDocumented, AdultStartEligileIPT, AdultStartStartIPT, AdultStartRegisterIPTEMR, AdultCompletedIPT];
+                        let TbAdultStartArtPercent = [AdultTBScreenDocumentedPercent, AdultStartEligileIPTPercent, AdultStartStartIPTPercent, AdultStartRegisterIPTEMRPercent, AdultCompletedIPTPercent];
+
+                        var PregnantWomenMonth = tbHiv.PregnantWomenMonth;
+                        var PregnantWomenCharts = tbHiv.PregnantWomenCharts;
+                        var PregnantWomenScreenDocumented = tbHiv.PregnantWomenScreenDocumented;
+                        var PregnantWomenScreenDocumentedPercent = tbHiv.PregnantWomenScreenDocumentedPercent;
+                        var PregnantWomenEligileIPT = tbHiv.PregnantWomenEligileIPT;
+                        var PregnantWomenEligileIPTPercent = tbHiv.PregnantWomenEligileIPTPercent;
+                        var PregnantWomenStartIPT = tbHiv.PregnantWomenStartIPT;
+                        var PregnantWomenStartIPTPercent = tbHiv.PregnantWomenStartIPTPercent;
+                        var PregnantWomenRegisterIPTEMR = tbHiv.PregnantWomenRegisterIPTEMR;
+                        var PregnantWomenRegisterIPTEMRPercent = tbHiv.PregnantWomenRegisterIPTEMRPercent;
+                        var PregnantWomenCompletedIPT = tbHiv.PregnantWomenCompletedIPT;
+                        var PregnantWomenCompletedIPTPercent = tbHiv.PregnantWomenCompletedIPTPercent;
+
+                        let TbPregnantWomenCount = [PregnantWomenScreenDocumented, PregnantWomenEligileIPT, PregnantWomenStartIPT, PregnantWomenRegisterIPTEMR, PregnantWomenCompletedIPT];
+                        let TbPregnantWomenPercent = [PregnantWomenScreenDocumentedPercent, PregnantWomenEligileIPTPercent, PregnantWomenStartIPTPercent, PregnantWomenRegisterIPTEMRPercent, PregnantWomenCompletedIPTPercent];
+
+                        var PatientInitiatMonth = tbHiv.PatientInitiatMonth;
+                        var PatientInitiatCharts = tbHiv.PatientInitiatCharts;
+                        var PatientInitiatScreenDocumented = tbHiv.PatientInitiatScreenDocumented;
+                        var PatientInitiatScreenDocumentedPercent = tbHiv.PatientInitiatScreenDocumentedPercent;
+                        var PatientInitiatEligileIPT = tbHiv.PatientInitiatEligileIPT;
+                        var PatientInitiatEligileIPTPercent = tbHiv.PatientInitiatEligileIPTPercent;
+                        var PatientInitiatStartIPT = tbHiv.PatientInitiatStartIPT;
+                        var PatientInitiatStartIPTPercent = tbHiv.PatientInitiatStartIPTPercent;
+                        var PatientInitiatRegisterIPTEMR = tbHiv.PatientInitiatRegisterIPTEMR;
+                        var PatientInitiatRegisterIPTEMRPercent = tbHiv.PatientInitiatRegisterIPTEMRPercent;
+                        var PatientInitiatCompletedIPT = tbHiv.PatientInitiatCompletedIPT;
+                        var PatientInitiatCompletedIPTPercent = tbHiv.PatientInitiatCompletedIPTPercent;
+
+                        let TbPatientInitiateCount = [PatientInitiatScreenDocumented, PatientInitiatEligileIPT, PatientInitiatStartIPT, PatientInitiatRegisterIPTEMR, PatientInitiatCompletedIPT];
+                        let TbPatientInitiatePercent = [PatientInitiatScreenDocumentedPercent, PatientInitiatEligileIPTPercent, PatientInitiatStartIPTPercent, PatientInitiatRegisterIPTEMRPercent, PatientInitiatCompletedIPTPercent]
+                        //differential model of care data
+
+                        let moc = data[0];
+                        let mocData = [];
+
+                        mocData.push(moc.MoCTXCurr);
+                        mocData.push(moc.MoCTotalDSD);
+                        mocData.push(moc.MoCMonthScript);
+                        mocData.push(moc.MoCFastTrack);
+                        mocData.push(moc.MoCHouseHold);
+                        mocData.push(moc.MoCAdolescent);
+                        //mocData.push(moc.MoCPercentDevolved);
+
+                        //viral load chart
+                        Highcharts.chart('viralLoadChart', {
+
+                            title: {
+                                text: 'Viral Load Performance'
+                            },
+
+                            subtitle: {
+                                text: ''
+                            },
+
+                            xAxis: {
+                                categories: ['TXCurr', 'No of Eligible VL', 'No of Samples Collected', 'No. with Documented VL Result', 'No. with Suppressed VL Result'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    colorByPoint: true
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+                            credits: false,
+                            series: [{
+                                type: 'column',
+                                colorByPoint: true,
+                                data: viralLoadData,
+                                showInLegend: false
+                            }],
+                        });
+
+                        //viral load table
+                        $('#viralLoadTable tr#vlStart').remove();
+                        $('#viralLoadTable tr:last')
+                            .after(`<tr id = "vlStart">
+                                                                        <td>${formatValue(viralLoadData[0])}</td>
+                                                                        <td>${formatValue(viralLoadData[1])}</td>
+                                                                        <td>${formatValue(viralLoadData[2])}</td>
+                                                                        <td>${formatValue(viralLoadData[3])}</td>
+                                                                        <td>${formatValue(viralLoadData[4])}</td>
+                                                                        <td>${formatValue(vl.ViralLoadCascadeSupPercent)}</td>
+                                                                        </tr >`);
+
+                        // unsuppressed viral load chart
+                        Highcharts.chart('unsViralLoadChart', {
+                            chart: {
+                                type: 'bar'
+                            },
+                            title: {
+                                text: 'Unsuppressed Viral Load Performance'
+                            },
+
+                            subtitle: {
+                                text: ''
+                            },
+
+                            xAxis: {
+                                title: {
+                                    text: 'Age Cohorts'
+                                },
+                                categories: ['0-4', '5-9', '10-14', '15-19', '20-24', '24-29', '30-34', '35-39', '40-44', '45-49', '50+'],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+                            credits: false,
+                            series: [{
+                                name: ' No of Male',
+                                data: unsMale
+                            }, {
+                                name: 'No of Female',
+                                data: unsFemale
+                            }, {
+                                name: 'No of Unsuppressed VL',
+                                data: noUnsVl
+                            }, {
+                                name: 'No. Commenced on EAC',
+                                data: noCommencedEac
+                            }, {
+                                name: 'No of Repeat VL',
+                                data: noOfSwitched
+                            }, {
+                                name: 'No. Switched',
+                                data: noOfSwitched
+                            }]
+
+                        });
+
+                        //table
+                        //$('#unsViralLoadTable tr#unsStart').remove();
+                        //$('#unsViralLoadTable tr:last')
+                        //    .after(`<tr id = "unsStart">
+                        //                                            <td>${unsuppressedViralLoadData[0]}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[1])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[2])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[3])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[4])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[5])}</td>
+                        //                                            <td>${formatValue(unsuppressedViralLoadData[6])}</td>
+                        //                                            </tr >`);
+
+                        // Index Testing Chart
+                        Highcharts.chart('indexTestingChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Index Testing Chart Review'
+                            },
+
+                            subtitle: {
+                                text: ''
+                            },
+
+                            xAxis: {
+                                title: {
+                                    text: ''
+                                },
+                                categories: ['No of charts with partner(s) of index cases listed ', 'No of charts with ALL partners of index cases with known status', 'No of Partner status (POS) ', 'No of Partner status (NEG)', 'No of Partner status (UNK)', 'No of charts with children of index cases listed', 'No of charts with ALL children of index cases with known status', 'Child status (POS) ', 'Child status (NEG)', 'Child status (UNK)',],
+                                crosshair: true,
+                            },
+
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Indicator Values'
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+                            credits: false,
+                            series: [{
+                                type: 'column',
+                                colorByPoint: true,
+                                data: indexTestingData,
+                                showInLegend: false
+
+                            }
+                            ]
+
+                        });
+
+                        //table
+                        $('#indexTestingTable tr#indexStart').remove();
+
+                        $('#indexTestingTable tr:last')
+                            .after(`<tr id = "indexStart">
+                                                                        <td>${formatValue(totalIndexIdentified)}</td>
+                                                                        <td>${formatValue(indexTestingData[0])}</td>
+                                                                        <td>${formatValue(indexTestingData[1])}</td>
+                                                                        <td>${formatValue(indexTestingData[2])}</td>
+                                                                        <td>${formatValue(indexTestingData[3])}</td>
+                                                                        <td>${formatValue(indexTestingData[4])}</td>
+                                                                        <td>${formatValue(indexTestingData[5])}</td>
+                                                                        <td>${formatValue(indexTestingData[6])}</td>
+                                                                        <td>${formatValue(indexTestingData[7])}</td>
+                                                                        <td>${formatValue(indexTestingData[8])}</td>
+                                                                        <td>${formatValue(indexTestingData[9])}</td>
+                                                                        </tr >`);
+                        // retention adherence chart
+                        Highcharts.chart('retentionAdherenceChart', {
+                            chart: {
+                                type: 'column',
+                            },
+                            title: {
+                                text: 'Retention Adherence'
+                            },
+                            subtitle: {
+                                text: ''
+                            },
+                            xAxis: {
+                                title: {
+                                    text: 'Appointments'
+                                },
+                                categories: ['Early Missed Appointments ', 'Late Missed Appointments ', 'Unconfirmed LTFU'],
+                            },
+                            yAxis: [
+                                { // Primary yAxis
+                                    labels: {
+                                        style: {
+                                            color: Highcharts.getOptions().colors[1]
+                                        }
+                                    },
+                                    title: {
+                                        text: 'Count',
+                                        style: {
+                                            color: Highcharts.getOptions().colors[1]
+                                        }
+                                    }
+                                },
+                                { // Secondary yAxis
+                                    title: {
+                                        text: 'Percentage',
+                                        style: {
+                                            color: '#ab47bc'
+                                        }
+                                    },
+                                    labels: {
+                                        format: '{value} %',
+                                        style: {
+                                            color: '#ab47bc'
+                                        }
+                                    },
+                                    opposite: true
+                                }
+                            ],
+
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    groupPadding: 0.1,
+                                },
+                                series: {
+                                    pointWidth: 40
+                                }
+                            },
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+                            credits: false,
+                            series: [{
+                                type: 'column',
+                                name: ' count patient records with documented active tracking and tracing',
+                                data: [EarlyMissedActiveTracking, LateMissedActiveTracking, UnconfirmedActiveTracking]
+                            }, {
+                                type: 'column',
+                                name: 'count patient records with documented tracking and tracing outcome',
+                                data: [EarlyMissedTrackingOutcome, LateMissedTrackingOutcome, UnconfirmedTrackingOutcome]
+                            }, {
+                                type: 'scatter',
+                                name: 'Percentage patient records with documented active tracking and tracing',
+                                yAxis: 1,
+                                data: [{ name: 'Percentage of patient records with documented active tracking and tracing', x: -.20, y: EarlyMissedActiveTrackingPercent }, { name: 'Percentage of patient records with documented active tracking and tracing', x: .80, y: LateMissedActiveTrackingPercent }, { name: 'Percentage of patient records with documented active tracking and tracing', x: 1.80, y: UnconfirmedActiveTrackingPercent }],
+                                color: '#ab47bc'
+
+                            }, {
+                                type: 'scatter',
+                                name: 'Percentage patient records with documented tracking and tracing outcome',
+                                yAxis: 1,
+                                data: [{ name: 'Percentage of patient records with documented tracking and tracing outcome', x: .20, y: EarlyMissedTrackingOutcomePercent }, { name: 'Percentage of patient records with documented tracking and tracing outcome', x: 1.20, y: LateMissedTrackingOutcomePercent }, { name: 'Percentage of patient records with documented tracking and tracing outcome', x: 2.20, y: UnconfirmedTrackingOutcomePercent }],
+                                color: '#ab47bc'
+                            }]
+                        });
+
+                        //table
+                        $('#retentionAdherenceTable tr#retStart').remove();
+                        $('#retentionAdherenceTable tr:last')
+                            .after(`            <tr id="retStart">
+                                                                        <td>Early Missed Appointments (missed within 24hrs)</td>
+                                                                        <td>${formatValue(earlyMissedData[0])}</td>
+                                                                        <td>${formatValue(earlyMissedData[1])}</td>
+                                                                        <td>${formatValue(EarlyMissedActiveTracking)}</td>
+                                                                        <td>${formatValue(EarlyMissedActiveTrackingPercent, true)}</td>
+                                                                        <td>${formatValue(EarlyMissedTrackingOutcome)}</td>
+                                                                        <td>${formatValue(EarlyMissedTrackingOutcomePercent, true)}</td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                        <td>Late Missed Appointments (missed appointments for over a week)</td>
+                                                                        <td>${formatValue(lateMissedData[0])}</td>
+                                                                        <td>${formatValue(lateMissedData[1])}</td>
+                                                                        <td>${formatValue(LateMissedActiveTracking)}</td >
+                                                                        <td>${formatValue(LateMissedActiveTrackingPercent, true)}</td>
+                                                                        <td>${formatValue(LateMissedTrackingOutcome)}</td>
+                                                                        <td>${formatValue(LateMissedTrackingOutcomePercent, true)}</td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                        <td>Unconfirmed LTFU (Appointments missed over 4 weeks but not yet tracked or no information have been received about the patient)</td>
+                                                                        <td>${formatValue(unconfirmedData[0])}</td>
+                                                                        <td>${formatValue(unconfirmedData[1])}</td>
+                                                                        <td>${formatValue(UnconfirmedActiveTracking)}</td >
+                                                                        <td>${formatValue(UnconfirmedActiveTrackingPercent, true)}</td>
+                                                                        <td>${formatValue(UnconfirmedTrackingOutcome)}</td>
+                                                                        <td>${formatValue(UnconfirmedTrackingOutcomePercent, true)}</td>
+                                                                        </tr>
+                                                `);
+                        // TB/HIV chart
+                        Highcharts.chart('tbHivChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Tuberculosis / HIV Chart'
+                            },
+                            subtitle: {
+                                text: ''
+                            },
+                            xAxis: {
+                                title: {
+                                    text: 'Patient Group'
+                                },
+                                categories: ['Adults starting ART ', 'Pregnant women starting ART', 'Patients who initiated TPT'],
+                                crosshair: true,
+                            },
+                            yAxis: [
+                                {
+                                    min: 0,
+                                    title: {
+                                        text: 'Indicator Values'
+                                    },
+                                    labels: {
+                                        formatter: function () {
+                                            return this.value;
+                                        }
+                                    }
+                                },
+                                { // Secondary yAxis
+                                    min: 0,
+                                    title: {
+                                        text: 'Percentage',
+                                        style: {
+                                            color: '#ab47bc'
+                                        }
+                                    },
+                                    labels: {
+                                        format: '{value} %',
+                                        style: {
+                                            color: '#ab47bc'
+                                        }
+                                    },
+                                    opposite: true
+                                }
+                            ],
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    groupPadding: 0.1,
+
+                                },
+                                series: {
+                                    pointWidth: 35
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+                            series: [{
+                                name: 'No. with TB screening documented at most recent visit (Patient chart)',
+                                data: [TbAdultStartArtCount[0], TbPregnantWomenCount[0], TbPatientInitiateCount[0]]
+                            }, {
+                                name: 'No. Eligible for TPT (Patient chart)',
+                                data: [TbAdultStartArtCount[1], TbPregnantWomenCount[1], TbPatientInitiateCount[1]]
+                            }, {
+                                name: 'No. Started on TPT (Patient chart)',
+                                data: [TbAdultStartArtCount[2], TbPregnantWomenCount[2], TbPatientInitiateCount[2]]
+                            },
+                            {
+                                name: 'No. Started on TPT (IPT register / EMR)',
+                                data: [TbAdultStartArtCount[3], TbPregnantWomenCount[3], TbPatientInitiateCount[3]]
+                            },
+                            {
+                                name: 'No. Completed TPT (Patient chart)',
+                                data: [TbAdultStartArtCount[4], TbPregnantWomenCount[4], TbPatientInitiateCount[4]]
+                            },
+                            {
+
+                                type: 'scatter',
+                                name: 'Percentage Adults starting ART',
+                                yAxis: 1,
+                                data: [{ name: 'Percentage with TB screening documented at most recent visit', x: -.32, y: TbAdultStartArtPercent[0] }, { name: 'Percentage Eligible for TPT', x: -.16, y: TbAdultStartArtPercent[1] }, { name: 'Percentage Started on TPT (Patient Chart)', x: 0, y: TbAdultStartArtPercent[2] }, { name: 'Percentage Started on TPT (IPT register / EMR)', x: 0.16, y: TbAdultStartArtPercent[3] }, { name: 'Percentage Completed TPT (Patient chart)', x: 0.32, y: TbAdultStartArtPercent[4] }],
+                                // data: [{ name: 'Percentage with TB screening documented at most recent visit', x: .20, y: TbAdultStartArtCountPercent[0] }, { name: 'Percentage Eligible for TPT ', x: 1.20, y: LateMissedTrackingOutcomePercent }, { name: 'Percentage Started on TPT', x: 2.20, y: UnconfirmedTrackingOutcomePercent }],
+                                color: '#ab47bc'
+
+                            }
+                                , {
+
+                                type: 'scatter',
+                                name: 'Percentage Pregnant women starting ART',
+                                yAxis: 1,
+                                data: [{ name: 'Percentage with TB screening documented at most recent visit', x: .68, y: TbPregnantWomenPercent[0] }, { name: 'Percentage Eligible for TPT', x: .84, y: TbPregnantWomenPercent[1] }, { name: 'Percentage Started on TPT (Patient Chart)', x: 1, y: TbPregnantWomenPercent[2] }, { name: 'Percentage Started on TPT (IPT register / EMR)', x: 1.16, y: TbPregnantWomenPercent[3] }, { name: 'Percentage Completed TPT (Patient chart)', x: 1.32, y: TbPregnantWomenPercent[4] }],
+                                // data: [{ name: 'Percentage with TB screening documented at most recent visit', x: .20, y: TbAdultStartArtCountPercent[0] }, { name: 'Percentage Eligible for TPT ', x: 1.20, y: LateMissedTrackingOutcomePercent }, { name: 'Percentage Started on TPT', x: 2.20, y: UnconfirmedTrackingOutcomePercent }],
+                                color: '#ab47bc'
+
+                            }
+                                , {
+
+                                type: 'scatter',
+                                name: 'Percentage Patients who initiated TPT',
+                                yAxis: 1,
+                                data: [{ name: 'Percentage with TB screening documented at most recent visit', x: 1.68, y: TbPatientInitiatePercent[0] }, { name: 'Percentage Eligible for TPT', x: 1.84, y: TbPatientInitiatePercent[1] }, { name: 'Percentage Started on TPT (Patient Chart)', x: 2, y: TbPatientInitiatePercent[2] }, { name: 'Percentage Started on TPT (IPT register / EMR)', x: 2.16, y: TbPatientInitiatePercent[3] }, { name: 'Percentage Completed TPT (Patient chart)', x: 2.32, y: TbPatientInitiatePercent[4] }],
+                                // data: [{ name: 'Percentage with TB screening documented at most recent visit', x: .20, y: TbAdultStartArtCountPercent[0] }, { name: 'Percentage Eligible for TPT ', x: 1.20, y: LateMissedTrackingOutcomePercent }, { name: 'Percentage Started on TPT', x: 2.20, y: UnconfirmedTrackingOutcomePercent }],
+                                color: '#ab47bc'
+
+                            }
+                            ]
+
+                        });
+
+                        //table
+                        $('#tbHivTable tr#tbStart').remove();
+                        $('#tbHivTable tr:last')
+                            .after(`            <tr id = "tbStart">
+                                                                        <td>Adults starting ART</td>
+                                                                        <td>${AdultStartMonth}</td>
+                                                                        <td>${formatValue(AdultStartCharts)}</td>
+                                                                        <td>${formatValue(AdultTBScreenDocumented)}</td>
+                                                                        <td>${formatValue(AdultTBScreenDocumentedPercent, true)}</td>
+                                                                        <td>${formatValue(AdultStartEligileIPT)}</td>
+                                                                        <td>${formatValue(AdultStartEligileIPTPercent, true)}</td>
+                                                                        <td>${formatValue(AdultStartStartIPT)}</td>
+                                                                        <td>${formatValue(AdultStartStartIPTPercent, true)}</td>
+                                                                        <td>${formatValue(AdultStartRegisterIPTEMR)}</td>
+                                                                        <td>${formatValue(AdultStartRegisterIPTEMRPercent, true)}</td>
+                                                                        <td>${formatValue(AdultCompletedIPT)}</td>
+                                                                        <td>${formatValue(AdultCompletedIPTPercent, true)}</td>
+
+                                                                        </tr>
+
+                                                                        <tr  id = "tbStart">
+                                                                        <td>Pregnant women starting ART</td>
+                                                                        <td>${PregnantWomenMonth}</td>
+                                                                        <td>${formatValue(PregnantWomenCharts)}</td>
+                                                                        <td>${formatValue(PregnantWomenScreenDocumented)}</td>
+                                                                        <td>${formatValue(PregnantWomenScreenDocumentedPercent, true)}</td>
+                                                                        <td>${formatValue(PregnantWomenEligileIPT)}</td>
+                                                                        <td>${formatValue(PregnantWomenEligileIPTPercent, true)}</td>
+                                                                        <td>${formatValue(PregnantWomenStartIPT)}</td>
+                                                                        <td>${formatValue(PregnantWomenStartIPTPercent, true)}</td>
+                                                                        <td>${formatValue(PregnantWomenRegisterIPTEMR)}</td>
+                                                                        <td>${formatValue(PregnantWomenRegisterIPTEMRPercent, true)}</td>
+                                                                        <td>${formatValue(PregnantWomenCompletedIPT)}</td>
+                                                                        <td>${formatValue(PregnantWomenCompletedIPTPercent, true)}</td>
+
+        </tr>
+
+                                                                        <tr  id = "tbStart">
+                                                                        <td>Patients who initiated TPT</td>
+                                                                        <td>${PatientInitiatMonth}</td>
+                                                                        <td>${formatValue(PatientInitiatCharts)}</td>
+                                                                        <td>${formatValue(PatientInitiatScreenDocumented)}</td>
+                                                                        <td>${formatValue(PatientInitiatScreenDocumentedPercent, true)}</td>
+                                                                        <td>${formatValue(PatientInitiatEligileIPT)}</td>
+                                                                        <td>${formatValue(PatientInitiatEligileIPTPercent, true)}</td>
+                                                                        <td>${formatValue(PatientInitiatStartIPT)}</td>
+                                                                        <td>${formatValue(PatientInitiatStartIPTPercent, true)}</td>
+                                                                        <td>${formatValue(PatientInitiatRegisterIPTEMR)}</td>
+                                                                        <td>${formatValue(PatientInitiatRegisterIPTEMRPercent, true)}</td>
+                                                                        <td>${formatValue(PatientInitiatCompletedIPT)}</td>
+                                                                        <td>${formatValue(PatientInitiatCompletedIPTPercent, true)}</td>
+                                                                        </tr>
+                                                `);
+
+
+
+                        //Differential Model of Care Chart
+                        Highcharts.chart('diffModelCareChart', {
+
+                            title: {
+                                text: 'Differential Model of Care Chart'
+                            },
+
+                            subtitle: {
+                                text: ''
+                            },
+
+                            xAxis: {
+                                categories: ['TXCurr', 'Total on DSD', 'Multi-month Scripting', 'Fast Track', 'Household Led', 'Adolescent Model', '% Devolved'],
+                                crosshair: true,
+                            },
+
+                            yAxis: [{
+                                min: 0,
+                                title: {
+                                    text: 'Count'
+                                }
+
+                            }, {
+                                min: 0,
+                                title: { text: 'Percentage' },
+                                labels: {
+                                    format: '{value} %',
+                                    style: {
+                                        color: '#ab47bc'
+                                    }
+                                },
+                                opposite: true
+                            }
+
+                            ],
+
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0,
+                                    colorByPoint: true
+                                }
+                            },
+
+                            lang: {
+                                decimalPoint: '.',
+                                thousandsSep: ','
+                            },
+
+                            credits: false,
+
+                            series: [{
+                                type: 'column',
+                                colorByPoint: true,
+                                data: mocData,
+                                showInLegend: false
+                            },
+                            {
+                                type: 'scatter',
+                                yAxis: 1,
+                                name: 'Percentage Devloved',
+                                data: [{ x: 6.20, y: moc.MoCPercentDevolved }],
+                            }
+                            ]
+
+                        });
+
+                        //diff table
+                        //table
+                        $('#diffModelCareTable tr#diffStart').remove();
+                        $('#diffModelCareTable tr:last')
+                            .after(`<tr id="diffStart">
+                                                                        <td>${formatValue(mocData[0])}</td>
+                                                                        <td>${formatValue(mocData[1])}</td>
+                                                                        <td>${formatValue(moc.MoCPercentDevolved)}</td>
+                                                                        <td>${formatValue(mocData[2])}</td>
+                                                                        <td>${formatValue(mocData[3])}</td>
+                                                                        <td>${formatValue(mocData[4])}</td>
+                                                                        <td>${formatValue(mocData[5])}</td>
+                                                                        </tr >`);
+
+                        //unsuppressed Viral load data
+
+                        $('#actionPlanTable tr#actStart').remove();
+
+                        let actionPlan = data[0].GSMActionPlan;
+
+                        for (var i = 0; i < actionPlan.length; i++) {
+                            $('#actionPlanTable tr:last')
+                                .after(
+                                    `<tr id="actStart">
+                                        <td>${i + 1}</td>
+                                        <td>${actionPlan[i].IdentifiedChallenges}</td>
+                                            <td>${actionPlan[i].RootCause}</td>
+                                            <td>${actionPlan[i].ResponsiblePersonnel}</td>
+                                            <td>${actionPlan[i].IndicatorsMonitored}</td>
+                                            <td>${actionPlan[i].ExpectedOutcome}</td>
+                                            <td>${actionPlan[i].IndicatorsToMonitored}</td>
+                                            <td>${actionPlan[i].Intervention}</td>
+        </tr>
+                                                    `
+                                );
+                        }
+
+                        if (actionPlan !== null) {
+                            $('#download_link').remove();
+
+                            var linkDiv = document.getElementById('download');
+                            var dwLink = document.createElement('a');
+                            var linkText = document.createTextNode("Download ACTION PLAN REPORT");
+                            dwLink.appendChild(linkText);
+                            dwLink.title = "Download ACTION PLAN REPORT";
+                            dwLink.id = "download_link";
+                            dwLink.href = "http://survey.shieldnigeriaproject.com/api/Externalapi/downloadActionPlan?id=31&siteName=" + site;
+                            dwLink.className = 'btn btn-sm btn-success';
+                            linkDiv.appendChild(dwLink);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

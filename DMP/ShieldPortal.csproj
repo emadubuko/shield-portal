@@ -244,6 +244,7 @@
     <Compile Include="Controllers\MPMController.cs" />
     <Compile Include="Controllers\NHMISController.cs" />
     <Compile Include="Controllers\OrganizationController.cs" />
+    <Compile Include="Controllers\PGSMController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RadetAnalyticsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -1531,6 +1532,9 @@
     <Content Include="Views\MPM\iIMSCompletenessReports.cshtml" />
     <Content Include="Views\MPM\IMSReportingRate.cshtml" />
     <Content Include="Views\MPM\iIMSReportingRate.cshtml" />
+    <Content Include="Views\PGSM\Dashboard.cshtml" />
+    <Content Include="Views\PGSM\PreVisit.cshtml" />
+    <Content Include="Views\PGSM\QReport.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1578,6 +1582,14 @@
     <Content Include="Views\Shared\_dqaFY18Q3layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY18Q4layout.cshtml" />
     <Content Include="Views\Shared\_dqaFY19Q1layout.cshtml" />
+    <Content Include="Views\Shared\_pgsmlayout.cshtml" />
+    <Content Include="Views\Shared\Partials\_UnsViralLoadTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_ViralLoadTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_IndexTestingTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_RetentionAdherenceTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_TbHivTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_ActionPlanTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_DiffModelCareTab.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
