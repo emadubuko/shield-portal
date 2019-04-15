@@ -89,13 +89,13 @@
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (PMTCT_EID)</div></th>
 
 
-                    <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>Reported<br /> (TX_NEW)</div></th>
+                    @*<th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>Reported<br /> (TX_NEW)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TX_NEW)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TX_NEW)</div></th>
 
                     <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>Reported<br /> (TX_CURR)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (TX_CURR)</div></th>
-                    <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TX_CURR)</div></th>
+                    <th class="rotate" style="color:black;font-weight:bold;"><div>Concurrence<br /> (TX_CURR)</div></th>*@
 
                     <th class="rotate" style="color:black;font-weight:bold; border-left-width:medium;border-left-color:black"><div>Reported<br /> (PMTCT_HEI_POS)</div></th>
                     <th class="rotate" style="color:black;font-weight:bold;"><div>Validated<br /> (PMTCT_HEI_POS)</div></th>
@@ -255,7 +255,7 @@
                         }
                         <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
                     }
-                    <td style="border-left-width:medium;border-left-color:black">@dr.TX_NEW</td>
+                    @*<td style="border-left-width:medium;border-left-color:black">@dr.TX_NEW</td>
                     <td>@dr.Validate_TX_NEW</td>
                     @if (dr.TX_NEW == "#DIV/0!")
                     {
@@ -319,7 +319,7 @@
                             green = false;
                         }
                         <td style=@(green ? "background-color:limegreen;color:#fff" : "background-color:red;color:#fff")>@conc.ToString("N2") %</td>
-                    }
+                    }*@
 
                     <td style="border-left-width:medium;border-left-color:black">@dr.PMTCT_HEI_POS</td>
                     <td>@dr.Validate_PMTCT_HEI_POS</td>
