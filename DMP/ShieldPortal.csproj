@@ -1532,6 +1532,9 @@
     <Content Include="Views\MPM\iIMSCompletenessReports.cshtml" />
     <Content Include="Views\MPM\IMSReportingRate.cshtml" />
     <Content Include="Views\MPM\iIMSReportingRate.cshtml" />
+    <Content Include="Views\PGSM\Dashboard.cshtml" />
+    <Content Include="Views\PGSM\PreVisit.cshtml" />
+    <Content Include="Views\PGSM\QReport.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1586,6 +1589,7 @@
     <Content Include="Views\Shared\Partials\_RetentionAdherenceTab.cshtml" />
     <Content Include="Views\Shared\Partials\_TbHivTab.cshtml" />
     <Content Include="Views\Shared\Partials\_ActionPlanTab.cshtml" />
+    <Content Include="Views\Shared\Partials\_DiffModelCareTab.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
