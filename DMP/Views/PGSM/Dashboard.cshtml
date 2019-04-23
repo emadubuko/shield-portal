@@ -144,6 +144,7 @@
     <script src="~/Scripts/Highcharts/code/highcharts.js"></script>
     <script src="~/Scripts/Highcharts/code/js/modules/exporting.js"></script>
     <script src="~/Scripts/Highcharts/code/js/modules/export-data.js"></script>
+<script src="~/Scripts/egsm-highchart-utilities.js"></script>
 
 
     <script>
@@ -183,7 +184,7 @@
                         let jsonResponse = JSON.parse(response);
                         let jsonData = jsonResponse.data;
                         data = jsonData;
-                        console.log(data);
+                        
                         //viral load data from API
                         var viralLoadData = [];
                         let vl;
@@ -210,25 +211,41 @@
 
                         //unsuppressed Viral load data
 
-                        unsVL = data[0].UnSuppresedVLCascade[0];
-                        let unsMale = [], unsFemale = [], noUnsVl = [], noCommencedEac = [], noOfRepeat = [], noOfSwitched = [];
-                        for (var i = 0; i < data[0].UnSuppresedVLCascade.length; i++) {
+                        let unsMale = [], unsFemale = [], noUnsVl = [], noCommencedEac = [], noOfRepeat = [], noOfSwitched = [], unsPaediatricsCategory = [], unsAdultCategory = [];
+                        let pedUnsMale = [], pedUnsFemale = [], pedNoUnsVl = [], pedNoCommencedEac = [], pedNoOfRepeat = [], pedNoOfSwitched = [];
 
-                            unsMale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexMale);
-                            unsFemale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexFemale);
-                            noUnsVl.push(data[0].UnSuppresedVLCascade[i].NoUnSuppressedVL);
-                            noCommencedEac.push(data[0].UnSuppresedVLCascade[i].NoCommencedEAC);
-                            noOfRepeat.push(data[0].UnSuppresedVLCascade[i].NoOfRepeat);
-                            noOfSwitched.push(data[0].UnSuppresedVLCascade[i].NoSwitched);
+                        for (var i = 0; i < data[0].UnSuppresedVLCascade.length; i++) {
+                            let unsAgeCohort = data[0].UnSuppresedVLCascade[i]["AgeCohort"];
+
+                            if ((unsAgeCohort == "0-4") || (unsAgeCohort == "5-9") || (unsAgeCohort == "10-14")) {                                
+                                unsPaediatricsCategory.push(unsAgeCohort);
+
+                                pedUnsMale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexMale);
+                                pedUnsFemale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexFemale);
+                                pedNoUnsVl.push(data[0].UnSuppresedVLCascade[i].NoUnSuppressedVL);
+                                pedNoCommencedEac.push(data[0].UnSuppresedVLCascade[i].NoCommencedEAC);
+                                pedNoOfRepeat.push(data[0].UnSuppresedVLCascade[i].NoOfRepeat);
+                                pedNoOfSwitched.push(data[0].UnSuppresedVLCascade[i].NoSwitched);
+
+                            } else {
+                                unsAdultCategory.push(unsAgeCohort);
+
+                                unsMale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexMale);
+                                unsFemale.push(data[0].UnSuppresedVLCascade[i].UnSuppressedSexFemale);
+                                noUnsVl.push(data[0].UnSuppresedVLCascade[i].NoUnSuppressedVL);
+                                noCommencedEac.push(data[0].UnSuppresedVLCascade[i].NoCommencedEAC);
+                                noOfRepeat.push(data[0].UnSuppresedVLCascade[i].NoOfRepeat);
+                                noOfSwitched.push(data[0].UnSuppresedVLCascade[i].NoSwitched);
+                            }
                         }
 
-                        unsuppressedViralLoadData.push(unsVL.AgeCohort);
-                        unsuppressedViralLoadData.push(unsVL.UnSuppressedSexMale);
-                        unsuppressedViralLoadData.push(unsVL.UnSuppressedSexFemale);
-                        unsuppressedViralLoadData.push(unsVL.NoUnSuppressedVL);
-                        unsuppressedViralLoadData.push(unsVL.NoCommencedEAC);
-                        unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
-                        unsuppressedViralLoadData.push(unsVL.NoSwitched);
+                        //unsuppressedViralLoadData.push(unsVL.AgeCohort);
+                        //unsuppressedViralLoadData.push(unsVL.UnSuppressedSexMale);
+                        //unsuppressedViralLoadData.push(unsVL.UnSuppressedSexFemale);
+                        //unsuppressedViralLoadData.push(unsVL.NoUnSuppressedVL);
+                        //unsuppressedViralLoadData.push(unsVL.NoCommencedEAC);
+                        //unsuppressedViralLoadData.push(unsVL.NoOfRepeat);
+                        //unsuppressedViralLoadData.push(unsVL.NoSwitched);
 
                         //index testing data
                         let indTesting = data[0];
@@ -358,54 +375,13 @@
                         //mocData.push(moc.MoCPercentDevolved);
 
                         //viral load chart
-                        Highcharts.chart('viralLoadChart', {
 
-                            title: {
-                                text: 'Viral Load Performance'
-                            },
+                        let vlCategories = ['TXCurr', 'No of Eligible VL', 'No of Samples Collected', 'No. with Documented VL Result', 'No. with Suppressed VL Result'];
+                        let vlData = [{ colorByPoint: true, data: viralLoadData, showInLegend: false }]
+                         
 
-                            subtitle: {
-                                text: ''
-                            },
-
-                            xAxis: {
-                                categories: ['TXCurr', 'No of Eligible VL', 'No of Samples Collected', 'No. with Documented VL Result', 'No. with Suppressed VL Result'],
-                                crosshair: true,
-                            },
-
-                            yAxis: {
-                                min: 0,
-                                title: {
-                                    text: 'Indicator Values'
-                                },
-                                labels: {
-                                    formatter: function () {
-                                        return this.value;
-                                    }
-                                }
-                            },
-
-                            plotOptions: {
-                                column: {
-                                    pointPadding: 0.2,
-                                    borderWidth: 0,
-                                    colorByPoint: true
-                                }
-                            },
-
-                            lang: {
-                                decimalPoint: '.',
-                                thousandsSep: ','
-                            },
-
-                            credits: false,
-                            series: [{
-                                type: 'column',
-                                colorByPoint: true,
-                                data: viralLoadData,
-                                showInLegend: false
-                            }],
-                        });
+                        build_clustered_column_chart('viralLoadChart', 'Viral Load Performance', null, vlCategories, vlData);
+                        
 
                         //viral load table
                         $('#viralLoadTable tr#vlStart').remove();
@@ -419,159 +395,24 @@
                                                                         <td>${formatValue(vl.ViralLoadCascadeSupPercent)}</td>
                                                                         </tr >`);
 
-                        // unsuppressed viral load chart
-                        Highcharts.chart('unsViralLoadChart', {
-                            chart: {
-                                type: 'bar'
-                            },
-                            title: {
-                                text: 'Unsuppressed Viral Load Performance'
-                            },
+                        // adult unsuppressed viral load chart
+                        let adultUnsData = [{ name: ' No of Male', data: unsMale }, { name: 'No of Female', data: unsFemale}, {name: 'No of Unsuppressed VL',data: noUnsVl}, {name: 'No. Commenced on EAC',                        data: noCommencedEac
+                            }, { name: 'No of Repeat VL', data: noOfSwitched }, {name: 'No. Switched', data: noOfSwitched }];
 
-                            subtitle: {
-                                text: ''
-                            },
+                        build_clustered_column_chart('adultUnsViralLoadChart', 'Unsuppressed Viral Load Performance (Adult)', 'Age Cohorts', unsAdultCategory, adultUnsData);
 
-                            xAxis: {
-                                title: {
-                                    text: 'Age Cohorts'
-                                },
-                                categories: ['0-4', '5-9', '10-14', '15-19', '20-24', '24-29', '30-34', '35-39', '40-44', '45-49', '50+'],
-                                crosshair: true,
-                            },
+                        // paediatrics unsuppressed viral load chart
+                        let pedUnsData = [{ name: ' No of Male', data: pedUnsMale }, { name: 'No of Female', data: pedUnsFemale }, { name: 'No of Unsuppressed VL', data: pedNoUnsVl }, {
+                            name: 'No. Commenced on EAC', data: pedNoCommencedEac }, { name: 'No of Repeat VL', data: pedNoOfSwitched }, { name: 'No. Switched', data: pedNoOfSwitched }];
 
-                            yAxis: {
-                                min: 0,
-                                title: {
-                                    text: 'Indicator Values'
-                                },
-                                labels: {
-                                    formatter: function () {
-                                        return this.value;
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
-                                footerFormat: '</table>',
-                                shared: true,
-                                useHTML: true
-                            },
+                        build_clustered_column_chart('pedUnsViralLoadChart', 'Unsuppressed Viral Load Performance (Paediatrics)', 'Age Cohorts', unsPaediatricsCategory, pedUnsData);
 
-                            plotOptions: {
-                                column: {
-                                    pointPadding: 0.2,
-                                    borderWidth: 0,
-
-                                }
-                            },
-
-                            lang: {
-                                decimalPoint: '.',
-                                thousandsSep: ','
-                            },
-                            credits: false,
-                            series: [{
-                                name: ' No of Male',
-                                data: unsMale
-                            }, {
-                                name: 'No of Female',
-                                data: unsFemale
-                            }, {
-                                name: 'No of Unsuppressed VL',
-                                data: noUnsVl
-                            }, {
-                                name: 'No. Commenced on EAC',
-                                data: noCommencedEac
-                            }, {
-                                name: 'No of Repeat VL',
-                                data: noOfSwitched
-                            }, {
-                                name: 'No. Switched',
-                                data: noOfSwitched
-                            }]
-
-                        });
-
-                        //table
-                        //$('#unsViralLoadTable tr#unsStart').remove();
-                        //$('#unsViralLoadTable tr:last')
-                        //    .after(`<tr id = "unsStart">
-                        //                                            <td>${unsuppressedViralLoadData[0]}</td>
-                        //                                            <td>${formatValue(unsuppressedViralLoadData[1])}</td>
-                        //                                            <td>${formatValue(unsuppressedViralLoadData[2])}</td>
-                        //                                            <td>${formatValue(unsuppressedViralLoadData[3])}</td>
-                        //                                            <td>${formatValue(unsuppressedViralLoadData[4])}</td>
-                        //                                            <td>${formatValue(unsuppressedViralLoadData[5])}</td>
-                        //                                            <td>${formatValue(unsuppressedViralLoadData[6])}</td>
-                        //                                            </tr >`);
 
                         // Index Testing Chart
-                        Highcharts.chart('indexTestingChart', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: 'Index Testing Chart Review'
-                            },
+                        let indexTestingCategory = ['No of charts with partner(s) of index cases listed ', 'No of charts with ALL partners of index cases with known status', 'No of Partner status (POS) ', 'No of Partner status (NEG)', 'No of Partner status (UNK)', 'No of charts with children of index cases listed', 'No of charts with ALL children of index cases with known status', 'Child status (POS) ', 'Child status (NEG)', 'Child status (UNK)'];
+                        let indexTestingChartData = [{ colorByPoint: true, data: indexTestingData, showInLegend: false }]
+                        build_clustered_column_chart('indexTestingChart', 'Index Testing Chart Review', null, indexTestingCategory, indexTestingChartData);
 
-                            subtitle: {
-                                text: ''
-                            },
-
-                            xAxis: {
-                                title: {
-                                    text: ''
-                                },
-                                categories: ['No of charts with partner(s) of index cases listed ', 'No of charts with ALL partners of index cases with known status', 'No of Partner status (POS) ', 'No of Partner status (NEG)', 'No of Partner status (UNK)', 'No of charts with children of index cases listed', 'No of charts with ALL children of index cases with known status', 'Child status (POS) ', 'Child status (NEG)', 'Child status (UNK)',],
-                                crosshair: true,
-                            },
-
-                            yAxis: {
-                                min: 0,
-                                title: {
-                                    text: 'Indicator Values'
-                                },
-                                labels: {
-                                    formatter: function () {
-                                        return this.value;
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
-                                footerFormat: '</table>',
-                                shared: true,
-                                useHTML: true
-                            },
-
-                            plotOptions: {
-                                column: {
-                                    pointPadding: 0.2,
-                                    borderWidth: 0,
-
-                                }
-                            },
-
-                            lang: {
-                                decimalPoint: '.',
-                                thousandsSep: ','
-                            },
-                            credits: false,
-                            series: [{
-                                type: 'column',
-                                colorByPoint: true,
-                                data: indexTestingData,
-                                showInLegend: false
-
-                            }
-                            ]
-
-                        });
 
                         //table
                         $('#indexTestingTable tr#indexStart').remove();
