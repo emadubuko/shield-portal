@@ -413,7 +413,7 @@
                 build_trend_chart_state('LinkagebyState_trend', 'Tx_New Trend for States by Month',
                     'Number of new clients', dt.ART_Trend.pos_state, dt.ART_Trend.pos_state);
 
-                //TX_RET
+                //TX_RET            
                 build_bar_chart_dual_axis_with_drill_down('TX_RET', 'Retained in care 12 months after ART initiation',
                     'Number of client', '% Retention', dt.ART.state_data_ret, dt.ART.lga_drill_down_ret,
                     dt.ART.states);
@@ -460,6 +460,7 @@
                 //TB_tpt
                 build_bar_chart_dual_axis_with_drill_down('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
                     'Number of client', '% TPT', dt.tb_tpt.state_data, dt.tb_tpt.lga_drill_down, dt.tb_tpt.states);
+
 
                  //build_bar_chart_dual_axis('TB_tpt', 'Percentage of eligible PLHIV started on TPT',
                     //    'No. of client', '% TPT', dt.tb_tpt.State,
