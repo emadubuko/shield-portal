@@ -26,19 +26,19 @@
             </tr>
             <tr>
                 <td>HTS_TST</td>
-                <td></td>
+                <td id="hts_tst"></td>
             </tr>
             <tr>
                 <td>HTS_TST_POS</td>
-                <td></td>
+                <td id="hts_tst_pos"></td>
             </tr>
             <tr>
                 <td>Yield</td>
-                <td></td>
+                <td id="hts_yield"></td>
             </tr>
             <tr>
                 <td>No. of test needed to find 1 positive</td>
-                <td></td>
+                <td id="numFindPositive"></td>
             </tr>
             <tr>
                 <th colspan="2" class="bg-info">Treatment Changes (FY17-FY18)</th>
@@ -106,6 +106,21 @@
 
             <div class="form-group">
                 <div class="col-sm-12">
+                    <select id="reportingPeriod" class="form-control" required>
+                        <option value="">Select Reporting Period</option>
+                        <option value="14-Jan-2019">14-Jan-19</option>
+                        <option value="28-Dec-2018">24-Dec-18</option>
+                        <option value="Aug-18">Aug-18</option>
+                        <option value="Dec-18">Dec-18</option>
+                        <option value="Jul-18">Jul-18</option>
+                        <option value="Nov-18">Nov-18</option>
+                        <option value="Oct-18">Oct-18</option>
+                        <option value="Sep-18">Sep-18</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
                     <select id="ip" class="form-control" required>
                         <option value="">Select IP</option>
                         <option value="APIN">APIN</option>
@@ -147,40 +162,51 @@
   
     <script>
         $(document).ready(function () {
+
+            function roundFloat(number, maxPlaces) {
+                return number == null ? '' : number.toFixed(maxPlaces); 
+            }
+
+            function sumYield(depts) {
+                var totalYield = 0;
+                $.each(depts, function () {
+                    totalYield += this.yield;
+                });
+
+                return totalYield;
+            }
+
             $("#site").change(function () {
                 data = [];
 
                 var site = this.value;
+              
+                var reportingPeriod = $("#reportingPeriod").val();
 
-                loadData(site);
+               loadData(site, reportingPeriod);
 
-                function loadData(site) {
+                function loadData(site, reportingPeriod) {
                     $.ajax({
                        
-                        url: "http://survey.shieldnigeriaproject.com/api/Externalapi/GetGSMEntryAggregate?id=31&siteName=" + site,
+                        url: "/api/EGSM/getGSMHTSCummulative?siteName=" + site +"&reportingPeriod="+reportingPeriod,
                         type: "GET",
-                        success: function (response) {
-
-
-                            let jsonResponse = JSON.parse(response);
-                            let jsonData = jsonResponse.data;
-                            data = jsonData;
-
-                            console.log(data);
-
-               
-                            if (data.length < 1) {
-                                alert("No survey response was found in the selected site !");
+                        success: function (response) {                            
+                            if (response === null ) {
+                                alert("No data values were found for the selected site !");
                             } else {
-                                //Viral load data
-                                vl = data[0];
-
+                                //console.log(sumYield(response.Yield));
+                                //console.log(response.Yield);
+                                var jsonYield = JSON.parse(response.Yield);
                                 
-                                $("caption#visitDate").html("Visit Date: " + vl.visitDate);
-                                $("td#eligibleTxCurr").html(vl.ViralLoadCascadeEligible);
-                                $("td#testedEligibleTxCurr").html(vl.ViralLoadCascadeCollected + " (" + parseInt((vl.ViralLoadCascadeCollected / vl.ViralLoadCascadeEligible) * 100) + "%)");
-                                $("td#resultAvailable").html(vl.ViralLoadCascadeDoc + " (" + parseInt((vl.ViralLoadCascadeDoc / vl.ViralLoadCascadeCollected) * 100) + "%)");
-                                $("td#viralLoadSuppressed").html(vl.ViralLoadCascadeSupp + " (" + parseInt((vl.ViralLoadCascadeSupp / vl.ViralLoadCascadeDoc) * 100) + "%)");
+                                $("caption#visitDate").html("Visit Date: " + reportingPeriod);
+                                //$("td#eligibleTxCurr").html(vl.ViralLoadCascadeEligible);
+                                //$("td#testedEligibleTxCurr").html(vl.ViralLoadCascadeCollected + " (" + parseInt((vl.ViralLoadCascadeCollected / vl.ViralLoadCascadeEligible) * 100) + "%)");
+                                //$("td#resultAvailable").html(vl.ViralLoadCascadeDoc + " (" + parseInt((vl.ViralLoadCascadeDoc / vl.ViralLoadCascadeCollected) * 100) + "%)");
+                                //$("td#numFindPositive").html(vl.ViralLoadCascadeSupp + " (" + parseInt((vl.ViralLoadCascadeSupp / vl.ViralLoadCascadeDoc) * 100) + "%)");
+                                $("td#hts_tst").html(response.HTS_TST);
+                                $("td#hts_tst_pos").html(roundFloat(response.HTS_TST_POS, 2));
+                                $("td#hts_yield").html(sumYield(jsonYield));                                
+                                $("td#numFindPositive").html(response.Num_Find_Positive);
 
                             }
 
