@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "dashboard";
-    Layout = "~/Views/Shared/_dqaFY19Q1layout.cshtml";
+    Layout = "~/Views/Shared/_dqaFY19Q2layout.cshtml";
 }
 
 
@@ -65,14 +65,14 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 
 
 @section Scripts{
     <script>
         $(document).ready(function () {
             $.ajax({
-                url: '/api/DQAAPI/GetDashboardStatistic?period=Q1 Fy19',
+                url: '/api/DQAAPI/GetDashboardStatistic?period=Q2 Fy19',
                 type: 'GET',
                 cache: false,
                 contentType: "application/json",

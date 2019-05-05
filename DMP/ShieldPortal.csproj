@@ -233,11 +233,13 @@
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q3Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2018Q4Controller.cs" />
     <Compile Include="Controllers\DQACntrollers\DQAFY2019Q1Controller.cs" />
+    <Compile Include="Controllers\DQACntrollers\DQAFY2019Q2Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q1Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q2Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q4Controller.cs" />
     <Compile Include="Controllers\DQIFY2018Q3Controller.cs" />
     <Compile Include="Controllers\DQIFY2019Q1Controller.cs" />
+    <Compile Include="Controllers\DQIFY2019Q2Controller.cs" />
     <Compile Include="Controllers\EvaluationPlanController.cs" />
     <Compile Include="Controllers\HealthFacilityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1536,6 +1538,19 @@
     <Content Include="Views\PGSM\Dashboard.cshtml" />
     <Content Include="Views\PGSM\PreVisit.cshtml" />
     <Content Include="Views\PGSM\QReport.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\Analytics.cshtml" />
+    <Content Include="Views\Shared\dqiFY19Q2Layout.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\DQAResult.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\UMB_Partner_Report.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\DownloadDQATool.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\RadetValidation.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\DQAAnalysisReport.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\UploadDQA.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\UploadPivotTable.cshtml" />
+    <Content Include="Views\DQAFY2019Q2\dashboard.cshtml" />
+    <Content Include="Views\DQIFY2019Q2\DownloadDQITool.cshtml" />
+    <Content Include="Views\DQIFY2019Q2\UploadDQIResult.cshtml" />
+    <Content Include="Views\DQIFY2019Q2\Index.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DocumentViewer\DocumentPreview.cshtml" />
@@ -1591,6 +1606,7 @@
     <Content Include="Views\Shared\Partials\_TbHivTab.cshtml" />
     <Content Include="Views\Shared\Partials\_ActionPlanTab.cshtml" />
     <Content Include="Views\Shared\Partials\_DiffModelCareTab.cshtml" />
+    <Content Include="Views\Shared\_dqaFY19Q2layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
