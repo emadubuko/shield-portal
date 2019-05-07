@@ -111,7 +111,7 @@
                     var $states = $("#states");
                     var $site = $("#site");
                     $states.empty();
-
+                    $states.append($("<option />").val("").text("Select State"));
                     $.each(data, function (index) {
                         //console.log(data[index].State)                        
                         $states.append($("<option />").val(this.State).text(this.State));
@@ -126,7 +126,8 @@
                         
                         if (filtered.length > 0) {
                             let sites = filtered[0].Site;
-                            $site.empty();                          
+                            $site.empty();       
+                            $site.append($("<option />").val("").text("Select Site"));
                             $.each(sites, function () {
                             $site.append($("<option />").val(this).text(this));
                             });
