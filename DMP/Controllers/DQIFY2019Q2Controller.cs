@@ -86,7 +86,7 @@ namespace ShieldPortal.Controllers
             var messages = "";
             try
             {
-                Logger.LogInfo("DQIQ1 FY2019,ProcessFile", "processing dqi upload");
+                Logger.LogInfo("DQIQ2 FY2019,ProcessFile", "processing dqi upload");
 
                 var userUploading = new Services.Utils().GetloggedInProfile();
 
@@ -100,7 +100,7 @@ namespace ShieldPortal.Controllers
 
                         if (ext.ToUpper() == "XLS" || ext.ToUpper() == "XLSX" || ext.ToUpper() == "XLSM")
                         {
-                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQI Q1 FY19/" + postedFile.FileName);
+                            var filePath = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Uploads/DQI Q2 FY19/" + postedFile.FileName);
                             postedFile.SaveAs(filePath);
 
                             messages += new QIEngine().ProcessUpload(filePath, userUploading, "Q2 FY19");
