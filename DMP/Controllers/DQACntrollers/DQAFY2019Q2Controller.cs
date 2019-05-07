@@ -513,7 +513,7 @@ namespace ShieldPortal.Controllers.DQACntrollers
 
             string fileName = "DQA_Q2_" + profile.Organization.ShortName + ".zip";
             string directory = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2019 Q2/DQA_Q2_" + profile.Organization.ShortName);
-            string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2019 Q2/FY19_Q2_Data Quality Assessment tool_v9.xlsm");
+            string template = System.Web.Hosting.HostingEnvironment.MapPath("~/Report/Template/DQA FY2019 Q2/FY19_Q2_Data Quality Assessment tool_v10.xlsm");
             string file = await new Utility().GenerateDQA(data, profile.Organization, fileName, directory, template, "Q2 FY19");
 
             return Json(file, JsonRequestBehavior.AllowGet);
