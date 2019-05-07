@@ -853,8 +853,11 @@ namespace MPM.DAL.Processor
                         column += 2;
                         if (column % 28 == 0)
                         {
+                     
                             counter += 20;
                         }
+                       
+
                     }
                 }
                 Loop: row += 3;

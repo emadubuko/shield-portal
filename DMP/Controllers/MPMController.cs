@@ -2000,7 +2000,7 @@ namespace ShieldPortal.Controllers
                                         {
 
                                            name = fty.Key,
-                                         y  = Math.Round(50 * 1.0 * fac_no_genealogy_male / 2 , 1),                        
+                                         y  = Math.Round(50 * 1.0 * fac_no_genealogy_male / 2, 1),                        
                                           absolute = fac_no_genealogy_male,
                                          entries =  2,
                                          facilities =  1
